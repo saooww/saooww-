@@ -74,9 +74,8 @@ export function Money({ value, currency = "RUB", sign = "auto", tone = "inherit"
   );
 }
 
-/** Animates between values — balances count up or down after an operation. */
-export function AnimatedMoney(props: MoneyProps & { duration?: number }) {
-  const { value, duration = 0.7 } = props;
+/** Counts smoothly from the previous value to the new one (respects reduced motion). */
+export function useCountUp(value: number, duration = 0.7): number {
   const reduce = useReducedMotion();
   const animations = useData((s) => s.settings.animations);
   const [shown, setShown] = useState(value);
@@ -100,5 +99,11 @@ export function AnimatedMoney(props: MoneyProps & { duration?: number }) {
     return () => controls.stop();
   }, [value, duration, reduce, animations]);
 
+  return shown;
+}
+
+/** Animates between values — balances count up or down after an operation. */
+export function AnimatedMoney(props: MoneyProps & { duration?: number }) {
+  const shown = useCountUp(props.value, props.duration);
   return <Money {...props} value={shown} />;
 }

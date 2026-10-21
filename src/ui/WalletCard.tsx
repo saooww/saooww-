@@ -4,6 +4,7 @@ import { cn } from "../lib/cn";
 import { moneyParts, type Minor } from "../lib/money";
 import type { CardMaterial } from "../store/catalog";
 import { BrandMark } from "./Brand";
+import { useCountUp } from "./Money";
 
 export const CARD_RATIO = 1.586; // ISO/IEC 7810 ID-1
 
@@ -63,7 +64,8 @@ export const WalletCard = memo(function WalletCard({
   footnote,
   className
 }: WalletCardProps) {
-  const p = moneyParts(amount, { currency });
+  const shown = useCountUp(amount, 0.8);
+  const p = moneyParts(shown, { currency });
   const size = amountSize(`${p.sign}${p.int}${p.frac}`);
   return (
     <div

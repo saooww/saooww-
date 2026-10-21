@@ -364,7 +364,7 @@ function SummaryTile({ label, value, change, currency, goodWhenUp, signed, tone 
   return (
     <div className="rounded-md bg-surface px-3 py-3">
       <div className="text-caption font-medium text-ink-2">{label}</div>
-      <div className={cn("mt-0.5 truncate text-[15px] font-semibold tracking-[-0.01em] tnum", tone === "positive" && "text-positive", signed && value < 0 && "text-negative")}>
+      <div className={cn("mt-0.5 truncate text-[15px] font-semibold tracking-[-0.01em] tnum", tone === "positive" && value > 0 && "text-positive", signed && value < 0 && "text-negative")}>
         {signed && value > 0 ? "+" : ""}
         {formatCompact(value, currency)}
       </div>

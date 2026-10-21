@@ -269,7 +269,7 @@ export function TransactionsScreen() {
           {groups.map((g) => (
             <section key={g.day || "all"} className="mt-3">
               {g.day && (
-                <div className="sticky z-10 flex items-baseline justify-between px-5 pb-2 pt-1" style={{ top: 0 }}>
+                <div className="flex items-baseline justify-between px-5 pb-2 pt-1">
                   <span className="text-footnote font-semibold text-ink-2">{formatDayHeading(g.day)}</span>
                   <Money value={dayNet(g.items)} sign="always" currency={settings.baseCurrency} className="text-footnote text-ink-3" />
                 </div>

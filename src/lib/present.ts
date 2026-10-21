@@ -48,7 +48,7 @@ export function presentTx(tx: Transaction, ctx: PresentCtx, opts: { time?: boole
       return {
         icon: cat?.icon ?? (tx.kind === "income" ? "HandCoins" : "CircleDashed"),
         title,
-        subtitle: join(tx.note && cat ? cat.name : undefined, w && w.id !== ctx.defaultWalletId ? w.name : undefined),
+        subtitle: join(tx.note && cat && tx.note !== cat.name ? cat.name : undefined, w && w.id !== ctx.defaultWalletId ? w.name : undefined),
         amount: tx.kind === "income" ? tx.amount : -tx.amount,
         sign: "always",
         tone: tx.kind === "income" ? "positive" : "default",
