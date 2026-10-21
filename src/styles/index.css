@@ -1,0 +1,268 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ------------------------------------------------------------------ */
+/*  Design tokens                                                      */
+/* ------------------------------------------------------------------ */
+
+:root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --tabbar-h: 58px;
+  --kb: 0px;
+  --side: 20px;
+}
+
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #08080a;
+  --bg-glow: rgba(255, 255, 255, 0.035);
+  --surface: #131315;
+  --surface-2: #1a1a1d;
+  --surface-3: #242428;
+  --surface-press: #2c2c31;
+  --line: rgba(255, 255, 255, 0.075);
+  --line-strong: rgba(255, 255, 255, 0.13);
+  --ink: #f5f5f7;
+  --ink-2: #98989f;
+  --ink-3: #636369;
+  --ink-4: #3e3e43;
+  --ink-inverse: #0b0b0c;
+  --accent: #ff5a2e;
+  --accent-press: #e44a20;
+  --accent-soft: rgba(255, 90, 46, 0.14);
+  --accent-ink: #ff7a55;
+  --positive: #3ccf8e;
+  --positive-soft: rgba(60, 207, 142, 0.13);
+  --negative: #ff5d5d;
+  --negative-soft: rgba(255, 93, 93, 0.13);
+  --warning: #f2b04a;
+  --warning-soft: rgba(242, 176, 74, 0.14);
+  --scrim: rgba(0, 0, 0, 0.55);
+  --tabbar-bg: rgba(12, 12, 14, 0.9);
+  --header-bg: rgba(8, 8, 10, 0.86);
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 12px 32px -18px rgba(0, 0, 0, 0.9);
+  --shadow-sheet: 0 -12px 48px rgba(0, 0, 0, 0.55);
+  --shadow-pop: 0 18px 40px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --chart-grid: rgba(255, 255, 255, 0.06);
+  --chart-muted: #3a3a40;
+  --seg-thumb: #3a3a40;
+  --key-press: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f2f2f0;
+  --bg-glow: rgba(255, 255, 255, 0.7);
+  --surface: #ffffff;
+  --surface-2: #ffffff;
+  --surface-3: #ececea;
+  --surface-press: #e3e3e0;
+  --line: rgba(0, 0, 0, 0.075);
+  --line-strong: rgba(0, 0, 0, 0.13);
+  --ink: #0c0c0d;
+  --ink-2: #6c6c72;
+  --ink-3: #a0a0a6;
+  --ink-4: #cfcfd3;
+  --ink-inverse: #ffffff;
+  --accent: #ee4a1d;
+  --accent-press: #d63f15;
+  --accent-soft: rgba(238, 74, 29, 0.1);
+  --accent-ink: #d63f15;
+  --positive: #16955a;
+  --positive-soft: rgba(22, 149, 90, 0.1);
+  --negative: #d93636;
+  --negative-soft: rgba(217, 54, 54, 0.09);
+  --warning: #b97806;
+  --warning-soft: rgba(185, 120, 6, 0.11);
+  --scrim: rgba(0, 0, 0, 0.32);
+  --tabbar-bg: rgba(248, 248, 246, 0.92);
+  --header-bg: rgba(242, 242, 240, 0.88);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04), 0 10px 28px -16px rgba(0, 0, 0, 0.18);
+  --shadow-sheet: 0 -12px 40px rgba(0, 0, 0, 0.12);
+  --shadow-pop: 0 18px 40px -12px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  --chart-grid: rgba(0, 0, 0, 0.06);
+  --chart-muted: #d6d6d9;
+  --seg-thumb: #ffffff;
+  --key-press: rgba(0, 0, 0, 0.06);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Base                                                               */
+/* ------------------------------------------------------------------ */
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: theme("fontFamily.sans");
+    font-size: 16px;
+    line-height: 1.375;
+    letter-spacing: -0.011em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern", "ss01";
+    overflow: hidden;
+    overscroll-behavior: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  input,
+  textarea,
+  [contenteditable] {
+    user-select: text;
+    -webkit-user-select: text;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+  }
+
+  button {
+    cursor: pointer;
+    background: none;
+    padding: 0;
+    touch-action: manipulation;
+  }
+
+  button:disabled {
+    cursor: default;
+  }
+
+  :focus {
+    outline: none;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--ink-3);
+  }
+
+  input[type="date"],
+  input[type="time"],
+  input[type="datetime-local"] {
+    -webkit-appearance: none;
+    appearance: none;
+    min-height: 22px;
+  }
+
+  input[type="date"]::-webkit-date-and-time-value,
+  input[type="time"]::-webkit-date-and-time-value,
+  input[type="datetime-local"]::-webkit-date-and-time-value {
+    text-align: left;
+  }
+
+  ::selection {
+    background: var(--accent-soft);
+  }
+}
+
+@layer utilities {
+  .tnum {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum", "kern";
+  }
+
+  .scroll-y {
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    scrollbar-width: none;
+  }
+
+  .scroll-y::-webkit-scrollbar,
+  .scroll-x::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scroll-x {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .hairline-b {
+    box-shadow: inset 0 -0.5px 0 var(--line);
+  }
+
+  .hairline-t {
+    box-shadow: inset 0 0.5px 0 var(--line);
+  }
+
+  .blur-bar {
+    -webkit-backdrop-filter: saturate(160%) blur(20px);
+    backdrop-filter: saturate(160%) blur(20px);
+  }
+
+  .no-drag {
+    -webkit-user-drag: none;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* App canvas: deep black with a barely-there lift at the top, so the
+   background never reads as a flat fill. */
+.app-canvas {
+  background:
+    radial-gradient(120% 60% at 50% -10%, var(--bg-glow), transparent 60%),
+    var(--bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes caret {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [style*="caret"] {
+    animation: none !important;
+  }
+}

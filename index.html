@@ -1,28 +1,44 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
-    <title>Капитал — личные финансы</title>
-    <meta name="description" content="Личная финансовая панель: кошельки, доходы, расходы, долги и цели" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+    <title>Капитал</title>
+    <meta name="description" content="Личные финансы: кошельки, операции, аналитика, цели, бюджеты и планы" />
 
-    <!-- Theme / PWA -->
-    <meta name="theme-color" content="#0B0E14" />
+    <meta name="theme-color" content="#08080A" />
+    <meta name="color-scheme" content="dark light" />
     <link rel="manifest" href="/manifest.webmanifest" />
 
-    <!-- iOS standalone app behaviour -->
+    <!-- iOS standalone -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Капитал" />
+    <meta name="format-detection" content="telephone=no" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
-
+    <link rel="icon" type="image/svg+xml" href="/icons/mark.svg" />
     <link rel="icon" type="image/png" href="/icons/icon-192.png" />
 
-    <!-- Tailwind core utility classes (no build step needed) -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      html, body { background: #08080A; }
+      html[data-theme="light"], html[data-theme="light"] body { background: #F2F2F0; }
+    </style>
+    <script>
+      // Apply the saved theme before first paint, so there is no flash.
+      (function () {
+        try {
+          var raw = localStorage.getItem("kapital-v2");
+          var theme = raw ? (JSON.parse(raw).state || {}).settings : null;
+          var t = theme && theme.theme ? theme.theme : "dark";
+          if (t === "system") t = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+          document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {}
+      })();
+    </script>
   </head>
-  <body style="margin:0;">
+  <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
