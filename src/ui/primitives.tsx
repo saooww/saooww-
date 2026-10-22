@@ -1,4 +1,4 @@
-import { forwardRef, useId, type ReactNode } from "react";
+import { forwardRef, useId, type CSSProperties, type ReactNode } from "react";
 import { motion, type HTMLMotionProps } from "framer-motion";
 import { ChevronRight, type LucideIcon } from "lucide-react";
 import { cn } from "../lib/cn";
@@ -46,17 +46,17 @@ type ButtonVariant = "primary" | "secondary" | "ghost" | "danger" | "tinted";
 type ButtonSize = "lg" | "md" | "sm";
 
 const BUTTON_VARIANTS: Record<ButtonVariant, string> = {
-  primary: "bg-accent text-white disabled:opacity-40",
-  secondary: "bg-surface-3 text-ink disabled:opacity-40",
+  primary: "fill-accent text-white disabled:opacity-40 disabled:shadow-none",
+  secondary: "tile text-ink disabled:opacity-40",
   ghost: "text-ink-2 disabled:opacity-40",
   danger: "bg-negative-soft text-negative disabled:opacity-40",
   tinted: "bg-accent-soft text-accent-ink disabled:opacity-40"
 };
 
 const BUTTON_SIZES: Record<ButtonSize, string> = {
-  lg: "h-[52px] px-5 text-headline font-semibold rounded-md gap-2",
-  md: "h-11 px-4 text-callout font-semibold rounded-md gap-2",
-  sm: "h-[34px] px-3.5 text-subhead font-semibold rounded-sm gap-1.5"
+  lg: "h-[54px] px-5 text-headline font-semibold rounded-[16px] gap-2",
+  md: "h-11 px-4 text-callout font-semibold rounded-[14px] gap-2",
+  sm: "h-[34px] px-3.5 text-subhead font-semibold rounded-[11px] gap-1.5"
 };
 
 export type ButtonProps = PressableProps & {
@@ -103,15 +103,15 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(functio
       pressScale={0.9}
       className={cn(
         "inline-flex shrink-0 items-center justify-center rounded-full",
-        variant === "filled" && "bg-surface-3 text-ink",
+        variant === "filled" && "tile text-ink",
         variant === "plain" && "text-ink",
-        variant === "accent" && "bg-accent text-white",
+        variant === "accent" && "fill-accent text-white",
         className
       )}
       style={{ width: size, height: size }}
       {...rest}
     >
-      <Icon size={iconSize ?? Math.round(size * 0.5)} strokeWidth={2} />
+      <Icon size={iconSize ?? Math.round(size * 0.48)} strokeWidth={1.9} />
     </Pressable>
   );
 });
@@ -141,8 +141,8 @@ export function Chip({
       pressScale={0.95}
       aria-pressed={selected}
       className={cn(
-        "inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full px-3 text-subhead font-medium transition-colors duration-150",
-        selected ? "bg-ink text-ink-inverse" : "bg-surface-3 text-ink",
+        "inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-subhead font-medium transition-[background,color] duration-200",
+        selected ? "bg-ink text-ink-inverse" : "tile text-ink-2",
         className
       )}
     >
@@ -177,7 +177,8 @@ export function Toggle({ checked, onChange, label, disabled }: { checked: boolea
         haptic();
         onChange(!checked);
       }}
-      className={cn("relative h-[30px] w-[50px] shrink-0 rounded-full transition-colors duration-200", checked ? "bg-positive" : "bg-surface-press", disabled && "opacity-40")}
+      className={cn("relative h-[30px] w-[50px] shrink-0 rounded-full transition-[background,box-shadow] duration-200", checked ? "fill-positive" : "bg-surface-press", disabled && "opacity-40")}
+      style={{ boxShadow: checked ? "inset 0 1px 0 rgba(255,255,255,0.22), 0 6px 16px -8px var(--positive)" : "inset 0 0 0 0.5px var(--line)" }}
     >
       <motion.span
         className="absolute left-[2px] top-[2px] h-[26px] w-[26px] rounded-full bg-white"
@@ -209,7 +210,7 @@ export function Segmented<T extends string>({
 }) {
   const id = useId();
   return (
-    <div role="tablist" className={cn("relative flex rounded-sm bg-surface-3 p-[3px]", className)}>
+    <div role="tablist" className={cn("relative flex rounded-[12px] p-[3px]", className)} style={{ background: "color-mix(in srgb, var(--ink) 6%, transparent)", boxShadow: "inset 0 0 0 0.5px var(--line)" }}>
       {options.map((o) => {
         const active = o.value === value;
         return (
@@ -223,7 +224,7 @@ export function Segmented<T extends string>({
               onChange(o.value);
             }}
             className={cn(
-              "relative flex-1 rounded-[8px] font-semibold transition-colors duration-200",
+              "relative flex-1 rounded-[9px] font-semibold transition-colors duration-200",
               size === "md" ? "h-8 text-subhead" : "h-7 text-footnote",
               active ? "text-ink" : "text-ink-2"
             )}
@@ -231,8 +232,11 @@ export function Segmented<T extends string>({
             {active && (
               <motion.span
                 layoutId={`seg-${id}`}
-                className="absolute inset-0 rounded-[8px]"
-                style={{ background: "var(--seg-thumb)", boxShadow: "0 1px 3px rgba(0,0,0,0.18)" }}
+                className="absolute inset-0 rounded-[9px]"
+                style={{
+                  background: "linear-gradient(180deg, var(--panel-highlight), transparent 70%), var(--seg-thumb)",
+                  boxShadow: "inset 0 0 0 0.5px var(--line-strong), 0 2px 6px -1px rgba(0,0,0,0.28)"
+                }}
                 transition={spring.snappy}
               />
             )}
@@ -247,6 +251,8 @@ export function Segmented<T extends string>({
 /* ------------------------------------------------------------------ */
 /*  Progress                                                           */
 /* ------------------------------------------------------------------ */
+
+const TONE_COLOR = { accent: "var(--accent)", positive: "var(--positive)", warning: "var(--warning)", negative: "var(--negative)", ink: "var(--ink)" };
 
 export function ProgressBar({
   value,
@@ -263,12 +269,15 @@ export function ProgressBar({
   marker?: number;
 }) {
   const v = Math.max(0, Math.min(1, value));
-  const color = { accent: "var(--accent)", positive: "var(--positive)", warning: "var(--warning)", negative: "var(--negative)", ink: "var(--ink)" }[tone];
+  const color = TONE_COLOR[tone];
   return (
-    <div className={cn("relative w-full overflow-hidden rounded-full", className)} style={{ height, background: "var(--line-strong)" }}>
+    <div className={cn("relative w-full overflow-hidden rounded-full", className)} style={{ height, background: "var(--line)" }}>
       <motion.div
         className="absolute inset-y-0 left-0 w-full origin-left rounded-full"
-        style={{ background: color }}
+        style={{
+          background: tone === "accent" ? "linear-gradient(90deg, var(--accent-lo), var(--accent-hi))" : `linear-gradient(90deg, color-mix(in srgb, ${color} 72%, transparent), ${color})`,
+          boxShadow: tone === "ink" ? undefined : `0 0 12px -2px ${color}`
+        }}
         initial={{ scaleX: 0 }}
         animate={{ scaleX: v }}
         transition={{ type: "spring", stiffness: 140, damping: 26, mass: 1 }}
@@ -295,16 +304,25 @@ export function ProgressRing({
 }) {
   const r = (size - stroke) / 2;
   const v = Math.max(0, Math.min(1, value));
+  const gid = useId().replace(/:/g, "");
+  const [from, to] = tone === "accent" ? ["var(--accent-hi)", "var(--accent-lo)"] : ["var(--positive-hi)", "var(--positive)"];
   return (
     <div className="relative" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--line-strong)" strokeWidth={stroke} />
+      <svg width={size} height={size} className="-rotate-90 overflow-visible">
+        <defs>
+          <linearGradient id={`ring-${gid}`} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor={from} />
+            <stop offset="100%" stopColor={to} />
+          </linearGradient>
+        </defs>
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--line)" strokeWidth={stroke} />
         <motion.circle
           cx={size / 2}
           cy={size / 2}
           r={r}
           fill="none"
-          stroke={tone === "accent" ? "var(--accent)" : "var(--positive)"}
+          stroke={`url(#ring-${gid})`}
+          style={{ filter: `drop-shadow(0 0 6px ${tone === "accent" ? "var(--accent-glow)" : "color-mix(in srgb, var(--positive) 50%, transparent)"})` }}
           strokeWidth={stroke}
           strokeLinecap="round"
           initial={{ pathLength: 0 }}
@@ -323,11 +341,12 @@ export function ProgressRing({
 
 export function SectionHeader({ title, action, className }: { title: ReactNode; action?: { label: string; onClick: () => void }; className?: string }) {
   return (
-    <div className={cn("flex items-end justify-between px-5 pb-2 pt-1", className)}>
-      <h2 className="text-headline font-semibold text-ink">{title}</h2>
+    <div className={cn("flex items-center justify-between gap-3 px-5 pb-3 pt-1", className)}>
+      <h2 className="label-caps">{title}</h2>
       {action && (
-        <button type="button" onClick={action.onClick} className="text-subhead font-medium text-ink-2 active:opacity-60">
+        <button type="button" onClick={action.onClick} className="-my-2 flex items-center gap-0.5 py-2 text-footnote font-medium text-ink-2 active:opacity-60">
           {action.label}
+          <ChevronRight size={14} strokeWidth={2.2} className="text-ink-3" />
         </button>
       )}
     </div>
@@ -337,18 +356,42 @@ export function SectionHeader({ title, action, className }: { title: ReactNode; 
 export function Group({ children, className, header, footer }: { children: ReactNode; className?: string; header?: ReactNode; footer?: ReactNode }) {
   return (
     <section className={cn("mx-4", className)}>
-      {header && <div className="px-4 pb-1.5 text-footnote font-medium text-ink-2">{header}</div>}
-      <div className="overflow-hidden rounded-lg bg-surface [&>*+*]:hairline-t">{children}</div>
-      {footer && <div className="px-4 pt-1.5 text-footnote text-ink-3">{footer}</div>}
+      {header && <div className="label-caps px-1 pb-2.5">{header}</div>}
+      <div className="panel overflow-hidden rounded-lg [&>*+*]:hairline-t">{children}</div>
+      {footer && <div className="px-1 pt-2 text-footnote text-ink-3">{footer}</div>}
     </section>
   );
 }
 
-export function IconChip({ name, icon: Icon, size = 32, className, tone }: { name?: string; icon?: LucideIcon; size?: number; className?: string; tone?: "accent" | "positive" | "warning" | "negative" }) {
-  const toneCls = tone ? { accent: "bg-accent-soft text-accent-ink", positive: "bg-positive-soft text-positive", warning: "bg-warning-soft text-warning", negative: "bg-negative-soft text-negative" }[tone] : "bg-surface-3 text-ink";
-  const iconSize = Math.round(size * 0.5);
+/**
+ * Icon in a soft squircle tile. `color` tints it with a category colour;
+ * `tone` uses a semantic colour; otherwise it is a neutral stone tile.
+ */
+export function IconChip({
+  name,
+  icon: Icon,
+  size = 32,
+  className,
+  tone,
+  color
+}: {
+  name?: string;
+  icon?: LucideIcon;
+  size?: number;
+  className?: string;
+  tone?: "accent" | "positive" | "warning" | "negative";
+  color?: string;
+}) {
+  const toneCls = tone ? { accent: "bg-accent-soft text-accent-ink", positive: "bg-positive-soft text-positive", warning: "bg-warning-soft text-warning", negative: "bg-negative-soft text-negative" }[tone] : color ? "" : "tile text-ink";
+  const iconSize = Math.round(size * 0.48);
+  const style: CSSProperties = { width: size, height: size, borderRadius: Math.round(size * 0.34) };
+  if (color && !tone) {
+    style.color = color;
+    style.background = `linear-gradient(180deg, color-mix(in srgb, ${color} 22%, transparent), color-mix(in srgb, ${color} 11%, transparent))`;
+    style.boxShadow = `inset 0 0 0 0.5px color-mix(in srgb, ${color} 22%, transparent)`;
+  }
   return (
-    <span className={cn("inline-grid shrink-0 place-items-center rounded-full", toneCls, className)} style={{ width: size, height: size }}>
+    <span className={cn("inline-grid shrink-0 place-items-center", toneCls, className)} style={style}>
       {Icon ? <Icon size={iconSize} strokeWidth={1.9} /> : <NamedIcon name={name} size={iconSize} strokeWidth={1.9} />}
     </span>
   );
@@ -383,7 +426,7 @@ export function Row({ icon, iconName, iconTone, leading, title, subtitle, value,
       {chevron && <ChevronRight size={18} className="-mr-1 shrink-0 text-ink-3" strokeWidth={2} />}
     </>
   );
-  const cls = cn("flex min-h-[52px] w-full items-center gap-3 px-4 py-2.5", className);
+  const cls = cn("flex min-h-[54px] w-full items-center gap-3 px-4 py-2.5", className);
   if (!onClick) return <div className={cls}>{content}</div>;
   return (
     <button type="button" onClick={onClick} aria-label={ariaLabel} className={cn(cls, "transition-colors duration-100 active:bg-surface-press")}>
@@ -410,8 +453,8 @@ export const inputCls = "w-full min-w-0 bg-transparent text-body text-ink outlin
 export function EmptyState({ icon: Icon, title, text, action, className }: { icon: LucideIcon; title: string; text?: string; action?: ReactNode; className?: string }) {
   return (
     <div className={cn("flex flex-col items-center px-8 py-10 text-center", className)}>
-      <span className="mb-4 grid h-14 w-14 place-items-center rounded-full bg-surface-3 text-ink-2">
-        <Icon size={24} strokeWidth={1.8} />
+      <span className="tile mb-5 grid h-16 w-16 place-items-center rounded-[22px] text-ink-2">
+        <Icon size={26} strokeWidth={1.7} />
       </span>
       <div className="text-headline font-semibold">{title}</div>
       {text && <p className="mt-1.5 max-w-[280px] text-callout text-ink-2 text-balance">{text}</p>}
@@ -430,7 +473,7 @@ export function Avatar({ name, size = 32, className }: { name: string; size?: nu
       .join("") || "•";
   return (
     <span
-      className={cn("inline-grid shrink-0 place-items-center rounded-full bg-surface-3 font-semibold text-ink", className)}
+      className={cn("tile inline-grid shrink-0 place-items-center rounded-full font-semibold text-ink", className)}
       style={{ width: size, height: size, fontSize: Math.round(size * 0.38) }}
     >
       {initials}

@@ -106,7 +106,7 @@ function NetWorthBlock() {
 
 function Stat({ label, value, currency, onClick }: { label: string; value: number; currency: string; onClick?: () => void }) {
   return (
-    <button type="button" onClick={onClick} disabled={!onClick} className="rounded-md bg-surface px-3.5 py-3 text-left active:bg-surface-press disabled:active:bg-surface">
+    <button type="button" onClick={onClick} disabled={!onClick} className="panel rounded-md px-3.5 py-3 text-left active:bg-surface-press disabled:active:bg-surface">
       <div className="text-caption font-medium text-ink-2">{label}</div>
       <Money value={value} currency={currency} privacy className="mt-0.5 block text-callout font-semibold" />
     </button>

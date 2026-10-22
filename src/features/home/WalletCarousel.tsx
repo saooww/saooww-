@@ -72,7 +72,7 @@ export function useCardModels(): CardModel[] {
   }, [wallets, balances, total, base]);
 }
 
-export function WalletCarousel({ onOpen, onAdd }: { onOpen: (card: CardModel, rect: DOMRect) => void; onAdd: () => void }) {
+export function WalletCarousel({ onOpen, onAdd, intro = false }: { onOpen: (card: CardModel, rect: DOMRect) => void; onAdd: () => void; intro?: boolean }) {
   const cards = useCardModels();
   const index = useUI((s) => s.homeCardIndex);
   const setIndex = useUI((s) => s.setHomeCardIndex);
@@ -117,7 +117,7 @@ export function WalletCarousel({ onOpen, onAdd }: { onOpen: (card: CardModel, re
         <button
           type="button"
           onClick={onAdd}
-          className="grid w-full place-items-center rounded-xl border border-dashed border-line-strong text-ink-2"
+          className="grid w-full place-items-center rounded-[22px] border border-dashed border-line-strong text-ink-2"
           style={{ aspectRatio: String(CARD_RATIO) }}
         >
           <span className="flex flex-col items-center gap-2">
@@ -144,6 +144,10 @@ export function WalletCarousel({ onOpen, onAdd }: { onOpen: (card: CardModel, re
         }}
         style={{ aspectRatio: String(CARD_RATIO) }}
       >
+        {/* ambient light cast by the card in front */}
+        {width > 0 &&
+          cards.map((c, i) => <AmbientGlow key={c.key} color={c.material.glow} i={i} x={x} step={step} intro={intro} />)}
+
         {width > 0 && (
           <motion.div
             className="absolute inset-y-0 left-0 flex touch-pan-y"
@@ -170,6 +174,7 @@ export function WalletCarousel({ onOpen, onAdd }: { onOpen: (card: CardModel, re
                 width={width}
                 hidden={hidden}
                 invisible={!!c.walletId && c.walletId === heroWalletId}
+                intro={intro && i === safeIndex}
                 onToggleHidden={() => {
                   haptic();
                   updateSettings({ hideAmounts: !hidden });
@@ -182,16 +187,22 @@ export function WalletCarousel({ onOpen, onAdd }: { onOpen: (card: CardModel, re
       </div>
 
       {count > 1 && (
-        <div className="mt-3.5 flex h-2 items-center justify-center gap-1.5" aria-hidden="true">
+        <motion.div
+          className="mt-4 flex h-2 items-center justify-center gap-[5px]"
+          aria-hidden="true"
+          initial={intro ? { opacity: 0 } : false}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.05, duration: 0.4 }}
+        >
           {cards.map((c, i) => (
             <motion.span
               key={c.key}
-              className={cn("h-[6px] rounded-full", i === safeIndex ? "bg-ink" : "bg-ink-4")}
-              animate={{ width: i === safeIndex ? 18 : 6 }}
+              className={cn("h-[5px] rounded-full transition-colors duration-300", i === safeIndex ? "bg-ink" : "bg-ink-4")}
+              animate={{ width: i === safeIndex ? 20 : 5 }}
               transition={spring.snappy}
             />
           ))}
-        </div>
+        </motion.div>
       )}
     </div>
   );
@@ -205,6 +216,7 @@ function CarouselItem({
   width,
   hidden,
   invisible,
+  intro,
   onToggleHidden,
   onTap
 }: {
@@ -215,18 +227,23 @@ function CarouselItem({
   width: number;
   hidden: boolean;
   invisible: boolean;
+  intro: boolean;
   onToggleHidden: () => void;
   onTap: (rect: DOMRect) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const dist = useTransform(x, (v) => Math.min(1, Math.abs(v + i * step) / step));
   const scale = useTransform(dist, [0, 1], [1, 0.9]);
-  const opacity = useTransform(dist, [0, 1], [1, 0.45]);
+  const opacity = useTransform(dist, [0, 1], [1, 0.4]);
+  const sheen = useTransform(x, (v) => Math.max(-1, Math.min(1, (v + i * step) / step)));
   return (
     <motion.div
       ref={ref}
       className="shrink-0 cursor-pointer"
-      style={{ width, scale, opacity: invisible ? 0 : opacity }}
+      style={{ width, scale, opacity: invisible ? 0 : opacity, transformPerspective: 1000 }}
+      initial={intro ? { y: 44, rotateX: 14, filter: "blur(6px)" } : false}
+      animate={{ y: 0, rotateX: 0, filter: "blur(0px)" }}
+      transition={{ ...spring.card, delay: 0.62 }}
       onTap={(e) => {
         const target = e.target as HTMLElement | null;
         if (target?.closest("[data-no-tap]")) return;
@@ -248,6 +265,23 @@ function CarouselItem({
         footnote={card.footnote}
         hidden={hidden}
         onToggleHidden={onToggleHidden}
+        sheen={sheen}
+        intro={intro}
+      />
+    </motion.div>
+  );
+}
+
+function AmbientGlow({ color, i, x, step, intro }: { color: string; i: number; x: MotionValue<number>; step: number; intro: boolean }) {
+  const opacity = useTransform(x, (v) => Math.max(0, 1 - Math.abs(v + i * step) / step));
+  return (
+    <motion.div aria-hidden="true" className="pointer-events-none absolute -inset-x-12 -bottom-24 -top-16" style={{ opacity }}>
+      <motion.div
+        className="absolute inset-0"
+        style={{ background: `radial-gradient(50% 46% at 50% 54%, ${color}, transparent 100%)` }}
+        initial={intro ? { opacity: 0, scale: 0.5 } : false}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.75, duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
       />
     </motion.div>
   );

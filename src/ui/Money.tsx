@@ -74,18 +74,24 @@ export function Money({ value, currency = "RUB", sign = "auto", tone = "inherit"
   );
 }
 
-/** Counts smoothly from the previous value to the new one (respects reduced motion). */
-export function useCountUp(value: number, duration = 0.7): number {
+/**
+ * Counts smoothly from the previous value to the new one (respects reduced
+ * motion). `from` makes the first render count up from that value instead.
+ */
+export function useCountUp(value: number, duration = 0.7, opts: { from?: number; delay?: number } = {}): number {
   const reduce = useReducedMotion();
   const animations = useData((s) => s.settings.animations);
-  const [shown, setShown] = useState(value);
-  const prev = useRef(value);
+  const start = opts.from !== undefined && !reduce && animations ? opts.from : value;
+  const [shown, setShown] = useState(start);
+  // Count from what is on screen, so an interrupted count resumes smoothly.
+  const current = useRef(start);
+  const delay = useRef(opts.delay ?? 0);
 
   useEffect(() => {
-    const from = prev.current;
-    prev.current = value;
+    const from = current.current;
     if (from === value) return;
     if (reduce || !animations) {
+      current.current = value;
       setShown(value);
       return;
     }
@@ -93,8 +99,19 @@ export function useCountUp(value: number, duration = 0.7): number {
     const step = value % 100 === 0 && from % 100 === 0 ? 100 : 1;
     const controls = animate(from, value, {
       duration,
+      delay: delay.current,
       ease: ease.out,
-      onUpdate: (v) => setShown(Math.round(v / step) * step)
+      onUpdate: (v) => {
+        const next = Math.round(v / step) * step;
+        current.current = next;
+        setShown(next);
+      },
+      onComplete: () => {
+        current.current = value;
+        setShown(value);
+        // Only the first count waits; later changes respond immediately.
+        delay.current = 0;
+      }
     });
     return () => controls.stop();
   }, [value, duration, reduce, animations]);

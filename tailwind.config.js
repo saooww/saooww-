@@ -11,8 +11,9 @@ export default {
       surface: { DEFAULT: "var(--surface)", 2: "var(--surface-2)", 3: "var(--surface-3)", press: "var(--surface-press)" },
       line: { DEFAULT: "var(--line)", strong: "var(--line-strong)" },
       ink: { DEFAULT: "var(--ink)", 2: "var(--ink-2)", 3: "var(--ink-3)", 4: "var(--ink-4)", inverse: "var(--ink-inverse)" },
-      accent: { DEFAULT: "var(--accent)", soft: "var(--accent-soft)", ink: "var(--accent-ink)", press: "var(--accent-press)" },
+      accent: { DEFAULT: "var(--accent)", soft: "var(--accent-soft)", ink: "var(--accent-ink)", press: "var(--accent-press)", hi: "var(--accent-hi)", lo: "var(--accent-lo)" },
       positive: { DEFAULT: "var(--positive)", soft: "var(--positive-soft)" },
+      gold: "var(--gold)",
       negative: { DEFAULT: "var(--negative)", soft: "var(--negative-soft)" },
       warning: { DEFAULT: "var(--warning)", soft: "var(--warning-soft)" },
       scrim: "var(--scrim)"
@@ -39,9 +40,9 @@ export default {
       xs: "6px",
       sm: "10px",
       md: "14px",
-      lg: "18px",
-      xl: "22px",
-      "2xl": "28px",
+      lg: "20px",
+      xl: "24px",
+      "2xl": "30px",
       full: "9999px"
     },
     extend: {
@@ -56,7 +57,8 @@ export default {
       boxShadow: {
         card: "var(--shadow-card)",
         sheet: "var(--shadow-sheet)",
-        pop: "var(--shadow-pop)"
+        pop: "var(--shadow-pop)",
+        panel: "var(--shadow-panel)"
       }
     }
   },

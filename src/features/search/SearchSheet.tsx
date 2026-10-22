@@ -69,7 +69,7 @@ export function SearchSheet() {
   return (
     <Sheet tall ariaLabel="Поиск">
       <div className="px-4 pb-3">
-        <label className="flex h-11 items-center gap-2 rounded-md bg-surface-3 px-3">
+        <label className="flex h-11 items-center gap-2 rounded-md tile px-3">
           <Search size={18} className="text-ink-3" />
           <input autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder="Операции, цели, заметки, люди…" enterKeyHint="search" className="h-full min-w-0 flex-1 bg-transparent text-body outline-none placeholder:text-ink-3" />
           {q && (
@@ -90,8 +90,8 @@ export function SearchSheet() {
         <div className="flex flex-col gap-5">
           {res.groups.map((g) => (
             <section key={g.title}>
-              <h3 className="px-5 pb-1.5 text-footnote font-semibold text-ink-2">{g.title}</h3>
-              <div className="mx-4 overflow-hidden rounded-lg bg-surface [&>*+*]:hairline-t">
+              <h3 className="label-caps px-5 pb-2.5">{g.title}</h3>
+              <div className="mx-4 overflow-hidden panel rounded-lg [&>*+*]:hairline-t">
                 {g.hits.slice(0, 6).map((h) => (
                   <button key={h.key} type="button" onClick={h.open} className="flex min-h-[52px] w-full items-center gap-3 px-4 py-2 text-left active:bg-surface-press">
                     <IconChip icon={h.icon} name={h.iconName} size={32} />
@@ -106,8 +106,8 @@ export function SearchSheet() {
           ))}
           {res.tx.length > 0 && (
             <section>
-              <h3 className="px-5 pb-1.5 text-footnote font-semibold text-ink-2">Операции</h3>
-              <div className="mx-4 overflow-hidden rounded-lg bg-surface [&>*+*]:hairline-t">
+              <h3 className="label-caps px-5 pb-2.5">Операции</h3>
+              <div className="mx-4 overflow-hidden panel rounded-lg [&>*+*]:hairline-t">
                 {res.tx.map((t) => (
                   <div key={t.id}>
                     <div className="px-4 pt-2 text-caption text-ink-3">{formatDate(dayOf(t.date))}</div>

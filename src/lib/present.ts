@@ -4,6 +4,8 @@ import type { Minor } from "./money";
 
 export interface TxView {
   icon: string;
+  /** Category colour for the icon tile; neutral when absent */
+  color?: string;
   title: string;
   subtitle: string;
   time: string;
@@ -47,6 +49,7 @@ export function presentTx(tx: Transaction, ctx: PresentCtx, opts: { time?: boole
       const title = tx.note || cat?.name || KIND_LABEL[tx.kind];
       return {
         icon: cat?.icon ?? (tx.kind === "income" ? "HandCoins" : "CircleDashed"),
+        color: cat?.color,
         title,
         subtitle: join(tx.note && cat && tx.note !== cat.name ? cat.name : undefined, w && w.id !== ctx.defaultWalletId ? w.name : undefined),
         amount: tx.kind === "income" ? tx.amount : -tx.amount,

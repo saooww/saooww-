@@ -15,7 +15,7 @@ import { nav } from "../../store/ui";
 import { undoable } from "../../store/undo";
 import { Keypad, applyKey, type KeypadKey } from "../../ui/Keypad";
 import { Money } from "../../ui/Money";
-import { ease } from "../../ui/motion";
+import { ease, spring } from "../../ui/motion";
 import { Button, Chip, FormRow, Group, IconChip, Segmented, Toggle, inputCls } from "../../ui/primitives";
 import { NamedIcon } from "../../ui/icons";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
@@ -40,6 +40,12 @@ const KIND_OPTIONS = [
   { value: "income" as const, label: "Доход" },
   { value: "transfer" as const, label: "Перевод" }
 ];
+
+const KIND_GLOW: Record<"expense" | "income" | "transfer", string> = {
+  expense: "color-mix(in srgb, var(--accent) 26%, transparent)",
+  income: "color-mix(in srgb, var(--positive) 24%, transparent)",
+  transfer: "color-mix(in srgb, var(--ink) 9%, transparent)"
+};
 
 const SAVE_LABEL: Record<FlowKind, string> = { expense: "Добавить расход", income: "Добавить доход", transfer: "Перевести" };
 
@@ -274,11 +280,11 @@ export function ComposerSheet(props: ComposerProps) {
             <motion.div animate={amountCtl} className="flex min-h-[148px] flex-1 flex-col items-center justify-center gap-3 px-4 py-3">
               {cross ? (
                 <div className="flex w-full flex-col items-center gap-3">
-                  <AmountDisplay compact buffer={buf} currency={from!.currency} active={field === "amount"} label="Списать" onClick={() => setField("amount")} />
+                  <AmountDisplay compact buffer={buf} currency={from!.currency} active={field === "amount"} label="Списать" onClick={() => setField("amount")} glow={field === "amount" ? KIND_GLOW.transfer : undefined} />
                   <AmountDisplay compact buffer={toBuf} currency={to!.currency} active={field === "to"} label="Зачислить" onClick={() => setField("to")} />
                 </div>
               ) : (
-                <AmountDisplay buffer={buf} currency={currency} sign={kind === "income" ? "+" : undefined} />
+                <AmountDisplay buffer={buf} currency={currency} sign={kind === "income" ? "+" : undefined} glow={KIND_GLOW[kind]} />
               )}
               <div className="h-5 text-footnote">
                 <AnimatePresence mode="wait">
@@ -323,10 +329,10 @@ export function ComposerSheet(props: ComposerProps) {
               <motion.div animate={catCtl} className="scroll-x flex shrink-0 gap-1 px-3 pb-2">
                 {usage.slice(0, 10).map((id) => {
                   const c = catMap.get(id)!;
-                  return <CategoryItem key={id} name={c.name} icon={c.icon} selected={categoryId === id} onClick={() => { haptic(); setCategoryId(id); setHint(null); }} />;
+                  return <CategoryItem key={id} name={c.name} icon={c.icon} color={c.color} selected={categoryId === id} onClick={() => { haptic(); setCategoryId(id); setHint(null); }} />;
                 })}
                 {categoryId && !usage.slice(0, 10).includes(categoryId) && catMap.get(categoryId) && (
-                  <CategoryItem name={catMap.get(categoryId)!.name} icon={catMap.get(categoryId)!.icon} selected onClick={() => {}} />
+                  <CategoryItem name={catMap.get(categoryId)!.name} icon={catMap.get(categoryId)!.icon} color={catMap.get(categoryId)!.color} selected onClick={() => {}} />
                 )}
                 <CategoryItem name="Все" iconNode={<LayoutGrid size={20} strokeWidth={1.8} />} onClick={() => setView("categories")} />
               </motion.div>
@@ -403,6 +409,7 @@ export function ComposerSheet(props: ComposerProps) {
                     wide
                     name={c.name}
                     icon={c.icon}
+                    color={c.color}
                     selected={categoryId === c.id}
                     onClick={() => {
                       haptic();
@@ -500,7 +507,7 @@ function WalletChip({ name, icon, onClick, wide }: { name: string; icon: string;
       type="button"
       whileTap={{ scale: 0.96 }}
       onClick={onClick}
-      className={cn("flex h-9 min-w-0 items-center gap-2 rounded-full bg-surface-3 pl-2.5 pr-3 text-subhead font-medium", wide ? "max-w-[78%]" : "max-w-[46%]")}
+      className={cn("flex h-9 min-w-0 items-center gap-2 rounded-full tile pl-2.5 pr-3 text-subhead font-medium", wide ? "max-w-[78%]" : "max-w-[46%]")}
     >
       <NamedIcon name={icon} size={16} strokeWidth={2} className="shrink-0 text-ink-2" />
       <span className="truncate">{name}</span>
@@ -513,12 +520,14 @@ function CategoryItem({
   name,
   icon,
   iconNode,
+  color,
   selected,
   onClick,
   wide
 }: {
   name: string;
   icon?: string;
+  color?: string;
   iconNode?: React.ReactNode;
   selected?: boolean;
   onClick: () => void;
@@ -532,14 +541,28 @@ function CategoryItem({
       aria-pressed={selected}
       className={cn("flex shrink-0 flex-col items-center gap-1.5 px-0.5", wide ? "w-full" : "w-[70px]")}
     >
-      <span
-        className={cn(
-          "grid h-[46px] w-[46px] place-items-center rounded-full transition-colors duration-200",
-          selected ? "bg-ink text-ink-inverse" : "bg-surface-3 text-ink"
-        )}
+      <motion.span
+        className={cn("grid h-[48px] w-[48px] place-items-center rounded-[16px]", !color && (selected ? "bg-ink text-ink-inverse" : "tile text-ink"))}
+        animate={{ scale: selected ? 1.06 : 1 }}
+        transition={spring.snappy}
+        style={
+          color
+            ? selected
+              ? {
+                  color: "#fff",
+                  background: `linear-gradient(180deg, color-mix(in srgb, ${color} 82%, white), ${color})`,
+                  boxShadow: `inset 0 1px 0 rgba(255,255,255,0.28), 0 8px 18px -8px ${color}`
+                }
+              : {
+                  color,
+                  background: `linear-gradient(180deg, color-mix(in srgb, ${color} 20%, transparent), color-mix(in srgb, ${color} 10%, transparent))`,
+                  boxShadow: `inset 0 0 0 0.5px color-mix(in srgb, ${color} 22%, transparent)`
+                }
+            : undefined
+        }
       >
-        {iconNode ?? <NamedIcon name={icon} size={20} strokeWidth={1.8} />}
-      </span>
+        {iconNode ?? <NamedIcon name={icon} size={21} strokeWidth={selected ? 2 : 1.8} />}
+      </motion.span>
       <span className={cn("line-clamp-2 h-[28px] text-center text-[11px] leading-[14px]", selected ? "font-semibold text-ink" : "text-ink-2")}>{name}</span>
     </motion.button>
   );

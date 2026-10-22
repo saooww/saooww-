@@ -1,4 +1,4 @@
-import { useMemo, useRef, type ReactNode } from "react";
+import { useId, useMemo, useRef, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import { haptic } from "../lib/haptics";
 import { niceMax, useWidth } from "./util";
@@ -31,6 +31,13 @@ export interface BarChartProps {
 const PAD_TOP = 14;
 const AXIS_H = 20;
 
+/** A bar with rounded top corners and a flat base. */
+function barPath(x: number, top: number, w: number, h: number): string {
+  const r = Math.min(4, w / 2, h);
+  const base = top + h;
+  return `M${x},${base}V${top + r}Q${x},${top} ${x + r},${top}H${x + w - r}Q${x + w},${top} ${x + w},${top + r}V${base}Z`;
+}
+
 export function BarChart({
   data,
   height = 176,
@@ -46,6 +53,7 @@ export function BarChart({
   ariaLabel
 }: BarChartProps) {
   const [ref, width] = useWidth<HTMLDivElement>();
+  const gid = useId().replace(/:/g, "");
   const lastIndex = useRef<number | null>(null);
   const n = data.length;
   const plotH = height - AXIS_H - PAD_TOP;
@@ -89,6 +97,14 @@ export function BarChart({
     >
       {width > 0 && (
         <svg width={width} height={height} className="block overflow-visible">
+          <defs>
+            {[color, color2].map((c, k) => (
+              <linearGradient key={k} id={`bar${k}-${gid}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={c} stopOpacity={1} />
+                <stop offset="100%" stopColor={c} stopOpacity={0.5} />
+              </linearGradient>
+            ))}
+          </defs>
           {/* grid */}
           {[0.5, 1].map((f) => (
             <g key={f}>
@@ -109,22 +125,18 @@ export function BarChart({
               const dim = selected !== null && selected !== i;
               const bars = dual
                 ? [
-                    { v: d.value2 ?? 0, x: cx - barW - 1, c: color2 },
-                    { v: d.value, x: cx + 1, c: color }
+                    { v: d.value2 ?? 0, x: cx - barW - 1, c: `url(#bar1-${gid})` },
+                    { v: d.value, x: cx + 1, c: `url(#bar0-${gid})` }
                   ]
-                : [{ v: d.value, x: cx - barW / 2, c: color }];
+                : [{ v: d.value, x: cx - barW / 2, c: `url(#bar0-${gid})` }];
               return (
                 <g key={i} style={{ opacity: dim ? 0.32 : emphasis !== undefined && selected === null && i !== emphasis && !dual ? 0.72 : 1, transition: "opacity 160ms" }}>
                   {bars.map((b, j) => {
                     const h = Math.max(b.v > 0 ? 2 : 0, (b.v / max) * plotH);
                     return (
-                      <motion.rect
+                      <motion.path
                         key={j}
-                        x={b.x}
-                        width={barW}
-                        y={y(0) - h}
-                        height={h}
-                        rx={Math.min(3, barW / 2)}
+                        d={barPath(b.x, y(0) - h, barW, h)}
                         fill={b.c}
                         initial={{ scaleY: 0 }}
                         animate={{ scaleY: 1 }}

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowDownLeft, ArrowLeftRight, ArrowUpRight, ChevronRight, Search, type LucideIcon } from "lucide-react";
 import { cn } from "../../lib/cn";
@@ -12,10 +12,10 @@ import { useData } from "../../store/store";
 import { nav, useUI } from "../../store/ui";
 import { Screen } from "../../nav/Screen";
 import { Wordmark } from "../../ui/Brand";
-import { NamedIcon } from "../../ui/icons";
 import { Money } from "../../ui/Money";
+import { introActive, Reveal } from "../../ui/intro";
 import { spring } from "../../ui/motion";
-import { Avatar, Group, IconButton, ProgressBar, SectionHeader } from "../../ui/primitives";
+import { Avatar, Group, IconButton, IconChip, ProgressBar, SectionHeader } from "../../ui/primitives";
 import { TxRow, usePresentCtx } from "../transactions/TxRow";
 import { WalletCarousel, useCardModels } from "./WalletCarousel";
 
@@ -24,6 +24,7 @@ export function HomeScreen() {
   const cards = useCardModels();
   const index = useUI((s) => s.homeCardIndex);
   const current = cards[Math.min(index, cards.length - 1)];
+  const [intro] = useState(introActive);
 
   const openComposer = (kind: "expense" | "income" | "transfer") => {
     haptic();
@@ -33,54 +34,93 @@ export function HomeScreen() {
   return (
     <Screen
       header={
-        <div className="flex w-full items-center justify-between">
+        <Reveal intro={intro} delay={0.6} y={-8} className="flex w-full items-center justify-between">
           <Wordmark />
-          <div className="flex items-center gap-2.5">
-            <IconButton icon={Search} label="Поиск" variant="plain" size={36} iconSize={21} onClick={() => nav.sheet("search")} />
+          <div className="flex items-center gap-2">
+            <IconButton icon={Search} label="Поиск" size={36} iconSize={18} onClick={() => nav.sheet("search")} />
             <button type="button" aria-label="Настройки и профиль" onClick={() => nav.push("settings")} className="rounded-full active:opacity-70">
-              <Avatar name={name || "Я"} size={32} />
+              <Avatar name={name || "Я"} size={36} />
             </button>
           </div>
-        </div>
+        </Reveal>
       }
     >
-      <div className="pt-2">
-        <WalletCarousel
-          onOpen={(card, rect) => {
-            if (card.walletId) nav.push("wallet", { id: card.walletId, from: { x: rect.x, y: rect.y, w: rect.width, h: rect.height } });
-            else nav.tab("wallets");
-          }}
-          onAdd={() => nav.sheet("wallet")}
-        />
-      </div>
+      <Reveal intro={intro} delay={0.66} y={10} className="px-5 pb-5 pt-2">
+        <Greeting name={name} />
+      </Reveal>
+
+      <WalletCarousel
+        intro={intro}
+        onOpen={(card, rect) => {
+          if (card.walletId) nav.push("wallet", { id: card.walletId, from: { x: rect.x, y: rect.y, w: rect.width, h: rect.height } });
+          else nav.tab("wallets");
+        }}
+        onAdd={() => nav.sheet("wallet")}
+      />
 
       <div className="mt-6 grid grid-cols-3 gap-2.5 px-5">
-        <ActionButton icon={ArrowDownLeft} label="Доход" onClick={() => openComposer("income")} />
-        <ActionButton icon={ArrowUpRight} label="Расход" onClick={() => openComposer("expense")} />
-        <ActionButton icon={ArrowLeftRight} label="Перемещение" onClick={() => openComposer("transfer")} />
+        <Reveal intro={intro} delay={0.82} y={18}>
+          <ActionButton icon={ArrowDownLeft} label="Доход" tone="income" onClick={() => openComposer("income")} />
+        </Reveal>
+        <Reveal intro={intro} delay={0.88} y={18}>
+          <ActionButton icon={ArrowUpRight} label="Расход" tone="expense" onClick={() => openComposer("expense")} />
+        </Reveal>
+        <Reveal intro={intro} delay={0.94} y={18}>
+          <ActionButton icon={ArrowLeftRight} label="Перемещение" tone="transfer" onClick={() => openComposer("transfer")} />
+        </Reveal>
       </div>
 
-      <HomeInsight />
-      <RecentOperations />
-      <PrimaryGoal />
+      <Reveal intro={intro} delay={1.02} y={18}>
+        <HomeInsight />
+        <RecentOperations />
+        <PrimaryGoal />
+      </Reveal>
     </Screen>
   );
 }
 
-function ActionButton({ icon: Icon, label, onClick }: { icon: LucideIcon; label: string; onClick: () => void }) {
+function greetingFor(hour: number): string {
+  if (hour >= 5 && hour < 12) return "Доброе утро";
+  if (hour >= 12 && hour < 18) return "Добрый день";
+  if (hour >= 18 && hour < 23) return "Добрый вечер";
+  return "Доброй ночи";
+}
+
+function Greeting({ name }: { name: string }) {
+  const today = useToday();
+  const date = useMemo(() => new Intl.DateTimeFormat("ru-RU", { weekday: "long", day: "numeric", month: "long" }).format(new Date()), [today]);
+  const first = name.trim().split(/\s+/)[0];
+  return (
+    <div>
+      <div className="label-caps">{date}</div>
+      <h1 className="mt-1.5 text-title-2 font-semibold tracking-[-0.025em] text-ink">
+        {greetingFor(new Date().getHours())}
+        {first ? <span className="text-ink-2">, {first}</span> : null}
+      </h1>
+    </div>
+  );
+}
+
+const ACTION_TONE = {
+  income: { tile: "bg-positive-soft text-positive", ring: "color-mix(in srgb, var(--positive) 28%, transparent)" },
+  expense: { tile: "fill-accent text-white", ring: "" },
+  transfer: { tile: "tile text-ink", ring: "" }
+};
+
+function ActionButton({ icon: Icon, label, tone, onClick }: { icon: LucideIcon; label: string; tone: keyof typeof ACTION_TONE; onClick: () => void }) {
+  const t = ACTION_TONE[tone];
   return (
     <motion.button
       type="button"
       onClick={onClick}
-      whileTap={{ scale: 0.95 }}
+      whileTap={{ scale: 0.94 }}
       transition={spring.press}
-      className="flex h-[76px] flex-col items-center justify-center gap-2 rounded-lg bg-surface active:bg-surface-press"
-      style={{ boxShadow: "var(--shadow-card)" }}
+      className="panel flex h-[88px] w-full flex-col items-center justify-center gap-2.5 rounded-[20px]"
     >
-      <span className="grid h-8 w-8 place-items-center rounded-full bg-surface-3">
-        <Icon size={18} strokeWidth={2.1} />
+      <span className={cn("grid h-10 w-10 place-items-center rounded-[14px]", t.tile)} style={t.ring ? { boxShadow: `inset 0 0 0 0.5px ${t.ring}` } : undefined}>
+        <Icon size={19} strokeWidth={2.1} />
       </span>
-      <span className="text-footnote font-medium text-ink">{label}</span>
+      <span className="text-footnote font-semibold tracking-[-0.005em] text-ink">{label}</span>
     </motion.button>
   );
 }
@@ -91,23 +131,22 @@ function HomeInsight() {
   const today = useToday();
   const insight = useMemo(() => homeInsight(data, entries, today), [data, entries, today]);
   if (!insight) return null;
-  const tone = { neutral: "text-ink-2", positive: "text-positive", warning: "text-warning", negative: "text-negative" }[insight.tone];
+  const tone = ({ neutral: undefined, positive: "positive", warning: "warning", negative: "negative" } as const)[insight.tone];
   return (
     <motion.button
       type="button"
-      initial={{ opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.15, duration: 0.3 }}
+      whileTap={{ scale: 0.98 }}
+      transition={spring.press}
       onClick={() => {
         if (!insight.action) return;
         const { tab, route, params } = insight.action;
         if (route) nav.push(route, params);
         else nav.tab(tab);
       }}
-      className="mx-5 mt-4 flex w-[calc(100%-40px)] items-center gap-3 rounded-lg border border-line px-4 py-3 text-left active:bg-surface"
+      className="panel mx-5 mt-3 flex w-[calc(100%-40px)] items-center gap-3 rounded-[18px] py-3 pl-3 pr-3.5 text-left"
     >
-      <NamedIcon name={insight.icon} size={18} strokeWidth={2} className={cn("shrink-0", tone)} />
-      <span className="min-w-0 flex-1 text-subhead text-ink">{insight.text}</span>
+      <IconChip name={insight.icon} tone={tone} size={34} />
+      <span className="min-w-0 flex-1 text-subhead leading-[19px] text-ink">{insight.text}</span>
       {insight.action && <ChevronRight size={16} className="shrink-0 text-ink-3" />}
     </motion.button>
   );
@@ -118,7 +157,7 @@ function RecentOperations() {
   const ctx = usePresentCtx();
   const recent = useMemo(() => [...transactions].sort((a, b) => (a.date < b.date ? 1 : -1)).slice(0, 3), [transactions]);
   return (
-    <div className="mt-7">
+    <div className="mt-8">
       <SectionHeader title="Последние операции" action={recent.length ? { label: "Все", onClick: () => nav.tab("transactions") } : undefined} />
       {recent.length ? (
         <Group>
@@ -127,7 +166,7 @@ function RecentOperations() {
           ))}
         </Group>
       ) : (
-        <div className="mx-5 rounded-lg border border-dashed border-line-strong px-4 py-6 text-center text-subhead text-ink-2">
+        <div className="mx-4 rounded-lg border border-dashed border-line-strong px-4 py-7 text-center text-subhead text-ink-2">
           Здесь появятся ваши операции. Начните с кнопок выше.
         </div>
       )}
@@ -147,17 +186,15 @@ function PrimaryGoal() {
   if (!goal) return null;
   const info = goalInfo(goal, goalSaved(goal, env, balances), today);
   return (
-    <div className="mt-7">
+    <div className="mt-8">
       <SectionHeader title="Цель" action={{ label: "Все цели", onClick: () => nav.push("goals") }} />
       <button
         type="button"
         onClick={() => nav.push("goal", { id: goal.id })}
-        className="mx-4 block w-[calc(100%-32px)] rounded-lg bg-surface px-4 py-4 text-left active:bg-surface-press"
+        className="panel mx-4 block w-[calc(100%-32px)] rounded-lg px-4 py-4 text-left active:opacity-80"
       >
         <div className="flex items-center gap-3">
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-surface-3">
-            <NamedIcon name={goal.icon} size={18} strokeWidth={1.9} />
-          </span>
+          <IconChip name={goal.icon} tone="accent" size={40} />
           <div className="min-w-0 flex-1">
             <div className="truncate text-body font-medium">{goal.name}</div>
             <div className="text-footnote text-ink-2">
@@ -166,7 +203,10 @@ function PrimaryGoal() {
             </div>
           </div>
           <div className="text-right">
-            <div className="text-body font-semibold tnum">{Math.floor(info.progress * 100)}%</div>
+            <div className="text-title-3 font-semibold tracking-[-0.03em] tnum">
+              {Math.floor(info.progress * 100)}
+              <span className="text-footnote font-medium text-ink-2">%</span>
+            </div>
           </div>
         </div>
         <ProgressBar value={info.progress} className="mt-3.5" tone={info.done ? "positive" : "accent"} />

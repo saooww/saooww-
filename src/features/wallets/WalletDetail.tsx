@@ -16,7 +16,7 @@ import { LineChart } from "../../charts/LineChart";
 import { iconByName } from "../../ui/icons";
 import { Money } from "../../ui/Money";
 import { ease, spring } from "../../ui/motion";
-import { EmptyState, FormRow, Group, Row, Segmented, Toggle } from "../../ui/primitives";
+import { EmptyState, FormRow, Group, Row, SectionHeader, Segmented, Toggle } from "../../ui/primitives";
 import { WalletCard } from "../../ui/WalletCard";
 import { TxRow, usePresentCtx } from "../transactions/TxRow";
 
@@ -160,11 +160,11 @@ export function WalletDetail({ id, from }: { id: ID; from?: Origin }) {
           )}
 
           <div className="mt-6 grid grid-cols-2 gap-2 px-5">
-            <div className="rounded-md bg-surface px-3.5 py-3">
+            <div className="panel rounded-md px-3.5 py-3">
               <div className="text-caption font-medium text-ink-2">Поступления в этом месяце</div>
               <Money value={monthStats.inflow} sign="always" tone="positive" currency={wallet.currency} className="mt-0.5 block text-callout font-semibold" />
             </div>
-            <div className="rounded-md bg-surface px-3.5 py-3">
+            <div className="panel rounded-md px-3.5 py-3">
               <div className="text-caption font-medium text-ink-2">Списания в этом месяце</div>
               <Money value={-monthStats.outflow} currency={wallet.currency} className="mt-0.5 block text-callout font-semibold" />
             </div>
@@ -195,27 +195,26 @@ export function WalletDetail({ id, from }: { id: ID; from?: Origin }) {
           </section>
 
           <section className="mt-7">
-            <div className="flex items-end justify-between px-5 pb-2">
-              <h2 className="text-headline font-semibold">Операции</h2>
-              {list.length > 0 && (
-                <button
-                  type="button"
-                  className="text-subhead font-medium text-ink-2"
-                  onClick={() => {
-                    useUI.getState().setTxFilter({ walletId: wallet.id }, true);
-                    nav.tab("transactions");
-                  }}
-                >
-                  Все · {list.length}
-                </button>
-              )}
-            </div>
+            <SectionHeader
+              title="Операции"
+              action={
+                list.length > 0
+                  ? {
+                      label: `Все · ${list.length}`,
+                      onClick: () => {
+                        useUI.getState().setTxFilter({ walletId: wallet.id }, true);
+                        nav.tab("transactions");
+                      }
+                    }
+                  : undefined
+              }
+            />
             {groups.length === 0 ? (
               <div className="mx-5 rounded-lg border border-dashed border-line-strong px-4 py-6 text-center text-subhead text-ink-2">По этому кошельку пока нет операций</div>
             ) : (
               groups.map((g) => (
                 <div key={g.day} className="mb-3">
-                  <div className="px-5 pb-1.5 text-footnote font-semibold text-ink-2">{formatDayHeading(g.day)}</div>
+                  <div className="label-caps px-5 pb-2.5">{formatDayHeading(g.day)}</div>
                   <Group>
                     {g.items.map((t) => (
                       <TxRow key={t.id} tx={t} ctx={ctx} walletId={wallet.id} onOpen={(x) => nav.sheet("tx", { id: x.id })} />
@@ -286,7 +285,7 @@ function MiniAction({ icon: Icon, label, onClick }: { icon: LucideIcon; label: s
       whileTap={{ scale: 0.95 }}
       transition={spring.press}
       onClick={onClick}
-      className="flex h-11 items-center justify-center gap-2 rounded-md bg-surface text-subhead font-medium active:bg-surface-press"
+      className="flex h-11 items-center justify-center gap-2 panel rounded-md text-subhead font-medium active:bg-surface-press"
     >
       <Icon size={17} strokeWidth={2.1} />
       {label}

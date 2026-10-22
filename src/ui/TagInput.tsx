@@ -14,7 +14,7 @@ export function TagInput({ value, onChange, suggestions = [], placeholder = "Д�
     <div>
       <div className="flex flex-wrap items-center gap-1.5">
         {value.map((t) => (
-          <span key={t} className="inline-flex h-8 items-center gap-1 rounded-full bg-surface-3 pl-3 pr-1.5 text-subhead">
+          <span key={t} className="inline-flex h-8 items-center gap-1 rounded-full tile pl-3 pr-1.5 text-subhead">
             #{t}
             <button type="button" aria-label={`Убрать тег ${t}`} onClick={() => onChange(value.filter((x) => x !== t))} className="grid h-6 w-6 place-items-center rounded-full text-ink-2 active:bg-surface-press">
               <X size={13} strokeWidth={2.4} />

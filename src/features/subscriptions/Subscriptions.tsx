@@ -71,12 +71,12 @@ export function SubscriptionsScreen() {
       ) : (
         <>
           <div className="grid grid-cols-2 gap-2 px-4">
-            <div className="rounded-md bg-surface px-3.5 py-3">
+            <div className="panel rounded-md px-3.5 py-3">
               <div className="text-caption font-medium text-ink-2">Подписки в месяц</div>
               <Money value={monthlySubs} currency={base} className="mt-0.5 block text-headline font-semibold" />
               <div className="text-caption text-ink-3">{formatMoney(monthlySubs * 12, { currency: base })} в год</div>
             </div>
-            <div className="rounded-md bg-surface px-3.5 py-3">
+            <div className="panel rounded-md px-3.5 py-3">
               <div className="text-caption font-medium text-ink-2">Все регулярные списания</div>
               <Money value={monthlyAll} currency={base} className="mt-0.5 block text-headline font-semibold" />
               <div className="text-caption text-ink-3">в месяц</div>
@@ -181,9 +181,9 @@ export function RecurringSheet({ editId, isSubscription: sub0 }: { editId?: ID; 
           </div>
           <FormRow label="Интервал">
             <div className="flex items-center gap-3">
-              <button type="button" aria-label="Меньше" onClick={() => setInterval_((v) => Math.max(1, v - 1))} className="grid h-8 w-8 place-items-center rounded-full bg-surface-3 text-headline">−</button>
+              <button type="button" aria-label="Меньше" onClick={() => setInterval_((v) => Math.max(1, v - 1))} className="grid h-8 w-8 place-items-center rounded-full tile text-headline">−</button>
               <span className="w-6 text-center tnum">{interval}</span>
-              <button type="button" aria-label="Больше" onClick={() => setInterval_((v) => Math.min(24, v + 1))} className="grid h-8 w-8 place-items-center rounded-full bg-surface-3 text-headline">+</button>
+              <button type="button" aria-label="Больше" onClick={() => setInterval_((v) => Math.min(24, v + 1))} className="grid h-8 w-8 place-items-center rounded-full tile text-headline">+</button>
             </div>
           </FormRow>
         </Group>
@@ -253,7 +253,7 @@ export function RecurringSheet({ editId, isSubscription: sub0 }: { editId?: ID; 
 
 function QuickBtn({ icon: Icon, label, onClick, disabled }: { icon: typeof Zap; label: string; onClick: () => void; disabled?: boolean }) {
   return (
-    <button type="button" disabled={disabled} onClick={onClick} className="flex flex-col items-center gap-1.5 rounded-md bg-surface py-3 text-caption font-medium active:bg-surface-press disabled:opacity-40">
+    <button type="button" disabled={disabled} onClick={onClick} className="flex flex-col items-center gap-1.5 panel rounded-md py-3 text-caption font-medium active:bg-surface-press disabled:opacity-40">
       <Icon size={18} strokeWidth={2} />
       {label}
     </button>

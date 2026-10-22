@@ -11,7 +11,7 @@ export function Toasts() {
     <div
       aria-live="polite"
       className="pointer-events-none fixed inset-x-0 z-[90] flex flex-col items-center gap-2 px-4"
-      style={{ bottom: sheetsOpen ? "calc(var(--safe-bottom) + 16px)" : "calc(var(--tabbar-h) + var(--safe-bottom) + 12px)" }}
+      style={{ bottom: sheetsOpen ? "calc(var(--safe-bottom) + 16px)" : "calc(var(--tabbar-space) + 12px)" }}
     >
       <AnimatePresence initial={false}>
         {toasts.map((t) => (
@@ -26,7 +26,7 @@ export function Toasts() {
             dragConstraints={{ top: 0, bottom: 0 }}
             dragElastic={{ top: 0, bottom: 0.6 }}
             onDragEnd={(_, info) => info.offset.y > 30 && dismiss(t.id)}
-            className="pointer-events-auto flex min-h-[48px] w-full max-w-[420px] items-center gap-3 rounded-lg bg-surface-3 py-2 pl-4 pr-2 shadow-pop"
+            className="glass pointer-events-auto flex min-h-[50px] w-full max-w-[420px] items-center gap-3 rounded-[18px] py-2 pl-4 pr-2"
           >
             {t.tone === "positive" && <CircleCheck size={18} className="shrink-0 text-positive" />}
             {t.tone === "warning" && <TriangleAlert size={18} className="shrink-0 text-warning" />}

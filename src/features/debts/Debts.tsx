@@ -42,12 +42,12 @@ export function DebtsScreen() {
   return (
     <Screen title="Долги" large actions={<IconButton icon={Plus} label="Новый долг" onClick={() => nav.sheet("debt")} />}>
       <div className="grid grid-cols-2 gap-2 px-4">
-        <div className="rounded-lg bg-surface px-4 py-3.5">
+        <div className="panel rounded-lg px-4 py-3.5">
           <div className="text-footnote font-medium text-ink-2">Вам должны</div>
           <Money value={owedToMe} currency={base} className="mt-0.5 block text-title-3 font-semibold text-positive" />
           <div className="text-caption text-ink-3">{pluralN(active.filter((x) => x.d.direction === "owed_to_me").length, ["человек", "человека", "человек"])}</div>
         </div>
-        <div className="rounded-lg bg-surface px-4 py-3.5">
+        <div className="panel rounded-lg px-4 py-3.5">
           <div className="text-footnote font-medium text-ink-2">Вы должны</div>
           <Money value={iOwe} currency={base} className="mt-0.5 block text-title-3 font-semibold" />
           <div className="text-caption text-ink-3">{pluralN(active.filter((x) => x.d.direction === "i_owe").length, ["человеку", "людям", "людям"])}</div>
@@ -78,7 +78,7 @@ export function DebtsScreen() {
                 transition={{ ...spring.smooth, delay: i * 0.03 }}
                 whileTap={{ scale: 0.985 }}
                 onClick={() => nav.push("debt", { id: d.id })}
-                className="rounded-lg bg-surface px-4 py-3.5 text-left"
+                className="panel rounded-lg px-4 py-3.5 text-left"
               >
                 <div className="flex items-center gap-3">
                   <Avatar name={d.counterparty} size={40} />
@@ -158,7 +158,7 @@ export function DebtDetail({ id }: { id: ID }) {
         </Group>
 
         <section>
-          <h2 className="px-5 pb-2 text-headline font-semibold">История платежей</h2>
+          <h2 className="label-caps px-5 pb-2.5">История платежей</h2>
           {info.payments.length === 0 ? (
             <div className="mx-5 rounded-lg border border-dashed border-line-strong px-4 py-5 text-center text-subhead text-ink-2">Платежей ещё не было</div>
           ) : (

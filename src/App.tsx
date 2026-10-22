@@ -9,6 +9,7 @@ import { nav, useUI, type Tab } from "./store/ui";
 import { StackView } from "./nav/StackView";
 import { TabBar } from "./nav/TabBar";
 import { SheetHost } from "./sheets/SheetHost";
+import { Splash } from "./ui/Splash";
 import { Toasts } from "./ui/Toasts";
 
 const TABS: Tab[] = ["home", "wallets", "transactions", "analytics", "more"];
@@ -41,7 +42,7 @@ export function App() {
     // Also on <body>: when the app is embedded, the host may set its own theme on <html>.
     document.documentElement.setAttribute("data-theme", t);
     document.body.setAttribute("data-theme", t);
-    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", t === "light" ? "#F2F2F0" : "#08080A");
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", t === "light" ? "#F3F1EC" : "#070708");
   }, [settings.theme, systemTick]);
 
   useEffect(() => {
@@ -111,6 +112,7 @@ export function App() {
       <TabBar />
       <SheetHost />
       <Toasts />
+      <Splash />
     </MotionConfig>
   );
 }

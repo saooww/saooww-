@@ -41,7 +41,7 @@ export function NotesScreen() {
   return (
     <Screen title="Заметки" large actions={<IconButton icon={Plus} label="Новая заметка" onClick={create} />}>
       <div className="px-4">
-        <label className="flex h-10 items-center gap-2 rounded-sm bg-surface-3 px-3">
+        <label className="flex h-10 items-center gap-2 rounded-sm tile px-3">
           <Search size={17} className="text-ink-3" />
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Поиск" className="h-full min-w-0 flex-1 bg-transparent text-body outline-none placeholder:text-ink-3" />
           {q && (
@@ -54,7 +54,7 @@ export function NotesScreen() {
       {tags.length > 0 && (
         <div className="scroll-x mt-3 flex gap-2 px-4">
           {tags.map((t) => (
-            <button key={t} type="button" onClick={() => setTag(tag === t ? null : t)} className={cn("h-8 shrink-0 rounded-full px-3 text-subhead font-medium", tag === t ? "bg-ink text-ink-inverse" : "bg-surface-3")}>
+            <button key={t} type="button" onClick={() => setTag(tag === t ? null : t)} className={cn("h-8 shrink-0 rounded-full px-3 text-subhead font-medium", tag === t ? "bg-ink text-ink-inverse" : "tile")}>
               #{t}
             </button>
           ))}
@@ -78,8 +78,8 @@ export function NotesScreen() {
 function NoteList({ title, notes }: { title?: string; notes: Note[] }) {
   return (
     <section>
-      {title && <h2 className="px-5 pb-1.5 text-footnote font-semibold text-ink-2">{title}</h2>}
-      <div className="mx-4 overflow-hidden rounded-lg bg-surface [&>*+*]:hairline-t">
+      {title && <h2 className="label-caps px-5 pb-2.5">{title}</h2>}
+      <div className="mx-4 overflow-hidden panel rounded-lg [&>*+*]:hairline-t">
         {notes.map((n, i) => (
           <motion.button
             key={n.id}
@@ -207,11 +207,11 @@ export function NoteEditor({ id, isNew }: { id: ID; isNew?: boolean }) {
       </div>
 
       <div className="mt-4 flex flex-col gap-5">
-        <section className="mx-4 rounded-lg bg-surface px-4 py-3">
+        <section className="mx-4 panel rounded-lg px-4 py-3">
           <div className="pb-2 text-footnote font-medium text-ink-2">Теги</div>
           <TagInput value={note.tags} onChange={(tags) => update({ tags })} suggestions={allTags} />
         </section>
-        <section className="mx-4 rounded-lg bg-surface">
+        <section className="mx-4 panel rounded-lg">
           <div className="flex items-center justify-between px-4 pb-1 pt-3">
             <span className="text-footnote font-medium text-ink-2">Связи</span>
             <button type="button" onClick={() => nav.sheet("linkPicker", { noteId: id })} className="text-subhead font-semibold text-accent-ink">
@@ -261,7 +261,7 @@ export function LinkPickerSheet({ noteId }: { noteId: ID }) {
       <div className="px-4 pb-3">
         <div className="flex gap-2">
           {(["goal", "task", "plan", "debt"] as LinkType[]).map((t) => (
-            <button key={t} type="button" onClick={() => setType(t)} className={cn("h-8 flex-1 rounded-full text-subhead font-medium", type === t ? "bg-ink text-ink-inverse" : "bg-surface-3")}>
+            <button key={t} type="button" onClick={() => setType(t)} className={cn("h-8 flex-1 rounded-full text-subhead font-medium", type === t ? "bg-ink text-ink-inverse" : "tile")}>
               {LINK_KIND[t]}
             </button>
           ))}
@@ -270,7 +270,7 @@ export function LinkPickerSheet({ noteId }: { noteId: ID }) {
       {items.length === 0 ? (
         <div className="px-6 py-8 text-center text-callout text-ink-2">Здесь пока пусто</div>
       ) : (
-        <div className="mx-4 overflow-hidden rounded-lg bg-surface [&>*+*]:hairline-t">
+        <div className="mx-4 overflow-hidden panel rounded-lg [&>*+*]:hairline-t">
           {items.map((it) => (
             <motion.button
               key={it.id}

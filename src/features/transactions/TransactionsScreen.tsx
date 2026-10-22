@@ -152,7 +152,7 @@ export function TransactionsScreen() {
       actions={<IconButton icon={Plus} label="Новая операция" onClick={() => nav.sheet("composer", { kind: "expense" })} />}
     >
       <div className="px-4">
-        <label className="flex h-10 items-center gap-2 rounded-sm bg-surface-3 px-3">
+        <label className="flex h-10 items-center gap-2 rounded-sm tile px-3">
           <Search size={17} className="shrink-0 text-ink-3" />
           <input
             value={filter.query}
@@ -269,12 +269,12 @@ export function TransactionsScreen() {
           {groups.map((g) => (
             <section key={g.day || "all"} className="mt-3">
               {g.day && (
-                <div className="flex items-baseline justify-between px-5 pb-2 pt-1">
-                  <span className="text-footnote font-semibold text-ink-2">{formatDayHeading(g.day)}</span>
+                <div className="flex items-baseline justify-between px-5 pb-2.5 pt-2">
+                  <span className="label-caps">{formatDayHeading(g.day)}</span>
                   <Money value={dayNet(g.items)} sign="always" currency={settings.baseCurrency} className="text-footnote text-ink-3" />
                 </div>
               )}
-              <div className="mx-4 overflow-hidden rounded-lg bg-surface [&>*+*]:hairline-t">
+              <div className="mx-4 overflow-hidden panel rounded-lg [&>*+*]:hairline-t">
                 {g.items.map((t) => (
                   <TxRow key={t.id} tx={t} ctx={ctx} onOpen={(x) => { haptic(); nav.sheet("tx", { id: x.id }); }} onDelete={remove} />
                 ))}

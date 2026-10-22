@@ -89,7 +89,7 @@ export function Sheet({ title, left, right, children, footer, ariaLabel, tall, c
         aria-label={ariaLabel ?? (typeof title === "string" ? title : undefined)}
         tabIndex={-1}
         className={cn(
-          "absolute inset-x-0 mx-auto flex max-w-[560px] flex-col overflow-hidden rounded-t-2xl bg-surface-2 shadow-sheet outline-none",
+          "sheet-surface absolute inset-x-0 mx-auto flex max-w-[560px] flex-col overflow-hidden rounded-t-[30px] outline-none",
           tall && "h-[calc(100dvh-var(--safe-top)-12px)]",
           className
         )}
@@ -111,7 +111,7 @@ export function Sheet({ title, left, right, children, footer, ariaLabel, tall, c
           className="relative shrink-0 cursor-grab touch-none select-none"
           onPointerDown={(e) => dismissible && controls.start(e)}
         >
-          <div className="mx-auto mt-2 h-[5px] w-9 rounded-full bg-ink-4" />
+          <div className="mx-auto mt-2 h-[5px] w-10 rounded-full bg-ink-4" />
           {(title || left || right) && (
             <div className="relative flex h-12 items-center justify-between px-4">
               <div className="z-[1] flex min-w-[64px] items-center">{left}</div>
