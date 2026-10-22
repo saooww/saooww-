@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { animate, motion, useMotionValue, useTransform, type MotionValue } from "framer-motion";
 import { Plus } from "lucide-react";
 import { haptic } from "../../lib/haptics";
@@ -30,6 +30,7 @@ export interface CardModel {
   material: CardMaterial;
   badge?: string;
   footnote?: string;
+  label?: string;
 }
 
 export function useCardModels(): CardModel[] {
@@ -46,6 +47,7 @@ export function useCardModels(): CardModel[] {
         key: "total",
         walletId: null,
         title: "Все счета",
+        label: "Всего",
         subtitle: pluralN(counted, ["счёт", "счёта", "счетов"]),
         icon: Layers,
         amount: total.total,
@@ -78,7 +80,12 @@ export function WalletCarousel({ onOpen, onAdd, intro = false }: { onOpen: (card
   const setIndex = useUI((s) => s.setHomeCardIndex);
   const heroWalletId = useUI((s) => s.heroWalletId);
   const hidden = useData((s) => s.settings.hideAmounts);
-  const updateSettings = useData((s) => s.updateSettings);
+  // Stable, so the memoised cards don't re-render when the index changes.
+  const toggleHidden = useCallback(() => {
+    haptic();
+    const st = useData.getState();
+    st.updateSettings({ hideAmounts: !st.settings.hideAmounts });
+  }, []);
   const wrap = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
   const x = useMotionValue(0);
@@ -146,7 +153,7 @@ export function WalletCarousel({ onOpen, onAdd, intro = false }: { onOpen: (card
       >
         {/* ambient light cast by the card in front */}
         {width > 0 &&
-          cards.map((c, i) => <AmbientGlow key={c.key} color={c.material.glow} i={i} x={x} step={step} intro={intro} />)}
+          cards.map((c, i) => (Math.abs(i - safeIndex) <= 1 ? <AmbientGlow key={c.key} color={c.material.glow} i={i} x={x} step={step} intro={intro} /> : null))}
 
         {width > 0 && (
           <motion.div
@@ -175,10 +182,7 @@ export function WalletCarousel({ onOpen, onAdd, intro = false }: { onOpen: (card
                 hidden={hidden}
                 invisible={!!c.walletId && c.walletId === heroWalletId}
                 intro={intro && i === safeIndex}
-                onToggleHidden={() => {
-                  haptic();
-                  updateSettings({ hideAmounts: !hidden });
-                }}
+                onToggleHidden={toggleHidden}
                 onTap={(rect) => (i === safeIndex ? onOpen(c, rect) : goTo(i))}
               />
             ))}
@@ -240,10 +244,11 @@ function CarouselItem({
     <motion.div
       ref={ref}
       className="shrink-0 cursor-pointer"
-      style={{ width, scale, opacity: invisible ? 0 : opacity, transformPerspective: 1000 }}
-      initial={intro ? { y: 44, rotateX: 14, filter: "blur(6px)" } : false}
-      animate={{ y: 0, rotateX: 0, filter: "blur(0px)" }}
-      transition={{ ...spring.card, delay: 0.62 }}
+      // Own layer: swiping moves and scales finished pictures of the cards.
+      style={{ width, scale, opacity: invisible ? 0 : opacity, willChange: "transform" }}
+      initial={intro ? { y: 26 } : false}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.9, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
       onTap={(e) => {
         const target = e.target as HTMLElement | null;
         if (target?.closest("[data-no-tap]")) return;
@@ -263,6 +268,7 @@ function CarouselItem({
         material={card.material}
         badge={card.badge}
         footnote={card.footnote}
+        label={card.label}
         hidden={hidden}
         onToggleHidden={onToggleHidden}
         sheen={sheen}
@@ -275,13 +281,13 @@ function CarouselItem({
 function AmbientGlow({ color, i, x, step, intro }: { color: string; i: number; x: MotionValue<number>; step: number; intro: boolean }) {
   const opacity = useTransform(x, (v) => Math.max(0, 1 - Math.abs(v + i * step) / step));
   return (
-    <motion.div aria-hidden="true" className="pointer-events-none absolute -inset-x-12 -bottom-24 -top-16" style={{ opacity }}>
+    <motion.div aria-hidden="true" className="pointer-events-none absolute -inset-x-12 -bottom-24 -top-16" style={{ opacity, willChange: "opacity" }}>
       <motion.div
         className="absolute inset-0"
         style={{ background: `radial-gradient(50% 46% at 50% 54%, ${color}, transparent 100%)` }}
-        initial={intro ? { opacity: 0, scale: 0.5 } : false}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.75, duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+        initial={intro ? { opacity: 0 } : false}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
       />
     </motion.div>
   );

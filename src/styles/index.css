@@ -3,6 +3,66 @@
 @tailwind utilities;
 
 /* ------------------------------------------------------------------ */
+/*  Number fonts                                                       */
+/* ------------------------------------------------------------------ */
+
+/*
+ * Amounts get their own typeface, chosen in Settings → «Цифры». Only digits
+ * and the punctuation of a formatted amount come from these files; letters
+ * and the currency sign stay in the system font.
+ */
+@font-face {
+  font-family: "Kapital Manrope";
+  src: url("../assets/fonts/manrope.woff2") format("woff2");
+  font-weight: 200 800;
+  font-display: block;
+  unicode-range: U+0020-0039, U+00A0, U+202F, U+2212;
+}
+
+@font-face {
+  font-family: "Kapital Geist";
+  src: url("../assets/fonts/geist.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: block;
+  unicode-range: U+0020-0039, U+00A0, U+202F, U+2212;
+}
+
+@font-face {
+  font-family: "Kapital Unbounded";
+  src: url("../assets/fonts/unbounded.woff2") format("woff2");
+  font-weight: 200 900;
+  font-display: block;
+  /* its narrow no-break space has no width — the system one is used */
+  unicode-range: U+0020-0039, U+2212;
+}
+
+:root,
+[data-num="elegant"] {
+  --font-num: "Kapital Manrope", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Inter, system-ui, sans-serif;
+  /* weight of large display figures (card balance, amount being typed) */
+  --num-display-weight: 300;
+  --num-display-tracking: -0.03em;
+}
+
+[data-num="strict"] {
+  --font-num: "Kapital Geist", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Inter, system-ui, sans-serif;
+  --num-display-weight: 500;
+  --num-display-tracking: -0.04em;
+}
+
+[data-num="wide"] {
+  --font-num: "Kapital Unbounded", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Inter, system-ui, sans-serif;
+  --num-display-weight: 500;
+  --num-display-tracking: -0.02em;
+}
+
+[data-num="system"] {
+  --font-num: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Inter, system-ui, sans-serif;
+  --num-display-weight: 600;
+  --num-display-tracking: -0.04em;
+}
+
+/* ------------------------------------------------------------------ */
 /*  Design tokens                                                      */
 /* ------------------------------------------------------------------ */
 
@@ -11,7 +71,7 @@
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --tabbar-h: 64px;
   /* The tab bar floats: above the home indicator, or 12px off the edge. */
-  --tabbar-bottom: max(calc(var(--safe-bottom) - 8px), 12px);
+  --tabbar-bottom: max(calc(var(--safe-bottom) - 12px), 12px);
   --tabbar-space: calc(var(--tabbar-h) + var(--tabbar-bottom));
   --kb: 0px;
   --side: 20px;
@@ -147,6 +207,19 @@
     overscroll-behavior: none;
   }
 
+  /*
+   * iOS 26 gives an installed web app a viewport that is shorter than the
+   * screen by the status bar height while the page itself is shorter than the
+   * screen (WebKit bug 301108) — fixed layers then stop above the bottom edge
+   * and leave an empty band. A screen-tall page gets the full viewport. The
+   * min() cap keeps apps with an opaque status bar from scrolling.
+   */
+  @media (display-mode: standalone) {
+    html {
+      min-height: min(100lvh, calc(100% + env(safe-area-inset-top)));
+    }
+  }
+
   body {
     margin: 0;
     background-color: var(--bg);
@@ -231,6 +304,23 @@
   .tnum {
     font-variant-numeric: tabular-nums;
     font-feature-settings: "tnum", "kern";
+  }
+
+  /* Amounts: the chosen number typeface with tabular figures. */
+  .num {
+    font-family: var(--font-num);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum", "kern";
+  }
+
+  /* Large display figures: lighter weight, tighter tracking and
+     proportional digits — tabular ones leave holes around a «1» at this size. */
+  .num-display {
+    font-family: var(--font-num);
+    font-weight: var(--num-display-weight);
+    letter-spacing: var(--num-display-tracking);
+    font-variant-numeric: proportional-nums;
+    font-feature-settings: "pnum", "kern";
   }
 
   .scroll-y {
@@ -346,19 +436,6 @@
     color: transparent;
   }
 
-  /* Paper-fine noise. Applied to cards and the canvas so large fills never
-     look like flat digital colour. */
-  .grain::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    border-radius: inherit;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size: 160px 160px;
-    opacity: 0.07;
-    mix-blend-mode: overlay;
-  }
 }
 
 /* App canvas: deep sumi black with a barely-there warm lift at the top,

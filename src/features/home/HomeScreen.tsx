@@ -22,19 +22,19 @@ import { WalletCarousel, useCardModels } from "./WalletCarousel";
 export function HomeScreen() {
   const name = useData((s) => s.settings.name);
   const cards = useCardModels();
-  const index = useUI((s) => s.homeCardIndex);
-  const current = cards[Math.min(index, cards.length - 1)];
   const [intro] = useState(introActive);
 
   const openComposer = (kind: "expense" | "income" | "transfer") => {
     haptic();
+    // Read the card index only on tap: swiping the carousel shouldn't re-render the whole screen.
+    const current = cards[Math.min(useUI.getState().homeCardIndex, cards.length - 1)];
     nav.sheet("composer", { kind, walletId: current?.walletId ?? undefined });
   };
 
   return (
     <Screen
       header={
-        <Reveal intro={intro} delay={0.6} y={-8} className="flex w-full items-center justify-between">
+        <Reveal intro={intro} delay={0.55} y={-6} className="flex w-full items-center justify-between">
           <Wordmark />
           <div className="flex items-center gap-2">
             <IconButton icon={Search} label="Поиск" size={36} iconSize={18} onClick={() => nav.sheet("search")} />
@@ -45,7 +45,7 @@ export function HomeScreen() {
         </Reveal>
       }
     >
-      <Reveal intro={intro} delay={0.66} y={10} className="px-5 pb-5 pt-2">
+      <Reveal intro={intro} delay={0.6} y={8} className="px-5 pb-5 pt-2">
         <Greeting name={name} />
       </Reveal>
 
@@ -59,18 +59,18 @@ export function HomeScreen() {
       />
 
       <div className="mt-6 grid grid-cols-3 gap-2.5 px-5">
-        <Reveal intro={intro} delay={0.82} y={18}>
+        <Reveal intro={intro} delay={0.75} y={12}>
           <ActionButton icon={ArrowDownLeft} label="Доход" tone="income" onClick={() => openComposer("income")} />
         </Reveal>
-        <Reveal intro={intro} delay={0.88} y={18}>
+        <Reveal intro={intro} delay={0.8} y={12}>
           <ActionButton icon={ArrowUpRight} label="Расход" tone="expense" onClick={() => openComposer("expense")} />
         </Reveal>
-        <Reveal intro={intro} delay={0.94} y={18}>
+        <Reveal intro={intro} delay={0.85} y={12}>
           <ActionButton icon={ArrowLeftRight} label="Перемещение" tone="transfer" onClick={() => openComposer("transfer")} />
         </Reveal>
       </div>
 
-      <Reveal intro={intro} delay={1.02} y={18}>
+      <Reveal intro={intro} delay={0.95} y={12}>
         <HomeInsight />
         <RecentOperations />
         <PrimaryGoal />

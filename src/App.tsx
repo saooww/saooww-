@@ -45,6 +45,12 @@ export function App() {
     document.querySelector('meta[name="theme-color"]')?.setAttribute("content", t === "light" ? "#F3F1EC" : "#070708");
   }, [settings.theme, systemTick]);
 
+  /* typeface for amounts */
+  useEffect(() => {
+    document.documentElement.setAttribute("data-num", settings.numberFont);
+    document.body.setAttribute("data-num", settings.numberFont);
+  }, [settings.numberFont]);
+
   useEffect(() => {
     if (settings.theme !== "system") return;
     const mq = window.matchMedia("(prefers-color-scheme: light)");

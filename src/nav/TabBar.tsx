@@ -26,9 +26,9 @@ export function TabBar() {
         role="tablist"
         className="glass pointer-events-auto mx-auto flex max-w-[480px] rounded-[26px] p-[5px]"
         style={{ height: "var(--tabbar-h)" }}
-        initial={intro ? { y: 28, opacity: 0 } : false}
+        initial={intro ? { y: 16, opacity: 0 } : false}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ ...spring.smooth, delay: 1.0 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.85 }}
       >
         {ITEMS.map(({ tab: t, label, icon: Icon }) => {
           const active = t === tab;

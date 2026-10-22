@@ -13,6 +13,7 @@ export function defaultSettings(): Settings {
     theme: "dark",
     animations: true,
     haptics: true,
+    numberFont: "elegant",
     dateStyle: "short",
     numberFormat: "ru",
     kopecks: "auto",

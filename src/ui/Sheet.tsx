@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useRef, type ReactNode } from "re
 import { motion, useDragControls } from "framer-motion";
 import { cn } from "../lib/cn";
 import { useUI } from "../store/ui";
-import { spring } from "./motion";
+import { gpu, spring } from "./motion";
 
 interface SheetCtx {
   id: string;
@@ -94,6 +94,7 @@ export function Sheet({ title, left, right, children, footer, ariaLabel, tall, c
           className
         )}
         style={{ bottom: "var(--kb)", maxHeight: "calc(100dvh - var(--safe-top) - 12px - var(--kb))" }}
+        transformTemplate={gpu}
         initial={{ y: "100%" }}
         animate={{ y: 0, scale: depth === 0 ? 1 : 1 - 0.04 * depth, opacity: depth > 1 ? 0 : 1 }}
         exit={{ y: "100%", transition: { type: "spring", stiffness: 420, damping: 44, mass: 0.9 } }}

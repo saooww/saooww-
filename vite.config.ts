@@ -32,7 +32,7 @@ export default defineConfig({
         ]
       },
       workbox: {
-        globPatterns: ["**/*.{js,css,html,png,svg,ico,webmanifest}"]
+        globPatterns: ["**/*.{js,css,html,png,svg,ico,webmanifest,woff2}"]
       }
     })
   ],
@@ -40,6 +40,8 @@ export default defineConfig({
     target: "es2021",
     chunkSizeWarningLimit: 700,
     outDir: artifact ? "dist-artifact" : "dist",
+    // The single-file page can't load anything beside it — inline the fonts too.
+    assetsInlineLimit: artifact ? 1_000_000 : 4096,
     rollupOptions: {
       output: artifact
         ? { inlineDynamicImports: true }
