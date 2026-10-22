@@ -65,7 +65,7 @@ export function Keypad({ onKey, compact }: { onKey: (k: KeypadKey) => void; comp
             haptic();
             onKey(k);
           }}
-          className={`flex items-center justify-center rounded-md text-[27px] font-normal tracking-tight text-ink ${compact ? "h-[50px]" : "h-[56px]"}`}
+          className={`num flex items-center justify-center rounded-md text-[27px] font-normal text-ink ${compact ? "h-[50px]" : "h-[56px]"}`}
         >
           {k === "back" ? <Delete size={24} strokeWidth={1.7} /> : k === "," ? decimal : k}
         </motion.button>

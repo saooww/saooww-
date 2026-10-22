@@ -151,6 +151,7 @@ function WalletStack({ wallets, base, hidden }: { wallets: Wallet[]; base: strin
                 material={m}
                 hidden={hidden}
                 badge={w.currency !== base ? w.currency : undefined}
+                stacked
               />
             </motion.button>
           );

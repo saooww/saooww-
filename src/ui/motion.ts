@@ -22,3 +22,13 @@ export const ease = {
 export const dur = { fast: 0.15, base: 0.22, slow: 0.32, nav: 0.42 };
 
 export const fade = { duration: dur.base, ease: ease.out };
+
+/**
+ * transformTemplate for big moving surfaces (screens, sheets): while an
+ * element is displaced it gets its own GPU layer, so Safari slides a finished
+ * picture instead of repainting the content on every frame. At rest the
+ * transform is "none" and the layer — and its memory — goes away.
+ */
+export function gpu(_: unknown, generated: string): string {
+  return !generated || generated === "none" ? "none" : `${generated} translateZ(0)`;
+}

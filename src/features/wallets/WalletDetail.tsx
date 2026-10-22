@@ -15,7 +15,7 @@ import { Screen } from "../../nav/Screen";
 import { LineChart } from "../../charts/LineChart";
 import { iconByName } from "../../ui/icons";
 import { Money } from "../../ui/Money";
-import { ease, spring } from "../../ui/motion";
+import { ease, gpu, spring } from "../../ui/motion";
 import { EmptyState, FormRow, Group, Row, SectionHeader, Segmented, Toggle } from "../../ui/primitives";
 import { WalletCard } from "../../ui/WalletCard";
 import { TxRow, usePresentCtx } from "../transactions/TxRow";
@@ -134,7 +134,7 @@ export function WalletDetail({ id, from }: { id: ID; from?: Origin }) {
       <motion.div className="app-canvas absolute inset-0" style={{ opacity: fade }} />
       <Screen title={wallet.name} bare chromeOpacity={fade}>
         <div className="px-5 pt-2">
-          <motion.div ref={cardRef} style={{ x: tx, y: ty, scale: ts, transformOrigin: "0 0" }}>
+          <motion.div ref={cardRef} style={{ x: tx, y: ty, scale: ts, transformOrigin: "0 0" }} transformTemplate={gpu}>
             <WalletCard
               title={wallet.name}
               subtitle={kind.label}

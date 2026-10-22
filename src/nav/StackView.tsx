@@ -1,7 +1,7 @@
 import type { ComponentType } from "react";
 import { AnimatePresence, motion, useDragControls } from "framer-motion";
 import { useUI, type Route, type RouteName, type Tab } from "../store/ui";
-import { dur, ease } from "../ui/motion";
+import { dur, ease, gpu } from "../ui/motion";
 import { RouteContext } from "./Screen";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -53,6 +53,7 @@ function Layer({ route, index, depth, tab, active, coverIsHero }: { route: Route
         pointerEvents: depth === 0 ? "auto" : "none",
         boxShadow: index > 0 && !hero ? "-16px 0 40px rgba(0,0,0,0.28)" : undefined
       }}
+      transformTemplate={gpu}
       initial={hero ? { x: 0 } : { x: "100%" }}
       animate={{ x: depth === 0 ? 0 : shiftedX, visibility: "visible", transitionEnd: depth > 1 ? { visibility: "hidden" } : undefined }}
       exit={hero ? { opacity: 0, transition: { duration: 0.06, delay: 0.4 } } : { x: "100%" }}

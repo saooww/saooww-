@@ -51,27 +51,34 @@ export function AmountDisplay({
       )}
       {label && <div className="label-caps relative mb-1.5">{label}</div>}
       <div
-        className="relative flex items-baseline justify-center whitespace-nowrap font-semibold leading-none tracking-[-0.045em] tnum"
+        className="num-display relative flex items-baseline justify-center whitespace-nowrap leading-none"
         style={{ fontSize: size, height: size * 1.12 }}
         aria-live="polite"
         aria-label={`Сумма: ${text} ${currencySymbol(currency)}`}
       >
         {sign && !empty && <span className={cn("mr-[0.06em]", sign === "+" ? "text-positive" : "text-ink-2")}>{sign}</span>}
-        {chars.map((ch, i) => (
-          <motion.span
-            key={i}
-            className={empty ? "text-ink-3" : "text-ink"}
-            initial={empty ? false : { y: size * 0.28, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={spring.snappy}
-          >
-            {ch}
-          </motion.span>
-        ))}
+        {chars.map((ch, i) =>
+          ch === "\u202F" ? (
+            // a fixed gap — a plain space would collapse inside the flex row
+            <span key={i} className="inline-block w-[0.22em]" />
+          ) : (
+            <motion.span
+              key={i}
+              className={empty ? "text-ink-3" : "text-ink"}
+              initial={empty ? false : { y: size * 0.28, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={spring.snappy}
+            >
+              {ch}
+            </motion.span>
+          )
+        )}
         {active && (
           <span className="ml-[3px] inline-block w-[2.5px] self-center rounded-full bg-accent" style={{ height: size * 0.78, animation: "caret 1.1s steps(1) infinite" }} />
         )}
-        <span className="ml-[0.18em] text-[0.56em] font-medium text-ink-2">{currencySymbol(currency)}</span>
+        <span className="ml-[0.18em] text-[0.5em] font-medium tracking-normal text-ink-2" style={{ fontFamily: "-apple-system, BlinkMacSystemFont, system-ui, sans-serif" }}>
+          {currencySymbol(currency)}
+        </span>
       </div>
     </div>
   );

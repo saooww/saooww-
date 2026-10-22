@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Archive, Calendar, ClipboardPaste, Coins, Copy, Database, Download, EyeOff, Hash, HardDriveDownload, Info, Moon, Palette, RotateCcw, Shapes, Sparkles, Trash2, Upload, Vibrate, WalletCards } from "lucide-react";
+import { Archive, Calendar, ClipboardPaste, Coins, Copy, Database, Download, EyeOff, Hash, HardDriveDownload, Info, Moon, Palette, RotateCcw, Shapes, Sparkles, Trash2, Type, Upload, Vibrate, WalletCards } from "lucide-react";
 import { cn } from "../../lib/cn";
 import { formatDateTime, nowISO, pluralN } from "../../lib/dates";
 import { haptic } from "../../lib/haptics";
@@ -13,6 +13,7 @@ import { Screen } from "../../nav/Screen";
 import { NamedIcon } from "../../ui/icons";
 import { Avatar, FormRow, Group, IconChip, Row, Segmented, Toggle, inputCls } from "../../ui/primitives";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
+import { NUMBER_FONTS, type NumberFont } from "../../ui/numFont";
 
 export function SettingsScreen() {
   const s = useData((st) => st.settings);
@@ -73,6 +74,7 @@ export function SettingsScreen() {
               ]}
             />
           </div>
+          <NumberFontPicker value={s.numberFont} onChange={(numberFont) => update({ numberFont })} />
           <FormRow label={<span className="flex items-center gap-3"><IconChip icon={Sparkles} size={30} />Анимации</span>}>
             <Toggle checked={s.animations} onChange={(v) => update({ animations: v })} label="Анимации" />
           </FormRow>
@@ -431,5 +433,40 @@ export function BackupTextSheet({ text, onImport }: { text?: string; onImport?: 
         {error && <div className="text-footnote text-negative">{error}</div>}
       </div>
     </Sheet>
+  );
+}
+
+/** Four typefaces for amounts, each tile showing a sample in its own face. */
+function NumberFontPicker({ value, onChange }: { value: NumberFont; onChange: (v: NumberFont) => void }) {
+  return (
+    <div className="px-4 py-3">
+      <div className="flex items-center gap-3">
+        <IconChip icon={Type} size={30} />
+        <span className="text-body">Цифры</span>
+      </div>
+      <div className="mt-3 grid grid-cols-4 gap-2" role="radiogroup" aria-label="Шрифт сумм">
+        {NUMBER_FONTS.map((f) => {
+          const on = f.id === value;
+          return (
+            <button
+              key={f.id}
+              type="button"
+              role="radio"
+              aria-checked={on}
+              onClick={() => {
+                if (!on) haptic();
+                onChange(f.id);
+              }}
+              className={cn("flex h-[68px] flex-col items-center justify-center gap-1 rounded-[14px] transition-colors duration-200", on ? "bg-ink text-ink-inverse" : "tile text-ink")}
+            >
+              <span data-num={f.id} className="num-display inline-block text-[21px] leading-none" style={{ transform: `scale(${f.scale})` }}>
+                1 250
+              </span>
+              <span className={cn("text-[11px] font-medium", on ? "opacity-70" : "text-ink-2")}>{f.label}</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
   );
 }

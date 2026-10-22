@@ -204,6 +204,8 @@ export interface Settings {
   theme: "dark" | "light" | "system";
   animations: boolean;
   haptics: boolean;
+  /** Typeface for amounts */
+  numberFont: "elegant" | "strict" | "wide" | "system";
   dateStyle: "short" | "numeric";
   numberFormat: "ru" | "en";
   kopecks: "auto" | "always" | "never";

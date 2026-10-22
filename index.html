@@ -24,6 +24,8 @@
       html, body { background: #070708; }
       html[data-theme="light"], body[data-theme="light"], html:has(> body[data-theme="light"]) { background: #F3F1EC; }
       html:has(> body[data-theme="dark"]) { background: #070708; }
+      /* iOS 26 short-viewport fix for installed apps — see styles/index.css */
+      @media (display-mode: standalone) { html { min-height: min(100lvh, calc(100% + env(safe-area-inset-top))); } }
     </style>
     <script>
       // Apply the saved theme before first paint, so there is no flash.
@@ -35,6 +37,7 @@
           if (t === "system") t = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
           document.documentElement.setAttribute("data-theme", t);
           if (document.body) document.body.setAttribute("data-theme", t);
+          if (theme && theme.numberFont) document.documentElement.setAttribute("data-num", theme.numberFont);
         } catch (e) {}
       })();
     </script>
