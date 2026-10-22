@@ -63,10 +63,10 @@ function GoalCard({ goal, info, index }: { goal: Goal; info: GoalInfo; index: nu
       transition={{ ...spring.smooth, delay: index * 0.04 }}
       whileTap={{ scale: 0.985 }}
       onClick={() => nav.push("goal", { id: goal.id })}
-      className="rounded-lg bg-surface px-4 py-4 text-left"
+      className="panel rounded-lg px-4 py-4 text-left"
     >
       <div className="flex items-center gap-3">
-        <span className="grid h-10 w-10 place-items-center rounded-full bg-surface-3">
+        <span className="grid h-10 w-10 place-items-center rounded-full tile">
           <NamedIcon name={goal.icon} size={19} strokeWidth={1.9} />
         </span>
         <div className="min-w-0 flex-1">

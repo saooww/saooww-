@@ -11,7 +11,7 @@ import { nav, useUI } from "../../store/ui";
 import { undoable } from "../../store/undo";
 import { Screen } from "../../nav/Screen";
 import { NamedIcon } from "../../ui/icons";
-import { Avatar, FormRow, Group, Row, Segmented, Toggle, inputCls } from "../../ui/primitives";
+import { Avatar, FormRow, Group, IconChip, Row, Segmented, Toggle, inputCls } from "../../ui/primitives";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
 
 export function SettingsScreen() {
@@ -33,7 +33,7 @@ export function SettingsScreen() {
         </Group>
 
         <Group header="Деньги">
-          <FormRow label={<span className="flex items-center gap-3"><Coins size={18} className="text-ink-2" />Основная валюта</span>}>
+          <FormRow label={<span className="flex items-center gap-3"><IconChip icon={Coins} size={30} />Основная валюта</span>}>
             <select
               value={s.baseCurrency}
               onChange={(e) => {
@@ -59,7 +59,7 @@ export function SettingsScreen() {
 
         <Group header="Оформление">
           <div className="flex items-center gap-3 px-4 py-3">
-            <Moon size={18} className="shrink-0 text-ink-2" />
+            <IconChip icon={Moon} size={30} />
             <span className="text-body">Тема</span>
             <Segmented
               className="ml-auto w-[210px]"
@@ -73,34 +73,34 @@ export function SettingsScreen() {
               ]}
             />
           </div>
-          <FormRow label={<span className="flex items-center gap-3"><Sparkles size={18} className="text-ink-2" />Анимации</span>}>
+          <FormRow label={<span className="flex items-center gap-3"><IconChip icon={Sparkles} size={30} />Анимации</span>}>
             <Toggle checked={s.animations} onChange={(v) => update({ animations: v })} label="Анимации" />
           </FormRow>
-          <FormRow label={<span className="flex items-center gap-3"><Vibrate size={18} className="text-ink-2" />Тактильный отклик</span>}>
+          <FormRow label={<span className="flex items-center gap-3"><IconChip icon={Vibrate} size={30} />Тактильный отклик</span>}>
             <Toggle checked={s.haptics} onChange={(v) => update({ haptics: v })} label="Тактильный отклик" />
           </FormRow>
         </Group>
 
         <Group header="Форматы" footer={`Пример: ${s.numberFormat === "ru" ? "1 234 567,89" : "1,234,567.89"} ${currencySymbol(s.baseCurrency)} · ${s.dateStyle === "short" ? "21 окт" : "21.10.2026"}`}>
           <div className="flex items-center gap-3 px-4 py-3">
-            <Calendar size={18} className="shrink-0 text-ink-2" />
+            <IconChip icon={Calendar} size={30} />
             <span className="text-body">Дата</span>
             <Segmented className="ml-auto w-[190px]" size="sm" value={s.dateStyle} onChange={(dateStyle) => update({ dateStyle })} options={[{ value: "short", label: "21 окт" }, { value: "numeric", label: "21.10.26" }]} />
           </div>
           <div className="flex items-center gap-3 px-4 py-3">
-            <Hash size={18} className="shrink-0 text-ink-2" />
+            <IconChip icon={Hash} size={30} />
             <span className="text-body">Числа</span>
             <Segmented className="ml-auto w-[190px]" size="sm" value={s.numberFormat} onChange={(numberFormat) => update({ numberFormat })} options={[{ value: "ru", label: "1 234,5" }, { value: "en", label: "1,234.5" }]} />
           </div>
           <div className="flex items-center gap-3 px-4 py-3">
-            <Palette size={18} className="shrink-0 text-ink-2" />
+            <IconChip icon={Palette} size={30} />
             <span className="text-body">Копейки</span>
             <Segmented className="ml-auto w-[190px]" size="sm" value={s.kopecks} onChange={(kopecks) => update({ kopecks })} options={[{ value: "auto", label: "Авто" }, { value: "always", label: "Всегда" }, { value: "never", label: "Нет" }]} />
           </div>
         </Group>
 
         <Group header="Приватность" footer="Скрытые суммы заменяются точками на картах, в капитале и целях. Коснитесь «глаза» на карте, чтобы переключить.">
-          <FormRow label={<span className="flex items-center gap-3"><EyeOff size={18} className="text-ink-2" />Скрыть суммы</span>}>
+          <FormRow label={<span className="flex items-center gap-3"><IconChip icon={EyeOff} size={30} />Скрыть суммы</span>}>
             <Toggle checked={s.hideAmounts} onChange={(v) => update({ hideAmounts: v })} label="Скрыть суммы" />
           </FormRow>
           <FormRow label="Скрывать при каждом запуске">
@@ -158,7 +158,7 @@ export function CurrenciesScreen() {
           <Group header="Добавить валюту">
             <div className="flex flex-wrap gap-2 p-3">
               {available.map((c) => (
-                <button key={c.code} type="button" onClick={() => setExtra((x) => [...x, c.code])} className="h-8 rounded-full bg-surface-3 px-3 text-subhead font-medium active:opacity-60">
+                <button key={c.code} type="button" onClick={() => setExtra((x) => [...x, c.code])} className="h-8 rounded-full tile px-3 text-subhead font-medium active:opacity-60">
                   {c.code} {c.symbol}
                 </button>
               ))}
@@ -191,7 +191,7 @@ export function CategoriesScreen() {
             key={c.id}
             leading={
               <span className="relative">
-                <span className="grid h-[30px] w-[30px] place-items-center rounded-full bg-surface-3">
+                <span className="grid h-[30px] w-[30px] place-items-center rounded-full tile">
                   <NamedIcon name={c.icon} size={15} strokeWidth={1.9} />
                 </span>
                 <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-surface" style={{ background: c.color }} />
@@ -311,7 +311,7 @@ export function DataScreen() {
         <input ref={file} type="file" accept="application/json,.json" className="hidden" onChange={(e) => onFile(e.target.files?.[0])} />
 
         <Group header="Автокопии" footer="Раз в день приложение сохраняет копию данных на этом устройстве (до трёх последних). Это защита от ошибок — для переноса на другое устройство используйте экспорт.">
-          <FormRow label={<span className="flex items-center gap-3"><HardDriveDownload size={18} className="text-ink-2" />Ежедневная копия</span>}>
+          <FormRow label={<span className="flex items-center gap-3"><IconChip icon={HardDriveDownload} size={30} />Ежедневная копия</span>}>
             <Toggle checked={autoOn} onChange={(v) => useData.getState().updateSettings({ autoBackup: v })} label="Ежедневная копия" />
           </FormRow>
           {backups.map((b, i) => (
@@ -426,7 +426,7 @@ export function BackupTextSheet({ text, onImport }: { text?: string; onImport?: 
           }}
           placeholder="{ &quot;app&quot;: &quot;kapital&quot;, … }"
           rows={10}
-          className="w-full resize-none rounded-md bg-surface p-3 font-mono text-caption text-ink outline-none"
+          className="w-full resize-none panel rounded-md p-3 font-mono text-caption text-ink outline-none"
         />
         {error && <div className="text-footnote text-negative">{error}</div>}
       </div>

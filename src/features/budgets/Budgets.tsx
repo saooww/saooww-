@@ -42,7 +42,7 @@ export function BudgetsScreen() {
       ) : (
         <div className="flex flex-col gap-3 px-4">
           {overall && (
-            <motion.button type="button" whileTap={{ scale: 0.985 }} onClick={() => nav.sheet("budget", { editId: overall.id })} className="rounded-xl bg-surface p-4 text-left">
+            <motion.button type="button" whileTap={{ scale: 0.985 }} onClick={() => nav.sheet("budget", { editId: overall.id })} className="panel rounded-xl p-4 text-left">
               <div className="text-footnote font-medium text-ink-2">Все расходы за месяц</div>
               <div className="mt-1 flex items-baseline justify-between gap-3">
                 <Money value={overall.spent} variant="hero" className="text-title-2 font-semibold" />
@@ -76,7 +76,7 @@ export function BudgetsScreen() {
                 transition={{ ...spring.smooth, delay: i * 0.03 }}
                 whileTap={{ scale: 0.985 }}
                 onClick={() => nav.sheet("budget", { editId: b.id })}
-                className="rounded-lg bg-surface px-4 py-3.5 text-left"
+                className="panel rounded-lg px-4 py-3.5 text-left"
               >
                 <div className="flex items-center gap-3">
                   <NamedIcon name={c?.icon} size={18} strokeWidth={1.9} className="shrink-0 text-ink-2" />
@@ -162,7 +162,7 @@ export function BudgetSheet({ editId }: { editId?: ID }) {
                 type="button"
                 aria-pressed={categoryId === c.id}
                 onClick={() => setCategoryId(c.id)}
-                className={cn("flex h-11 items-center gap-2 rounded-md px-3 text-left text-subhead transition-colors", categoryId === c.id ? "bg-ink text-ink-inverse" : "bg-surface-3")}
+                className={cn("flex h-11 items-center gap-2 rounded-md px-3 text-left text-subhead transition-colors", categoryId === c.id ? "bg-ink text-ink-inverse" : "tile")}
               >
                 <NamedIcon name={c.icon} size={16} strokeWidth={1.9} className="shrink-0" />
                 <span className="truncate">{c.name}</span>

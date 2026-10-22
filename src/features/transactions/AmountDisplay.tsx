@@ -19,7 +19,8 @@ export function AmountDisplay({
   compact,
   sign,
   onClick,
-  label
+  label,
+  glow
 }: {
   buffer: string;
   currency: string;
@@ -28,6 +29,8 @@ export function AmountDisplay({
   sign?: "+" | "−";
   onClick?: () => void;
   label?: string;
+  /** Soft light behind the figure, tinted by the kind of operation */
+  glow?: string;
 }) {
   const { int, frac } = formatInputBuffer(buffer);
   const empty = !buffer;
@@ -36,15 +39,24 @@ export function AmountDisplay({
   const chars = text.split("");
 
   const content = (
-    <div className={cn("flex flex-col items-center", !active && "opacity-45")}>
-      {label && <div className="mb-1 text-footnote font-medium text-ink-2">{label}</div>}
+    <div className={cn("relative flex flex-col items-center", !active && "opacity-45")}>
+      {glow && (
+        <motion.div
+          aria-hidden="true"
+          className="pointer-events-none absolute -inset-x-24 -inset-y-12"
+          animate={{ opacity: empty ? 0.35 : 1, scale: empty ? 0.85 : 1 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          style={{ background: `radial-gradient(50% 50% at 50% 55%, ${glow}, transparent 100%)` }}
+        />
+      )}
+      {label && <div className="label-caps relative mb-1.5">{label}</div>}
       <div
-        className="flex items-baseline justify-center whitespace-nowrap font-semibold leading-none tracking-[-0.045em] tnum"
+        className="relative flex items-baseline justify-center whitespace-nowrap font-semibold leading-none tracking-[-0.045em] tnum"
         style={{ fontSize: size, height: size * 1.12 }}
         aria-live="polite"
         aria-label={`Сумма: ${text} ${currencySymbol(currency)}`}
       >
-        {sign && !empty && <span className="mr-[0.06em] text-ink-2">{sign}</span>}
+        {sign && !empty && <span className={cn("mr-[0.06em]", sign === "+" ? "text-positive" : "text-ink-2")}>{sign}</span>}
         {chars.map((ch, i) => (
           <motion.span
             key={i}

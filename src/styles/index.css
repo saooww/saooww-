@@ -9,84 +9,125 @@
 :root {
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --tabbar-h: 58px;
+  --tabbar-h: 64px;
+  /* The tab bar floats: above the home indicator, or 12px off the edge. */
+  --tabbar-bottom: max(calc(var(--safe-bottom) - 8px), 12px);
+  --tabbar-space: calc(var(--tabbar-h) + var(--tabbar-bottom));
   --kb: 0px;
   --side: 20px;
 }
 
+/*
+ * Palette: sumi (ink) blacks with a faint warm bias, one vermilion accent
+ * (shu-iro), jade for money coming in. Light theme sits on warm washi paper.
+ */
 :root,
 [data-theme="dark"] {
   color-scheme: dark;
-  --bg: #08080a;
-  --bg-glow: rgba(255, 255, 255, 0.035);
-  --surface: #131315;
-  --surface-2: #1a1a1d;
-  --surface-3: #242428;
-  --surface-press: #2c2c31;
-  --line: rgba(255, 255, 255, 0.075);
-  --line-strong: rgba(255, 255, 255, 0.13);
-  --ink: #f5f5f7;
-  --ink-2: #98989f;
-  --ink-3: #636369;
-  --ink-4: #3e3e43;
-  --ink-inverse: #0b0b0c;
-  --accent: #ff5a2e;
-  --accent-press: #e44a20;
-  --accent-soft: rgba(255, 90, 46, 0.14);
-  --accent-ink: #ff7a55;
-  --positive: #3ccf8e;
-  --positive-soft: rgba(60, 207, 142, 0.13);
-  --negative: #ff5d5d;
-  --negative-soft: rgba(255, 93, 93, 0.13);
-  --warning: #f2b04a;
-  --warning-soft: rgba(242, 176, 74, 0.14);
-  --scrim: rgba(0, 0, 0, 0.55);
-  --tabbar-bg: rgba(12, 12, 14, 0.9);
-  --header-bg: rgba(8, 8, 10, 0.86);
+  --bg: #070708;
+  --bg-glow: rgba(255, 244, 236, 0.04);
+  --surface: #111113;
+  --surface-2: #161618;
+  --surface-3: #212124;
+  --surface-press: #2a2a2e;
+  --panel-top: rgba(255, 250, 245, 0.045);
+  --panel-bottom: rgba(255, 250, 245, 0.012);
+  --panel-highlight: rgba(255, 255, 255, 0.07);
+  --shadow-panel: 0 18px 40px -28px rgba(0, 0, 0, 0.9);
+  --line: rgba(255, 248, 240, 0.075);
+  --line-strong: rgba(255, 248, 240, 0.13);
+  --ink: #f5f3f0;
+  --ink-2: #9b9893;
+  --ink-3: #66635f;
+  --ink-4: #3d3b39;
+  --ink-inverse: #0b0a09;
+  --accent: #f4532b;
+  --accent-hi: #ff7a4d;
+  --accent-lo: #d93a16;
+  --accent-press: #dd4320;
+  --accent-soft: rgba(244, 83, 43, 0.15);
+  --accent-ink: #ff7b56;
+  --accent-glow: rgba(244, 83, 43, 0.45);
+  --positive: #3cc896;
+  --positive-hi: #63dcb0;
+  --positive-soft: rgba(60, 200, 150, 0.14);
+  --negative: #ff5b5f;
+  --negative-soft: rgba(255, 91, 95, 0.14);
+  --warning: #f0b14e;
+  --warning-soft: rgba(240, 177, 78, 0.15);
+  --gold: #cbb084;
+  --scrim: rgba(0, 0, 0, 0.6);
+  --tabbar-bg: rgba(24, 24, 26, 0.86);
+  --header-bg: rgba(7, 7, 8, 0.86);
+  --glass-ring: rgba(255, 248, 240, 0.1);
   --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 12px 32px -18px rgba(0, 0, 0, 0.9);
-  --shadow-sheet: 0 -12px 48px rgba(0, 0, 0, 0.55);
-  --shadow-pop: 0 18px 40px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.06);
-  --chart-grid: rgba(255, 255, 255, 0.06);
-  --chart-muted: #3a3a40;
-  --seg-thumb: #3a3a40;
+  --shadow-sheet: 0 -16px 60px rgba(0, 0, 0, 0.6);
+  --shadow-pop: 0 24px 48px -16px rgba(0, 0, 0, 0.75), 0 0 0 0.5px rgba(255, 248, 240, 0.1);
+  --chart-grid: rgba(255, 248, 240, 0.06);
+  --chart-muted: #36343a;
+  --seg-thumb: #2f2f33;
   --key-press: rgba(255, 255, 255, 0.08);
+  --tile-top: #262629;
+  --tile-bottom: #1c1c1f;
+  --card-drop: 0 2px 6px rgba(0, 0, 0, 0.35), 0 30px 50px -26px rgba(0, 0, 0, 0.95);
+  --sheet-bg: linear-gradient(180deg, #1a1a1d 0%, #141416 120px);
+  --sheet-panel: #1e1e21;
+  --sheet-tile-top: #2b2b2f;
+  --sheet-tile-bottom: #232326;
 }
 
 [data-theme="light"] {
   color-scheme: light;
-  --bg: #f2f2f0;
-  --bg-glow: rgba(255, 255, 255, 0.7);
+  --bg: #f3f1ec;
+  --bg-glow: rgba(255, 255, 255, 0.85);
   --surface: #ffffff;
-  --surface-2: #ffffff;
-  --surface-3: #ececea;
-  --surface-press: #e3e3e0;
-  --line: rgba(0, 0, 0, 0.075);
-  --line-strong: rgba(0, 0, 0, 0.13);
-  --ink: #0c0c0d;
-  --ink-2: #6c6c72;
-  --ink-3: #a0a0a6;
-  --ink-4: #cfcfd3;
+  --surface-2: #fbfaf7;
+  --surface-3: #ebe8e2;
+  --surface-press: #e2dfd8;
+  --panel-top: rgba(255, 255, 255, 1);
+  --panel-bottom: rgba(252, 251, 248, 1);
+  --panel-highlight: rgba(255, 255, 255, 1);
+  --shadow-panel: 0 1px 2px rgba(40, 30, 20, 0.04), 0 14px 30px -22px rgba(60, 40, 20, 0.22);
+  --line: rgba(30, 20, 10, 0.08);
+  --line-strong: rgba(30, 20, 10, 0.14);
+  --ink: #15130f;
+  --ink-2: #74706a;
+  --ink-3: #a6a19a;
+  --ink-4: #d3cec6;
   --ink-inverse: #ffffff;
-  --accent: #ee4a1d;
-  --accent-press: #d63f15;
-  --accent-soft: rgba(238, 74, 29, 0.1);
-  --accent-ink: #d63f15;
-  --positive: #16955a;
-  --positive-soft: rgba(22, 149, 90, 0.1);
-  --negative: #d93636;
-  --negative-soft: rgba(217, 54, 54, 0.09);
-  --warning: #b97806;
-  --warning-soft: rgba(185, 120, 6, 0.11);
-  --scrim: rgba(0, 0, 0, 0.32);
-  --tabbar-bg: rgba(248, 248, 246, 0.92);
-  --header-bg: rgba(242, 242, 240, 0.88);
+  --accent: #e6431c;
+  --accent-hi: #f5643a;
+  --accent-lo: #c93512;
+  --accent-press: #cf3b16;
+  --accent-soft: rgba(230, 67, 28, 0.1);
+  --accent-ink: #cf3b16;
+  --accent-glow: rgba(230, 67, 28, 0.35);
+  --positive: #148f5a;
+  --positive-hi: #1fae70;
+  --positive-soft: rgba(20, 143, 90, 0.1);
+  --negative: #d6333a;
+  --negative-soft: rgba(214, 51, 58, 0.09);
+  --warning: #b07408;
+  --warning-soft: rgba(176, 116, 8, 0.11);
+  --gold: #9a7a45;
+  --scrim: rgba(20, 15, 10, 0.32);
+  --tabbar-bg: rgba(255, 255, 255, 0.84);
+  --header-bg: rgba(243, 241, 236, 0.82);
+  --glass-ring: rgba(30, 20, 10, 0.08);
   --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04), 0 10px 28px -16px rgba(0, 0, 0, 0.18);
-  --shadow-sheet: 0 -12px 40px rgba(0, 0, 0, 0.12);
-  --shadow-pop: 0 18px 40px -12px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(0, 0, 0, 0.05);
-  --chart-grid: rgba(0, 0, 0, 0.06);
-  --chart-muted: #d6d6d9;
+  --shadow-sheet: 0 -16px 44px rgba(40, 30, 20, 0.14);
+  --shadow-pop: 0 24px 48px -16px rgba(40, 30, 20, 0.25), 0 0 0 0.5px rgba(30, 20, 10, 0.08);
+  --chart-grid: rgba(30, 20, 10, 0.06);
+  --chart-muted: #d9d5ce;
   --seg-thumb: #ffffff;
-  --key-press: rgba(0, 0, 0, 0.06);
+  --key-press: rgba(30, 20, 10, 0.06);
+  --tile-top: #f6f4f0;
+  --tile-bottom: #ece9e3;
+  --card-drop: 0 2px 6px rgba(40, 30, 20, 0.12), 0 28px 44px -26px rgba(40, 30, 20, 0.5);
+  --sheet-bg: linear-gradient(180deg, #fbfaf7 0%, #f4f2ed 120px);
+  --sheet-panel: #ffffff;
+  --sheet-tile-top: #f7f5f1;
+  --sheet-tile-bottom: #ebe8e2;
 }
 
 /* ------------------------------------------------------------------ */
@@ -233,13 +274,98 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  /* Raised surface: a soft top-lit gradient over the surface colour and a
+     hairline ring with a brighter top edge — the base of every card. */
+  .panel {
+    background:
+      linear-gradient(180deg, var(--panel-top), var(--panel-bottom)),
+      var(--surface);
+    box-shadow:
+      inset 0 0.5px 0 var(--panel-highlight),
+      inset 0 0 0 0.5px var(--line),
+      var(--shadow-panel);
+  }
+
+  /* Bottom sheets sit one step above the page; panels inside lift with them. */
+  .sheet-surface {
+    --surface: var(--sheet-panel);
+    --tile-top: var(--sheet-tile-top);
+    --tile-bottom: var(--sheet-tile-bottom);
+    background: var(--sheet-bg);
+    box-shadow:
+      inset 0 0.5px 0 var(--panel-highlight),
+      var(--shadow-sheet);
+  }
+
+  /* Small tracked caps used for section labels and eyebrows. */
+  .label-caps {
+    font-size: 11.5px;
+    line-height: 14px;
+    font-weight: 600;
+    letter-spacing: 0.085em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  .glass {
+    background: var(--tabbar-bg);
+    -webkit-backdrop-filter: saturate(180%) blur(24px);
+    backdrop-filter: saturate(180%) blur(24px);
+    box-shadow:
+      inset 0 0.5px 0 rgba(255, 255, 255, 0.08),
+      inset 0 0 0 0.5px var(--glass-ring),
+      var(--shadow-pop);
+  }
+
+  /* Vermilion gradient fill with a coloured glow — primary actions. */
+  .fill-accent {
+    background: linear-gradient(180deg, var(--accent-hi) 0%, var(--accent) 55%, var(--accent-lo) 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.24),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.12),
+      0 10px 24px -10px var(--accent-glow);
+  }
+
+  .fill-positive {
+    background: linear-gradient(180deg, var(--positive-hi), var(--positive));
+  }
+
+  /* Raised key / tile: a subtle vertical gradient like milled stone. */
+  .tile {
+    background: linear-gradient(180deg, var(--tile-top), var(--tile-bottom));
+    box-shadow:
+      inset 0 0.5px 0 var(--panel-highlight),
+      inset 0 0 0 0.5px var(--line);
+  }
+
+  .text-gradient {
+    background: linear-gradient(180deg, var(--ink) 30%, color-mix(in srgb, var(--ink) 62%, transparent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Paper-fine noise. Applied to cards and the canvas so large fills never
+     look like flat digital colour. */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 160px 160px;
+    opacity: 0.07;
+    mix-blend-mode: overlay;
+  }
 }
 
-/* App canvas: deep black with a barely-there lift at the top, so the
-   background never reads as a flat fill. */
+/* App canvas: deep sumi black with a barely-there warm lift at the top,
+   so the background never reads as a flat fill. */
 .app-canvas {
   background:
-    radial-gradient(120% 60% at 50% -10%, var(--bg-glow), transparent 60%),
+    radial-gradient(130% 55% at 50% -12%, var(--bg-glow), transparent 62%),
     var(--bg);
 }
 
@@ -258,6 +384,15 @@
   }
   50% {
     opacity: 0;
+  }
+}
+
+@keyframes sheen {
+  0% {
+    transform: translateX(-120%) skewX(-18deg);
+  }
+  100% {
+    transform: translateX(220%) skewX(-18deg);
   }
 }
 

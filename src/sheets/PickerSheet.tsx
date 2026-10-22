@@ -24,7 +24,7 @@ export function PickerSheet({ title, options, value, onSelect, footer }: PickerP
   const { close } = useSheet();
   return (
     <Sheet title={title}>
-      <div className="mx-4 overflow-hidden rounded-lg bg-surface [&>*+*]:hairline-t">
+      <div className="mx-4 overflow-hidden panel rounded-lg [&>*+*]:hairline-t">
         {options.map((o) => (
           <button
             key={o.value}

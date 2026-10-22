@@ -116,7 +116,7 @@ export function PlansScreen() {
     <Screen title="Планы" large actions={<IconButton icon={Plus} label="Запланировать" onClick={() => nav.sheet("plan", { date: selected >= today ? selected : today })} />}>
       {/* Free cash forecast */}
       <section className="px-4">
-        <div className="rounded-xl bg-surface p-4">
+        <div className="panel rounded-xl p-4">
           <div className="text-footnote font-medium text-ink-2">Свободно к {formatDate(cash.until)}</div>
           <Money value={cash.free} currency={base} variant="hero" privacy tone={cash.free < 0 ? "negative" : "default"} className="mt-0.5 block text-[30px] font-semibold tracking-[-0.03em]" />
           <div className="mt-3 flex flex-col gap-1.5 text-subhead">
@@ -131,7 +131,7 @@ export function PlansScreen() {
 
       {overdue.length > 0 && (
         <section className="mt-5">
-          <h2 className="px-5 pb-2 text-headline font-semibold text-warning">Ждут проведения</h2>
+          <h2 className="label-caps px-5 pb-2.5 !text-warning">Ждут проведения</h2>
           <Group>
             {overdue.map((e) => (
               <EventRow key={e.key} e={e} />
@@ -142,7 +142,7 @@ export function PlansScreen() {
 
       {/* Calendar */}
       <section className="mt-5 px-4">
-        <div className="rounded-xl bg-surface p-3">
+        <div className="panel rounded-xl p-3">
           <div className="flex items-center justify-between px-1">
             <IconButton icon={ChevronLeft} label="Предыдущий месяц" variant="plain" onClick={() => go(-1)} />
             <div className="text-headline font-semibold">{monthTitle(month)}</div>
@@ -206,7 +206,7 @@ export function PlansScreen() {
       </section>
 
       <section className="mt-5">
-        <h2 className="px-5 pb-2 text-headline font-semibold">{formatDayHeading(selected)}</h2>
+        <h2 className="label-caps px-5 pb-2.5">{formatDayHeading(selected)}</h2>
         {selectedEvents.length === 0 ? (
           <div className="mx-4 flex items-center justify-between rounded-lg border border-dashed border-line-strong px-4 py-3.5">
             <span className="text-subhead text-ink-2">Ничего не запланировано</span>
@@ -227,7 +227,7 @@ export function PlansScreen() {
 
       {upcoming.length > 0 && (
         <section className="mt-6">
-          <h2 className="px-5 pb-2 text-headline font-semibold">Ближайшие 30 дней</h2>
+          <h2 className="label-caps px-5 pb-2.5">Ближайшие 30 дней</h2>
           <Group footer={`В этом месяце ещё ожидается: поступлений ${formatShort(monthPlan.income, base)}, списаний ${formatShort(monthPlan.expense, base)}.`}>
             {upcoming.map((e) => (
               <EventRow key={e.key} e={e} />

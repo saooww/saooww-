@@ -131,7 +131,7 @@ export function AnalyticsScreen() {
 
           {/* Flow chart */}
           <section className="mt-6 px-4">
-            <div className="rounded-xl bg-surface p-4">
+            <div className="panel rounded-xl p-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <div className="text-footnote font-medium text-ink-2">{selectedBucket ? capitalize(selectedBucket.tip) : metric === "expense" ? "Расходы за период" : metric === "income" ? "Доходы за период" : "Денежный поток"}</div>
@@ -176,7 +176,7 @@ export function AnalyticsScreen() {
           {/* Forecast */}
           {forecast && (
             <section className="mt-4 px-4">
-              <div className="rounded-xl bg-surface p-4">
+              <div className="panel rounded-xl p-4">
                 <div className="flex items-baseline justify-between">
                   <div className="text-headline font-semibold">Прогноз до конца месяца</div>
                   <div className="text-footnote text-ink-3">{pluralN(forecast.daysLeft, ["день", "дня", "дней"])}</div>
@@ -204,7 +204,7 @@ export function AnalyticsScreen() {
 
           {/* Categories */}
           <section className="mt-4 px-4">
-            <div className="rounded-xl bg-surface p-4">
+            <div className="panel rounded-xl p-4">
               <div className="text-headline font-semibold">Расходы по категориям</div>
               {rows.length === 0 ? (
                 <div className="py-8 text-center text-callout text-ink-2">В этом периоде расходов нет</div>
@@ -248,7 +248,7 @@ export function AnalyticsScreen() {
           {/* Capital */}
           {capital.length > 1 && (
             <section className="mt-4 px-4">
-              <div className="rounded-xl bg-surface p-4">
+              <div className="panel rounded-xl p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="text-footnote font-medium text-ink-2">{capShown ? formatDate(capShown.day, { year: "auto" }) : capMode === "capital" ? "Изменение капитала" : "Динамика накоплений"}</div>
                   <Segmented
@@ -284,7 +284,7 @@ export function AnalyticsScreen() {
 
           {/* Six months */}
           <section className="mt-4 px-4">
-            <div className="rounded-xl bg-surface p-4">
+            <div className="panel rounded-xl p-4">
               <div className="flex items-baseline justify-between">
                 <div className="text-headline font-semibold">Полгода</div>
                 <div className="flex items-center gap-3 text-caption text-ink-2">
@@ -299,7 +299,7 @@ export function AnalyticsScreen() {
           {/* Habits */}
           {hab.expenseCount > 0 && (
             <section className="mt-4 px-4">
-              <div className="rounded-xl bg-surface p-4">
+              <div className="panel rounded-xl p-4">
                 <div className="text-headline font-semibold">Привычки</div>
                 <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-3">
                   <Fact label="В среднем в день" value={avgDaily} currency={base} />
@@ -329,7 +329,7 @@ export function AnalyticsScreen() {
           {/* Tips */}
           {tips.length > 0 && (
             <section className="mt-4 px-4">
-              <div className="rounded-xl bg-surface p-4">
+              <div className="panel rounded-xl p-4">
                 <div className="text-headline font-semibold">Наблюдения</div>
                 <div className="mt-2 flex flex-col">
                   {tips.map((t) => (
@@ -362,7 +362,7 @@ export function AnalyticsScreen() {
 function SummaryTile({ label, value, change, currency, goodWhenUp, signed, tone }: { label: string; value: number; change?: number | null; currency: string; goodWhenUp?: boolean; signed?: boolean; tone?: "positive" }) {
   const good = change == null ? null : goodWhenUp ? change >= 0 : change <= 0;
   return (
-    <div className="rounded-md bg-surface px-3 py-3">
+    <div className="panel rounded-md px-3 py-3">
       <div className="text-caption font-medium text-ink-2">{label}</div>
       <div className={cn("mt-0.5 truncate text-[15px] font-semibold tracking-[-0.01em] tnum", tone === "positive" && value > 0 && "text-positive", signed && value < 0 && "text-negative")}>
         {signed && value > 0 ? "+" : ""}

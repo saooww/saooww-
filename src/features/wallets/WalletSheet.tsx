@@ -69,7 +69,7 @@ export function WalletSheet({ editId }: { editId?: ID }) {
           />
         </div>
 
-        <div className="scroll-x flex gap-3 px-5 py-1">
+        <div className="grid grid-cols-8 gap-3 px-5 py-1">
           {CARD_MATERIALS.map((m) => (
             <button
               key={m.id}
@@ -80,8 +80,13 @@ export function WalletSheet({ editId }: { editId?: ID }) {
                 haptic();
                 setStyle(m.id);
               }}
-              className="h-9 w-9 shrink-0 rounded-full"
-              style={{ background: m.swatch, boxShadow: style === m.id ? "0 0 0 2px var(--surface-2), 0 0 0 4px var(--ink)" : "inset 0 0 0 1px var(--line-strong)" }}
+              className="aspect-square w-full rounded-full transition-[outline-color] duration-200"
+              style={{
+                background: m.background,
+                boxShadow: "inset 0 0 0 0.5px rgba(255,255,255,0.18), inset 0 1px 0 rgba(255,255,255,0.2)",
+                outline: `2px solid ${style === m.id ? "var(--ink)" : "transparent"}`,
+                outlineOffset: 3
+              }}
             />
           ))}
         </div>
@@ -106,7 +111,7 @@ export function WalletSheet({ editId }: { editId?: ID }) {
                 type="button"
                 aria-pressed={kind === k.kind}
                 onClick={() => setKind(k.kind)}
-                className={cn("flex flex-col items-center gap-1.5 rounded-md px-1 py-2.5 transition-colors", kind === k.kind ? "bg-ink text-ink-inverse" : "bg-surface-3 text-ink")}
+                className={cn("flex flex-col items-center gap-1.5 rounded-md px-1 py-2.5 transition-colors", kind === k.kind ? "bg-ink text-ink-inverse" : "tile text-ink")}
               >
                 <NamedIcon name={k.icon} size={18} strokeWidth={1.9} />
                 <span className="text-caption font-medium">{k.label}</span>

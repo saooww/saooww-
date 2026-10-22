@@ -56,7 +56,7 @@ export const TxRow = memo(function TxRow({
 
   const row = (
     <div className={cn("flex w-full items-center gap-3 px-4", dense ? "min-h-[58px] py-2" : "min-h-[62px] py-2.5")}>
-      <IconChip name={v.icon} size={38} />
+      <IconChip name={v.icon} color={v.color} size={40} />
       <div className="min-w-0 flex-1 text-left">
         <div className="truncate text-body text-ink">{v.title}</div>
         {v.subtitle && <div className="mt-0.5 truncate text-footnote text-ink-2">{v.subtitle}</div>}
@@ -93,8 +93,8 @@ export const TxRow = memo(function TxRow({
         <span className="text-caption font-semibold">Удалить</span>
       </motion.button>
       <motion.div
-        className="relative bg-surface"
-        style={{ x, touchAction: "pan-y" }}
+        className="relative"
+        style={{ x, touchAction: "pan-y", background: "var(--surface)" }}
         drag="x"
         dragDirectionLock
         dragConstraints={{ left: -REVEAL, right: 0 }}

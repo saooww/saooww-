@@ -96,102 +96,121 @@ export interface CardMaterial {
   line: string;
   /** Small swatch for pickers */
   swatch: string;
+  /** Ambient light the card casts on the page around it */
+  glow: string;
   light?: boolean;
+}
+
+/**
+ * A lit slab: a soft specular highlight from the top-left, a shadowed
+ * lower-right corner and a three-stop body gradient.
+ */
+function lit(from: string, mid: string, to: string, spec: number): string {
+  return [
+    `radial-gradient(130% 95% at 0% 0%, rgba(255,255,255,${spec}), transparent 52%)`,
+    "radial-gradient(90% 70% at 100% 100%, rgba(0,0,0,0.32), transparent 70%)",
+    `linear-gradient(155deg, ${from} 0%, ${mid} 46%, ${to} 100%)`
+  ].join(", ");
 }
 
 export const CARD_MATERIALS: CardMaterial[] = [
   {
     id: "graphite",
     name: "Графит",
-    background:
-      "radial-gradient(120% 90% at 0% 0%, rgba(255,255,255,0.10), transparent 55%), linear-gradient(150deg, #2b2b30 0%, #19191c 48%, #0e0e10 100%)",
-    ink: "#F6F6F7",
-    inkMuted: "rgba(246,246,247,0.56)",
-    line: "rgba(255,255,255,0.06)",
-    swatch: "#26262a"
+    background: lit("#313136", "#1c1c1f", "#0c0c0e", 0.13),
+    ink: "#F6F5F3",
+    inkMuted: "rgba(246,245,243,0.56)",
+    line: "rgba(255,255,255,0.075)",
+    swatch: "#26262a",
+    glow: "rgba(160,160,175,0.20)"
   },
   {
     id: "ember",
-    name: "Жар",
-    background:
-      "radial-gradient(120% 90% at 0% 0%, rgba(255,255,255,0.16), transparent 55%), linear-gradient(150deg, #ff6a3a 0%, #d6431a 45%, #6e1c08 100%)",
-    ink: "#FFF7F3",
-    inkMuted: "rgba(255,247,243,0.66)",
-    line: "rgba(255,255,255,0.09)",
-    swatch: "#e04d22"
+    name: "Киноварь",
+    background: lit("#ff7a48", "#e3481d", "#7d1f08", 0.3),
+    ink: "#FFF8F4",
+    inkMuted: "rgba(255,248,244,0.7)",
+    line: "rgba(255,255,255,0.12)",
+    swatch: "#e04d22",
+    glow: "rgba(244,83,43,0.45)"
   },
   {
     id: "titanium",
     name: "Титан",
-    background:
-      "radial-gradient(120% 90% at 0% 0%, rgba(255,255,255,0.18), transparent 55%), linear-gradient(150deg, #8d8a85 0%, #5d5b57 48%, #34332f 100%)",
-    ink: "#FBFAF8",
-    inkMuted: "rgba(251,250,248,0.66)",
-    line: "rgba(255,255,255,0.08)",
-    swatch: "#76736e"
+    background: lit("#a19d96", "#6a6762", "#33322e", 0.3),
+    ink: "#FCFBF9",
+    inkMuted: "rgba(252,251,249,0.68)",
+    line: "rgba(255,255,255,0.1)",
+    swatch: "#76736e",
+    glow: "rgba(205,198,188,0.22)"
   },
   {
     id: "midnight",
     name: "Полночь",
-    background:
-      "radial-gradient(120% 90% at 0% 0%, rgba(160,180,255,0.14), transparent 55%), linear-gradient(150deg, #22305a 0%, #141c38 48%, #0a0e1d 100%)",
+    background: lit("#2a3a72", "#17214c", "#090d22", 0.2),
     ink: "#F3F5FF",
-    inkMuted: "rgba(243,245,255,0.6)",
-    line: "rgba(255,255,255,0.07)",
-    swatch: "#1d2a50"
+    inkMuted: "rgba(243,245,255,0.62)",
+    line: "rgba(255,255,255,0.085)",
+    swatch: "#1d2a50",
+    glow: "rgba(80,110,235,0.36)"
   },
   {
     id: "forest",
-    name: "Лес",
-    background:
-      "radial-gradient(120% 90% at 0% 0%, rgba(190,255,220,0.12), transparent 55%), linear-gradient(150deg, #23463a 0%, #15302a 48%, #0b1a16 100%)",
+    name: "Мох",
+    background: lit("#2b5a4a", "#183c31", "#0a1b16", 0.18),
     ink: "#F2FAF6",
-    inkMuted: "rgba(242,250,246,0.6)",
-    line: "rgba(255,255,255,0.07)",
-    swatch: "#1f4035"
+    inkMuted: "rgba(242,250,246,0.62)",
+    line: "rgba(255,255,255,0.085)",
+    swatch: "#1f4035",
+    glow: "rgba(60,200,150,0.28)"
   },
   {
     id: "plum",
     name: "Слива",
-    background:
-      "radial-gradient(120% 90% at 0% 0%, rgba(255,200,240,0.12), transparent 55%), linear-gradient(150deg, #4a2a4f 0%, #2d1832 48%, #160b19 100%)",
+    background: lit("#603468", "#361c3e", "#170a1b", 0.18),
     ink: "#FBF3FC",
-    inkMuted: "rgba(251,243,252,0.6)",
-    line: "rgba(255,255,255,0.07)",
-    swatch: "#432647"
+    inkMuted: "rgba(251,243,252,0.62)",
+    line: "rgba(255,255,255,0.085)",
+    swatch: "#432647",
+    glow: "rgba(195,95,210,0.30)"
   },
   {
     id: "sand",
     name: "Песок",
-    background:
-      "radial-gradient(120% 90% at 0% 0%, rgba(255,255,255,0.22), transparent 55%), linear-gradient(150deg, #cdb08a 0%, #a5865e 50%, #6f5536 100%)",
+    background: lit("#dcc097", "#ad8d62", "#6a5131", 0.32),
     ink: "#FFFBF5",
-    inkMuted: "rgba(255,251,245,0.72)",
-    line: "rgba(255,255,255,0.1)",
-    swatch: "#b8986d"
+    inkMuted: "rgba(255,251,245,0.76)",
+    line: "rgba(255,255,255,0.13)",
+    swatch: "#b8986d",
+    glow: "rgba(215,170,110,0.32)"
   },
   {
     id: "ivory",
-    name: "Слоновая кость",
-    background:
-      "radial-gradient(120% 90% at 0% 0%, rgba(255,255,255,0.9), transparent 55%), linear-gradient(150deg, #f6f3ec 0%, #e8e3d8 55%, #d6d0c3 100%)",
-    ink: "#141412",
-    inkMuted: "rgba(20,20,18,0.55)",
-    line: "rgba(0,0,0,0.06)",
+    name: "Рисовая бумага",
+    background: lit("#f8f6f0", "#e9e4d9", "#d3ccbe", 0.9),
+    ink: "#16140F",
+    inkMuted: "rgba(22,20,15,0.55)",
+    line: "rgba(0,0,0,0.07)",
     swatch: "#ece7dc",
+    glow: "rgba(255,244,220,0.22)",
     light: true
   }
 ];
 
+/** The overview card: sumi black with a low vermilion sun. */
 export const TOTAL_MATERIAL: CardMaterial = {
   id: "graphite",
   name: "Все счета",
-  background:
-    "radial-gradient(90% 70% at 100% 110%, rgba(255,90,46,0.22), transparent 60%), radial-gradient(120% 90% at 0% 0%, rgba(255,255,255,0.09), transparent 55%), linear-gradient(150deg, #222226 0%, #131315 50%, #09090a 100%)",
-  ink: "#F6F6F7",
-  inkMuted: "rgba(246,246,247,0.56)",
-  line: "rgba(255,255,255,0.055)",
-  swatch: "#1a1a1d"
+  background: [
+    "radial-gradient(75% 65% at 92% 108%, rgba(244,83,43,0.42), rgba(244,83,43,0.08) 55%, transparent 75%)",
+    "radial-gradient(130% 95% at 0% 0%, rgba(255,255,255,0.11), transparent 52%)",
+    "linear-gradient(155deg, #26262a 0%, #141416 48%, #08080a 100%)"
+  ].join(", "),
+  ink: "#F6F5F3",
+  inkMuted: "rgba(246,245,243,0.56)",
+  line: "rgba(255,255,255,0.07)",
+  swatch: "#1a1a1d",
+  glow: "rgba(244,83,43,0.30)"
 };
 
 export function materialOf(style: CardStyle): CardMaterial {

@@ -61,7 +61,7 @@ export function TxDetailSheet({ id }: { id: ID }) {
   return (
     <Sheet ariaLabel="Операция">
       <div className="flex flex-col items-center px-6 pb-6 pt-2 text-center">
-        <IconChip name={v.icon} size={56} />
+        <IconChip name={v.icon} color={v.color} size={60} />
         <div className="mt-3 text-callout text-ink-2">{KIND_LABEL[tx.kind]}</div>
         <div className="mt-1 max-w-full truncate text-headline font-semibold">{v.title}</div>
         <Money

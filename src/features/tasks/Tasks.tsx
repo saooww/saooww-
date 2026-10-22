@@ -46,7 +46,7 @@ export function TasksScreen() {
   return (
     <Screen title="Задачи" large>
       <div className="px-4">
-        <div className="flex h-12 items-center gap-2 rounded-lg bg-surface pl-4 pr-1.5">
+        <div className="flex h-12 items-center gap-2 panel rounded-lg pl-4 pr-1.5">
           <Plus size={18} className="shrink-0 text-ink-3" />
           <input
             value={draft}
@@ -68,7 +68,7 @@ export function TasksScreen() {
         <EmptyState icon={ListTodo} title="Список дел пуст" text="Финансовые дела не потеряются: сроки, повторы и приоритеты — всё здесь." />
       ) : (
         <div className="mt-5 flex flex-col gap-5">
-          <TaskGroup title="Просрочено" tone="text-negative" tasks={sections.overdue} />
+          <TaskGroup title="Просрочено" tone="!text-negative" tasks={sections.overdue} />
           <TaskGroup title="Сегодня" tasks={sections.today} />
           <TaskGroup title="Скоро" tasks={sections.soon} />
           <TaskGroup title="Без срока" tasks={sections.someday} />
@@ -92,8 +92,8 @@ function TaskGroup({ title, tasks, tone }: { title?: string; tasks: Task[]; tone
   if (!tasks.length) return null;
   return (
     <section>
-      {title && <h2 className={cn("px-5 pb-1.5 text-footnote font-semibold", tone ?? "text-ink-2")}>{title}</h2>}
-      <div className="mx-4 overflow-hidden rounded-lg bg-surface [&>*+*]:hairline-t">
+      {title && <h2 className={cn("label-caps px-5 pb-2.5", tone)}>{title}</h2>}
+      <div className="mx-4 overflow-hidden panel rounded-lg [&>*+*]:hairline-t">
         <AnimatePresence initial={false}>
           {tasks.map((t) => (
             <TaskRow key={t.id} task={t} />

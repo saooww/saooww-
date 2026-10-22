@@ -92,7 +92,7 @@ export function GoalDetail({ id }: { id: ID }) {
         </Group>
 
         <section>
-          <h2 className="px-5 pb-2 text-headline font-semibold">История</h2>
+          <h2 className="label-caps px-5 pb-2.5">История</h2>
           {history.length === 0 ? (
             <div className="mx-5 rounded-lg border border-dashed border-line-strong px-4 py-6 text-center text-subhead text-ink-2">Пополнений пока не было</div>
           ) : (

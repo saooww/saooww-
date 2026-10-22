@@ -39,7 +39,7 @@ export function MoreScreen() {
   return (
     <Screen title="Ещё" large>
       <div className="px-4">
-        <button type="button" onClick={() => nav.sheet("search")} className="flex h-10 w-full items-center gap-2 rounded-sm bg-surface-3 px-3 text-left text-body text-ink-3">
+        <button type="button" onClick={() => nav.sheet("search")} className="flex h-10 w-full items-center gap-2 rounded-sm tile px-3 text-left text-body text-ink-3">
           <Search size={17} />
           Поиск по всему приложению
         </button>

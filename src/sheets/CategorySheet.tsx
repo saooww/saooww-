@@ -40,7 +40,7 @@ export function CategorySheet({ kind: initialKind = "expense", editId, onCreated
     >
       <div className="flex flex-col gap-5 pt-1">
         <div className="flex flex-col items-center gap-3 px-4">
-          <span className="grid h-16 w-16 place-items-center rounded-full bg-surface-3">
+          <span className="grid h-16 w-16 place-items-center rounded-full tile">
             <NamedIcon name={icon} size={28} strokeWidth={1.8} />
           </span>
         </div>
