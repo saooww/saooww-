@@ -1,5 +1,7 @@
 node_modules
 dist
+dist-artifact
 dev-dist
+dist-artifact
 .DS_Store
 *.log

@@ -1,16 +1,18 @@
 import { useRef, useState } from "react";
-import { Archive, Calendar, Coins, Database, Download, EyeOff, Hash, HardDriveDownload, Info, Moon, Palette, RotateCcw, Shapes, Sparkles, Trash2, Upload, Vibrate, WalletCards } from "lucide-react";
+import { Archive, Calendar, ClipboardPaste, Coins, Copy, Database, Download, EyeOff, Hash, HardDriveDownload, Info, Moon, Palette, RotateCcw, Shapes, Sparkles, Trash2, Upload, Vibrate, WalletCards } from "lucide-react";
 import { cn } from "../../lib/cn";
 import { formatDateTime, nowISO, pluralN } from "../../lib/dates";
 import { haptic } from "../../lib/haptics";
 import { CURRENCIES, currencySymbol } from "../../lib/money";
 import { useData, exportJSON, parseImport, listBackups, autoBackup, freshData, clearBackups } from "../../store/store";
 import { V1_KEY } from "../../store/migrate";
+import type { AppData } from "../../store/types";
 import { nav, useUI } from "../../store/ui";
 import { undoable } from "../../store/undo";
 import { Screen } from "../../nav/Screen";
 import { NamedIcon } from "../../ui/icons";
 import { Avatar, FormRow, Group, Row, Segmented, Toggle, inputCls } from "../../ui/primitives";
+import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
 
 export function SettingsScreen() {
   const s = useData((st) => st.settings);
@@ -226,6 +228,8 @@ export function DataScreen() {
   const autoOn = useData((s) => s.settings.autoBackup);
   const file = useRef<HTMLInputElement>(null);
   const [backups, setBackups] = useState(listBackups());
+  // Inside an embedding frame (e.g. a Claude artifact) file downloads are blocked — offer copying instead.
+  const embedded = typeof window !== "undefined" && window.top !== window.self;
 
   const download = () => {
     const blob = new Blob([exportJSON()], { type: "application/json" });
@@ -241,26 +245,40 @@ export function DataScreen() {
     nav.toast("Файл резервной копии сохранён", { tone: "positive" });
   };
 
+  const confirmReplace = (data: AppData, from: string) =>
+    nav.sheet("confirm", {
+      title: `Заменить данные ${from}?`,
+      message: `Там ${pluralN(data.transactions.length, ["операция", "операции", "операций"])} и ${pluralN(data.wallets.length, ["кошелёк", "кошелька", "кошельков"])}. Текущие данные будут заменены — до этого мы сохраним их резервную копию.`,
+      confirmLabel: "Заменить",
+      onConfirm: () => {
+        autoBackup(true);
+        undoable("Данные загружены", () => useData.getState().replaceAll(data));
+        useUI.getState().popToRoot("more");
+        setBackups(listBackups());
+      }
+    });
+
   const onFile = async (f: File | undefined) => {
     if (!f) return;
     try {
-      const data = parseImport(await f.text());
-      nav.sheet("confirm", {
-        title: "Заменить данные из файла?",
-        message: `В файле ${pluralN(data.transactions.length, ["операция", "операции", "операций"])} и ${pluralN(data.wallets.length, ["кошелёк", "кошелька", "кошельков"])}. Текущие данные будут заменены — до этого мы сохраним их резервную копию.`,
-        confirmLabel: "Заменить",
-        onConfirm: () => {
-          autoBackup(true);
-          undoable("Данные загружены из файла", () => useData.getState().replaceAll(data));
-          useUI.getState().popToRoot("more");
-          setBackups(listBackups());
-        }
-      });
+      confirmReplace(parseImport(await f.text()), "из файла");
     } catch (e) {
       nav.toast(e instanceof Error ? e.message : "Не удалось прочитать файл", { tone: "warning" });
     } finally {
       if (file.current) file.current.value = "";
     }
+  };
+
+  // Works everywhere, including where file downloads are blocked: paste the text into a note or a chat with yourself.
+  const copyText = () => {
+    const text = exportJSON();
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        haptic("success");
+        nav.toast(`Скопировано — ${Math.max(1, Math.round(text.length / 1024))} КБ текста`, { tone: "positive" });
+      })
+      .catch(() => nav.sheet("backupText", { text }));
   };
 
   const start = (kind: "demo" | "empty") =>
@@ -285,8 +303,10 @@ export function DataScreen() {
     <Screen title="Данные" large>
       <div className="flex flex-col gap-5">
         <Group footer={`Сейчас: ${pluralN(counts.tx, ["операция", "операции", "операций"])}, ${pluralN(counts.wallets, ["кошелёк", "кошелька", "кошельков"])}.${meta.importedFromV1 ? " Данные перенесены из прошлой версии приложения." : ""}`}>
-          <Row icon={Download} title="Экспорт в файл" subtitle="JSON со всеми данными" onClick={download} />
+          {!embedded && <Row icon={Download} title="Экспорт в файл" subtitle="JSON со всеми данными" onClick={download} />}
           <Row icon={Upload} title="Импорт из файла" subtitle="Из резервной копии Капитала" onClick={() => file.current?.click()} />
+          <Row icon={Copy} title="Скопировать как текст" subtitle="Если сохранить файл не получается" onClick={copyText} />
+          <Row icon={ClipboardPaste} title="Вставить из текста" subtitle="Восстановить из скопированной копии" onClick={() => nav.sheet("backupText", { onImport: (data: AppData) => confirmReplace(data, "из текста") })} />
         </Group>
         <input ref={file} type="file" accept="application/json,.json" className="hidden" onChange={(e) => onFile(e.target.files?.[0])} />
 
@@ -358,5 +378,58 @@ export function DataScreen() {
         </Group>
       </div>
     </Screen>
+  );
+}
+
+/** Shows a backup as selectable text, or takes one pasted back in. */
+export function BackupTextSheet({ text, onImport }: { text?: string; onImport?: (data: AppData) => void }) {
+  const { close } = useSheet();
+  const [value, setValue] = useState(text ?? "");
+  const [error, setError] = useState<string | null>(null);
+  const reading = !onImport;
+  return (
+    <Sheet
+      title={reading ? "Резервная копия" : "Вставить копию"}
+      left={<SheetAction onClick={close}>{reading ? "Готово" : "Отмена"}</SheetAction>}
+      right={
+        reading ? undefined : (
+          <SheetAction
+            strong
+            disabled={!value.trim()}
+            onClick={() => {
+              try {
+                const data = parseImport(value);
+                close();
+                onImport!(data);
+              } catch (e) {
+                setError(e instanceof Error ? e.message : "Текст не похож на резервную копию");
+              }
+            }}
+          >
+            Загрузить
+          </SheetAction>
+        )
+      }
+    >
+      <div className="flex flex-col gap-3 px-4">
+        <p className="text-footnote text-ink-2">
+          {reading ? "Выделите текст и скопируйте его — например, в заметку или в чат с собой." : "Вставьте сюда текст, который вы раньше скопировали кнопкой «Скопировать как текст»."}
+        </p>
+        <textarea
+          id="backup-text"
+          value={value}
+          readOnly={reading}
+          onFocus={(e) => reading && e.currentTarget.select()}
+          onChange={(e) => {
+            setValue(e.target.value);
+            setError(null);
+          }}
+          placeholder="{ &quot;app&quot;: &quot;kapital&quot;, … }"
+          rows={10}
+          className="w-full resize-none rounded-md bg-surface p-3 font-mono text-caption text-ink outline-none"
+        />
+        {error && <div className="text-footnote text-negative">{error}</div>}
+      </div>
+    </Sheet>
   );
 }

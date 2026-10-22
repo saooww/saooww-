@@ -38,7 +38,9 @@ export function App() {
   /* theme */
   useEffect(() => {
     const t = resolveTheme(settings.theme);
+    // Also on <body>: when the app is embedded, the host may set its own theme on <html>.
     document.documentElement.setAttribute("data-theme", t);
+    document.body.setAttribute("data-theme", t);
     document.querySelector('meta[name="theme-color"]')?.setAttribute("content", t === "light" ? "#F2F2F0" : "#08080A");
   }, [settings.theme, systemTick]);
 

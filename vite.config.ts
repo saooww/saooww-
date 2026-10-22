@@ -2,10 +2,16 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
 
+// KAPITAL_TARGET=artifact builds one self-contained bundle (no service worker,
+// relative paths) that can be inlined into a single HTML page.
+const artifact = process.env.KAPITAL_TARGET === "artifact";
+
 export default defineConfig({
+  base: artifact ? "./" : "/",
   plugins: [
     react(),
     VitePWA({
+      disable: artifact,
       registerType: "autoUpdate",
       includeAssets: ["icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png", "icons/mark.svg"],
       manifest: {
@@ -33,11 +39,14 @@ export default defineConfig({
   build: {
     target: "es2021",
     chunkSizeWarningLimit: 700,
+    outDir: artifact ? "dist-artifact" : "dist",
     rollupOptions: {
-      output: {
-        // Libraries change rarely — keep them in their own long-cached chunks.
-        manualChunks: { react: ["react", "react-dom"], motion: ["framer-motion"], state: ["zustand"] }
-      }
+      output: artifact
+        ? { inlineDynamicImports: true }
+        : {
+            // Libraries change rarely — keep them in their own long-cached chunks.
+            manualChunks: { react: ["react", "react-dom"], motion: ["framer-motion"], state: ["zustand"] }
+          }
     }
   },
   server: { host: true, port: 5173 }

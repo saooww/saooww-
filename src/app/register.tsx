@@ -22,7 +22,7 @@ import { RecurringSheet, SubscriptionsScreen } from "../features/subscriptions/S
 import { DebtDetail, DebtPaySheet, DebtSheet, DebtsScreen } from "../features/debts/Debts";
 import { TaskSheet, TasksScreen } from "../features/tasks/Tasks";
 import { LinkPickerSheet, NoteEditor, NotesScreen } from "../features/notes/Notes";
-import { CategoriesScreen, CurrenciesScreen, DataScreen, SettingsScreen } from "../features/settings/Settings";
+import { BackupTextSheet, CategoriesScreen, CurrenciesScreen, DataScreen, SettingsScreen } from "../features/settings/Settings";
 import { SearchSheet } from "../features/search/SearchSheet";
 
 registerRoutes({
@@ -70,5 +70,6 @@ registerSheets({
   debtPay: DebtPaySheet,
   task: TaskSheet,
   linkPicker: LinkPickerSheet,
-  search: SearchSheet
+  search: SearchSheet,
+  backupText: BackupTextSheet
 });

@@ -22,7 +22,8 @@
 
     <style>
       html, body { background: #08080A; }
-      html[data-theme="light"], html[data-theme="light"] body { background: #F2F2F0; }
+      html[data-theme="light"], body[data-theme="light"], html:has(> body[data-theme="light"]) { background: #F2F2F0; }
+      html:has(> body[data-theme="dark"]) { background: #08080A; }
     </style>
     <script>
       // Apply the saved theme before first paint, so there is no flash.
@@ -33,6 +34,7 @@
           var t = theme && theme.theme ? theme.theme : "dark";
           if (t === "system") t = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
           document.documentElement.setAttribute("data-theme", t);
+          if (document.body) document.body.setAttribute("data-theme", t);
         } catch (e) {}
       })();
     </script>
