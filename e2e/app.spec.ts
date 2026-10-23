@@ -28,6 +28,13 @@ async function safeToSpend(page: Page): Promise<number> {
 
 const carousel = (page: Page) => page.locator('[aria-roledescription="карусель"]');
 
+const CBR = /cbr-xml-daily\.ru/;
+
+// No real network: live exchange rates would change the demo totals.
+test.beforeEach(async ({ page }) => {
+  await page.route(CBR, (route) => route.abort());
+});
+
 test("первый запуск: знакомство, счета и сохранение после перезагрузки", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Начать" }).click();
@@ -136,4 +143,20 @@ test("фото чека сохраняется вместе с операцие�
   const sheet = page.getByRole("dialog", { name: "Операция" });
   await expect(sheet).toContainText("Фото чека");
   await expect(sheet.locator("img")).toHaveCount(1);
+});
+
+test("курсы ЦБ подтягиваются и пересчитывают общий баланс", async ({ page }) => {
+  await page.unroute(CBR);
+  await page.route(CBR, (route) =>
+    route.fulfill({
+      json: { Date: "2026-10-23T11:30:00+03:00", Valute: { USD: { CharCode: "USD", Nominal: 1, Value: 100 }, EUR: { CharCode: "EUR", Nominal: 1, Value: 110 } } }
+    })
+  );
+  await startDemo(page);
+  // Demo: 2 480 000 ₽ with the dollar at 95; 2 400 $ at 100 adds 12 000 ₽.
+  await expect(carousel(page)).toContainText("2 492 000");
+  await page.getByRole("tab", { name: "Ещё" }).click();
+  await page.getByText("Настройки", { exact: true }).click();
+  await page.getByText("Курсы валют", { exact: true }).click();
+  await expect(page.getByText(/Официальные курсы ЦБ РФ на/)).toBeVisible();
 });
