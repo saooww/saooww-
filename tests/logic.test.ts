@@ -11,6 +11,9 @@ import { buildLedger, computeBalances, debtInfo, goalEnvelopes, netWorth, period
 import { addDays, todayKey } from "../src/lib/dates";
 import { formatMoney, parseAmount } from "../src/lib/money";
 import type { AppData } from "../src/store/types";
+import { safeToSpend } from "../src/lib/safeToSpend";
+import { parseCbr, ratesFor } from "../src/lib/rates";
+import { monthSummary } from "../src/lib/story";
 
 let passed = 0;
 function test(name: string, fn: () => void) {
@@ -200,6 +203,66 @@ test("ввод и формат сумм", () => {
   assert.equal(parseAmount("0,07"), 7);
   assert.equal(formatMoney(248_000_000), "2 480 000 ₽");
   assert.equal(formatMoney(-125_050), "−1 250,50 ₽");
+});
+
+/* ---------------- new in 2.1 ---------------- */
+
+const safe = () => safeToSpend(data(), computeBalances(st().wallets, st().transactions), buildLedger(data()).entries, today)!;
+const nowTime = () => `${today}T12:00`;
+
+test("«можно потратить сегодня» уменьшается ровно на сегодняшнюю трату", () => {
+  const before = safe();
+  st().addTransaction({ kind: "expense", amount: 123_400, walletId: "w-main", categoryId: "c-cafe", date: nowTime() });
+  const after = safe();
+  assert.equal(after.today, before.today - 123_400);
+  assert.equal(after.allowance, before.allowance);
+});
+
+test("перевод между своими кошельками не меняет «можно потратить»", () => {
+  const before = safe();
+  st().addTransaction({ kind: "transfer", amount: 500_000, walletId: "w-main", toWalletId: "w-cash", date: nowTime() });
+  assert.equal(safe().today, before.today);
+});
+
+test("доход сегодня увеличивает норму на день", () => {
+  const before = safe();
+  st().addTransaction({ kind: "income", amount: 3_000_000, walletId: "w-main", categoryId: "i-freelance", date: nowTime() });
+  const after = safe();
+  if (after.basis === "cash") assert.ok(after.allowance > before.allowance);
+  else assert.ok(after.allowance >= before.allowance);
+});
+
+test("разделённый чек: части в своих категориях, сумма сходится", () => {
+  const b0 = bal("w-main");
+  const m0 = month();
+  const splitId = "s-test";
+  st().addTransaction({ kind: "expense", amount: 300_000, walletId: "w-main", categoryId: "c-groceries", date: nowTime(), splitId });
+  st().addTransaction({ kind: "expense", amount: 45_000, walletId: "w-main", categoryId: "c-home", date: nowTime(), splitId });
+  const m1 = month();
+  assert.equal(bal("w-main"), b0 - 345_000);
+  assert.equal(m1.expense - m0.expense, 345_000);
+  assert.equal((m1.expenseByCategory.get("c-groceries") ?? 0) - (m0.expenseByCategory.get("c-groceries") ?? 0), 300_000);
+  assert.equal((m1.expenseByCategory.get("c-home") ?? 0) - (m0.expenseByCategory.get("c-home") ?? 0), 45_000);
+});
+
+test("курсы ЦБ: разбор ответа и пересчёт в основную валюту", () => {
+  const cbr = parseCbr({ Date: "2026-10-23T11:30:00+03:00", Valute: { USD: { CharCode: "USD", Nominal: 1, Value: 81.5 }, AMD: { CharCode: "AMD", Nominal: 100, Value: 21.2 }, EUR: { CharCode: "EUR", Nominal: 1, Value: 94.1 } } });
+  assert.equal(cbr.date, "2026-10-23");
+  assert.deepEqual(ratesFor("RUB", ["USD", "AMD", "RUB", "XXX"], cbr.rub), { USD: 81.5, AMD: 0.212 });
+  // Base in dollars: a euro is EUR/USD, a rouble is 1/USD.
+  const r = ratesFor("USD", ["EUR", "RUB"], cbr.rub);
+  assert.equal(r.EUR, Math.round((94.1 / 81.5) * 1e6) / 1e6);
+  assert.equal(r.RUB, Math.round((1 / 81.5) * 1e6) / 1e6);
+});
+
+test("итоги месяца сходятся с аналитикой", () => {
+  const prevMonthDay = addDays(today.slice(0, 8) + "01", -1);
+  const s = monthSummary(buildLedger(data()).entries, new Map(st().categories.map((c) => [c.id, c])), prevMonthDay, today);
+  const stats = periodStats(buildLedger(data()).entries, periodRange("month", -1, today), today);
+  assert.equal(s.expense, stats.expense);
+  assert.equal(s.income, stats.income);
+  assert.ok(s.top.length > 0 && s.top[0].amount >= (s.top[1]?.amount ?? 0));
+  assert.ok(s.biggest && s.biggest.amount > 0);
 });
 
 console.log(`\nВсе проверки пройдены: ${passed}`);

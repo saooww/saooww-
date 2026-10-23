@@ -16,7 +16,9 @@ export function introEnabled(): boolean {
   if (enabled === null) {
     const reduce = typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     const deepLink = typeof window !== "undefined" && new URLSearchParams(window.location.search).has("add");
-    enabled = !reduce && !deepLink && useData.getState().settings.animations;
+    const s = useData.getState().settings;
+    // No show when the lock screen or the composer comes first.
+    enabled = !reduce && !deepLink && s.animations && !s.lockEnabled && s.launchAction !== "expense";
   }
   return enabled;
 }

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { appStorage, kvDel, kvGet, kvSet } from "./storage";
 import { nowISO, todayKey, type DayKey } from "../lib/dates";
 import { computeBalances, debtInfo } from "../lib/finance";
 import { uid } from "../lib/id";
@@ -7,6 +8,7 @@ import type { Minor } from "../lib/money";
 import { nextAfter } from "../lib/recurrence";
 import { CHART_COLORS } from "./catalog";
 import { migrateFromV1, V1_KEY } from "./migrate";
+import { clearPhotos } from "./photos";
 import { createDemoData, createEmptyData, defaultSettings } from "./seed";
 import {
   DATA_KEYS,
@@ -92,20 +94,12 @@ export interface DataActions {
 
 export type DataState = AppData & DataActions;
 
+/**
+ * Until saved data is read from IndexedDB (asynchronously), the store holds
+ * an empty placeholder; boot.ts decides what a first launch looks like.
+ */
 function initialData(): AppData {
-  try {
-    if (typeof localStorage !== "undefined") {
-      if (localStorage.getItem(STORAGE_KEY)) return createEmptyData(); // replaced on hydration
-      const v1 = localStorage.getItem(V1_KEY);
-      if (v1) {
-        const migrated = migrateFromV1(v1);
-        if (migrated) return migrated;
-      }
-    }
-  } catch {
-    /* storage unavailable — fall back to demo */
-  }
-  return createDemoData();
+  return createEmptyData();
 }
 
 export function pickData(s: AppData): AppData {
@@ -553,7 +547,7 @@ export const useData = create<DataState>()(
     {
       name: STORAGE_KEY,
       version: 1,
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => appStorage),
       partialize: (s) => pickData(s),
       merge: (persisted, current) => {
         const p = (persisted ?? {}) as Partial<AppData>;
@@ -567,14 +561,6 @@ export const useData = create<DataState>()(
     }
   )
 );
-
-// Persist the very first state too (demo data or data migrated from v1),
-// so it doesn't get regenerated on the next launch.
-try {
-  if (typeof localStorage !== "undefined" && !localStorage.getItem(STORAGE_KEY)) useData.setState((s) => ({ meta: { ...s.meta } }));
-} catch {
-  /* storage unavailable */
-}
 
 /* ------------------------------------------------------------------ */
 /*  Import / export / backups                                          */
@@ -610,9 +596,9 @@ export interface BackupEntry {
   data: AppData;
 }
 
-export function listBackups(): BackupEntry[] {
+export async function listBackups(): Promise<BackupEntry[]> {
   try {
-    const raw = localStorage.getItem(BACKUP_KEY);
+    const raw = await kvGet(BACKUP_KEY);
     return raw ? (JSON.parse(raw) as BackupEntry[]) : [];
   } catch {
     return [];
@@ -620,22 +606,29 @@ export function listBackups(): BackupEntry[] {
 }
 
 /** Keeps one automatic copy per day, the three most recent. */
-export function autoBackup(force = false) {
+export async function autoBackup(force = false): Promise<void> {
   try {
-    const list = listBackups();
+    const list = await listBackups();
     const today = todayKey();
     if (!force && list[0] && list[0].at.slice(0, 10) === today) return;
     const at = nowISO();
     const next = [{ at, data: pickData(useData.getState()) }, ...list.filter((b) => b.at !== at && (force || b.at.slice(0, 10) !== today))].slice(0, 3);
-    localStorage.setItem(BACKUP_KEY, JSON.stringify(next));
+    await kvSet(BACKUP_KEY, JSON.stringify(next));
   } catch {
-    /* quota exceeded or storage unavailable — backups are best effort */
+    /* storage full or unavailable — backups are best effort */
   }
 }
 
-export function clearBackups() {
+export async function clearBackups(): Promise<void> {
+  await kvDel(BACKUP_KEY);
+}
+
+/** Erases everything this app keeps on the device: backups, photos, legacy data. */
+export async function wipeDevice(): Promise<void> {
+  await clearBackups();
+  await clearPhotos();
   try {
-    localStorage.removeItem(BACKUP_KEY);
+    localStorage.removeItem(V1_KEY);
   } catch {
     /* ignore */
   }

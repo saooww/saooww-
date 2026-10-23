@@ -61,6 +61,10 @@ export interface Transaction {
   goalId?: ID;
   recurringId?: ID;
   planId?: ID;
+  /** Parts of one receipt split across categories share this id */
+  splitId?: ID;
+  /** Receipt photos (ids in the photo store) */
+  photos?: ID[];
   createdAt: LocalISO;
   updatedAt?: LocalISO;
 }
@@ -213,6 +217,29 @@ export interface Settings {
   hideOnLaunch: boolean;
   defaultWalletId?: ID;
   autoBackup: boolean;
+  /** Last time a copy was saved outside the device (Files, iCloud, AirDrop…) */
+  lastExternalBackup?: LocalISO;
+  /** «Remind me later» for the backup reminder */
+  backupSnoozeUntil?: DayKey;
+  /** App lock: a 4-digit code (salted SHA-256), optionally Face ID / Touch ID */
+  lockEnabled: boolean;
+  lockPinHash?: string;
+  lockSalt?: string;
+  /** WebAuthn credential of the device's platform authenticator */
+  lockCredentialId?: string;
+  /** Lock again after this many minutes in the background (0 — immediately) */
+  lockAfter: number;
+  /** Fetch Bank of Russia rates once a day */
+  autoRates: boolean;
+  /** Date the current rates are set for, YYYY-MM-DD */
+  ratesDate?: string;
+  ratesFetchedAt?: LocalISO;
+  /** What opens when the app starts */
+  launchAction: "home" | "expense";
+  accent: "vermilion" | "indigo" | "sakura" | "gold";
+  textSize: "m" | "l" | "xl";
+  /** Month (YYYY-MM) whose summary story was already shown */
+  storySeen?: string;
 }
 
 export interface AppData {

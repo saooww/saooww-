@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { animate, motion, useMotionValue, useTransform, type MotionValue } from "framer-motion";
+import { animate, AnimatePresence, motion, useAnimationControls, useMotionValue, useTransform, type MotionValue } from "framer-motion";
 import { Plus } from "lucide-react";
 import { haptic } from "../../lib/haptics";
 import { cn } from "../../lib/cn";
@@ -8,7 +8,8 @@ import { materialOf, TOTAL_MATERIAL, walletKindInfo, type CardMaterial } from ".
 import { useBalances, useTotalBalance } from "../../store/hooks";
 import { useData } from "../../store/store";
 import { activeWallets } from "../../lib/finance";
-import { useUI } from "../../store/ui";
+import { useUI, type Flight } from "../../store/ui";
+import { formatMoney } from "../../lib/money";
 import { iconByName } from "../../ui/icons";
 import { spring } from "../../ui/motion";
 import { CARD_RATIO, WalletCard } from "../../ui/WalletCard";
@@ -80,6 +81,8 @@ export function WalletCarousel({ onOpen, onAdd, intro = false }: { onOpen: (card
   const setIndex = useUI((s) => s.setHomeCardIndex);
   const heroWalletId = useUI((s) => s.heroWalletId);
   const hidden = useData((s) => s.settings.hideAmounts);
+  const flight = useUI((s) => s.flight);
+  const tab = useUI((s) => s.tab);
   // Stable, so the memoised cards don't re-render when the index changes.
   const toggleHidden = useCallback(() => {
     haptic();
@@ -182,6 +185,7 @@ export function WalletCarousel({ onOpen, onAdd, intro = false }: { onOpen: (card
                 hidden={hidden}
                 invisible={!!c.walletId && c.walletId === heroWalletId}
                 intro={intro && i === safeIndex}
+                pulse={i === safeIndex ? flight?.id : undefined}
                 onToggleHidden={toggleHidden}
                 onTap={(rect) => (i === safeIndex ? onOpen(c, rect) : goTo(i))}
               />
@@ -189,6 +193,8 @@ export function WalletCarousel({ onOpen, onAdd, intro = false }: { onOpen: (card
           </motion.div>
         )}
       </div>
+
+      <AnimatePresence>{flight && tab === "home" && <SaveFlight key={flight.id} flight={flight} target={wrap} />}</AnimatePresence>
 
       {count > 1 && (
         <motion.div
@@ -221,6 +227,7 @@ function CarouselItem({
   hidden,
   invisible,
   intro,
+  pulse,
   onToggleHidden,
   onTap
 }: {
@@ -232,6 +239,8 @@ function CarouselItem({
   hidden: boolean;
   invisible: boolean;
   intro: boolean;
+  /** Changes when a saved amount lands on this card */
+  pulse?: number;
   onToggleHidden: () => void;
   onTap: (rect: DOMRect) => void;
 }) {
@@ -240,6 +249,11 @@ function CarouselItem({
   const scale = useTransform(dist, [0, 1], [1, 0.9]);
   const opacity = useTransform(dist, [0, 1], [1, 0.4]);
   const sheen = useTransform(x, (v) => Math.max(-1, Math.min(1, (v + i * step) / step)));
+  // Not a remount: the balance inside must keep counting.
+  const pulseCtl = useAnimationControls();
+  useEffect(() => {
+    if (pulse) void pulseCtl.start({ scale: [1, 1, 1.03, 1], transition: { duration: 0.75, times: [0, 0.55, 0.75, 1], ease: "easeOut" } });
+  }, [pulse, pulseCtl]);
   return (
     <motion.div
       ref={ref}
@@ -258,22 +272,24 @@ function CarouselItem({
       role="button"
       aria-label={`${card.title}`}
     >
-      <WalletCard
-        title={card.title}
-        subtitle={card.subtitle}
-        icon={card.icon}
-        ident={card.ident}
-        amount={card.amount}
-        currency={card.currency}
-        material={card.material}
-        badge={card.badge}
-        footnote={card.footnote}
-        label={card.label}
-        hidden={hidden}
-        onToggleHidden={onToggleHidden}
-        sheen={sheen}
-        intro={intro}
-      />
+      <motion.div animate={pulseCtl}>
+        <WalletCard
+          title={card.title}
+          subtitle={card.subtitle}
+          icon={card.icon}
+          ident={card.ident}
+          amount={card.amount}
+          currency={card.currency}
+          material={card.material}
+          badge={card.badge}
+          footnote={card.footnote}
+          label={card.label}
+          hidden={hidden}
+          onToggleHidden={onToggleHidden}
+          sheen={sheen}
+          intro={intro}
+        />
+      </motion.div>
     </motion.div>
   );
 }
@@ -289,6 +305,35 @@ function AmbientGlow({ color, i, x, step, intro }: { color: string; i: number; x
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
       />
+    </motion.div>
+  );
+}
+
+/**
+ * After saving, the amount rises from where the button was and drops into
+ * the card in front, which answers with a small pulse while its balance counts.
+ */
+function SaveFlight({ flight, target }: { flight: Flight; target: React.RefObject<HTMLDivElement> }) {
+  const rect = target.current?.getBoundingClientRect();
+  const startY = window.innerHeight - 120;
+  const endY = rect ? rect.top + rect.height * 0.42 : startY - 400;
+  const text = formatMoney(flight.kind === "income" ? flight.amount : -flight.amount, { currency: flight.currency, sign: "always" });
+
+  useEffect(() => {
+    const id = window.setTimeout(() => useUI.setState((s) => (s.flight?.id === flight.id ? { flight: null } : {})), 1100);
+    return () => window.clearTimeout(id);
+  }, [flight.id]);
+
+  return (
+    <motion.div
+      aria-hidden="true"
+      className="glass num pointer-events-none fixed left-1/2 z-[80] -ml-[90px] flex h-11 w-[180px] items-center justify-center rounded-full text-[19px] font-semibold"
+      style={{ top: 0, color: flight.kind === "income" ? "var(--positive)" : "var(--ink)" }}
+      initial={{ y: startY, opacity: 0, scale: 0.9 }}
+      animate={{ y: [startY, startY - 40, endY], opacity: [0, 1, 0], scale: [0.9, 1, 0.55] }}
+      transition={{ duration: 0.8, times: [0, 0.3, 1], ease: [0.45, 0, 0.2, 1], delay: 0.1 }}
+    >
+      {text}
     </motion.div>
   );
 }

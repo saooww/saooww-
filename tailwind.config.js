@@ -23,17 +23,17 @@ export default {
       mono: ['"SF Mono"', "ui-monospace", "Menlo", "monospace"]
     },
     fontSize: {
-      display: ["40px", { lineHeight: "44px", letterSpacing: "-0.035em" }],
-      "title-1": ["30px", { lineHeight: "36px", letterSpacing: "-0.028em" }],
-      "title-2": ["22px", { lineHeight: "28px", letterSpacing: "-0.022em" }],
-      "title-3": ["19px", { lineHeight: "24px", letterSpacing: "-0.018em" }],
-      headline: ["17px", { lineHeight: "22px", letterSpacing: "-0.014em" }],
-      body: ["16px", { lineHeight: "22px", letterSpacing: "-0.011em" }],
-      callout: ["15px", { lineHeight: "20px", letterSpacing: "-0.009em" }],
-      subhead: ["14px", { lineHeight: "19px", letterSpacing: "-0.006em" }],
-      footnote: ["13px", { lineHeight: "18px", letterSpacing: "-0.003em" }],
-      caption: ["12px", { lineHeight: "16px", letterSpacing: "0" }],
-      micro: ["11px", { lineHeight: "13px", letterSpacing: "0.02em" }]
+      display: ["calc(40px * var(--text-scale))", { lineHeight: "calc(44px * var(--text-scale))", letterSpacing: "-0.035em" }],
+      "title-1": ["calc(30px * var(--text-scale))", { lineHeight: "calc(36px * var(--text-scale))", letterSpacing: "-0.028em" }],
+      "title-2": ["calc(22px * var(--text-scale))", { lineHeight: "calc(28px * var(--text-scale))", letterSpacing: "-0.022em" }],
+      "title-3": ["calc(19px * var(--text-scale))", { lineHeight: "calc(24px * var(--text-scale))", letterSpacing: "-0.018em" }],
+      headline: ["calc(17px * var(--text-scale))", { lineHeight: "calc(22px * var(--text-scale))", letterSpacing: "-0.014em" }],
+      body: ["calc(16px * var(--text-scale))", { lineHeight: "calc(22px * var(--text-scale))", letterSpacing: "-0.011em" }],
+      callout: ["calc(15px * var(--text-scale))", { lineHeight: "calc(20px * var(--text-scale))", letterSpacing: "-0.009em" }],
+      subhead: ["calc(14px * var(--text-scale))", { lineHeight: "calc(19px * var(--text-scale))", letterSpacing: "-0.006em" }],
+      footnote: ["calc(13px * var(--text-scale))", { lineHeight: "calc(18px * var(--text-scale))", letterSpacing: "-0.003em" }],
+      caption: ["calc(12px * var(--text-scale))", { lineHeight: "calc(16px * var(--text-scale))", letterSpacing: "0" }],
+      micro: ["calc(11px * var(--text-scale))", { lineHeight: "calc(13px * var(--text-scale))", letterSpacing: "0.02em" }]
     },
     borderRadius: {
       none: "0",

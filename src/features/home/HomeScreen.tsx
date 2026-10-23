@@ -18,6 +18,7 @@ import { spring } from "../../ui/motion";
 import { Avatar, Group, IconButton, IconChip, ProgressBar, SectionHeader } from "../../ui/primitives";
 import { TxRow, usePresentCtx } from "../transactions/TxRow";
 import { WalletCarousel, useCardModels } from "./WalletCarousel";
+import { HomeReminder, SafeToSpendCard } from "./HomeCards";
 
 export function HomeScreen() {
   const name = useData((s) => s.settings.name);
@@ -71,6 +72,8 @@ export function HomeScreen() {
       </div>
 
       <Reveal intro={intro} delay={0.95} y={12}>
+        <SafeToSpendCard />
+        <HomeReminder />
         <HomeInsight />
         <RecentOperations />
         <PrimaryGoal />
@@ -103,7 +106,7 @@ function Greeting({ name }: { name: string }) {
 
 const ACTION_TONE = {
   income: { tile: "bg-positive-soft text-positive", ring: "color-mix(in srgb, var(--positive) 28%, transparent)" },
-  expense: { tile: "fill-accent text-white", ring: "" },
+  expense: { tile: "fill-accent text-[var(--accent-on)]", ring: "" },
   transfer: { tile: "tile text-ink", ring: "" }
 };
 

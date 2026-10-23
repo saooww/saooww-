@@ -1,6 +1,6 @@
 import { memo, useMemo, useRef, useState } from "react";
 import { animate, motion, useMotionValue, useTransform } from "framer-motion";
-import { Trash2 } from "lucide-react";
+import { Camera, Split, Trash2 } from "lucide-react";
 import { cn } from "../../lib/cn";
 import { haptic } from "../../lib/haptics";
 import { presentTx, type PresentCtx } from "../../lib/present";
@@ -58,7 +58,11 @@ export const TxRow = memo(function TxRow({
     <div className={cn("flex w-full items-center gap-3 px-4", dense ? "min-h-[58px] py-2" : "min-h-[62px] py-2.5")}>
       <IconChip name={v.icon} color={v.color} size={40} />
       <div className="min-w-0 flex-1 text-left">
-        <div className="truncate text-body text-ink">{v.title}</div>
+        <div className="flex min-w-0 items-center gap-1.5">
+          <span className="truncate text-body text-ink">{v.title}</span>
+          {(tx.photos?.length ?? 0) > 0 && <Camera size={13} strokeWidth={2} className="shrink-0 text-ink-3" aria-label="Есть фото чека" />}
+          {tx.splitId && <Split size={13} strokeWidth={2} className="shrink-0 text-ink-3" aria-label="Часть чека" />}
+        </div>
         {v.subtitle && <div className="mt-0.5 truncate text-footnote text-ink-2">{v.subtitle}</div>}
       </div>
       <div className="flex shrink-0 flex-col items-end">

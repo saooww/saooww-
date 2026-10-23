@@ -108,6 +108,8 @@
   --accent-soft: rgba(244, 83, 43, 0.15);
   --accent-ink: #ff7b56;
   --accent-glow: rgba(244, 83, 43, 0.45);
+  /* text and icons on an accent fill */
+  --accent-on: #ffffff;
   --positive: #3cc896;
   --positive-hi: #63dcb0;
   --positive-soft: rgba(60, 200, 150, 0.14);
@@ -162,6 +164,7 @@
   --accent-soft: rgba(230, 67, 28, 0.1);
   --accent-ink: #cf3b16;
   --accent-glow: rgba(230, 67, 28, 0.35);
+  --accent-on: #ffffff;
   --positive: #148f5a;
   --positive-hi: #1fae70;
   --positive-soft: rgba(20, 143, 90, 0.1);
@@ -188,6 +191,84 @@
   --sheet-panel: #ffffff;
   --sheet-tile-top: #f7f5f1;
   --sheet-tile-bottom: #ebe8e2;
+}
+
+/*
+ * Accent colours. Vermilion is the default (in the tokens above); the
+ * others override only the accent family. They sit after the theme blocks
+ * and match their specificity, so they win.
+ */
+[data-accent="indigo"] {
+  --accent: #5b7cfa;
+  --accent-hi: #7e98ff;
+  --accent-lo: #3f5fe0;
+  --accent-press: #4c6ceb;
+  --accent-soft: rgba(91, 124, 250, 0.16);
+  --accent-ink: #8ea4ff;
+  --accent-glow: rgba(91, 124, 250, 0.45);
+  --accent-on: #ffffff;
+}
+[data-theme="light"][data-accent="indigo"] {
+  --accent: #3e5be0;
+  --accent-hi: #5874f0;
+  --accent-lo: #2e47c4;
+  --accent-press: #3550cf;
+  --accent-soft: rgba(62, 91, 224, 0.1);
+  --accent-ink: #3550cf;
+  --accent-glow: rgba(62, 91, 224, 0.32);
+}
+
+[data-accent="sakura"] {
+  --accent: #f06a8e;
+  --accent-hi: #ff8fad;
+  --accent-lo: #d84a72;
+  --accent-press: #e25b80;
+  --accent-soft: rgba(240, 106, 142, 0.16);
+  --accent-ink: #ff93b0;
+  --accent-glow: rgba(240, 106, 142, 0.45);
+  --accent-on: #ffffff;
+}
+[data-theme="light"][data-accent="sakura"] {
+  --accent: #d9466f;
+  --accent-hi: #ec5f86;
+  --accent-lo: #be345c;
+  --accent-press: #c93d65;
+  --accent-soft: rgba(217, 70, 111, 0.1);
+  --accent-ink: #c23a62;
+  --accent-glow: rgba(217, 70, 111, 0.3);
+}
+
+[data-accent="gold"] {
+  --accent: #d9a441;
+  --accent-hi: #f0c26a;
+  --accent-lo: #b9852a;
+  --accent-press: #c99536;
+  --accent-soft: rgba(217, 164, 65, 0.16);
+  --accent-ink: #ebc274;
+  --accent-glow: rgba(217, 164, 65, 0.42);
+  --accent-on: #1c1306;
+}
+[data-theme="light"][data-accent="gold"] {
+  --accent: #b5801c;
+  --accent-hi: #cc9630;
+  --accent-lo: #956610;
+  --accent-press: #a37216;
+  --accent-soft: rgba(181, 128, 28, 0.11);
+  --accent-ink: #8e6210;
+  --accent-glow: rgba(181, 128, 28, 0.3);
+  --accent-on: #ffffff;
+}
+
+/* Text size (Settings → Оформление). Scales type, not spacing. */
+:root,
+[data-text="m"] {
+  --text-scale: 1;
+}
+[data-text="l"] {
+  --text-scale: 1.1;
+}
+[data-text="xl"] {
+  --text-scale: 1.2;
 }
 
 /* ------------------------------------------------------------------ */
@@ -225,7 +306,7 @@
     background-color: var(--bg);
     color: var(--ink);
     font-family: theme("fontFamily.sans");
-    font-size: 16px;
+    font-size: calc(16px * var(--text-scale));
     line-height: 1.375;
     letter-spacing: -0.011em;
     -webkit-font-smoothing: antialiased;
@@ -390,8 +471,8 @@
 
   /* Small tracked caps used for section labels and eyebrows. */
   .label-caps {
-    font-size: 11.5px;
-    line-height: 14px;
+    font-size: calc(11.5px * var(--text-scale));
+    line-height: calc(14px * var(--text-scale));
     font-weight: 600;
     letter-spacing: 0.085em;
     text-transform: uppercase;

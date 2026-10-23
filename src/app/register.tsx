@@ -24,6 +24,7 @@ import { TaskSheet, TasksScreen } from "../features/tasks/Tasks";
 import { LinkPickerSheet, NoteEditor, NotesScreen } from "../features/notes/Notes";
 import { BackupTextSheet, CategoriesScreen, CurrenciesScreen, DataScreen, SettingsScreen } from "../features/settings/Settings";
 import { SearchSheet } from "../features/search/SearchSheet";
+import { PinSheet } from "../features/lock/PinSheet";
 
 registerRoutes({
   roots: {
@@ -71,5 +72,6 @@ registerSheets({
   task: TaskSheet,
   linkPicker: LinkPickerSheet,
   search: SearchSheet,
-  backupText: BackupTextSheet
+  backupText: BackupTextSheet,
+  pin: PinSheet
 });
