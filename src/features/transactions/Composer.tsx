@@ -1,29 +1,39 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useAnimationControls } from "framer-motion";
-import { ArrowRight, CalendarDays, ChevronDown, Hash, LayoutGrid, MessageSquareText, Plus, Repeat, Star } from "lucide-react";
+import { ArrowRight, CalendarDays, Camera, ChevronDown, Hash, LayoutGrid, MessageSquareText, Plus, Repeat, Split, Star, X } from "lucide-react";
 import { cn } from "../../lib/cn";
 import { dayOf, formatDate, formatDayHeading, nowISO, timeOf, todayKey, addDays } from "../../lib/dates";
 import { activeWallets } from "../../lib/finance";
 import { haptic } from "../../lib/haptics";
 import { amountToInput, formatMoney, parseAmount, type Minor } from "../../lib/money";
 import { anchorOf, freqLabel, nextAfter } from "../../lib/recurrence";
+import { uid } from "../../lib/id";
 import { walletKindInfo } from "../../store/catalog";
 import { useBalances, useCategoryUsage } from "../../store/hooks";
 import { useData } from "../../store/store";
-import type { Favorite, Frequency, ID, Transaction } from "../../store/types";
-import { nav } from "../../store/ui";
+import type { Category, Favorite, Frequency, ID, Transaction } from "../../store/types";
+import { photosSupported } from "../../store/photos";
+import { PhotoStrip } from "./Photos";
+import { nav, useUI } from "../../store/ui";
 import { undoable } from "../../store/undo";
 import { Keypad, applyKey, type KeypadKey } from "../../ui/Keypad";
 import { Money } from "../../ui/Money";
 import { ease, spring } from "../../ui/motion";
-import { Button, Chip, FormRow, Group, IconChip, Segmented, Toggle, inputCls } from "../../ui/primitives";
+import { Button, Chip, FormRow, Group, IconChip, Row, Segmented, Toggle, inputCls } from "../../ui/primitives";
 import { NamedIcon } from "../../ui/icons";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
 import { TagInput } from "../../ui/TagInput";
 import { AmountDisplay } from "./AmountDisplay";
 
 type FlowKind = "expense" | "income" | "transfer";
-type View = "main" | "from" | "to" | "categories" | "details";
+type View = "main" | "from" | "to" | "categories" | "details" | "split";
+
+/** One extra category of a split receipt; whatever is left stays in the main category. */
+interface Part {
+  key: string;
+  categoryId?: ID;
+  buf: string;
+}
 
 export interface ComposerProps {
   kind?: FlowKind;
@@ -76,6 +86,8 @@ export function ComposerSheet(props: ComposerProps) {
   const [tags, setTags] = useState<string[]>(editing?.tags ?? []);
   const [repeat, setRepeat] = useState<"none" | Frequency>("none");
   const [saveFav, setSaveFav] = useState(false);
+  const [photos, setPhotos] = useState<string[]>(editing?.photos ?? []);
+  const [parts, setParts] = useState<Part[]>([]);
   const [view, setView] = useState<View>("main");
   const [hint, setHint] = useState<string | null>(null);
   const amountCtl = useAnimationControls();
@@ -120,6 +132,7 @@ export function ComposerSheet(props: ComposerProps) {
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement | null;
       if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA")) return;
+      if (useUI.getState().locked) return; // digits belong to the lock screen
       if (/^[0-9]$/.test(e.key)) pressRef.current(e.key as KeypadKey);
       else if (e.key === "," || e.key === ".") pressRef.current(",");
       else if (e.key === "Backspace") pressRef.current("back");
@@ -146,7 +159,21 @@ export function ComposerSheet(props: ComposerProps) {
       nav.toast("Сначала добавьте кошелёк", { tone: "warning" });
       return;
     }
-    if (kind !== "transfer" && !lockedKind && !categoryId) {
+    const splitParts = kind === "expense" && !editing ? parts.filter((p) => parseAmount(p.buf) > 0) : [];
+    const remainder = amount - splitParts.reduce((s, p) => s + parseAmount(p.buf), 0);
+    if (splitParts.length) {
+      if (splitParts.some((p) => !p.categoryId)) {
+        setView("split");
+        nav.toast("Выберите категорию для каждой части чека", { tone: "warning" });
+        return;
+      }
+      if (remainder < 0) {
+        setView("split");
+        nav.toast("Части чека больше его суммы", { tone: "warning" });
+        return;
+      }
+    }
+    if (kind !== "transfer" && !lockedKind && !categoryId && !(splitParts.length && remainder === 0)) {
       shake(catCtl);
       setHint("Выберите категорию");
       return;
@@ -181,7 +208,8 @@ export function ComposerSheet(props: ComposerProps) {
       categoryId: effectiveKind === "income" || effectiveKind === "expense" ? categoryId : editing?.categoryId,
       date,
       note: cleanNote,
-      tags
+      tags,
+      photos: photos.length ? photos : undefined
     };
 
     const isNew = !editing;
@@ -189,7 +217,7 @@ export function ComposerSheet(props: ComposerProps) {
 
     undoable(label, () => {
       let recurringId = editing?.recurringId;
-      if (repeat !== "none" && !recurringId && (kind === "income" || kind === "expense" || kind === "transfer")) {
+      if (repeat !== "none" && !recurringId && !splitParts.length && (kind === "income" || kind === "expense" || kind === "transfer")) {
         const day = dayOf(date);
         const anchor = anchorOf(day);
         recurringId = st.addRecurring({
@@ -210,13 +238,23 @@ export function ComposerSheet(props: ComposerProps) {
         });
       }
       if (editing) st.updateTransaction(editing.id, { ...fields, recurringId });
-      else st.addTransaction({ ...(fields as Omit<Transaction, "id" | "createdAt">), recurringId });
+      else if (splitParts.length) {
+        // One receipt → several ordinary expenses that know they belong together.
+        const splitId = uid("s-");
+        const base = fields as Omit<Transaction, "id" | "createdAt">;
+        if (remainder > 0) st.addTransaction({ ...base, amount: remainder, categoryId, splitId });
+        for (const p of splitParts) st.addTransaction({ ...base, amount: parseAmount(p.buf), categoryId: p.categoryId, splitId });
+      } else st.addTransaction({ ...(fields as Omit<Transaction, "id" | "createdAt">), recurringId });
       if (saveFav && kind !== "transfer") {
         st.addFavorite({ kind, title: cleanNote || catMap.get(categoryId!)?.name || "Избранное", amount, walletId, categoryId, note: cleanNote });
       }
     });
     haptic("success");
     close();
+    // On the home screen the amount flies into the card.
+    if (isNew && (effectiveKind === "income" || effectiveKind === "expense") && useUI.getState().tab === "home") {
+      nav.fly({ amount, currency, kind: effectiveKind, walletId });
+    }
   };
   saveRef.current = save;
 
@@ -248,7 +286,8 @@ export function ComposerSheet(props: ComposerProps) {
     from: kind === "transfer" ? "Откуда" : "Кошелёк",
     to: "Куда",
     categories: "Категория",
-    details: "Подробности"
+    details: "Подробности",
+    split: "Разделить чек"
   };
 
   return (
@@ -347,9 +386,26 @@ export function ComposerSheet(props: ComposerProps) {
               <Chip icon={Hash} onClick={() => setView("details")} selected={tags.length > 0}>
                 {tags.length ? tags.map((t) => `#${t}`).join(" ") : "Теги"}
               </Chip>
-              {!editingRecurring && !lockedKind && (
+              {!editingRecurring && !lockedKind && !parts.length && (
                 <Chip icon={Repeat} onClick={() => setView("details")} selected={repeat !== "none"}>
                   {repeat === "none" ? "Повтор" : freqLabel(repeat)}
+                </Chip>
+              )}
+              {kind === "expense" && !editing && (
+                <Chip
+                  icon={Split}
+                  onClick={() => {
+                    if (!parts.length) setParts([{ key: uid(), buf: "" }]);
+                    setView("split");
+                  }}
+                  selected={parts.some((p) => parseAmount(p.buf) > 0)}
+                >
+                  {parts.some((p) => parseAmount(p.buf) > 0) ? `Чек: ${parts.filter((p) => parseAmount(p.buf) > 0).length + 1} части` : "Разделить"}
+                </Chip>
+              )}
+              {photosSupported() && (
+                <Chip icon={Camera} onClick={() => setView("details")} selected={photos.length > 0}>
+                  {photos.length ? `Фото · ${photos.length}` : "Фото чека"}
                 </Chip>
               )}
             </div>
@@ -458,6 +514,11 @@ export function ComposerSheet(props: ComposerProps) {
                 <TagInput value={tags} onChange={setTags} suggestions={tagSuggestions} />
               </div>
             </Group>
+            {photosSupported() && (
+              <Group header="Фото чека" footer="Хранятся только на этом устройстве и не входят в резервную копию.">
+                <PhotoStrip ids={photos} onChange={setPhotos} />
+              </Group>
+            )}
             {!editingRecurring && !lockedKind && (
               <Group header="Повторять" footer={repeat !== "none" ? "Следующие операции будут записываться автоматически. Управлять ими можно в разделе «Подписки и платежи»." : undefined}>
                 <div className="px-3 py-3">
@@ -490,8 +551,102 @@ export function ComposerSheet(props: ComposerProps) {
             )}
           </motion.div>
         )}
+        {view === "split" && (
+          <motion.div key="split" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 24 }} transition={{ duration: 0.18, ease: ease.out }} className="flex flex-col gap-4 pt-1">
+            <SplitEditor
+              total={amount}
+              currency={currency}
+              parts={parts}
+              onChange={setParts}
+              mainCategory={categoryId ? catMap.get(categoryId) : undefined}
+              categories={categories.filter((c) => c.kind === "expense" && !c.archived)}
+            />
+            <div className="px-4 pb-2">
+              <Button block onClick={() => setView("main")}>
+                Готово
+              </Button>
+            </div>
+          </motion.div>
+        )}
       </AnimatePresence>
     </Sheet>
+  );
+}
+
+/** Extra categories of one receipt; the rest stays in the main category. */
+function SplitEditor({
+  total,
+  currency,
+  parts,
+  onChange,
+  mainCategory,
+  categories
+}: {
+  total: Minor;
+  currency: string;
+  parts: Part[];
+  onChange: (p: Part[]) => void;
+  mainCategory?: Category;
+  categories: Category[];
+}) {
+  const used = parts.reduce((s, p) => s + parseAmount(p.buf), 0);
+  const remainder = total - used;
+  const catMap = new Map(categories.map((c) => [c.id, c]));
+  const set = (k: number, patch: Partial<Part>) => onChange(parts.map((p, i) => (i === k ? { ...p, ...patch } : p)));
+
+  return (
+    <>
+      <p className="px-5 text-callout text-ink-2">
+        Чек на <Money value={total} currency={currency} className="font-semibold text-ink" />. Укажите, сколько ушло на другие категории, — остаток останется в {mainCategory ? `«${mainCategory.name}»` : "основной категории"}.
+      </p>
+      <Group>
+        {parts.map((p, k) => {
+          const c = p.categoryId ? catMap.get(p.categoryId) : undefined;
+          return (
+            <div key={p.key} className="flex items-center gap-2 py-2 pl-3 pr-2">
+              <button
+                type="button"
+                onClick={() =>
+                  nav.sheet("picker", {
+                    title: "Категория части",
+                    value: p.categoryId,
+                    options: categories.map((x) => ({ value: x.id, label: x.name, iconName: x.icon })),
+                    onSelect: (id: string) => set(k, { categoryId: id })
+                  })
+                }
+                className="flex min-w-0 flex-1 items-center gap-2.5 rounded-[12px] py-1 text-left active:opacity-60"
+              >
+                <IconChip name={c?.icon ?? "CircleDashed"} color={c?.color} size={36} />
+                <span className={cn("truncate text-body", c ? "text-ink" : "text-ink-3")}>{c?.name ?? "Категория"}</span>
+                <ChevronDown size={15} className="shrink-0 text-ink-3" />
+              </button>
+              <div className="w-24 shrink-0">
+                <input
+                  inputMode="decimal"
+                  value={p.buf}
+                  placeholder="0"
+                  aria-label={`Сумма части ${k + 1}`}
+                  onChange={(e) => set(k, { buf: e.target.value.replace(/[^\d.,]/g, "") })}
+                  className={cn(inputCls, "num text-right text-headline")}
+                />
+              </div>
+              <button type="button" aria-label="Убрать часть" onClick={() => onChange(parts.filter((_, i) => i !== k))} className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-ink-3 active:bg-surface-press">
+                <X size={17} />
+              </button>
+            </div>
+          );
+        })}
+        <Row icon={Plus} title="Добавить часть" onClick={() => onChange([...parts, { key: uid(), buf: "" }])} />
+      </Group>
+      <Group>
+        <Row
+          leading={<IconChip name={mainCategory?.icon ?? "CircleDashed"} color={mainCategory?.color} size={36} />}
+          title={mainCategory ? `Остаток — ${mainCategory.name}` : "Остаток"}
+          subtitle={!mainCategory && remainder > 0 ? "Выберите основную категорию на главном экране" : undefined}
+          value={<Money value={remainder} currency={currency} tone={remainder < 0 ? "negative" : "default"} className="font-medium" />}
+        />
+      </Group>
+    </>
   );
 }
 

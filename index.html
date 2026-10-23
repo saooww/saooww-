@@ -31,13 +31,19 @@
       // Apply the saved theme before first paint, so there is no flash.
       (function () {
         try {
-          var raw = localStorage.getItem("kapital-v2");
-          var theme = raw ? (JSON.parse(raw).state || {}).settings : null;
-          var t = theme && theme.theme ? theme.theme : "dark";
+          // A small mirror of visual settings (the data itself lives in IndexedDB).
+          var p = JSON.parse(localStorage.getItem("kapital-prefs") || "null");
+          if (!p) {
+            var raw = localStorage.getItem("kapital-v2");
+            p = raw ? (JSON.parse(raw).state || {}).settings : null;
+          }
+          var t = p && p.theme ? p.theme : "dark";
           if (t === "system") t = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-          document.documentElement.setAttribute("data-theme", t);
-          if (document.body) document.body.setAttribute("data-theme", t);
-          if (theme && theme.numberFont) document.documentElement.setAttribute("data-num", theme.numberFont);
+          var root = document.documentElement;
+          root.setAttribute("data-theme", t);
+          if (p && p.numberFont) root.setAttribute("data-num", p.numberFont);
+          if (p && p.accent) root.setAttribute("data-accent", p.accent);
+          if (p && p.textSize) root.setAttribute("data-text", p.textSize);
         } catch (e) {}
       })();
     </script>

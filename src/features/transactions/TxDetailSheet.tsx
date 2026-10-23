@@ -1,5 +1,6 @@
+import { useMemo } from "react";
 import { Copy, Pencil, Star, Trash2 } from "lucide-react";
-import { formatDayHeading, dayOf, nowISO, timeOf } from "../../lib/dates";
+import { formatDayHeading, dayOf, nowISO, pluralN, timeOf } from "../../lib/dates";
 import { haptic } from "../../lib/haptics";
 import { KIND_LABEL, presentTx } from "../../lib/present";
 import { freqLabel } from "../../lib/recurrence";
@@ -11,6 +12,7 @@ import { Money } from "../../ui/Money";
 import { Group, IconChip, Row } from "../../ui/primitives";
 import { Sheet, useSheet } from "../../ui/Sheet";
 import { usePresentCtx } from "./TxRow";
+import { PhotoStrip } from "./Photos";
 
 export function TxDetailSheet({ id }: { id: ID }) {
   const { close } = useSheet();
@@ -19,6 +21,8 @@ export function TxDetailSheet({ id }: { id: ID }) {
   const recurring = useData((s) => (tx?.recurringId ? s.recurring.find((r) => r.id === tx.recurringId) : undefined));
   const plan = useData((s) => (tx?.planId ? s.plans.find((p) => p.id === tx.planId) : undefined));
   const favorites = useData((s) => s.favorites);
+  const allTx = useData((s) => s.transactions);
+  const parts = useMemo(() => (tx?.splitId ? allTx.filter((t) => t.splitId === tx.splitId) : []), [allTx, tx?.splitId]);
 
   if (!tx) {
     return (
@@ -102,6 +106,30 @@ export function TxDetailSheet({ id }: { id: ID }) {
           {plan && <Row title="По плану" value={plan.title} />}
         </Group>
 
+        {tx.photos && tx.photos.length > 0 && (
+          <Group header="Фото чека">
+            <PhotoStrip ids={tx.photos} />
+          </Group>
+        )}
+
+        {parts.length > 1 && (
+          <Group header="Весь чек" footer={`Чек разделён на ${pluralN(parts.length, ["часть", "части", "частей"])} — каждая учитывается в своей категории и бюджете.`}>
+            {parts.map((p) => {
+              const c = p.categoryId ? ctx.categories.get(p.categoryId) : undefined;
+              return (
+                <Row
+                  key={p.id}
+                  leading={<IconChip name={c?.icon ?? "CircleDashed"} color={c?.color} size={32} />}
+                  title={c?.name ?? "Без категории"}
+                  value={<Money value={p.amount} currency={w?.currency} className={p.id === tx.id ? "font-semibold text-ink" : undefined} />}
+                  onClick={p.id === tx.id ? undefined : () => nav.sheet("tx", { id: p.id })}
+                />
+              );
+            })}
+            <Row title="Итого" value={<Money value={parts.reduce((s, p) => s + p.amount, 0)} currency={w?.currency} className="font-semibold text-ink" />} />
+          </Group>
+        )}
+
         <Group>
           {(isFlow || tx.kind === "transfer" || tx.kind === "adjustment") && <Row icon={Pencil} title="Изменить" onClick={edit} />}
           {(isFlow || tx.kind === "transfer") && <Row icon={Copy} title="Повторить сегодня" onClick={repeatNow} />}
@@ -116,7 +144,25 @@ export function TxDetailSheet({ id }: { id: ID }) {
               }}
             />
           )}
-          <Row icon={Trash2} iconTone="negative" title="Удалить" destructive onClick={remove} />
+          <Row icon={Trash2} iconTone="negative" title={parts.length > 1 ? "Удалить эту часть" : "Удалить"} destructive onClick={remove} />
+          {parts.length > 1 && (
+            <Row
+              icon={Trash2}
+              iconTone="negative"
+              title="Удалить весь чек"
+              destructive
+              onClick={() =>
+                confirmDelete({
+                  title: "Удалить весь чек?",
+                  message: `Удалятся все ${parts.length} части. Балансы и аналитика пересчитаются.`,
+                  onConfirm: () => {
+                    undoable("Чек удалён", () => parts.forEach((p) => useData.getState().deleteTransaction(p.id)));
+                    close();
+                  }
+                })
+              }
+            />
+          )}
         </Group>
       </div>
     </Sheet>

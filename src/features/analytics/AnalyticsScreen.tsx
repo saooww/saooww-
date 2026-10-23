@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChartColumn, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChartColumn, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import { cn } from "../../lib/cn";
 import { bucketSeries, bucketsFor, capitalSeries, categoryRows, donutSlices, habits, monthForecast, monthlyTotals, type SeriesKind } from "../../lib/analytics";
 import { addDays, capitalize, formatDate, pluralN, WEEKDAYS_ACC, WEEKDAYS_SHORT } from "../../lib/dates";
@@ -17,6 +17,7 @@ import { NamedIcon } from "../../ui/icons";
 import { AnimatedMoney, Money } from "../../ui/Money";
 import { ease } from "../../ui/motion";
 import { EmptyState, IconButton, ProgressBar, Segmented } from "../../ui/primitives";
+import { SpendingCalendar } from "./SpendingCalendar";
 
 const PERIODS: Array<{ value: Period; label: string }> = [
   { value: "week", label: "Неделя" },
@@ -123,6 +124,21 @@ export function AnalyticsScreen() {
             <SummaryTile label="Поток" value={stats.net} currency={base} signed />
           </div>
           {partialCompare && (prev.income > 0 || prev.expense > 0) && <div className="mt-2 px-5 text-caption text-ink-3">Проценты — к тем же дням {PREV_GEN[period]}</div>}
+          {period === "month" && hab.expenseCount >= 5 && (
+            <div className="mt-3 px-4">
+              <motion.button
+                type="button"
+                whileTap={{ scale: 0.98 }}
+                onClick={() => nav.story(range.from)}
+                className="relative flex w-full items-center gap-3 overflow-hidden rounded-[18px] px-4 py-3 text-left text-white"
+                style={{ background: "radial-gradient(90% 140% at 100% 100%, color-mix(in srgb, var(--accent) 70%, transparent), transparent 70%), linear-gradient(160deg, #26262b, #0b0b0d)", boxShadow: "inset 0 0.5px 0 rgba(255,255,255,0.12)" }}
+              >
+                <Sparkles size={18} strokeWidth={1.9} />
+                <span className="flex-1 text-callout font-semibold">Итоги: {range.label.toLowerCase()}</span>
+                <ChevronRight size={16} className="text-white/60" />
+              </motion.button>
+            </div>
+          )}
           {skipped > 0 && (
             <button type="button" onClick={() => nav.push("currencies")} className="mt-2 px-5 text-left text-footnote text-warning">
               {pluralN(skipped, ["операция не учтена", "операции не учтены", "операций не учтено"])} — нет курса валюты →
@@ -198,6 +214,19 @@ export function AnalyticsScreen() {
                   <Fact label="Запланировано" value={forecast.scheduled} currency={base} />
                 </div>
                 <p className="mt-3 text-caption text-ink-3">Учитывает ваш обычный темп трат за 60 дней, регулярные платежи и планы на остаток месяца.</p>
+              </div>
+            </section>
+          )}
+
+          {/* Calendar */}
+          {period === "month" && (
+            <section className="mt-4 px-4">
+              <div className="panel rounded-xl p-4">
+                <div className="mb-3 flex items-center justify-between">
+                  <div className="text-headline font-semibold">Календарь трат</div>
+                  {hab.noSpendDays > 0 && <div className="text-footnote text-ink-2">{pluralN(hab.noSpendDays, ["день", "дня", "дней"])} без трат</div>}
+                </div>
+                <SpendingCalendar key={range.from} entries={entries} from={range.from} to={range.to} today={today} categories={cats} currency={base} />
               </div>
             </section>
           )}

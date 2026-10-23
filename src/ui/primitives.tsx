@@ -46,7 +46,7 @@ type ButtonVariant = "primary" | "secondary" | "ghost" | "danger" | "tinted";
 type ButtonSize = "lg" | "md" | "sm";
 
 const BUTTON_VARIANTS: Record<ButtonVariant, string> = {
-  primary: "fill-accent text-white disabled:opacity-40 disabled:shadow-none",
+  primary: "fill-accent text-[var(--accent-on)] disabled:opacity-40 disabled:shadow-none",
   secondary: "tile text-ink disabled:opacity-40",
   ghost: "text-ink-2 disabled:opacity-40",
   danger: "bg-negative-soft text-negative disabled:opacity-40",
@@ -105,7 +105,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(functio
         "inline-flex shrink-0 items-center justify-center rounded-full",
         variant === "filled" && "tile text-ink",
         variant === "plain" && "text-ink",
-        variant === "accent" && "fill-accent text-white",
+        variant === "accent" && "fill-accent text-[var(--accent-on)]",
         className
       )}
       style={{ width: size, height: size }}

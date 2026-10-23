@@ -52,6 +52,15 @@ export interface TxFilter {
   sort: "date-desc" | "date-asc" | "amount-desc" | "amount-asc";
 }
 
+/** A saved amount flying from the composer into the wallet card */
+export interface Flight {
+  id: number;
+  amount: number;
+  currency: string;
+  kind: "income" | "expense";
+  walletId?: ID;
+}
+
 export const DEFAULT_FILTER: TxFilter = { query: "", kind: "all", period: "all", sort: "date-desc" };
 
 interface UIState {
@@ -69,6 +78,15 @@ interface UIState {
   homeCardIndex: number;
   /** Wallet whose card is flying into a detail screen — its source stays hidden */
   heroWalletId: ID | null;
+  /** Saved data has been read and the first-launch decision made */
+  booted: boolean;
+  /** First launch: the welcome flow is showing */
+  onboarding: boolean;
+  /** App lock screen is up */
+  locked: boolean;
+  flight: Flight | null;
+  /** Month (any day in it) whose summary story is open */
+  story: DayKey | null;
 
   setTab(tab: Tab): void;
   push(name: RouteName, params?: Record<string, unknown>, tab?: Tab): void;
@@ -99,6 +117,11 @@ export const useUI = create<UIState>()((set, get) => ({
   txFilter: DEFAULT_FILTER,
   homeCardIndex: 0,
   heroWalletId: null,
+  booted: false,
+  onboarding: false,
+  locked: false,
+  flight: null,
+  story: null,
 
   setTab(tab) {
     const s = get();
@@ -177,5 +200,7 @@ export const nav = {
   tab: (tab: Tab) => useUI.getState().setTab(tab),
   sheet: (type: string, props?: Record<string, unknown>) => useUI.getState().openSheet(type, props),
   close: (id?: string) => useUI.getState().closeSheet(id),
-  toast: (text: string, opts?: Omit<Toast, "id" | "text">) => useUI.getState().toast(text, opts)
+  toast: (text: string, opts?: Omit<Toast, "id" | "text">) => useUI.getState().toast(text, opts),
+  fly: (f: Omit<Flight, "id">) => useUI.setState({ flight: { ...f, id: ++seq } }),
+  story: (month: DayKey) => useUI.setState({ story: month })
 };

@@ -19,7 +19,13 @@ export function defaultSettings(): Settings {
     kopecks: "auto",
     hideAmounts: false,
     hideOnLaunch: false,
-    autoBackup: true
+    autoBackup: true,
+    lockEnabled: false,
+    lockAfter: 1,
+    autoRates: true,
+    launchAction: "home",
+    accent: "vermilion",
+    textSize: "m"
   };
 }
 

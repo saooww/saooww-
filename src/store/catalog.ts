@@ -202,7 +202,8 @@ export const TOTAL_MATERIAL: CardMaterial = {
   id: "graphite",
   name: "Все счета",
   background: [
-    "radial-gradient(75% 65% at 92% 108%, rgba(244,83,43,0.42), rgba(244,83,43,0.08) 55%, transparent 75%)",
+    // follows the chosen accent colour
+    "radial-gradient(75% 65% at 92% 108%, color-mix(in srgb, var(--accent) 42%, transparent), color-mix(in srgb, var(--accent) 8%, transparent) 55%, transparent 75%)",
     "radial-gradient(130% 95% at 0% 0%, rgba(255,255,255,0.11), transparent 52%)",
     "linear-gradient(155deg, #26262a 0%, #141416 48%, #08080a 100%)"
   ].join(", "),
@@ -210,7 +211,7 @@ export const TOTAL_MATERIAL: CardMaterial = {
   inkMuted: "rgba(246,245,243,0.56)",
   line: "rgba(255,255,255,0.07)",
   swatch: "#1a1a1d",
-  glow: "rgba(244,83,43,0.30)"
+  glow: "color-mix(in srgb, var(--accent) 30%, transparent)"
 };
 
 export function materialOf(style: CardStyle): CardMaterial {
