@@ -78,8 +78,9 @@
 }
 
 /*
- * Palette: sumi (ink) blacks with a faint warm bias, one vermilion accent
- * (shu-iro), jade for money coming in. Light theme sits on warm washi paper.
+ * Palette: sumi (ink) blacks with a faint warm bias, one accent — the
+ * Ardessa red of the logo — and jade for money coming in. Light theme sits
+ * on warm washi paper.
  */
 :root,
 [data-theme="dark"] {
@@ -101,13 +102,15 @@
   --ink-3: #66635f;
   --ink-4: #3d3b39;
   --ink-inverse: #0b0a09;
-  --accent: #f4532b;
-  --accent-hi: #ff7a4d;
-  --accent-lo: #d93a16;
-  --accent-press: #dd4320;
-  --accent-soft: rgba(244, 83, 43, 0.15);
-  --accent-ink: #ff7b56;
-  --accent-glow: rgba(244, 83, 43, 0.45);
+  /* the logo's own red — never follows the chosen accent */
+  --brand: #fa0717;
+  --accent: #fa0717;
+  --accent-hi: #ff3d4a;
+  --accent-lo: #cf0412;
+  --accent-press: #dc0614;
+  --accent-soft: rgba(250, 7, 23, 0.15);
+  --accent-ink: #ff4b57;
+  --accent-glow: rgba(250, 7, 23, 0.45);
   /* text and icons on an accent fill */
   --accent-on: #ffffff;
   --positive: #3cc896;
@@ -157,13 +160,14 @@
   --ink-3: #a6a19a;
   --ink-4: #d3cec6;
   --ink-inverse: #ffffff;
-  --accent: #e6431c;
-  --accent-hi: #f5643a;
-  --accent-lo: #c93512;
-  --accent-press: #cf3b16;
-  --accent-soft: rgba(230, 67, 28, 0.1);
-  --accent-ink: #cf3b16;
-  --accent-glow: rgba(230, 67, 28, 0.35);
+  --brand: #f00515;
+  --accent: #e30613;
+  --accent-hi: #f5222f;
+  --accent-lo: #bd0410;
+  --accent-press: #c80511;
+  --accent-soft: rgba(227, 6, 19, 0.09);
+  --accent-ink: #c80511;
+  --accent-glow: rgba(227, 6, 19, 0.3);
   --accent-on: #ffffff;
   --positive: #148f5a;
   --positive-hi: #1fae70;
@@ -194,10 +198,30 @@
 }
 
 /*
- * Accent colours. Vermilion is the default (in the tokens above); the
+ * Accent colours. Ardessa red is the default (in the tokens above); the
  * others override only the accent family. They sit after the theme blocks
  * and match their specificity, so they win.
  */
+[data-accent="vermilion"] {
+  --accent: #f4532b;
+  --accent-hi: #ff7a4d;
+  --accent-lo: #d93a16;
+  --accent-press: #dd4320;
+  --accent-soft: rgba(244, 83, 43, 0.15);
+  --accent-ink: #ff7b56;
+  --accent-glow: rgba(244, 83, 43, 0.45);
+  --accent-on: #ffffff;
+}
+[data-theme="light"][data-accent="vermilion"] {
+  --accent: #e6431c;
+  --accent-hi: #f5643a;
+  --accent-lo: #c93512;
+  --accent-press: #cf3b16;
+  --accent-soft: rgba(230, 67, 28, 0.1);
+  --accent-ink: #cf3b16;
+  --accent-glow: rgba(230, 67, 28, 0.35);
+}
+
 [data-accent="indigo"] {
   --accent: #5b7cfa;
   --accent-hi: #7e98ff;

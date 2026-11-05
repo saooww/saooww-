@@ -13,7 +13,7 @@ export function isEmbedded(): boolean {
 export type SaveResult = "shared" | "downloaded" | "cancelled" | "failed";
 
 function backupFile(text: string): File {
-  return new File([text], `kapital-${nowISO().slice(0, 10)}.json`, { type: "application/json" });
+  return new File([text], `ardessa-${nowISO().slice(0, 10)}.json`, { type: "application/json" });
 }
 
 function download(file: File) {
@@ -36,7 +36,7 @@ export async function saveBackupFile(raw?: string): Promise<SaveResult> {
   const file = backupFile(raw ?? exportJSON());
   try {
     if (navigator.canShare?.({ files: [file] })) {
-      await navigator.share({ files: [file], title: "Капитал — резервная копия" });
+      await navigator.share({ files: [file], title: "Ardessa — резервная копия" });
       if (!raw) useData.getState().updateSettings({ lastExternalBackup: nowISO() });
       return "shared";
     }

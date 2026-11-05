@@ -10,6 +10,11 @@ const EASE_OUT = ease.out;
  * itself. It plays once per launch, only when animations are on.
  */
 const START = typeof performance !== "undefined" ? performance.now() : 0;
+
+/** How long the logo stays up before it dissolves into the home screen. */
+export const SPLASH_MS = 1050;
+/** Everything the home screen does during the intro starts this much later. */
+export const INTRO_SHIFT = 0.23;
 let enabled: boolean | null = null;
 
 export function introEnabled(): boolean {
@@ -25,13 +30,13 @@ export function introEnabled(): boolean {
 
 /** True while the app is still in its first moments — read once on mount. */
 export function introActive(): boolean {
-  return introEnabled() && (typeof performance === "undefined" ? 0 : performance.now()) - START < 1500;
+  return introEnabled() && (typeof performance === "undefined" ? 0 : performance.now()) - START < 1500 + INTRO_SHIFT * 1000;
 }
 
 /** Fades and lifts its content into place during the intro; static otherwise. */
 export function Reveal({ intro, delay = 0, y = 14, className, children }: { intro: boolean; delay?: number; y?: number; className?: string; children: ReactNode }) {
   return (
-    <motion.div className={className} initial={intro ? { opacity: 0, y } : false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: EASE_OUT, delay }}>
+    <motion.div className={className} initial={intro ? { opacity: 0, y } : false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: EASE_OUT, delay: intro ? delay + INTRO_SHIFT : 0 }}>
       {children}
     </motion.div>
   );

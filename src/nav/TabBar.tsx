@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeftRight, ChartColumn, House, LayoutGrid, WalletCards, type LucideIcon } from "lucide-react";
+import { ArrowLeftRight, ChartColumn, CircleCheckBig, House, LayoutGrid, WalletCards, type LucideIcon } from "lucide-react";
 import { cn } from "../lib/cn";
 import { haptic } from "../lib/haptics";
 import { useUI, type Tab } from "../store/ui";
-import { introActive } from "../ui/intro";
+import { INTRO_SHIFT, introActive } from "../ui/intro";
 import { spring } from "../ui/motion";
 
 const ITEMS: Array<{ tab: Tab; label: string; icon: LucideIcon }> = [
   { tab: "home", label: "Главная", icon: House },
+  { tab: "planner", label: "Дела", icon: CircleCheckBig },
   { tab: "wallets", label: "Кошельки", icon: WalletCards },
   { tab: "transactions", label: "Операции", icon: ArrowLeftRight },
   { tab: "analytics", label: "Аналитика", icon: ChartColumn },
@@ -28,7 +29,7 @@ export function TabBar() {
         style={{ height: "var(--tabbar-h)" }}
         initial={intro ? { y: 16, opacity: 0 } : false}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.85 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.85 + INTRO_SHIFT }}
       >
         {ITEMS.map(({ tab: t, label, icon: Icon }) => {
           const active = t === tab;

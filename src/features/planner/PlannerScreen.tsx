@@ -1,0 +1,71 @@
+import { useEffect, useRef } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Plus, Search } from "lucide-react";
+import { useData } from "../../store/store";
+import { nav, useUI, type PlannerView } from "../../store/ui";
+import { Screen, useRoute } from "../../nav/Screen";
+import { spring } from "../../ui/motion";
+import { IconButton, Segmented } from "../../ui/primitives";
+import { NotesView, createNote } from "../notes/Notes";
+import { ListsView } from "./ListsView";
+import { TodayView } from "./TodayView";
+import { WeekView } from "./WeekView";
+import { useToday } from "../../store/hooks";
+
+const VIEWS: Array<{ value: PlannerView; label: string }> = [
+  { value: "today", label: "Сегодня" },
+  { value: "week", label: "Неделя" },
+  { value: "lists", label: "Списки" },
+  { value: "notes", label: "Заметки" }
+];
+
+/** «Дела»: today, the week, lists and notes — everything that is not money. */
+export function PlannerScreen() {
+  const view = useUI((s) => s.plannerView);
+  const setView = useUI((s) => s.setPlannerView);
+  const today = useToday();
+  const { active } = useRoute();
+  const introSeen = useData((s) => s.settings.plannerIntroSeen);
+  const asked = useRef(false);
+
+  useEffect(() => {
+    if (!active || introSeen || asked.current) return;
+    asked.current = true;
+    const t = window.setTimeout(() => {
+      const ui = useUI.getState();
+      if (!ui.locked && !ui.onboarding && ui.tab === "planner") nav.sheet("plannerIntro", {});
+    }, 450);
+    return () => window.clearTimeout(t);
+  }, [active, introSeen]);
+
+  const add = () => {
+    if (view === "notes") createNote();
+    else nav.sheet("quickAdd", view === "today" ? { due: today } : {});
+  };
+
+  return (
+    <div className="absolute inset-0">
+      <Screen title="Дела" large actions={<IconButton icon={Search} label="Поиск" onClick={() => nav.sheet("search")} />}>
+        <div className="px-4 pb-5">
+          <Segmented value={view} onChange={setView} options={VIEWS} />
+        </div>
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div key={view} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }} className="pb-16">
+            {view === "today" ? <TodayView /> : view === "week" ? <WeekView /> : view === "lists" ? <ListsView /> : <NotesView />}
+          </motion.div>
+        </AnimatePresence>
+      </Screen>
+      <motion.button
+        type="button"
+        aria-label={view === "notes" ? "Новая заметка" : "Новое дело"}
+        onClick={add}
+        whileTap={{ scale: 0.9 }}
+        transition={spring.press}
+        className="fill-accent absolute right-5 z-30 grid h-[58px] w-[58px] place-items-center rounded-[20px] text-[var(--accent-on)]"
+        style={{ bottom: "calc(var(--tabbar-space) + 14px)" }}
+      >
+        <Plus size={26} strokeWidth={2.4} />
+      </motion.button>
+    </div>
+  );
+}

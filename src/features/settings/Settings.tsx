@@ -14,6 +14,7 @@ import { undoable } from "../../store/undo";
 import { Screen } from "../../nav/Screen";
 import { NamedIcon } from "../../ui/icons";
 import { Avatar, FormRow, Group, IconChip, Row, Segmented, Toggle, inputCls } from "../../ui/primitives";
+import { FullLogo } from "../../ui/Brand";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
 import { NUMBER_FONTS, type NumberFont } from "../../ui/numFont";
 import { SecuritySettings } from "../lock/SecuritySettings";
@@ -155,9 +156,13 @@ export function SettingsScreen() {
           <Row icon={Database} title="Резервные копии и данные" chevron onClick={() => nav.push("data")} />
         </Group>
 
-        <Group footer="Капитал хранит все данные только на этом устройстве. На сервер уходит только запрос курсов валют ЦБ — без ваших данных. Чтобы перенести данные на другое устройство, сохраните копию в Файлы и загрузите её там.">
-          <Row icon={Info} title="Версия" value="2.1" />
+        <Group footer="Ardessa хранит все данные только на этом устройстве. На сервер уходит только запрос курсов валют ЦБ — без ваших данных. Чтобы перенести данные на другое устройство, сохраните копию в Файлы и загрузите её там.">
+          <Row icon={Info} title="Версия" value="3.0" />
         </Group>
+
+        <div className="flex justify-center pb-2 pt-4 opacity-90">
+          <FullLogo size={17} />
+        </div>
       </div>
     </Screen>
   );
@@ -409,7 +414,7 @@ export function DataScreen() {
         )}
 
         <Group footer={`Сейчас: ${pluralN(counts.tx, ["операция", "операции", "операций"])}, ${pluralN(counts.wallets, ["кошелёк", "кошелька", "кошельков"])}.${meta.importedFromV1 ? " Данные перенесены из прошлой версии приложения." : ""} Фото чеков в копию не входят.`}>
-          <Row icon={Upload} title="Импорт из файла" subtitle="Из резервной копии Капитала" onClick={() => file.current?.click()} />
+          <Row icon={Upload} title="Импорт из файла" subtitle="Из резервной копии Ardessa или Капитала" onClick={() => file.current?.click()} />
           <Row icon={Copy} title="Скопировать как текст" subtitle="Если сохранить файл не получается" onClick={copyText} />
           <Row icon={ClipboardPaste} title="Вставить из текста" subtitle="Восстановить из скопированной копии" onClick={() => nav.sheet("backupText", { onImport: (data: AppData) => confirmReplace(data, "из текста") })} />
         </Group>
@@ -580,6 +585,7 @@ function NumberFontPicker({ value, onChange }: { value: NumberFont; onChange: (v
 }
 
 const ACCENTS: Array<{ id: Settings["accent"]; label: string; color: string }> = [
+  { id: "ardessa", label: "Ardessa", color: "#fa0717" },
   { id: "vermilion", label: "Киноварь", color: "#f4532b" },
   { id: "indigo", label: "Индиго", color: "#5b7cfa" },
   { id: "sakura", label: "Сакура", color: "#f06a8e" },
@@ -594,7 +600,7 @@ function AccentPicker({ value, onChange }: { value: Settings["accent"]; onChange
         <IconChip icon={Palette} size={30} />
         <span className="text-body">Акцент</span>
       </div>
-      <div className="mt-3 grid grid-cols-4 gap-2" role="radiogroup" aria-label="Цвет акцента">
+      <div className="mt-3 grid grid-cols-5 gap-1" role="radiogroup" aria-label="Цвет акцента">
         {ACCENTS.map((a) => {
           const on = a.id === value;
           return (

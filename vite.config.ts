@@ -15,9 +15,9 @@ export default defineConfig({
       registerType: "autoUpdate",
       includeAssets: ["icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png", "icons/mark.svg"],
       manifest: {
-        name: "Капитал — личные финансы",
-        short_name: "Капитал",
-        description: "Личные финансы: кошельки, операции, аналитика, цели, бюджеты и планы",
+        name: "Ardessa — деньги и дела",
+        short_name: "Ardessa",
+        description: "Деньги и дела в одном приложении: кошельки, аналитика, цели, задачи, заметки",
         lang: "ru",
         theme_color: "#070708",
         background_color: "#070708",

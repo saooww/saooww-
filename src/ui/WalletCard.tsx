@@ -6,6 +6,7 @@ import { moneyParts, type Minor } from "../lib/money";
 import type { CardMaterial } from "../store/catalog";
 import { useData } from "../store/store";
 import { BrandMark } from "./Brand";
+import { INTRO_SHIFT } from "./intro";
 import { displayGroups, useCountMotion } from "./Money";
 import { numberFontScale } from "./numFont";
 
@@ -101,7 +102,7 @@ export const WalletCard = memo(function WalletCard({
   stacked
 }: WalletCardProps) {
   const fontScale = numberFontScale(useData((s) => s.settings.numberFont));
-  const count = useCountMotion(amount, intro ? { from: 0, delay: 0.45, duration: 1.3 } : { duration: 0.7 });
+  const count = useCountMotion(amount, intro ? { from: 0, delay: 0.45 + INTRO_SHIFT, duration: 1.3 } : { duration: 0.7 });
   // While counting, keep whole units (or kopecks, if the balance has them) so
   // the figure doesn't change width as it runs.
   const hasKopecks = amount % 100 !== 0;
@@ -242,7 +243,7 @@ export const WalletCard = memo(function WalletCard({
           className="pointer-events-none absolute inset-y-0 left-0 w-1/2"
           style={{
             background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)",
-            animation: "sheen 1.6s 0.7s cubic-bezier(0.22, 1, 0.36, 1) both"
+            animation: `sheen 1.6s ${0.7 + INTRO_SHIFT}s cubic-bezier(0.22, 1, 0.36, 1) both`
           }}
         />
       )}

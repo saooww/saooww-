@@ -44,6 +44,10 @@ export function startBoot() {
       if (migrated) useData.getState().replaceAll(migrated);
       else onboarding = true;
     }
+    // The app became Ardessa: the old default accent takes the brand red once.
+    const before = useData.getState().settings;
+    if (!before.ardessa) useData.getState().updateSettings({ ardessa: true, accent: before.accent === "vermilion" ? "ardessa" : before.accent });
+
     const s = useData.getState().settings;
     useUI.setState({ booted: true, onboarding, locked: !onboarding && s.lockEnabled && !!s.lockPinHash });
 

@@ -19,6 +19,7 @@ import { Avatar, Group, IconButton, IconChip, ProgressBar, SectionHeader } from 
 import { TxRow, usePresentCtx } from "../transactions/TxRow";
 import { WalletCarousel, useCardModels } from "./WalletCarousel";
 import { HomeReminder, SafeToSpendCard } from "./HomeCards";
+import { HomeToday } from "../planner/HomeToday";
 
 export function HomeScreen() {
   const name = useData((s) => s.settings.name);
@@ -73,6 +74,7 @@ export function HomeScreen() {
 
       <Reveal intro={intro} delay={0.95} y={12}>
         <SafeToSpendCard />
+        <HomeToday />
         <HomeReminder />
         <HomeInsight />
         <RecentOperations />

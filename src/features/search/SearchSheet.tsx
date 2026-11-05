@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
-import { CalendarCheck, HandCoins, ListTodo, NotebookPen, Repeat, Search, Shapes, Target, X } from "lucide-react";
-import { dayOf, formatDate } from "../../lib/dates";
+import { BookOpen, CalendarCheck, HandCoins, ListTodo, NotebookPen, Repeat, Search, Shapes, Target, X } from "lucide-react";
+import { dayOf, formatDate, pluralN } from "../../lib/dates";
 import { useData } from "../../store/store";
 import { nav, useUI } from "../../store/ui";
 import { walletKindInfo } from "../../store/catalog";
@@ -43,8 +43,9 @@ export function SearchSheet() {
       { title: "Кошельки", hits: s.wallets.filter((w) => has(w.name, w.ident)).map((w) => ({ key: w.id, iconName: walletKindInfo(w.kind).icon, title: w.name, sub: w.archived ? "В архиве" : walletKindInfo(w.kind).label, open: go(() => nav.push("wallet", { id: w.id }, "wallets")) })) },
       { title: "Цели", hits: s.goals.filter((g) => has(g.name)).map((g) => ({ key: g.id, icon: Target, title: g.name, sub: g.deadline ? `до ${formatDate(g.deadline)}` : undefined, open: go(() => nav.push("goal", { id: g.id }, "more")) })) },
       { title: "Долги", hits: s.debts.filter((d) => has(d.counterparty, d.note)).map((d) => ({ key: d.id, icon: HandCoins, title: d.counterparty, sub: d.direction === "owed_to_me" ? "Вам должны" : "Вы должны", open: go(() => nav.push("debt", { id: d.id }, "more")) })) },
-      { title: "Заметки", hits: s.notes.filter((n) => has(n.title, n.body, ...n.tags)).map((n) => ({ key: n.id, icon: NotebookPen, title: n.title || "Без названия", sub: n.body.slice(0, 60), open: go(() => nav.push("note", { id: n.id }, "more")) })) },
-      { title: "Задачи", hits: s.tasks.filter((t) => has(t.title, t.note)).map((t) => ({ key: t.id, icon: ListTodo, title: t.title, sub: t.done ? "Выполнено" : t.due ? formatDate(t.due) : undefined, open: go(() => nav.sheet("task", { editId: t.id })) })) },
+      { title: "Дела", hits: s.tasks.filter((t) => has(t.title, t.note, ...(t.subtasks ?? []).map((x) => x.title))).sort((a, b) => Number(a.done) - Number(b.done)).map((t) => ({ key: t.id, icon: ListTodo, title: t.title, sub: t.done ? "Сделано" : t.due ? formatDate(t.due) : s.projects.find((p) => p.id === t.projectId)?.name ?? "Входящие", open: go(() => nav.sheet("task", { editId: t.id })) })) },
+      { title: "Списки", hits: s.projects.filter((p) => has(p.name, p.note)).map((p) => ({ key: p.id, iconName: p.icon, title: p.name, sub: p.archived ? "В архиве" : pluralN(s.tasks.filter((t) => t.projectId === p.id && !t.done).length, ["дело", "дела", "дел"]), open: go(() => nav.push("project", { id: p.id }, "planner")) })) },
+      { title: "Заметки", hits: s.notes.filter((n) => has(n.title, n.body, ...n.tags, ...(n.checklist ?? []).map((c) => c.title))).map((n) => ({ key: n.id, icon: n.journal ? BookOpen : NotebookPen, title: n.title || "Без названия", sub: n.body.slice(0, 60) || (n.journal ? "Дневник" : undefined), open: go(() => nav.push("note", { id: n.id }, "planner")) })) },
       { title: "Планы", hits: s.plans.filter((p) => has(p.title, p.note)).map((p) => ({ key: p.id, icon: CalendarCheck, title: p.title, sub: formatDate(p.date), open: go(() => nav.sheet("planActions", { id: p.id })) })) },
       { title: "Подписки и платежи", hits: s.recurring.filter((r) => has(r.title)).map((r) => ({ key: r.id, icon: Repeat, title: r.title, sub: `следующий — ${formatDate(r.nextDate)}`, open: go(() => nav.sheet("recurring", { editId: r.id })) })) },
       {
@@ -71,7 +72,7 @@ export function SearchSheet() {
       <div className="px-4 pb-3">
         <label className="flex h-11 items-center gap-2 rounded-md tile px-3">
           <Search size={18} className="text-ink-3" />
-          <input autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder="Операции, цели, заметки, люди…" enterKeyHint="search" className="h-full min-w-0 flex-1 bg-transparent text-body outline-none placeholder:text-ink-3" />
+          <input autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder="Операции, дела, заметки, люди…" enterKeyHint="search" className="h-full min-w-0 flex-1 bg-transparent text-body outline-none placeholder:text-ink-3" />
           {q && (
             <button type="button" aria-label="Очистить" onClick={() => setQ("")} className="grid h-6 w-6 place-items-center rounded-full bg-ink-4 text-ink-inverse">
               <X size={13} strokeWidth={3} />

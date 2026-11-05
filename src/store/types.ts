@@ -156,19 +156,54 @@ export interface Debt {
   createdAt: LocalISO;
 }
 
+/* ------------------------------------------------------------------ */
+/*  Planner                                                            */
+/* ------------------------------------------------------------------ */
+
+/** A list of tasks: an area of life («Дом») or a project with an outcome («Ремонт кухни»). */
+export interface Project {
+  id: ID;
+  name: string;
+  icon: string;
+  color: string;
+  note?: string;
+  deadline?: DayKey;
+  archived?: boolean;
+  createdAt: LocalISO;
+}
+
+/** A checklist item inside a task or a note */
+export interface Subtask {
+  id: ID;
+  title: string;
+  done: boolean;
+}
+
+/** "weekdays" — Monday to Friday */
+export type TaskRepeat = "none" | Frequency | "weekdays";
+
 export interface Task {
   id: ID;
   title: string;
   note?: string;
   due?: DayKey;
+  /** "HH:mm", only together with a due date */
+  time?: string;
   priority: 0 | 1 | 2;
-  repeat: "none" | Frequency;
+  repeat: TaskRepeat;
   done: boolean;
   doneAt?: LocalISO;
   createdAt: LocalISO;
+  /** List the task belongs to. No list and no date — it is in the inbox. */
+  projectId?: ID;
+  subtasks?: Subtask[];
+  /** Picked as one of the main things of this day */
+  focus?: DayKey;
+  /** The next occurrence a repeating task created when it was completed */
+  nextId?: ID;
 }
 
-export type LinkType = "goal" | "task" | "plan" | "debt";
+export type LinkType = "goal" | "task" | "plan" | "debt" | "project";
 
 export interface EntityLink {
   type: LinkType;
@@ -182,6 +217,10 @@ export interface Note {
   pinned: boolean;
   tags: string[];
   links: EntityLink[];
+  /** Checklist under the text */
+  checklist?: Subtask[];
+  /** Diary entry of this day */
+  journal?: DayKey;
   createdAt: LocalISO;
   updatedAt: LocalISO;
 }
@@ -236,10 +275,18 @@ export interface Settings {
   ratesFetchedAt?: LocalISO;
   /** What opens when the app starts */
   launchAction: "home" | "expense";
-  accent: "vermilion" | "indigo" | "sakura" | "gold";
+  accent: "ardessa" | "vermilion" | "indigo" | "sakura" | "gold";
   textSize: "m" | "l" | "xl";
   /** Month (YYYY-MM) whose summary story was already shown */
   storySeen?: string;
+  /** Planner: the day the morning plan was made */
+  dayPlannedOn?: DayKey;
+  /** Planner: the day the evening review was done */
+  dayReviewedOn?: DayKey;
+  /** The planner's introduction has been shown */
+  plannerIntroSeen?: boolean;
+  /** The move to the Ardessa brand has been applied to these settings */
+  ardessa?: boolean;
 }
 
 export interface AppData {
@@ -252,6 +299,7 @@ export interface AppData {
   plans: Plan[];
   debts: Debt[];
   tasks: Task[];
+  projects: Project[];
   notes: Note[];
   favorites: Favorite[];
   settings: Settings;
@@ -268,6 +316,7 @@ export const DATA_KEYS = [
   "plans",
   "debts",
   "tasks",
+  "projects",
   "notes",
   "favorites",
   "settings",

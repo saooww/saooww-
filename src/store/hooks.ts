@@ -39,7 +39,7 @@ export function useAppData(): AppData {
   return useMemo(
     () => pickData(s),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [s.wallets, s.transactions, s.categories, s.budgets, s.goals, s.recurring, s.plans, s.debts, s.tasks, s.notes, s.favorites, s.settings, s.meta]
+    [s.wallets, s.transactions, s.categories, s.budgets, s.goals, s.recurring, s.plans, s.debts, s.tasks, s.projects, s.notes, s.favorites, s.settings, s.meta]
   );
 }
 
