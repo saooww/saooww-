@@ -158,7 +158,7 @@ export function DebtDetail({ id }: { id: ID }) {
         </Group>
 
         <section>
-          <h2 className="label-caps px-5 pb-2.5">История платежей</h2>
+          <h2 className="section-label px-5 pb-2.5">История платежей</h2>
           {info.payments.length === 0 ? (
             <div className="mx-5 rounded-lg border border-dashed border-line-strong px-4 py-5 text-center text-subhead text-ink-2">Платежей ещё не было</div>
           ) : (

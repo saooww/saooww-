@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useAnimationControls } from "framer-motion";
-import { ArrowRight, CalendarDays, Camera, ChevronDown, Hash, LayoutGrid, MessageSquareText, Plus, Repeat, Split, Star, X } from "lucide-react";
+import { ArrowDownLeft, ArrowLeftRight, ArrowRight, ArrowUpRight, CalendarDays, Camera, ChevronDown, Hash, LayoutGrid, MessageSquareText, Plus, Repeat, Split, Star, X, type LucideIcon } from "lucide-react";
+import { applyCalcKey, evaluate, formatExpression, hasOperator, type CalcKey } from "../../lib/calc";
 import { cn } from "../../lib/cn";
 import { dayOf, formatDate, formatDayHeading, nowISO, timeOf, todayKey, addDays } from "../../lib/dates";
 import { activeWallets } from "../../lib/finance";
@@ -16,10 +17,10 @@ import { photosSupported } from "../../store/photos";
 import { PhotoStrip } from "./Photos";
 import { nav, useUI } from "../../store/ui";
 import { undoable } from "../../store/undo";
-import { Keypad, applyKey, type KeypadKey } from "../../ui/Keypad";
+import { Keypad } from "../../ui/Keypad";
 import { Money } from "../../ui/Money";
 import { ease, spring } from "../../ui/motion";
-import { Button, Chip, FormRow, Group, IconChip, Row, Segmented, Toggle, inputCls } from "../../ui/primitives";
+import { Button, Chip, FormRow, Group, IconButton, IconChip, Row, Segmented, Toggle, inputCls } from "../../ui/primitives";
 import { NamedIcon } from "../../ui/icons";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
 import { TagInput } from "../../ui/TagInput";
@@ -45,11 +46,14 @@ export interface ComposerProps {
   editId?: ID;
 }
 
-const KIND_OPTIONS = [
-  { value: "expense" as const, label: "Расход" },
-  { value: "income" as const, label: "Доход" },
-  { value: "transfer" as const, label: "Перевод" }
-];
+const KIND_ORDER: FlowKind[] = ["expense", "income", "transfer"];
+
+/** Each kind has its own colour: the switch, the light behind the amount and the button follow it. */
+const KIND_META: Record<FlowKind, { label: string; icon: LucideIcon; fill: string; on: string; shadow?: string }> = {
+  expense: { label: "Расход", icon: ArrowUpRight, fill: "fill-accent", on: "text-[var(--accent-on)]" },
+  income: { label: "Доход", icon: ArrowDownLeft, fill: "fill-positive", on: "text-[var(--positive-on)]", shadow: "inset 0 1px 0 rgba(255,255,255,0.22), 0 10px 24px -10px color-mix(in srgb, var(--positive) 70%, transparent)" },
+  transfer: { label: "Перевод", icon: ArrowLeftRight, fill: "bg-ink", on: "text-ink-inverse" }
+};
 
 const KIND_GLOW: Record<"expense" | "income" | "transfer", string> = {
   expense: "color-mix(in srgb, var(--accent) 26%, transparent)",
@@ -98,7 +102,8 @@ export function ComposerSheet(props: ComposerProps) {
   const to = walletOf(toWalletId);
   const currency = from?.currency ?? settings.baseCurrency;
   const cross = kind === "transfer" && !!to && !!from && to.currency !== from.currency;
-  const amount = parseAmount(buf);
+  const amount = Math.max(0, evaluate(buf) ?? 0);
+  const negative = (evaluate(buf) ?? 0) < 0;
   const usage = useCategoryUsage(kind === "income" ? "income" : "expense");
   const catMap = useMemo(() => new Map(categories.map((c) => [c.id, c])), [categories]);
   const editingRecurring = editing?.recurringId ? recurringList.find((r) => r.id === editing.recurringId) : undefined;
@@ -117,10 +122,10 @@ export function ComposerSheet(props: ComposerProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [kind, walletId]);
 
-  const press = (k: KeypadKey) => {
+  const press = (k: CalcKey) => {
     setHint(null);
-    if (field === "to") setToBuf((b) => applyKey(b, k));
-    else setBuf((b) => applyKey(b, k));
+    if (field === "to") setToBuf((b) => applyCalcKey(b, k));
+    else setBuf((b) => applyCalcKey(b, k));
   };
 
   // physical keyboard
@@ -133,9 +138,12 @@ export function ComposerSheet(props: ComposerProps) {
       const t = e.target as HTMLElement | null;
       if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA")) return;
       if (useUI.getState().locked) return; // digits belong to the lock screen
-      if (/^[0-9]$/.test(e.key)) pressRef.current(e.key as KeypadKey);
+      if (/^[0-9]$/.test(e.key)) pressRef.current(e.key as CalcKey);
       else if (e.key === "," || e.key === ".") pressRef.current(",");
       else if (e.key === "Backspace") pressRef.current("back");
+      else if (e.key === "+" || e.key === "-") pressRef.current(e.key);
+      else if (e.key === "*" || e.key === "x" || e.key === "х") pressRef.current("×");
+      else if (e.key === "=") pressRef.current("=");
       else if (e.key === "Enter") saveRef.current();
       else return;
       e.preventDefault();
@@ -152,7 +160,7 @@ export function ComposerSheet(props: ComposerProps) {
   const save = () => {
     if (!amount) {
       shake(amountCtl);
-      setHint("Введите сумму");
+      setHint(negative ? "Получилось меньше нуля" : "Введите сумму");
       return;
     }
     if (!walletId || !from) {
@@ -186,7 +194,7 @@ export function ComposerSheet(props: ComposerProps) {
         return;
       }
       if (cross) {
-        toAmount = parseAmount(toBuf);
+        toAmount = Math.max(0, evaluate(toBuf) ?? 0);
         if (!toAmount) {
           setField("to");
           shake(amountCtl);
@@ -261,6 +269,7 @@ export function ComposerSheet(props: ComposerProps) {
   const applyFavorite = (f: Favorite) => {
     haptic();
     if (f.amount) setBuf(amountToInput(f.amount));
+    setField("amount");
     if (f.categoryId) setCategoryId(f.categoryId);
     if (f.walletId && live.some((w) => w.id === f.walletId)) setWalletId(f.walletId);
     if (f.note) setNote(f.note);
@@ -275,6 +284,22 @@ export function ComposerSheet(props: ComposerProps) {
   }, [transactions]);
 
   const kindFavorites = favorites.filter((f) => f.kind === kind);
+  const quickCats = useMemo(() => {
+    const ids = usage.slice(0, 8);
+    if (categoryId && !ids.includes(categoryId) && catMap.get(categoryId)?.kind === kind) ids.unshift(categoryId);
+    return ids.map((id) => catMap.get(id)).filter((c): c is Category => !!c);
+  }, [usage, categoryId, catMap, kind]);
+  /** A comment typed before suggests the category it had then. */
+  const suggested = useMemo(() => {
+    const q = note.trim().toLowerCase();
+    if (q.length < 2 || kind === "transfer") return undefined;
+    const past = transactions.find((t) => t.kind === kind && t.categoryId && t.note?.trim().toLowerCase() === q);
+    const c = past?.categoryId ? catMap.get(past.categoryId) : undefined;
+    return c && c.id !== categoryId && !c.archived ? c : undefined;
+  }, [note, kind, transactions, catMap, categoryId]);
+  /** While an expression is typed, the big figure shows its result. */
+  const shown = (b: string) => (hasOperator(b) ? amountToInput(Math.max(0, evaluate(b) ?? 0)) : b);
+  const lastOp = (b: string) => (/[+\-×]$/.test(b) ? b[b.length - 1] : undefined);
   const dateLabel = (() => {
     const d = dayOf(date);
     const rel = d === todayKey() || d === addDays(todayKey(), -1) ? formatDayHeading(d) : formatDate(d);
@@ -294,8 +319,8 @@ export function ComposerSheet(props: ComposerProps) {
     <Sheet
       tall
       ariaLabel={editing ? "Изменить операцию" : "Новая операция"}
-      title={titleFor[view]}
-      left={view === "main" ? <SheetAction onClick={close}>Отмена</SheetAction> : <SheetAction onClick={() => setView("main")}>Назад</SheetAction>}
+      title={view === "main" ? undefined : titleFor[view]}
+      left={view === "main" ? undefined : <SheetAction onClick={() => setView("main")}>Назад</SheetAction>}
       right={view === "details" ? <SheetAction strong onClick={() => setView("main")}>Готово</SheetAction> : undefined}
       contentClassName="flex flex-col"
     >
@@ -309,23 +334,38 @@ export function ComposerSheet(props: ComposerProps) {
             exit={{ opacity: 0, x: -24 }}
             transition={{ duration: 0.18, ease: ease.out }}
           >
-            {!lockedKind && (
-              <div className="shrink-0 px-4">
-                <Segmented options={KIND_OPTIONS} value={kind} onChange={(v) => setKind(v)} />
-              </div>
-            )}
+            <div className="flex shrink-0 items-center gap-2 px-3">
+              <IconButton icon={X} label="Закрыть" variant="plain" size={38} iconSize={20} onClick={close} />
+              {lockedKind ? (
+                <div className="flex-1 text-center text-headline font-semibold">Изменить операцию</div>
+              ) : (
+                <KindSwitch value={kind} onChange={setKind} />
+              )}
+              <span className="w-[38px] shrink-0" />
+            </div>
 
             {/* amount */}
-            <motion.div animate={amountCtl} className="flex min-h-[148px] flex-1 flex-col items-center justify-center gap-3 px-4 py-3">
+            <motion.div animate={amountCtl} className="flex min-h-[112px] flex-1 flex-col items-center justify-center px-4 py-2">
               {cross ? (
                 <div className="flex w-full flex-col items-center gap-3">
-                  <AmountDisplay compact buffer={buf} currency={from!.currency} active={field === "amount"} label="Списать" onClick={() => setField("amount")} glow={field === "amount" ? KIND_GLOW.transfer : undefined} />
-                  <AmountDisplay compact buffer={toBuf} currency={to!.currency} active={field === "to"} label="Зачислить" onClick={() => setField("to")} />
+                  <AmountDisplay compact buffer={shown(buf)} currency={from!.currency} active={field === "amount"} label="Списать" onClick={() => setField("amount")} glow={field === "amount" ? KIND_GLOW.transfer : undefined} />
+                  <AmountDisplay compact buffer={shown(toBuf)} currency={to!.currency} active={field === "to"} label="Зачислить" onClick={() => setField("to")} />
                 </div>
               ) : (
-                <AmountDisplay buffer={buf} currency={currency} sign={kind === "income" ? "+" : undefined} glow={KIND_GLOW[kind]} />
+                <>
+                  <div className="h-5 text-callout text-ink-3 num">
+                    <AnimatePresence>
+                      {hasOperator(buf) && (
+                        <motion.span key="expr" initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+                          {formatExpression(buf)} =
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                  <AmountDisplay buffer={shown(buf)} currency={currency} sign={kind === "income" ? "+" : undefined} glow={KIND_GLOW[kind]} />
+                </>
               )}
-              <div className="h-5 text-footnote">
+              <div className="mt-1 h-5 text-footnote">
                 <AnimatePresence mode="wait">
                   {hint ? (
                     <motion.span key="hint" className="font-medium text-negative" initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
@@ -333,91 +373,114 @@ export function ComposerSheet(props: ComposerProps) {
                     </motion.span>
                   ) : from && amount > 0 ? (
                     <motion.span key="after" className="text-ink-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                      {kind === "income" ? "Станет" : "Останется"} <Money value={balanceAfter} currency={from.currency} className="text-ink-2" />
+                      {kind === "income" ? "Станет" : "Останется"} <Money value={balanceAfter} currency={from.currency} className="text-ink-2" /> на «{from.name}»
+                    </motion.span>
+                  ) : note ? (
+                    <motion.span key="note" className="text-ink-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                      «{note}»
                     </motion.span>
                   ) : null}
                 </AnimatePresence>
               </div>
             </motion.div>
 
-            {/* wallets */}
-            <div className="flex shrink-0 items-center justify-center gap-2 px-4 pb-3">
-              <WalletChip wide={kind !== "transfer" || !!lockedKind} name={from?.name ?? "Выберите кошелёк"} icon={from ? walletKindInfo(from.kind).icon : "Wallet"} onClick={() => setView("from")} />
-              {kind === "transfer" && !lockedKind && (
+            {/* where the money goes: from → to */}
+            <div className="flex shrink-0 items-center gap-1.5 px-4">
+              {kind === "income" && !lockedKind ? (
                 <>
-                  <ArrowRight size={16} className="shrink-0 text-ink-3" />
-                  <WalletChip name={to?.name ?? "Куда"} icon={to ? walletKindInfo(to.kind).icon : "Wallet"} onClick={() => setView("to")} />
+                  <CategoryTile ctl={catCtl} caption="Откуда" category={categoryId ? catMap.get(categoryId) : undefined} onClick={() => setView("categories")} />
+                  <FlowArrow kind={kind} />
+                  <WalletTile caption="Куда" name={from?.name} icon={from ? walletKindInfo(from.kind).icon : "Wallet"} onClick={() => setView("from")} />
+                </>
+              ) : (
+                <>
+                  <WalletTile caption="Откуда" name={from?.name} icon={from ? walletKindInfo(from.kind).icon : "Wallet"} onClick={() => setView("from")} />
+                  {!lockedKind && <FlowArrow kind={kind} />}
+                  {kind === "transfer" && !lockedKind ? (
+                    <WalletTile caption="Куда" name={to?.name} icon={to ? walletKindInfo(to.kind).icon : "Wallet"} onClick={() => setView("to")} />
+                  ) : !lockedKind ? (
+                    <CategoryTile ctl={catCtl} caption="Куда" category={categoryId ? catMap.get(categoryId) : undefined} onClick={() => setView("categories")} />
+                  ) : null}
                 </>
               )}
             </div>
 
-            {/* favourites */}
-            {!editing && kind !== "transfer" && kindFavorites.length > 0 && (
-              <div className="scroll-x flex shrink-0 gap-2 px-4 pb-3">
-                {kindFavorites.map((f) => (
-                  <Chip key={f.id} icon={Star} onClick={() => applyFavorite(f)}>
-                    {f.title}
-                    {f.amount ? <span className="ml-1 text-ink-2">{formatMoney(f.amount)}</span> : null}
-                  </Chip>
+            {/* one row of quick picks: templates (until you type), then the usual categories */}
+            {kind !== "transfer" && !lockedKind && (
+              <div className="scroll-x mt-3 flex shrink-0 gap-1.5 px-4">
+                <AnimatePresence initial={false}>
+                  {!editing &&
+                    !buf &&
+                    kindFavorites.map((f) => (
+                      <motion.span key={f.id} layout initial={{ opacity: 0, width: 0 }} animate={{ opacity: 1, width: "auto" }} exit={{ opacity: 0, width: 0 }} transition={{ duration: 0.2 }} className="shrink-0 overflow-hidden">
+                        <QuickChip icon={<Star size={14} className="fill-current text-accent-ink" />} onClick={() => applyFavorite(f)}>
+                          {f.title}
+                          {f.amount ? <span className="num ml-1 text-ink-3">{formatMoney(f.amount, { kopecks: "never" })}</span> : null}
+                        </QuickChip>
+                      </motion.span>
+                    ))}
+                </AnimatePresence>
+                {quickCats.map((c) => (
+                  <QuickChip
+                    key={c.id}
+                    selected={categoryId === c.id}
+                    icon={<NamedIcon name={c.icon} size={15} strokeWidth={2} style={{ color: categoryId === c.id ? undefined : c.color }} />}
+                    onClick={() => {
+                      haptic();
+                      setCategoryId(c.id);
+                      setHint(null);
+                    }}
+                  >
+                    {c.name}
+                  </QuickChip>
                 ))}
+                <QuickChip icon={<LayoutGrid size={15} strokeWidth={2} />} onClick={() => setView("categories")}>
+                  Все
+                </QuickChip>
               </div>
             )}
 
-            {/* categories */}
-            {kind !== "transfer" && !lockedKind && (
-              <motion.div animate={catCtl} className="scroll-x flex shrink-0 gap-1 px-3 pb-2">
-                {usage.slice(0, 10).map((id) => {
-                  const c = catMap.get(id)!;
-                  return <CategoryItem key={id} name={c.name} icon={c.icon} color={c.color} selected={categoryId === id} onClick={() => { haptic(); setCategoryId(id); setHint(null); }} />;
-                })}
-                {categoryId && !usage.slice(0, 10).includes(categoryId) && catMap.get(categoryId) && (
-                  <CategoryItem name={catMap.get(categoryId)!.name} icon={catMap.get(categoryId)!.icon} color={catMap.get(categoryId)!.color} selected onClick={() => {}} />
+            {/* details, in one quiet line */}
+            <div className="mt-3 flex shrink-0 items-center gap-1.5 px-4 pb-2">
+              <button type="button" onClick={() => setView("details")} className="tile flex h-9 min-w-0 items-center gap-1.5 rounded-full px-3 text-subhead font-medium text-ink-2">
+                <CalendarDays size={15} strokeWidth={2} className="shrink-0" />
+                <span className="truncate">{dateLabel}</span>
+              </button>
+              <div className="ml-auto flex shrink-0 gap-1.5">
+                <ToolButton icon={MessageSquareText} label={note ? `Комментарий: ${note}` : "Комментарий"} active={!!note} onClick={() => setView("details")} />
+                <ToolButton icon={Hash} label={tags.length ? `Теги: ${tags.join(", ")}` : "Теги"} active={tags.length > 0} onClick={() => setView("details")} />
+                {!editingRecurring && !lockedKind && !parts.length && <ToolButton icon={Repeat} label={repeat === "none" ? "Повтор" : freqLabel(repeat)} active={repeat !== "none"} onClick={() => setView("details")} />}
+                {kind === "expense" && !editing && (
+                  <ToolButton
+                    icon={Split}
+                    label="Разделить"
+                    active={parts.some((p) => parseAmount(p.buf) > 0)}
+                    onClick={() => {
+                      if (!parts.length) setParts([{ key: uid(), buf: "" }]);
+                      setView("split");
+                    }}
+                  />
                 )}
-                <CategoryItem name="Все" iconNode={<LayoutGrid size={20} strokeWidth={1.8} />} onClick={() => setView("categories")} />
-              </motion.div>
-            )}
-
-            {/* details */}
-            <div className="scroll-x flex shrink-0 gap-2 px-4 pb-2.5">
-              <Chip icon={CalendarDays} onClick={() => setView("details")}>{dateLabel}</Chip>
-              <Chip icon={MessageSquareText} onClick={() => setView("details")} selected={!!note}>
-                {note ? note : "Комментарий"}
-              </Chip>
-              <Chip icon={Hash} onClick={() => setView("details")} selected={tags.length > 0}>
-                {tags.length ? tags.map((t) => `#${t}`).join(" ") : "Теги"}
-              </Chip>
-              {!editingRecurring && !lockedKind && !parts.length && (
-                <Chip icon={Repeat} onClick={() => setView("details")} selected={repeat !== "none"}>
-                  {repeat === "none" ? "Повтор" : freqLabel(repeat)}
-                </Chip>
-              )}
-              {kind === "expense" && !editing && (
-                <Chip
-                  icon={Split}
-                  onClick={() => {
-                    if (!parts.length) setParts([{ key: uid(), buf: "" }]);
-                    setView("split");
-                  }}
-                  selected={parts.some((p) => parseAmount(p.buf) > 0)}
-                >
-                  {parts.some((p) => parseAmount(p.buf) > 0) ? `Чек: ${parts.filter((p) => parseAmount(p.buf) > 0).length + 1} части` : "Разделить"}
-                </Chip>
-              )}
-              {photosSupported() && (
-                <Chip icon={Camera} onClick={() => setView("details")} selected={photos.length > 0}>
-                  {photos.length ? `Фото · ${photos.length}` : "Фото чека"}
-                </Chip>
-              )}
+                {photosSupported() && <ToolButton icon={Camera} label="Фото чека" active={photos.length > 0} count={photos.length} onClick={() => setView("details")} />}
+              </div>
             </div>
 
-            <div className="shrink-0">
-              <Keypad onKey={press} compact />
+            <div className="shrink-0 pt-1">
+              <Keypad<CalcKey> onKey={press} compact ops activeOp={lastOp(field === "to" ? toBuf : buf)} />
             </div>
 
             <div className="shrink-0 px-4 pb-[calc(var(--safe-bottom)+10px)] pt-2.5">
-              <Button block onClick={save}>
-                {editing ? "Сохранить" : lockedKind ? "Сохранить" : SAVE_LABEL[kind]}
-              </Button>
+              <motion.button
+                type="button"
+                onClick={save}
+                whileTap={{ scale: 0.97 }}
+                transition={spring.press}
+                className={cn("flex h-[54px] w-full items-center justify-center gap-2 rounded-[16px] text-headline font-semibold transition-colors duration-300", KIND_META[lockedKind ? "transfer" : kind].fill, KIND_META[lockedKind ? "transfer" : kind].on)}
+                style={{ boxShadow: KIND_META[lockedKind ? "transfer" : kind].shadow }}
+              >
+                {editing || lockedKind ? "Сохранить" : SAVE_LABEL[kind]}
+                {amount > 0 && !cross && <span className="num font-medium opacity-75">· {formatMoney(amount, { currency })}</span>}
+              </motion.button>
             </div>
           </motion.div>
         )}
@@ -508,6 +571,23 @@ export function ComposerSheet(props: ComposerProps) {
               <div className="px-4 py-3">
                 <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Комментарий" maxLength={120} enterKeyHint="done" className={inputCls} />
               </div>
+              {suggested && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    haptic();
+                    setCategoryId(suggested.id);
+                    setHint(null);
+                  }}
+                  className="flex w-full items-center gap-3 px-4 py-2.5 text-left active:bg-surface-press"
+                >
+                  <IconChip name={suggested.icon} color={suggested.color} size={28} />
+                  <span className="min-w-0 flex-1 text-subhead text-ink-2">
+                    Как в прошлый раз: <span className="font-semibold text-ink">{suggested.name}</span>
+                  </span>
+                  <span className="text-subhead font-semibold text-accent-ink">Выбрать</span>
+                </button>
+              )}
             </Group>
             <Group header="Теги">
               <div className="px-4 py-3">
@@ -656,17 +736,105 @@ function effectOf(tx: Transaction): Minor {
   return tx.flow === "out" ? -tx.amount : tx.amount;
 }
 
-function WalletChip({ name, icon, onClick, wide }: { name: string; icon: string; onClick: () => void; wide?: boolean }) {
+/** Расход · Доход · Перевод — the pill slides and takes the colour of the kind. */
+function KindSwitch({ value, onChange }: { value: FlowKind; onChange: (k: FlowKind) => void }) {
+  return (
+    <div role="tablist" aria-label="Тип операции" className="relative flex flex-1 rounded-full p-1" style={{ background: "color-mix(in srgb, var(--ink) 6%, transparent)", boxShadow: "inset 0 0 0 0.5px var(--line)" }}>
+      {KIND_ORDER.map((k) => {
+        const m = KIND_META[k];
+        const on = k === value;
+        return (
+          <button
+            key={k}
+            type="button"
+            role="tab"
+            aria-selected={on}
+            onClick={() => {
+              if (on) return;
+              haptic();
+              onChange(k);
+            }}
+            className="relative flex h-9 flex-1 items-center justify-center gap-1 rounded-full text-subhead font-semibold"
+          >
+            {on && <motion.span layoutId="composer-kind" className={cn("absolute inset-0 rounded-full", m.fill)} style={{ boxShadow: m.shadow }} transition={spring.snappy} />}
+            <m.icon size={15} strokeWidth={2.4} className={cn("relative transition-colors duration-200", on ? m.on : "text-ink-3")} />
+            <span className={cn("relative transition-colors duration-200", on ? m.on : "text-ink-2")}>{m.label}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function FlowArrow({ kind }: { kind: FlowKind }) {
+  return (
+    <motion.span key={kind} className="grid h-7 w-7 shrink-0 place-items-center rounded-full tile" initial={{ x: -4, opacity: 0.4 }} animate={{ x: 0, opacity: 1 }} transition={spring.snappy}>
+      <ArrowRight size={14} strokeWidth={2.4} className={kind === "expense" ? "text-accent-ink" : kind === "income" ? "text-positive" : "text-ink-2"} />
+    </motion.span>
+  );
+}
+
+function WalletTile({ caption, name, icon, onClick }: { caption: string; name?: string; icon: string; onClick: () => void }) {
+  return (
+    <motion.button type="button" whileTap={{ scale: 0.97 }} transition={spring.press} onClick={onClick} aria-label={`${caption}: ${name ?? "выберите кошелёк"}`} className="panel flex h-[60px] min-w-0 flex-1 items-center gap-2.5 rounded-[18px] px-2.5 text-left">
+      <IconChip name={icon} size={34} />
+      <span className="min-w-0 flex-1">
+        <span className="block text-caption text-ink-3">{caption}</span>
+        <span className={cn("block truncate text-subhead font-semibold", name ? "text-ink" : "text-ink-3")}>{name ?? "Кошелёк"}</span>
+      </span>
+    </motion.button>
+  );
+}
+
+function CategoryTile({ caption, category, onClick, ctl }: { caption: string; category?: Category; onClick: () => void; ctl: ReturnType<typeof useAnimationControls> }) {
   return (
     <motion.button
       type="button"
-      whileTap={{ scale: 0.96 }}
+      animate={ctl}
+      whileTap={{ scale: 0.97 }}
       onClick={onClick}
-      className={cn("flex h-9 min-w-0 items-center gap-2 rounded-full tile pl-2.5 pr-3 text-subhead font-medium", wide ? "max-w-[78%]" : "max-w-[46%]")}
+      aria-label={`${caption}: ${category?.name ?? "выберите категорию"}`}
+      className={cn("flex h-[60px] min-w-0 flex-1 items-center gap-2.5 rounded-[18px] px-2.5 text-left", category ? "panel" : "border border-dashed border-line-strong")}
     >
-      <NamedIcon name={icon} size={16} strokeWidth={2} className="shrink-0 text-ink-2" />
-      <span className="truncate">{name}</span>
-      <ChevronDown size={15} className="shrink-0 text-ink-3" />
+      {category ? <IconChip name={category.icon} color={category.color} size={34} /> : <span className="grid h-[34px] w-[34px] shrink-0 place-items-center rounded-[12px] border border-dashed border-ink-4 text-ink-3"><LayoutGrid size={16} /></span>}
+      <span className="min-w-0 flex-1">
+        <span className="block text-caption text-ink-3">{caption}</span>
+        <span className={cn("block truncate text-subhead font-semibold", category ? "text-ink" : "text-ink-3")}>{category?.name ?? "Категория"}</span>
+      </span>
+    </motion.button>
+  );
+}
+
+function QuickChip({ children, icon, selected, onClick }: { children: React.ReactNode; icon?: React.ReactNode; selected?: boolean; onClick: () => void }) {
+  return (
+    <motion.button
+      type="button"
+      whileTap={{ scale: 0.94 }}
+      transition={spring.press}
+      aria-pressed={selected}
+      onClick={onClick}
+      className={cn("inline-flex h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 text-subhead font-medium transition-colors duration-200", selected ? "bg-ink text-ink-inverse" : "tile text-ink")}
+    >
+      {icon}
+      {children}
+    </motion.button>
+  );
+}
+
+function ToolButton({ icon: Icon, label, active, onClick, count }: { icon: LucideIcon; label: string; active?: boolean; onClick: () => void; count?: number }) {
+  return (
+    <motion.button
+      type="button"
+      whileTap={{ scale: 0.9 }}
+      transition={spring.press}
+      aria-label={label}
+      title={label}
+      onClick={onClick}
+      className={cn("relative grid h-9 w-9 place-items-center rounded-full transition-colors duration-200", active ? "bg-accent-soft text-accent-ink" : "tile text-ink-2")}
+    >
+      <Icon size={16} strokeWidth={2} />
+      {active && <span className="absolute right-[5px] top-[5px] h-[6px] w-[6px] rounded-full bg-accent" />}
+      {!!count && count > 1 && <span className="absolute -right-0.5 -top-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[10px] font-bold text-[var(--accent-on)]">{count}</span>}
     </motion.button>
   );
 }
@@ -697,7 +865,7 @@ function CategoryItem({
       className={cn("flex shrink-0 flex-col items-center gap-1.5 px-0.5", wide ? "w-full" : "w-[70px]")}
     >
       <motion.span
-        className={cn("grid h-[48px] w-[48px] place-items-center rounded-[16px]", !color && (selected ? "bg-ink text-ink-inverse" : "tile text-ink"))}
+        className={cn("grid h-[48px] w-[48px] place-items-center rounded-[16px]", !(color && selected) && (selected ? "bg-ink text-ink-inverse" : "tile"), !color && !selected && "text-ink")}
         animate={{ scale: selected ? 1.06 : 1 }}
         transition={spring.snappy}
         style={
@@ -708,11 +876,7 @@ function CategoryItem({
                   background: `linear-gradient(180deg, color-mix(in srgb, ${color} 82%, white), ${color})`,
                   boxShadow: `inset 0 1px 0 rgba(255,255,255,0.28), 0 8px 18px -8px ${color}`
                 }
-              : {
-                  color,
-                  background: `linear-gradient(180deg, color-mix(in srgb, ${color} 20%, transparent), color-mix(in srgb, ${color} 10%, transparent))`,
-                  boxShadow: `inset 0 0 0 0.5px color-mix(in srgb, ${color} 22%, transparent)`
-                }
+              : { color }
             : undefined
         }
       >

@@ -18,6 +18,7 @@ import { parseTask, splitLines } from "../src/lib/quickParse";
 import { dayPlan, nextOccurrence, nextRepeatDate } from "../src/lib/tasks";
 import { taskToICS } from "../src/lib/ics";
 import { parseImport } from "../src/store/store";
+import { applyCalcKey, evaluate, formatExpression } from "../src/lib/calc";
 
 let passed = 0;
 function test(name: string, fn: () => void) {
@@ -402,6 +403,20 @@ test("старая резервная копия без списков откр�
   const restored = parseImport(JSON.stringify({ app: "kapital", version: 2, data: old }));
   assert.deepEqual(restored.projects, []);
   assert.equal(restored.tasks.length, st().tasks.length);
+});
+
+test("калькулятор суммы: порядок действий, копейки, ввод с клавиатуры", () => {
+  const type = (keys: string[]) => keys.reduce((b, k) => applyCalcKey(b, k as Parameters<typeof applyCalcKey>[1]), "");
+  assert.equal(evaluate(type(["1", "2", "0", "0", "+", "3", "5", "0"])), 155_000);
+  assert.equal(evaluate("100+50×3"), 25_000);
+  assert.equal(evaluate("1000-250,5"), 74_950);
+  assert.equal(evaluate("450×3+"), 135_000); // a trailing operator is ignored
+  assert.equal(type(["5", "+", "-"]), "5-"); // a second operator replaces the first
+  assert.equal(type(["+"]), ""); // nothing to add to yet
+  assert.equal(type(["1", ",", "2", "3", "4"]), "1,23"); // two decimals per number
+  assert.equal(type(["1", "0", "+", "5", "="]), "15");
+  assert.equal(evaluate("100-300"), -20_000);
+  assert.equal(formatExpression("12000+350-5"), "12\u202F000 + 350 − 5");
 });
 
 console.log(`\nВсе проверки пройдены: ${passed}`);

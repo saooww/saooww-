@@ -3,9 +3,14 @@ Latin subsets (variable weight) of three fonts, taken from Fontsource, used for 
   geist.woff2      — Geist
   unbounded.woff2  — Unbounded
 
+Montserrat Bold (Cyrillic and Latin subsets, from Fontsource), used for large
+titles — the closest open typeface to the Ardessa wordmark:
+  montserrat-cyrillic-700.woff2, montserrat-latin-700.woff2
+
 Copyright 2019 The Manrope Project Authors (https://github.com/sharanda/manrope)
 Copyright 2024 The Geist Project Authors (https://github.com/vercel/geist-font)
 Copyright 2022 The Unbounded Project Authors (https://github.com/googlefonts/unbounded)
+Copyright 2011 The Montserrat Project Authors (https://github.com/JulietaUla/Montserrat)
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:

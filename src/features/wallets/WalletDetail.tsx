@@ -214,7 +214,7 @@ export function WalletDetail({ id, from }: { id: ID; from?: Origin }) {
             ) : (
               groups.map((g) => (
                 <div key={g.day} className="mb-3">
-                  <div className="label-caps px-5 pb-2.5">{formatDayHeading(g.day)}</div>
+                  <div className="section-label px-5 pb-2.5">{formatDayHeading(g.day)}</div>
                   <Group>
                     {g.items.map((t) => (
                       <TxRow key={t.id} tx={t} ctx={ctx} walletId={wallet.id} onOpen={(x) => nav.sheet("tx", { id: x.id })} />

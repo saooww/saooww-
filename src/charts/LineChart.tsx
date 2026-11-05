@@ -29,7 +29,7 @@ export interface LineChartProps {
 export function LineChart({
   points,
   height = 160,
-  color = "var(--accent)",
+  color = "var(--ink)",
   onScrub,
   formatValue,
   animKey,

@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { CalendarDays, FlaskConical, Gauge, HandCoins, ListTodo, NotebookPen, Repeat, Search, Settings, Shapes, Target } from "lucide-react";
+import { CalendarDays, FlaskConical, Gauge, HandCoins, Repeat, Search, Settings, Shapes, Target } from "lucide-react";
 import { budgetStates } from "../../lib/insights";
 import { debtInfo, goalInfo, goalSaved } from "../../lib/finance";
 import { formatMoney } from "../../lib/money";
@@ -30,10 +30,8 @@ export function MoreScreen() {
     const debts = data.debts.map((d) => ({ d, info: debtInfo(d, data.transactions, today) })).filter((x) => x.info.status !== "closed");
     const owedToMe = debts.filter((x) => x.d.direction === "owed_to_me").reduce((a, x) => a + x.info.remaining, 0);
     const iOwe = debts.filter((x) => x.d.direction === "i_owe").reduce((a, x) => a + x.info.remaining, 0);
-    const tasks = data.tasks.filter((t) => !t.done);
-    const overdueTasks = tasks.filter((t) => t.due && t.due < today).length;
     const plans = data.plans.filter((p) => p.status === "planned" && p.date >= today).length;
-    return { goals: goals.length, goalProgress, budgets: budgets.length, over, near, monthly, subs: subs.length, owedToMe, iOwe, debtCount: debts.length, tasks: tasks.length, overdueTasks, notes: data.notes.length, plans };
+    return { goals: goals.length, goalProgress, budgets: budgets.length, over, near, monthly, subs: subs.length, owedToMe, iOwe, debtCount: debts.length, plans };
   }, [data, entries, balances, env, today]);
 
   return (
@@ -59,7 +57,7 @@ export function MoreScreen() {
       )}
 
       <div className="mt-5 flex flex-col gap-5">
-        <Group header="Планирование">
+        <Group header="Деньги">
           <Row icon={Target} title="Цели" subtitle={s.goals ? `${pluralN(s.goals, ["цель", "цели", "целей"])} · в среднем ${Math.round(s.goalProgress * 100)}%` : "Квартира, отпуск, подушка"} chevron onClick={() => nav.push("goals")} />
           <Row
             icon={Gauge}
@@ -71,9 +69,6 @@ export function MoreScreen() {
           />
           <Row icon={CalendarDays} title="Планы и календарь" subtitle={s.plans ? `${pluralN(s.plans, ["запланированная операция", "запланированные операции", "запланированных операций"])}` : "Крупные покупки и прогноз"} chevron onClick={() => nav.push("plans")} />
           <Row icon={Repeat} title="Подписки и платежи" subtitle={s.subs ? `${formatMoney(s.monthly)} в месяц` : "Регулярные списания"} chevron onClick={() => nav.push("subscriptions")} />
-        </Group>
-
-        <Group header="Учёт">
           <Row
             icon={HandCoins}
             title="Долги"
@@ -81,8 +76,6 @@ export function MoreScreen() {
             chevron
             onClick={() => nav.push("debts")}
           />
-          <Row icon={ListTodo} iconTone={s.overdueTasks ? "warning" : undefined} title="Дела" subtitle={s.tasks ? `${pluralN(s.tasks, ["активное", "активных", "активных"])}${s.overdueTasks ? ` · ${s.overdueTasks} просрочено` : ""}` : "Сегодня, неделя, списки"} chevron onClick={() => nav.planner("today")} />
-          <Row icon={NotebookPen} title="Заметки" subtitle={s.notes ? pluralN(s.notes, ["заметка", "заметки", "заметок"]) : "Мысли, списки, дневник"} chevron onClick={() => nav.planner("notes")} />
         </Group>
 
         <Group>

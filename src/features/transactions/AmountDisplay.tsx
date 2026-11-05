@@ -49,7 +49,7 @@ export function AmountDisplay({
           style={{ background: `radial-gradient(50% 50% at 50% 55%, ${glow}, transparent 100%)` }}
         />
       )}
-      {label && <div className="label-caps relative mb-1.5">{label}</div>}
+      {label && <div className="section-label relative mb-1.5">{label}</div>}
       <div
         className="num-display relative flex items-baseline justify-center whitespace-nowrap leading-none"
         style={{ fontSize: size, height: size * 1.12 }}

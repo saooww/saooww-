@@ -18,7 +18,7 @@ import { spring } from "../../ui/motion";
 import { Button, EmptyState, FormRow, Group, IconButton, ProgressBar, inputCls } from "../../ui/primitives";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
 
-const toneOf = (b: BudgetState) => (b.level === "over" ? "negative" : b.level === "near" ? "warning" : "accent");
+const toneOf = (b: BudgetState) => (b.level === "over" ? "negative" : b.level === "near" ? "warning" : "ink");
 
 export function BudgetsScreen() {
   const data = useAppData();

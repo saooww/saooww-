@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Delete } from "lucide-react";
 import { haptic } from "../lib/haptics";
 import { getMoneyFormat } from "../lib/money";
+import { cn } from "../lib/cn";
 import { spring } from "./motion";
 
 export type KeypadKey = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "," | "back" | "clear";
@@ -26,18 +27,29 @@ export function applyKey(buffer: string, key: KeypadKey): string {
 }
 
 const KEYS: KeypadKey[] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ",", "0", "back"];
+type OpKey = "+" | "-" | "×" | "=";
+const KEYS_WITH_OPS: Array<KeypadKey | OpKey> = ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "×", ",", "0", "back", "="];
+const OP_LABEL: Record<OpKey, string> = { "+": "+", "-": "−", "×": "×", "=": "=" };
+const OP_ARIA: Record<OpKey, string> = { "+": "Плюс", "-": "Минус", "×": "Умножить", "=": "Посчитать" };
+const isOpKey = (k: string): k is OpKey => k === "+" || k === "-" || k === "×" || k === "=";
 
-export function Keypad({ onKey, compact }: { onKey: (k: KeypadKey) => void; compact?: boolean }) {
+/**
+ * Amount keypad. With `ops` it gets a column of + − × = and works as a
+ * small calculator. Holding ⌫ clears everything.
+ */
+export function Keypad<K extends string = KeypadKey>({ onKey, compact, ops, activeOp }: { onKey: (k: K) => void; compact?: boolean; ops?: boolean; activeOp?: string }) {
   const holdTimer = useRef<number | null>(null);
   const held = useRef(false);
   const decimal = getMoneyFormat().numberFormat === "ru" ? "," : ".";
+  const keys = ops ? KEYS_WITH_OPS : KEYS;
+  const fire = (k: string) => onKey(k as K);
 
   const startHold = () => {
     held.current = false;
     holdTimer.current = window.setTimeout(() => {
       held.current = true;
       haptic("medium");
-      onKey("clear");
+      fire("clear");
     }, 480);
   };
   const endHold = () => {
@@ -46,30 +58,37 @@ export function Keypad({ onKey, compact }: { onKey: (k: KeypadKey) => void; comp
   };
 
   return (
-    <div className="grid grid-cols-3 gap-x-2 gap-y-1 px-3" role="group" aria-label="Клавиатура суммы">
-      {KEYS.map((k) => (
-        <motion.button
-          key={k}
-          type="button"
-          aria-label={k === "back" ? "Стереть (удерживайте, чтобы очистить)" : k === "," ? "Десятичный разделитель" : k}
-          whileTap={{ scale: 0.92, backgroundColor: "var(--key-press)" }}
-          transition={spring.press}
-          onPointerDown={k === "back" ? startHold : undefined}
-          onPointerUp={k === "back" ? endHold : undefined}
-          onPointerLeave={k === "back" ? endHold : undefined}
-          onClick={() => {
-            if (k === "back" && held.current) {
-              held.current = false;
-              return;
-            }
-            haptic();
-            onKey(k);
-          }}
-          className={`num flex items-center justify-center rounded-md text-[27px] font-normal text-ink ${compact ? "h-[50px]" : "h-[56px]"}`}
-        >
-          {k === "back" ? <Delete size={24} strokeWidth={1.7} /> : k === "," ? decimal : k}
-        </motion.button>
-      ))}
+    <div className={cn("grid gap-x-2 gap-y-1 px-3", ops ? "grid-cols-[1fr_1fr_1fr_0.72fr]" : "grid-cols-3")} role="group" aria-label="Клавиатура суммы">
+      {keys.map((k) => {
+        const op = isOpKey(k);
+        return (
+          <motion.button
+            key={k}
+            type="button"
+            aria-label={k === "back" ? "Стереть (удерживайте, чтобы очистить)" : k === "," ? "Десятичный разделитель" : op ? OP_ARIA[k] : k}
+            whileTap={{ scale: 0.92, backgroundColor: "var(--key-press)" }}
+            transition={spring.press}
+            onPointerDown={k === "back" ? startHold : undefined}
+            onPointerUp={k === "back" ? endHold : undefined}
+            onPointerLeave={k === "back" ? endHold : undefined}
+            onClick={() => {
+              if (k === "back" && held.current) {
+                held.current = false;
+                return;
+              }
+              haptic();
+              fire(k);
+            }}
+            className={cn(
+              "num flex items-center justify-center rounded-[14px]",
+              compact ? "h-[clamp(42px,6.1vh,52px)]" : "h-[56px]",
+              op ? cn("text-[24px] font-light", activeOp === k ? "bg-accent-soft text-accent-ink" : "tile text-ink-2", k === "=" && "text-accent-ink") : "text-[27px] font-normal text-ink"
+            )}
+          >
+            {k === "back" ? <Delete size={24} strokeWidth={1.7} /> : k === "," ? decimal : op ? OP_LABEL[k] : k}
+          </motion.button>
+        );
+      })}
     </div>
   );
 }

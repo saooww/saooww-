@@ -8,7 +8,7 @@ import { formatMoney } from "../../lib/money";
 import type { Category, ID } from "../../store/types";
 
 /**
- * A month of spending at a glance: each day a square, deeper accent for
+ * A month of spending at a glance: each day a square, deeper ink for
  * bigger days. Tap a day for its total and main categories.
  */
 export function SpendingCalendar({ entries, from, to, today, categories, currency }: { entries: LedgerEntry[]; from: DayKey; to: DayKey; today: DayKey; categories: Map<ID, Category>; currency: string }) {
@@ -67,9 +67,9 @@ export function SpendingCalendar({ entries, from, to, today, categories, currenc
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: Math.min(0.5, i * 0.012), duration: 0.3 }}
-              className={cn("num relative grid aspect-square place-items-center rounded-[9px] text-[12px] font-medium", future ? "text-ink-4" : strong ? "text-[var(--accent-on)]" : "text-ink-2")}
+              className={cn("num relative grid aspect-square place-items-center rounded-[9px] text-[12px] font-medium", future ? "text-ink-4" : strong ? "text-ink-inverse" : "text-ink-2")}
               style={{
-                background: future ? "transparent" : v ? `color-mix(in srgb, var(--accent) ${Math.round(14 + 78 * k)}%, transparent)` : "color-mix(in srgb, var(--ink) 4.5%, transparent)",
+                background: future ? "transparent" : v ? `color-mix(in srgb, var(--ink) ${Math.round(10 + 80 * k)}%, transparent)` : "color-mix(in srgb, var(--ink) 4.5%, transparent)",
                 outline: sel === d ? "2px solid var(--ink)" : d === today ? "1px solid var(--ink-3)" : undefined,
                 outlineOffset: sel === d ? 1.5 : 0
               }}
@@ -93,7 +93,7 @@ export function SpendingCalendar({ entries, from, to, today, categories, currenc
         <div className="flex shrink-0 items-center gap-1 text-[10.5px] text-ink-3" aria-hidden="true">
           меньше
           {[0.2, 0.45, 0.7, 1].map((k) => (
-            <span key={k} className="h-2.5 w-2.5 rounded-[3px]" style={{ background: `color-mix(in srgb, var(--accent) ${Math.round(14 + 78 * k)}%, transparent)` }} />
+            <span key={k} className="h-2.5 w-2.5 rounded-[3px]" style={{ background: `color-mix(in srgb, var(--ink) ${Math.round(10 + 80 * k)}%, transparent)` }} />
           ))}
           больше
         </div>

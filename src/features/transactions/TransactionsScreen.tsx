@@ -270,7 +270,7 @@ export function TransactionsScreen() {
             <section key={g.day || "all"} className="mt-3">
               {g.day && (
                 <div className="flex items-baseline justify-between px-5 pb-2.5 pt-2">
-                  <span className="label-caps">{formatDayHeading(g.day)}</span>
+                  <span className="section-label">{formatDayHeading(g.day)}</span>
                   <Money value={dayNet(g.items)} sign="always" currency={settings.baseCurrency} className="text-footnote text-ink-3" />
                 </div>
               )}

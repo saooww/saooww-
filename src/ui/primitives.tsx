@@ -342,7 +342,7 @@ export function ProgressRing({
 export function SectionHeader({ title, action, className }: { title: ReactNode; action?: { label: string; onClick: () => void }; className?: string }) {
   return (
     <div className={cn("flex items-center justify-between gap-3 px-5 pb-3 pt-1", className)}>
-      <h2 className="label-caps">{title}</h2>
+      <h2 className="section-label">{title}</h2>
       {action && (
         <button type="button" onClick={action.onClick} className="-my-2 flex items-center gap-0.5 py-2 text-footnote font-medium text-ink-2 active:opacity-60">
           {action.label}
@@ -356,7 +356,7 @@ export function SectionHeader({ title, action, className }: { title: ReactNode; 
 export function Group({ children, className, header, footer }: { children: ReactNode; className?: string; header?: ReactNode; footer?: ReactNode }) {
   return (
     <section className={cn("mx-4", className)}>
-      {header && <div className="label-caps px-1 pb-2.5">{header}</div>}
+      {header && <div className="section-label px-1 pb-2.5">{header}</div>}
       <div className="panel overflow-hidden rounded-lg [&>*+*]:hairline-t">{children}</div>
       {footer && <div className="px-1 pt-2 text-footnote text-ink-3">{footer}</div>}
     </section>

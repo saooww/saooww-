@@ -68,10 +68,7 @@ export function useEvents(from: DayKey, to: DayKey): CalEvent[] {
       if (info.status === "closed") continue;
       out.push({ key: `d-${d.id}`, kind: "debt", date: d.dueDate, title: d.direction === "i_owe" ? `Вернуть долг: ${d.counterparty}` : `Возврат долга: ${d.counterparty}`, amount: info.remaining, currency: d.currency, direction: d.direction === "i_owe" ? "out" : "in", overdue: info.status === "overdue", onOpen: () => nav.push("debt", { id: d.id }) });
     }
-    for (const t of data.tasks) {
-      if (!t.due || t.due < from || t.due > to) continue;
-      out.push({ key: `t-${t.id}`, kind: "task", date: t.due, title: t.title, done: t.done, overdue: !t.done && t.due < today, onOpen: () => nav.sheet("task", { editId: t.id }) });
-    }
+    // Tasks live in «Дела»; this calendar is about money.
     for (const g of data.goals) {
       if (!g.deadline || g.deadline < from || g.deadline > to || g.archived) continue;
       out.push({ key: `g-${g.id}`, kind: "goal", date: g.deadline, title: `Срок цели «${g.name}»`, onOpen: () => nav.push("goal", { id: g.id }) });
@@ -131,7 +128,7 @@ export function PlansScreen() {
 
       {overdue.length > 0 && (
         <section className="mt-5">
-          <h2 className="label-caps px-5 pb-2.5 !text-warning">Ждут проведения</h2>
+          <h2 className="section-label px-5 pb-2.5 !text-warning">Ждут проведения</h2>
           <Group>
             {overdue.map((e) => (
               <EventRow key={e.key} e={e} />
@@ -206,7 +203,7 @@ export function PlansScreen() {
       </section>
 
       <section className="mt-5">
-        <h2 className="label-caps px-5 pb-2.5">{formatDayHeading(selected)}</h2>
+        <h2 className="section-label px-5 pb-2.5">{formatDayHeading(selected)}</h2>
         {selectedEvents.length === 0 ? (
           <div className="mx-4 flex items-center justify-between rounded-lg border border-dashed border-line-strong px-4 py-3.5">
             <span className="text-subhead text-ink-2">Ничего не запланировано</span>
@@ -227,7 +224,7 @@ export function PlansScreen() {
 
       {upcoming.length > 0 && (
         <section className="mt-6">
-          <h2 className="label-caps px-5 pb-2.5">Ближайшие 30 дней</h2>
+          <h2 className="section-label px-5 pb-2.5">Ближайшие 30 дней</h2>
           <Group footer={`В этом месяце ещё ожидается: поступлений ${formatShort(monthPlan.income, base)}, списаний ${formatShort(monthPlan.expense, base)}.`}>
             {upcoming.map((e) => (
               <EventRow key={e.key} e={e} />

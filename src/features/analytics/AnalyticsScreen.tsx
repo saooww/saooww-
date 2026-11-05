@@ -29,6 +29,12 @@ const PERIODS: Array<{ value: Period; label: string }> = [
 const PREV_GEN: Record<Period, string> = { week: "прошлой недели", month: "прошлого месяца", quarter: "прошлого квартала", year: "прошлого года" };
 const PREV_LABEL: Record<Period, string> = { week: "прошлой неделе", month: "прошлом месяце", quarter: "прошлом квартале", year: "прошлом году" };
 
+const VIEWS: Array<{ value: "overview" | "categories" | "trends"; label: string }> = [
+  { value: "overview", label: "Обзор" },
+  { value: "categories", label: "Категории" },
+  { value: "trends", label: "Тренды" }
+];
+
 export function AnalyticsScreen() {
   const data = useAppData();
   const { entries, skipped } = useLedger();
@@ -44,6 +50,7 @@ export function AnalyticsScreen() {
   const [slice, setSlice] = useState<string | null>(null);
   const [capScrub, setCapScrub] = useState<number | null>(null);
   const [capMode, setCapMode] = useState<"capital" | "savings">("capital");
+  const [view, setView] = useState<"overview" | "categories" | "trends">("overview");
 
   const range = useMemo(() => periodRange(period, offset, today), [period, offset, today]);
   const prevRange = useMemo(() => periodRange(period, offset - 1, today), [period, offset, today]);
@@ -145,8 +152,15 @@ export function AnalyticsScreen() {
             </button>
           )}
 
+          {/* Three short views instead of one endless scroll */}
+          <div className="mt-6 px-4">
+            <Segmented options={VIEWS} value={view} onChange={setView} size="sm" />
+          </div>
+
+          {view === "overview" && (
+            <>
           {/* Flow chart */}
-          <section className="mt-6 px-4">
+          <section className="mt-4 px-4">
             <div className="panel rounded-xl p-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
@@ -178,7 +192,7 @@ export function AnalyticsScreen() {
                   data={buckets.map((b, i) => ({ label: b.label, value: Math.abs(barValues[i]) }))}
                   selected={bar}
                   onSelect={setBar}
-                  color={metric === "income" ? "var(--positive)" : metric === "net" ? "var(--ink-2)" : "var(--accent)"}
+                  color={metric === "income" ? "var(--positive)" : metric === "net" ? "var(--ink-2)" : "var(--ink)"}
                   average={avgLine}
                   formatAxis={(v) => formatCompact(v)}
                   animKey={animKey}
@@ -206,7 +220,7 @@ export function AnalyticsScreen() {
                   )}
                 </div>
                 <div className="mt-3">
-                  <ProgressBar value={forecast.projected ? forecast.spent / forecast.projected : 0} marker={forecast.lastMonth && forecast.projected ? Math.min(0.999, forecast.lastMonth / Math.max(forecast.projected, forecast.lastMonth)) : undefined} />
+                  <ProgressBar tone="ink" value={forecast.projected ? forecast.spent / forecast.projected : 0} marker={forecast.lastMonth && forecast.projected ? Math.min(0.999, forecast.lastMonth / Math.max(forecast.projected, forecast.lastMonth)) : undefined} />
                 </div>
                 <div className="mt-3 grid grid-cols-3 gap-2 text-caption">
                   <Fact label="Уже потрачено" value={forecast.spent} currency={base} />
@@ -218,19 +232,38 @@ export function AnalyticsScreen() {
             </section>
           )}
 
-          {/* Calendar */}
-          {period === "month" && (
+          {/* Tips */}
+          {tips.length > 0 && (
             <section className="mt-4 px-4">
               <div className="panel rounded-xl p-4">
-                <div className="mb-3 flex items-center justify-between">
-                  <div className="text-headline font-semibold">Календарь трат</div>
-                  {hab.noSpendDays > 0 && <div className="text-footnote text-ink-2">{pluralN(hab.noSpendDays, ["день", "дня", "дней"])} без трат</div>}
+                <div className="text-headline font-semibold">Наблюдения</div>
+                <div className="mt-2 flex flex-col">
+                  {tips.map((t) => (
+                    <button
+                      key={t.id}
+                      type="button"
+                      disabled={!t.action}
+                      onClick={() => {
+                        if (!t.action) return;
+                        if (t.action.route) nav.push(t.action.route, t.action.params);
+                        else useUI.getState().setTab(t.action.tab);
+                      }}
+                      className="flex items-start gap-3 py-2.5 text-left [&+&]:hairline-t"
+                    >
+                      <NamedIcon name={t.icon} size={18} strokeWidth={2} className={cn("mt-0.5 shrink-0", { neutral: "text-ink-2", positive: "text-positive", warning: "text-warning", negative: "text-negative" }[t.tone])} />
+                      <span className="text-subhead text-ink">{t.text}</span>
+                    </button>
+                  ))}
                 </div>
-                <SpendingCalendar key={range.from} entries={entries} from={range.from} to={range.to} today={today} categories={cats} currency={base} />
               </div>
             </section>
           )}
+          <div className="mt-3 px-5 text-caption text-ink-3">Переводы между своими кошельками, долги и цели не считаются доходами и расходами.</div>
+            </>
+          )}
 
+          {view === "categories" && (
+            <>
           {/* Categories */}
           <section className="mt-4 px-4">
             <div className="panel rounded-xl p-4">
@@ -274,6 +307,24 @@ export function AnalyticsScreen() {
             </div>
           </section>
 
+          {/* Calendar */}
+          {period === "month" && (
+            <section className="mt-4 px-4">
+              <div className="panel rounded-xl p-4">
+                <div className="mb-3 flex items-center justify-between">
+                  <div className="text-headline font-semibold">Календарь трат</div>
+                  {hab.noSpendDays > 0 && <div className="text-footnote text-ink-2">{pluralN(hab.noSpendDays, ["день", "дня", "дней"])} без трат</div>}
+                </div>
+                <SpendingCalendar key={range.from} entries={entries} from={range.from} to={range.to} today={today} categories={cats} currency={base} />
+              </div>
+            </section>
+          )}
+
+            </>
+          )}
+
+          {view === "trends" && (
+            <>
           {/* Capital */}
           {capital.length > 1 && (
             <section className="mt-4 px-4">
@@ -318,7 +369,7 @@ export function AnalyticsScreen() {
                 <div className="text-headline font-semibold">Полгода</div>
                 <div className="flex items-center gap-3 text-caption text-ink-2">
                   <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-positive" />Доходы</span>
-                  <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-accent" />Расходы</span>
+                  <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-ink" />Расходы</span>
                 </div>
               </div>
               <SixMonths months={months} base={base} />
@@ -355,33 +406,8 @@ export function AnalyticsScreen() {
             </section>
           )}
 
-          {/* Tips */}
-          {tips.length > 0 && (
-            <section className="mt-4 px-4">
-              <div className="panel rounded-xl p-4">
-                <div className="text-headline font-semibold">Наблюдения</div>
-                <div className="mt-2 flex flex-col">
-                  {tips.map((t) => (
-                    <button
-                      key={t.id}
-                      type="button"
-                      disabled={!t.action}
-                      onClick={() => {
-                        if (!t.action) return;
-                        if (t.action.route) nav.push(t.action.route, t.action.params);
-                        else useUI.getState().setTab(t.action.tab);
-                      }}
-                      className="flex items-start gap-3 py-2.5 text-left [&+&]:hairline-t"
-                    >
-                      <NamedIcon name={t.icon} size={18} strokeWidth={2} className={cn("mt-0.5 shrink-0", { neutral: "text-ink-2", positive: "text-positive", warning: "text-warning", negative: "text-negative" }[t.tone])} />
-                      <span className="text-subhead text-ink">{t.text}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </section>
+            </>
           )}
-          <div className="mt-3 px-5 text-caption text-ink-3">Переводы между своими кошельками, долги и цели не считаются доходами и расходами.</div>
         </>
       )}
     </Screen>

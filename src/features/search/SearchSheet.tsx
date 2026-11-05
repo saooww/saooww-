@@ -91,7 +91,7 @@ export function SearchSheet() {
         <div className="flex flex-col gap-5">
           {res.groups.map((g) => (
             <section key={g.title}>
-              <h3 className="label-caps px-5 pb-2.5">{g.title}</h3>
+              <h3 className="section-label px-5 pb-2.5">{g.title}</h3>
               <div className="mx-4 overflow-hidden panel rounded-lg [&>*+*]:hairline-t">
                 {g.hits.slice(0, 6).map((h) => (
                   <button key={h.key} type="button" onClick={h.open} className="flex min-h-[52px] w-full items-center gap-3 px-4 py-2 text-left active:bg-surface-press">
@@ -107,7 +107,7 @@ export function SearchSheet() {
           ))}
           {res.tx.length > 0 && (
             <section>
-              <h3 className="label-caps px-5 pb-2.5">Операции</h3>
+              <h3 className="section-label px-5 pb-2.5">Операции</h3>
               <div className="mx-4 overflow-hidden panel rounded-lg [&>*+*]:hairline-t">
                 {res.tx.map((t) => (
                   <div key={t.id}>

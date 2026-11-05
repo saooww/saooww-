@@ -123,12 +123,12 @@ export function Onboarding() {
 
             {step === 1 && (
               <div className="pt-6">
-                <h1 className="text-title-1 font-bold text-ink">Знакомство</h1>
+                <h1 className="text-title-1 font-display text-ink">Знакомство</h1>
                 <p className="mt-2 text-callout text-ink-2">Как к вам обращаться и в какой валюте считать.</p>
                 <label className="panel mt-7 flex h-14 items-center rounded-[16px] px-4">
                   <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Имя (необязательно)" maxLength={30} enterKeyHint="next" className={cn(inputCls, "text-headline")} />
                 </label>
-                <div className="label-caps mt-8 px-1">Основная валюта</div>
+                <div className="section-label mt-8 px-1">Основная валюта</div>
                 <div className="mt-3 grid grid-cols-3 gap-2">
                   {CURRENCIES.slice(0, 6).map((c) => (
                     <button
@@ -151,7 +151,7 @@ export function Onboarding() {
 
             {step === 2 && (
               <div className="pt-6">
-                <h1 className="text-title-1 font-bold text-ink">Ваши счета</h1>
+                <h1 className="text-title-1 font-display text-ink">Ваши счета</h1>
                 <p className="mt-2 text-callout text-ink-2">Отметьте, что у вас есть, и сколько там сейчас. Поправить можно в любой момент.</p>
                 <div className="mt-7 flex flex-col gap-2.5">
                   {wallets.map((w, i) => (
