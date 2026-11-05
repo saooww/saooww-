@@ -22,6 +22,8 @@ export interface ScreenProps {
   title?: string;
   /** Large title at the top of the content that collapses into the bar */
   large?: boolean;
+  /** The screen draws its own large title; the bar title fades in on scroll */
+  ownTitle?: boolean;
   actions?: ReactNode;
   /** Replaces the whole bar content (home screen) */
   header?: ReactNode;
@@ -43,13 +45,14 @@ export const BAR_H = 52;
  * A screen: scroll container + top bar. With `large`, the title lives in the
  * content and fades into the bar as you scroll, the way iOS does it.
  */
-export function Screen({ title, large, actions, header, children, className, subheader, scrollRef, onBack, bare, chromeOpacity }: ScreenProps) {
+export function Screen({ title, large, ownTitle, actions, header, children, className, subheader, scrollRef, onBack, bare, chromeOpacity }: ScreenProps) {
   const { tab, isRoot } = useRoute();
   const ownRef = useRef<HTMLDivElement>(null);
   const ref = scrollRef ?? ownRef;
   const { scrollY } = useScroll({ container: ref });
   const barBg = useTransform(scrollY, [0, 12], [0, 1]);
-  const compactTitle = useTransform(scrollY, large ? [30, 52] : [0, 1], [large ? 0 : 1, 1]);
+  const collapsing = large || ownTitle;
+  const compactTitle = useTransform(scrollY, collapsing ? [ownTitle ? 90 : 30, ownTitle ? 120 : 52] : [0, 1], [collapsing ? 0 : 1, 1]);
   const retap = useUI((s) => s.retap[tab]);
   const pop = useUI((s) => s.pop);
   const first = useRef(true);

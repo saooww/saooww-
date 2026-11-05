@@ -16,7 +16,7 @@ import { Onboarding } from "./features/onboarding/Onboarding";
 import { refreshRatesIfStale } from "./lib/rates";
 import { MonthStoryLayer } from "./features/story/MonthStory";
 
-const TABS: Tab[] = ["home", "wallets", "transactions", "analytics", "more"];
+const TABS: Tab[] = ["home", "planner", "wallets", "transactions", "analytics", "more"];
 
 function resolveTheme(t: "dark" | "light" | "system"): "dark" | "light" {
   if (t !== "system") return t;
@@ -103,6 +103,9 @@ function Main({ formatKey }: { formatKey: string }) {
     if (add === "expense" || add === "income" || add === "transfer") {
       window.history.replaceState(null, "", window.location.pathname);
       setTimeout(() => nav.sheet("composer", { kind: add }), 350);
+    } else if (add === "task") {
+      window.history.replaceState(null, "", window.location.pathname);
+      setTimeout(() => nav.sheet("quickAdd", {}), 350);
     } else if (useData.getState().settings.launchAction === "expense") {
       setTimeout(() => nav.sheet("composer", { kind: "expense" }), 120);
     }

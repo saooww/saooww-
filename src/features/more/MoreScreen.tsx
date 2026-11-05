@@ -81,8 +81,8 @@ export function MoreScreen() {
             chevron
             onClick={() => nav.push("debts")}
           />
-          <Row icon={ListTodo} iconTone={s.overdueTasks ? "warning" : undefined} title="Задачи" subtitle={s.tasks ? `${pluralN(s.tasks, ["активная", "активные", "активных"])}${s.overdueTasks ? ` · ${s.overdueTasks} просрочено` : ""}` : "Финансовые дела"} chevron onClick={() => nav.push("tasks")} />
-          <Row icon={NotebookPen} title="Заметки" subtitle={s.notes ? pluralN(s.notes, ["заметка", "заметки", "заметок"]) : "Мысли о деньгах"} chevron onClick={() => nav.push("notes")} />
+          <Row icon={ListTodo} iconTone={s.overdueTasks ? "warning" : undefined} title="Дела" subtitle={s.tasks ? `${pluralN(s.tasks, ["активное", "активных", "активных"])}${s.overdueTasks ? ` · ${s.overdueTasks} просрочено` : ""}` : "Сегодня, неделя, списки"} chevron onClick={() => nav.planner("today")} />
+          <Row icon={NotebookPen} title="Заметки" subtitle={s.notes ? pluralN(s.notes, ["заметка", "заметки", "заметок"]) : "Мысли, списки, дневник"} chevron onClick={() => nav.planner("notes")} />
         </Group>
 
         <Group>

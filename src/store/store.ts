@@ -1,11 +1,12 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { appStorage, kvDel, kvGet, kvSet } from "./storage";
-import { nowISO, todayKey, type DayKey } from "../lib/dates";
+import { MONTHS_GEN, nowISO, parseDay, todayKey, type DayKey } from "../lib/dates";
 import { computeBalances, debtInfo } from "../lib/finance";
 import { uid } from "../lib/id";
 import type { Minor } from "../lib/money";
 import { nextAfter } from "../lib/recurrence";
+import { nextOccurrence } from "../lib/tasks";
 import { CHART_COLORS } from "./catalog";
 import { migrateFromV1, V1_KEY } from "./migrate";
 import { clearPhotos } from "./photos";
@@ -21,6 +22,7 @@ import {
   type ID,
   type Note,
   type Plan,
+  type Project,
   type Recurring,
   type Settings,
   type Task,
@@ -80,10 +82,22 @@ export interface DataActions {
   updateTask(id: ID, patch: Partial<Task>): void;
   toggleTask(id: ID): void;
   deleteTask(id: ID): void;
+  /** Moves tasks to a day (or takes the date away) */
+  scheduleTasks(ids: ID[], due: DayKey | undefined): void;
+  /** Marks a task as one of the main things of a day */
+  setFocus(id: ID, day: DayKey | undefined): void;
+  toggleSubtask(taskId: ID, subId: ID): void;
+  // lists
+  addProject(input: Omit<Project, "id" | "createdAt">): ID;
+  updateProject(id: ID, patch: Partial<Project>): void;
+  /** Removes the list together with its tasks */
+  deleteProject(id: ID): void;
   // notes
   addNote(input?: Partial<Note>): ID;
   updateNote(id: ID, patch: Partial<Note>): void;
   deleteNote(id: ID): void;
+  /** The diary entry of a day, created when missing */
+  journalNote(day: DayKey): ID;
   // favorites
   addFavorite(input: Omit<Favorite, "id">): ID;
   deleteFavorite(id: ID): void;
@@ -486,15 +500,21 @@ export const useData = create<DataState>()(
         set((s) => {
           const t = s.tasks.find((x) => x.id === id);
           if (!t) return {};
-          if (t.done) return { tasks: mapById(s.tasks, id, { done: false, doneAt: undefined }) };
-          const tasks = mapById(s.tasks, id, { done: true, doneAt: nowISO() });
-          if (t.repeat !== "none") {
-            const base = t.due ?? todayKey();
-            let next = nextAfter(base, t.repeat, 1);
-            if (next < todayKey()) next = nextAfter(todayKey(), t.repeat, 1);
-            tasks.unshift({ ...t, id: uid("k-"), due: next, done: false, doneAt: undefined, createdAt: nowISO() });
+          if (t.done) {
+            // Taking a completion back also takes back the repeat it created, unless that one is done too.
+            const next = t.nextId ? s.tasks.find((x) => x.id === t.nextId) : undefined;
+            const drop = next && !next.done ? next.id : undefined;
+            return { tasks: s.tasks.filter((x) => x.id !== drop).map((x) => (x.id === id ? { ...x, done: false, doneAt: undefined, nextId: undefined } : x)) };
           }
-          return { tasks };
+          const nextDue = nextOccurrence(t, todayKey());
+          let tasks = s.tasks;
+          let nextId: ID | undefined;
+          if (nextDue) {
+            nextId = uid("k-");
+            const copy: Task = { ...t, id: nextId, due: nextDue, done: false, doneAt: undefined, focus: undefined, nextId: undefined, subtasks: t.subtasks?.map((x) => ({ ...x, done: false })), createdAt: nowISO() };
+            tasks = [copy, ...tasks];
+          }
+          return { tasks: mapById(tasks, id, { done: true, doneAt: nowISO(), nextId }) };
         });
       },
 
@@ -503,6 +523,46 @@ export const useData = create<DataState>()(
           tasks: s.tasks.filter((t) => t.id !== id),
           notes: s.notes.map((n) => ({ ...n, links: n.links.filter((l) => !(l.type === "task" && l.id === id)) }))
         }));
+      },
+
+      scheduleTasks(ids, due) {
+        const set_ = new Set(ids);
+        set((s) => ({
+          tasks: s.tasks.map((t) => (set_.has(t.id) ? { ...t, due, time: due ? t.time : undefined, focus: t.focus && t.focus === due ? t.focus : undefined } : t))
+        }));
+      },
+
+      setFocus(id, day) {
+        set((s) => ({ tasks: mapById(s.tasks, id, { focus: day }) }));
+      },
+
+      toggleSubtask(taskId, subId) {
+        set((s) => ({
+          tasks: s.tasks.map((t) => (t.id === taskId ? { ...t, subtasks: (t.subtasks ?? []).map((x) => (x.id === subId ? { ...x, done: !x.done } : x)) } : t))
+        }));
+      },
+
+      /* ---------------- lists ---------------- */
+
+      addProject(input) {
+        const id = uid("pr-");
+        set((s) => ({ projects: [...s.projects, { ...input, id, createdAt: nowISO() }] }));
+        return id;
+      },
+
+      updateProject(id, patch) {
+        set((s) => ({ projects: mapById(s.projects, id, patch) }));
+      },
+
+      deleteProject(id) {
+        set((s) => {
+          const gone = new Set(s.tasks.filter((t) => t.projectId === id).map((t) => t.id));
+          return {
+            projects: s.projects.filter((p) => p.id !== id),
+            tasks: s.tasks.filter((t) => !gone.has(t.id)),
+            notes: s.notes.map((n) => ({ ...n, links: n.links.filter((l) => !(l.type === "project" && l.id === id) && !(l.type === "task" && gone.has(l.id))) }))
+          };
+        });
       },
 
       /* ---------------- notes ---------------- */
@@ -520,6 +580,13 @@ export const useData = create<DataState>()(
 
       deleteNote(id) {
         set((s) => ({ notes: s.notes.filter((n) => n.id !== id) }));
+      },
+
+      journalNote(day) {
+        const existing = get().notes.find((n) => n.journal === day);
+        if (existing) return existing.id;
+        const d = parseDay(day);
+        return get().addNote({ title: `${d.getDate()} ${MONTHS_GEN[d.getMonth()]}`, journal: day });
       },
 
       /* ---------------- favorites ---------------- */

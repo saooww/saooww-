@@ -20,8 +20,14 @@ import { BudgetSheet, BudgetsScreen } from "../features/budgets/Budgets";
 import { PlanActionsSheet, PlanSheet, PlansScreen } from "../features/plans/Plans";
 import { RecurringSheet, SubscriptionsScreen } from "../features/subscriptions/Subscriptions";
 import { DebtDetail, DebtPaySheet, DebtSheet, DebtsScreen } from "../features/debts/Debts";
-import { TaskSheet, TasksScreen } from "../features/tasks/Tasks";
 import { LinkPickerSheet, NoteEditor, NotesScreen } from "../features/notes/Notes";
+import { PlannerScreen } from "../features/planner/PlannerScreen";
+import { TaskSheet } from "../features/planner/TaskSheet";
+import { QuickAddSheet } from "../features/planner/QuickAdd";
+import { DatePickerSheet } from "../features/planner/DatePicker";
+import { ProjectScreen, ProjectSheet, TaskListScreen } from "../features/planner/Projects";
+import { PlanDaySheet, ReviewDaySheet } from "../features/planner/Rituals";
+import { PlannerIntroSheet } from "../features/planner/Intro";
 import { BackupTextSheet, CategoriesScreen, CurrenciesScreen, DataScreen, SettingsScreen } from "../features/settings/Settings";
 import { SearchSheet } from "../features/search/SearchSheet";
 import { PinSheet } from "../features/lock/PinSheet";
@@ -29,6 +35,7 @@ import { PinSheet } from "../features/lock/PinSheet";
 registerRoutes({
   roots: {
     home: HomeScreen,
+    planner: PlannerScreen,
     wallets: WalletsScreen,
     transactions: TransactionsScreen,
     analytics: AnalyticsScreen,
@@ -43,7 +50,9 @@ registerRoutes({
     subscriptions: SubscriptionsScreen,
     debts: DebtsScreen,
     debt: DebtDetail,
-    tasks: TasksScreen,
+    tasks: TaskListScreen,
+    taskList: TaskListScreen,
+    project: ProjectScreen,
     notes: NotesScreen,
     note: NoteEditor,
     settings: SettingsScreen,
@@ -70,6 +79,12 @@ registerSheets({
   debt: DebtSheet,
   debtPay: DebtPaySheet,
   task: TaskSheet,
+  quickAdd: QuickAddSheet,
+  pickDate: DatePickerSheet,
+  project: ProjectSheet,
+  planDay: PlanDaySheet,
+  reviewDay: ReviewDaySheet,
+  plannerIntro: PlannerIntroSheet,
   linkPicker: LinkPickerSheet,
   search: SearchSheet,
   backupText: BackupTextSheet,

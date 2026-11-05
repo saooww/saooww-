@@ -20,7 +20,7 @@ import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
 
 type EventKind = "plan" | "recurring" | "debt" | "task" | "goal";
 
-interface CalEvent {
+export interface CalEvent {
   key: string;
   kind: EventKind;
   date: DayKey;
@@ -35,7 +35,7 @@ interface CalEvent {
 
 const EVENT_ICON: Record<EventKind, typeof Repeat> = { plan: CalendarCheck, recurring: Repeat, debt: HandCoins, task: ListTodo, goal: Target };
 
-function useEvents(from: DayKey, to: DayKey): CalEvent[] {
+export function useEvents(from: DayKey, to: DayKey): CalEvent[] {
   const data = useAppData();
   const today = useToday();
   return useMemo(() => {
@@ -252,9 +252,9 @@ function Line({ label, value, currency, sign }: { label: string; value: number; 
   );
 }
 
-function EventRow({ e, hideDate }: { e: CalEvent; hideDate?: boolean }) {
+export function EventRow({ e, hideDate }: { e: CalEvent; hideDate?: boolean }) {
   const Icon = EVENT_ICON[e.kind];
-  const label = { plan: "План", recurring: "Регулярно", debt: "Долг", task: "Задача", goal: "Цель" }[e.kind];
+  const label = { plan: "План", recurring: "Регулярно", debt: "Долг", task: "Дело", goal: "Цель" }[e.kind];
   return (
     <Row
       leading={<IconChip icon={e.done ? Check : Icon} size={34} tone={e.overdue ? "warning" : e.done ? "positive" : undefined} />}

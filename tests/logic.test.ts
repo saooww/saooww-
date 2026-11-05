@@ -14,6 +14,10 @@ import type { AppData } from "../src/store/types";
 import { safeToSpend } from "../src/lib/safeToSpend";
 import { parseCbr, ratesFor } from "../src/lib/rates";
 import { monthSummary } from "../src/lib/story";
+import { parseTask, splitLines } from "../src/lib/quickParse";
+import { dayPlan, nextOccurrence, nextRepeatDate } from "../src/lib/tasks";
+import { taskToICS } from "../src/lib/ics";
+import { parseImport } from "../src/store/store";
 
 let passed = 0;
 function test(name: string, fn: () => void) {
@@ -263,6 +267,141 @@ test("итоги месяца сходятся с аналитикой", () => {
   assert.equal(s.income, stats.income);
   assert.ok(s.top.length > 0 && s.top[0].amount >= (s.top[1]?.amount ?? 0));
   assert.ok(s.biggest && s.biggest.amount > 0);
+});
+
+/* ---------------- planner ---------------- */
+
+// A fixed Thursday, so the answers don't depend on the day the tests run.
+const THU = "2026-11-05";
+const lists = [{ id: "pr-work", name: "Работа" }, { id: "pr-home", name: "Дом" }];
+const p = (text: string) => parseTask(text, THU, { projects: lists, defaultDue: THU });
+
+test("дело одной строкой: дата, время, список, приоритет", () => {
+  const a = p("Позвонить маме завтра в 18:00");
+  assert.deepEqual([a.title, a.due, a.time], ["Позвонить маме", "2026-11-06", "18:00"]);
+  const b = p("Отчёт к пятнице #работа !!");
+  assert.deepEqual([b.title, b.due, b.projectId, b.priority], ["Отчёт", "2026-11-06", "pr-work", 2]);
+  const c = p("в понедельник в 5 вечера созвон");
+  assert.deepEqual([c.title, c.due, c.time], ["Созвон", "2026-11-09", "17:00"]);
+  const d = p("завтра утром в 9 бег");
+  assert.deepEqual([d.title, d.due, d.time], ["Бег", "2026-11-06", "09:00"]);
+  const e = p("Встреча в 10 с Ивановым");
+  assert.deepEqual([e.title, e.time], ["Встреча с Ивановым", "10:00"]);
+});
+
+test("дело одной строкой: числа, которые не дата и не время, остаются в названии", () => {
+  assert.equal(p("Купить 2 билета в 3 кассе").title, "Купить 2 билета в 3 кассе");
+  assert.equal(p("Купить 2 билета в 3 кассе").time, undefined);
+  const t = p("в 10.30 стоматолог");
+  assert.deepEqual([t.title, t.time, t.due], ["Стоматолог", "10:30", THU]);
+  const d = p("Отнести документы 12.11");
+  assert.deepEqual([d.title, d.due, d.time], ["Отнести документы", "2026-11-12", undefined]);
+  // a date already past this year means next year
+  assert.equal(p("День рождения 3 марта").due, "2027-03-03");
+});
+
+test("дело одной строкой: повторы", () => {
+  const a = p("оплатить интернет каждый месяц 15 ноября");
+  assert.deepEqual([a.title, a.repeat, a.due], ["Оплатить интернет", "month", "2026-11-15"]);
+  const b = p("выбросить мусор по понедельникам");
+  assert.deepEqual([b.title, b.repeat, b.due], ["Выбросить мусор", "week", "2026-11-09"]);
+  const c = p("зарядка по будням");
+  assert.deepEqual([c.title, c.repeat], ["Зарядка", "weekdays"]);
+  assert.equal(p("через 2 недели отпуск").due, "2026-11-19");
+  assert.equal(p("на выходных разобрать шкаф").due, "2026-11-07");
+});
+
+test("дело одной строкой: отключённое распознавание оставляет слова", () => {
+  const a = parseTask("Купить билеты завтра", THU, { ignore: new Set(["date"]) });
+  assert.deepEqual([a.title, a.due], ["Купить билеты завтра", undefined]);
+  assert.deepEqual(splitLines("- молоко\n• хлеб\n\n1. сыр\n[ ] яйца"), ["молоко", "хлеб", "сыр", "яйца"]);
+});
+
+test("повторы: по будням пятница → понедельник, следующий раз не в прошлом", () => {
+  assert.equal(nextRepeatDate("2026-11-06", "weekdays"), "2026-11-09");
+  assert.equal(nextRepeatDate("2026-01-31", "month"), "2026-02-28");
+  assert.equal(nextOccurrence({ due: addDays(today, -10), repeat: "day" }, today), addDays(today, 1));
+  assert.equal(nextOccurrence({ due: undefined, repeat: "none" }, today), undefined);
+});
+
+test("повторяющееся дело: отметка создаёт следующее, отмена отметки убирает его", () => {
+  const id = st().addTask({ title: "Полить цветы", due: today, priority: 0, repeat: "week", subtasks: [{ id: "x", title: "Фикус", done: true }], focus: today });
+  const n0 = st().tasks.length;
+  st().toggleTask(id);
+  const done = st().tasks.find((t) => t.id === id)!;
+  const next = st().tasks.find((t) => t.id === done.nextId)!;
+  assert.equal(st().tasks.length, n0 + 1);
+  assert.equal(next.due, addDays(today, 7));
+  assert.equal(next.done, false);
+  assert.equal(next.focus, undefined);
+  assert.equal(next.subtasks![0].done, false);
+  st().toggleTask(id);
+  assert.equal(st().tasks.length, n0);
+  assert.equal(st().tasks.find((t) => t.id === id)!.done, false);
+});
+
+test("перенос дела: без даты — без времени, главное дня снимается", () => {
+  const id = st().addTask({ title: "Созвон", due: today, time: "10:00", priority: 0, repeat: "none", focus: today });
+  st().scheduleTasks([id], addDays(today, 1));
+  let t = st().tasks.find((x) => x.id === id)!;
+  assert.deepEqual([t.due, t.time, t.focus], [addDays(today, 1), "10:00", undefined]);
+  st().scheduleTasks([id], undefined);
+  t = st().tasks.find((x) => x.id === id)!;
+  assert.deepEqual([t.due, t.time], [undefined, undefined]);
+});
+
+test("план дня: главное, остальное, хвосты и счёт сделанного", () => {
+  st().replaceAll({ ...data(), tasks: [] });
+  const a = st().addTask({ title: "A", due: today, priority: 0, repeat: "none", focus: today });
+  st().addTask({ title: "B", due: today, priority: 0, repeat: "none" });
+  st().addTask({ title: "C", due: addDays(today, -2), priority: 0, repeat: "none" });
+  st().addTask({ title: "D", priority: 0, repeat: "none" });
+  st().toggleTask(a);
+  const plan = dayPlan(st().tasks, today);
+  assert.deepEqual(plan.focus.map((t) => t.title), ["A"]);
+  assert.deepEqual(plan.rest.map((t) => t.title), ["B"]);
+  assert.deepEqual(plan.overdue.map((t) => t.title), ["C"]);
+  assert.deepEqual([plan.completed, plan.total], [1, 2]);
+});
+
+test("удаление списка убирает его дела и связи заметок", () => {
+  const pid = st().addProject({ name: "Ремонт", icon: "Hammer", color: "#4E9FD1" });
+  const tid = st().addTask({ title: "Купить краску", projectId: pid, priority: 0, repeat: "none" });
+  const keep = st().addTask({ title: "Другое", priority: 0, repeat: "none" });
+  const nid = st().addNote({ title: "Смета", links: [{ type: "project", id: pid }, { type: "task", id: tid }, { type: "task", id: keep }] });
+  st().deleteProject(pid);
+  assert.equal(st().projects.some((x) => x.id === pid), false);
+  assert.equal(st().tasks.some((x) => x.id === tid), false);
+  assert.equal(st().tasks.some((x) => x.id === keep), true);
+  assert.deepEqual(st().notes.find((n) => n.id === nid)!.links, [{ type: "task", id: keep }]);
+});
+
+test("дневник: одна запись на день", () => {
+  const a = st().journalNote(today);
+  const b = st().journalNote(today);
+  assert.equal(a, b);
+  assert.equal(st().notes.find((n) => n.id === a)!.journal, today);
+});
+
+test("дело в календарь: событие с напоминанием и повтором", () => {
+  const ics = taskToICS({ id: "k-1", title: "Отчёт, срочно; финал", due: "2026-11-06", time: "23:45", priority: 0, repeat: "weekdays", done: false, createdAt: "2026-11-05T10:00" });
+  assert.match(ics, /DTSTART:20261106T234500\r\n/);
+  assert.match(ics, /DTEND:20261107T001500\r\n/);
+  assert.match(ics, /RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR/);
+  assert.match(ics, /SUMMARY:Отчёт\\, срочно\\; финал/);
+  assert.match(ics, /TRIGGER:-PT15M/);
+  const allDay = taskToICS({ id: "k-2", title: "x".repeat(200), due: "2026-11-06", priority: 0, repeat: "none", done: false, createdAt: "2026-11-05T10:00" });
+  assert.match(allDay, /DTSTART;VALUE=DATE:20261106/);
+  assert.match(allDay, /TRIGGER:PT9H/);
+  assert.ok(allDay.split("\r\n").every((l) => new TextEncoder().encode(l).length <= 75));
+});
+
+test("старая резервная копия без списков открывается", () => {
+  const old = { ...data() } as Record<string, unknown>;
+  delete old.projects;
+  const restored = parseImport(JSON.stringify({ app: "kapital", version: 2, data: old }));
+  assert.deepEqual(restored.projects, []);
+  assert.equal(restored.tasks.length, st().tasks.length);
 });
 
 console.log(`\nВсе проверки пройдены: ${passed}`);

@@ -2,7 +2,9 @@ import { create } from "zustand";
 import { todayKey, type DayKey } from "../lib/dates";
 import type { ID } from "./types";
 
-export type Tab = "home" | "wallets" | "transactions" | "analytics" | "more";
+export type Tab = "home" | "planner" | "wallets" | "transactions" | "analytics" | "more";
+
+export type PlannerView = "today" | "week" | "lists" | "notes";
 
 export type RouteName =
   | "root"
@@ -15,6 +17,8 @@ export type RouteName =
   | "debts"
   | "debt"
   | "tasks"
+  | "taskList"
+  | "project"
   | "notes"
   | "note"
   | "settings"
@@ -87,6 +91,8 @@ interface UIState {
   flight: Flight | null;
   /** Month (any day in it) whose summary story is open */
   story: DayKey | null;
+  /** Which part of the planner tab is shown */
+  plannerView: PlannerView;
 
   setTab(tab: Tab): void;
   push(name: RouteName, params?: Record<string, unknown>, tab?: Tab): void;
@@ -100,6 +106,7 @@ interface UIState {
   setTxFilter(f: Partial<TxFilter>, replace?: boolean): void;
   setHomeCardIndex(i: number): void;
   setHeroWallet(id: ID | null): void;
+  setPlannerView(v: PlannerView): void;
 }
 
 const root = (): Route => ({ key: "root", name: "root" });
@@ -108,9 +115,9 @@ const key = () => `r${++seq}`;
 
 export const useUI = create<UIState>()((set, get) => ({
   tab: "home",
-  stacks: { home: [root()], wallets: [root()], transactions: [root()], analytics: [root()], more: [root()] },
+  stacks: { home: [root()], planner: [root()], wallets: [root()], transactions: [root()], analytics: [root()], more: [root()] },
   navDir: 1,
-  retap: { home: 0, wallets: 0, transactions: 0, analytics: 0, more: 0 },
+  retap: { home: 0, planner: 0, wallets: 0, transactions: 0, analytics: 0, more: 0 },
   sheets: [],
   toasts: [],
   today: todayKey(),
@@ -122,6 +129,7 @@ export const useUI = create<UIState>()((set, get) => ({
   locked: false,
   flight: null,
   story: null,
+  plannerView: "today",
 
   setTab(tab) {
     const s = get();
@@ -191,6 +199,10 @@ export const useUI = create<UIState>()((set, get) => ({
 
   setHeroWallet(id) {
     set({ heroWalletId: id });
+  },
+
+  setPlannerView(v) {
+    set({ plannerView: v });
   }
 }));
 
@@ -202,5 +214,10 @@ export const nav = {
   close: (id?: string) => useUI.getState().closeSheet(id),
   toast: (text: string, opts?: Omit<Toast, "id" | "text">) => useUI.getState().toast(text, opts),
   fly: (f: Omit<Flight, "id">) => useUI.setState({ flight: { ...f, id: ++seq } }),
-  story: (month: DayKey) => useUI.setState({ story: month })
+  story: (month: DayKey) => useUI.setState({ story: month }),
+  /** Opens the planner tab on a given view, back at its first screen */
+  planner: (view: PlannerView = "today") => {
+    const s = useUI.getState();
+    useUI.setState({ plannerView: view, tab: "planner", stacks: { ...s.stacks, planner: [s.stacks.planner[0]] } });
+  }
 };

@@ -7,14 +7,18 @@ function amountOf(text: string): number {
   return negative ? -n : n;
 }
 
+// The card reads differently depending on how the demo day is going.
+const SAFE_CARD = /^(Можно потратить сегодня|Сегодня сверх нормы|До конца месяца впритык)/;
+
 async function startDemo(page: Page) {
   await page.goto("/");
   await page.getByRole("button", { name: "Посмотреть на примере" }).click();
-  await expect(page.getByText("Можно потратить сегодня")).toBeVisible();
+  await expect(page.getByRole("button", { name: SAFE_CARD })).toBeVisible();
 }
 
+/** What is left for today; negative once today's spending is over the norm. */
 async function safeToSpend(page: Page): Promise<number> {
-  const card = page.getByRole("button", { name: /^(Можно потратить сегодня|Сегодня сверх нормы|До конца месяца впритык)/ });
+  const card = page.getByRole("button", { name: SAFE_CARD });
   // the figure counts up — wait until it settles
   let prev = "";
   for (let i = 0; i < 20; i++) {
@@ -23,7 +27,8 @@ async function safeToSpend(page: Page): Promise<number> {
     prev = t;
     await page.waitForTimeout(150);
   }
-  return amountOf(prev.split(":")[1] ?? "");
+  const value = amountOf(prev.split(":")[1] ?? "");
+  return prev.startsWith("Сегодня сверх нормы") ? -value : value;
 }
 
 const carousel = (page: Page) => page.locator('[aria-roledescription="карусель"]');
@@ -159,4 +164,77 @@ test("курсы ЦБ подтягиваются и пересчитывают �
   await page.getByText("Настройки", { exact: true }).click();
   await page.getByText("Курсы валют", { exact: true }).click();
   await expect(page.getByText(/Официальные курсы ЦБ РФ на/)).toBeVisible();
+});
+
+/* ---------------- planner ---------------- */
+
+async function openPlanner(page: Page) {
+  await page.getByRole("tab", { name: "Дела" }).click();
+  // the first visit explains the method
+  await page.getByRole("button", { name: "Начать" }).click();
+  await expect(page.getByRole("dialog", { name: "Как вести дела" })).toHaveCount(0);
+}
+
+test("дело одной строкой: дата, время и список распознаются и сохраняются", async ({ page }) => {
+  await startDemo(page);
+  await openPlanner(page);
+  await page.getByRole("button", { name: "Новое дело" }).click();
+  const sheet = page.getByRole("dialog", { name: "Новое дело" });
+  await page.keyboard.type("Позвонить в банк завтра в 10:30 #работа");
+  await expect(sheet).toContainText("Завтра");
+  await expect(sheet).toContainText("10:30");
+  await expect(sheet).toContainText("Работа");
+  await expect(sheet).toContainText("«Позвонить в банк»");
+  await page.keyboard.press("Enter");
+  await expect(sheet).toContainText("Добавлено");
+  await sheet.getByRole("button", { name: "Готово" }).click();
+
+  await page.reload();
+  await page.getByRole("tab", { name: "Дела" }).click();
+  await page.getByRole("tab", { name: "Списки" }).click();
+  await page.getByRole("button", { name: /^Скоро/ }).click();
+  const row = page.getByRole("button", { name: /Позвонить в банк/ });
+  await expect(row).toBeVisible();
+  await expect(row).toContainText("10:30");
+  await expect(row).toContainText("Работа");
+});
+
+test("главное дня: отметка двигает прогресс на главной", async ({ page }) => {
+  await startDemo(page);
+  await expect(page.getByText("Сделано 1 из 5")).toBeVisible();
+  await openPlanner(page);
+  await page.getByRole("checkbox", { name: "Сделано: Позвонить маме" }).click();
+  await expect(page.getByRole("checkbox", { name: "Вернуть: Позвонить маме" })).toBeVisible();
+  await page.getByRole("tab", { name: "Главная" }).click();
+  await expect(page.getByText("Сделано 2 из 5")).toBeVisible();
+});
+
+test("план на день: дело из входящих попадает на сегодня", async ({ page }) => {
+  await startDemo(page);
+  await openPlanner(page);
+  await page.getByRole("button", { name: /Во входящих/ }).click();
+  const sheet = page.getByRole("dialog", { name: "План на день" });
+  await expect(sheet).toContainText("Входящие");
+  await sheet.locator(".panel", { hasText: "Посмотреть курс по Python" }).getByRole("button", { name: "Сегодня" }).click();
+  await sheet.getByRole("button", { name: "Дальше" }).click();
+  await expect(sheet).toContainText("Главное на сегодня");
+  await sheet.getByRole("button", { name: "Готово" }).click();
+  await expect(sheet).toContainText("План на день готов");
+  await sheet.getByRole("button", { name: "Начать день" }).click();
+  await expect(page.getByRole("button", { name: /Посмотреть курс по Python/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Во входящих 1 дело/ })).toBeVisible();
+});
+
+test("пункты заметки превращаются в дела", async ({ page }) => {
+  await startDemo(page);
+  await openPlanner(page);
+  await page.getByRole("tab", { name: "Заметки" }).click();
+  await page.getByRole("button", { name: /Покупки к выходным/ }).click();
+  await page.getByRole("button", { name: "Сделать делами: 3" }).click();
+  await page.getByRole("dialog", { name: "Куда добавить дела" }).getByText("Дом", { exact: true }).click();
+  await expect(page.getByText("3 дела созданы")).toBeVisible();
+  await page.getByRole("button", { name: "Назад" }).click();
+  await page.getByRole("tab", { name: "Списки" }).click();
+  await page.getByRole("button", { name: /^Дом/ }).click();
+  await expect(page.getByRole("button", { name: /Корм для кота/ })).toBeVisible();
 });

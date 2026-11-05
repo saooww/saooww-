@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeftRight, ChartColumn, House, LayoutGrid, WalletCards, type LucideIcon } from "lucide-react";
+import { ArrowLeftRight, ChartColumn, CircleCheckBig, House, LayoutGrid, WalletCards, type LucideIcon } from "lucide-react";
 import { cn } from "../lib/cn";
 import { haptic } from "../lib/haptics";
 import { useUI, type Tab } from "../store/ui";
@@ -9,6 +9,7 @@ import { spring } from "../ui/motion";
 
 const ITEMS: Array<{ tab: Tab; label: string; icon: LucideIcon }> = [
   { tab: "home", label: "Главная", icon: House },
+  { tab: "planner", label: "Дела", icon: CircleCheckBig },
   { tab: "wallets", label: "Кошельки", icon: WalletCards },
   { tab: "transactions", label: "Операции", icon: ArrowLeftRight },
   { tab: "analytics", label: "Аналитика", icon: ChartColumn },

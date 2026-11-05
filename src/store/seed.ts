@@ -1,9 +1,9 @@
-import { addDays, addMonths, endOfMonth, nowISO, parseDay, todayKey, type DayKey } from "../lib/dates";
+import { MONTHS_GEN, addDays, addMonths, endOfMonth, nowISO, parseDay, todayKey, type DayKey } from "../lib/dates";
 import { mulberry32 } from "../lib/id";
 import { computeBalances } from "../lib/finance";
 import { nextAfter } from "../lib/recurrence";
 import { defaultCategories } from "./catalog";
-import type { AppData, Budget, Debt, Favorite, Goal, Note, Plan, Recurring, Settings, Task, Transaction, Wallet } from "./types";
+import type { AppData, Budget, Debt, Favorite, Goal, Note, Plan, Project, Recurring, Settings, Task, Transaction, Wallet } from "./types";
 
 export function defaultSettings(): Settings {
   return {
@@ -53,6 +53,7 @@ export function createEmptyData(): AppData {
     plans: [],
     debts: [],
     tasks: [],
+    projects: [],
     notes: [],
     favorites: [],
     settings: { ...defaultSettings(), defaultWalletId: "w-main" },
@@ -276,17 +277,83 @@ export function createDemoData(today: DayKey = todayKey()): AppData {
     return d;
   })();
 
+  const projects: Project[] = [
+    { id: "pr-work", name: "Работа", icon: "BriefcaseBusiness", color: "#4E9FD1", createdAt: created },
+    { id: "pr-home", name: "Дом", icon: "House", color: "#5DB98A", createdAt: created },
+    { id: "pr-health", name: "Здоровье", icon: "HeartPulse", color: "#D06AA2", createdAt: created },
+    { id: "pr-personal", name: "Личное", icon: "User", color: "#8E7CE3", createdAt: created },
+    { id: "pr-money", name: "Финансы", icon: "Wallet", color: "#C8B25A", createdAt: created },
+    { id: "pr-japan", name: "Поездка в Японию", icon: "Plane", color: "#FF6A3D", note: "Весной, на двоих, 12 дней", deadline: addDays(today, 120), createdAt: created }
+  ];
+
+  const at = (d: DayKey, t: string) => `${d}T${t}`;
   const tasks: Task[] = [
-    { id: "k-1", title: "Вернуть долг Ольге", due: addDays(today, 3), priority: 2, repeat: "none", done: false, createdAt: now },
-    { id: "k-2", title: "Оплатить коммунальные услуги", due: addDays(today, 2), priority: 1, repeat: "month", done: false, createdAt: now },
-    { id: "k-3", title: "Проверить подписки", note: "В фитнес-клуб не хожу с лета — отменить или заморозить", due: addDays(today, 5), priority: 1, repeat: "none", done: false, createdAt: now },
-    { id: "k-4", title: "Отложить 25 000 ₽ на отпуск", due: nextDay27, priority: 1, repeat: "month", done: false, createdAt: now },
-    { id: "k-5", title: "Пересмотреть бюджет на следующий месяц", due: endOfMonth(today), priority: 0, repeat: "month", done: false, createdAt: now },
-    { id: "k-6", title: "Заказать справку для налогового вычета", priority: 0, repeat: "none", done: false, createdAt: now },
-    { id: "k-7", title: "Подать декларацию 3-НДФЛ", due: addDays(today, -6), priority: 1, repeat: "none", done: true, doneAt: `${addDays(today, -6)}T20:00`, createdAt: now }
+    // today
+    { id: "k-pitch", title: "Подготовить презентацию для клиента", projectId: "pr-work", due: today, time: "11:00", priority: 2, repeat: "none", focus: today, done: false, createdAt: now, subtasks: [
+      { id: "s-1", title: "Собрать цифры за квартал", done: true },
+      { id: "s-2", title: "Сделать 10 слайдов", done: false },
+      { id: "s-3", title: "Прогнать с коллегой", done: false }
+    ] },
+    { id: "k-dentist", title: "Записаться к стоматологу", projectId: "pr-health", due: today, priority: 1, repeat: "none", focus: today, done: false, createdAt: now },
+    { id: "k-mom", title: "Позвонить маме", projectId: "pr-personal", due: today, time: "20:00", priority: 0, repeat: "none", focus: today, done: false, createdAt: now },
+    { id: "k-mail", title: "Разобрать почту", projectId: "pr-work", due: today, priority: 0, repeat: "weekdays", done: false, createdAt: now },
+    { id: "k-gym", title: "Зарядка 10 минут", projectId: "pr-health", due: addDays(today, 1), time: "08:00", priority: 0, repeat: "day", done: false, createdAt: now },
+    { id: "k-gym-0", title: "Зарядка 10 минут", projectId: "pr-health", due: today, time: "08:00", priority: 0, repeat: "day", done: true, doneAt: at(today, "08:12"), nextId: "k-gym", createdAt: now },
+    { id: "k-water", title: "Передать показания счётчиков", projectId: "pr-home", due: addDays(today, -1), priority: 1, repeat: "none", done: false, createdAt: now },
+    // this week
+    { id: "k-plumber", title: "Вызвать сантехника", note: "Подтекает кран на кухне", projectId: "pr-home", due: addDays(today, 1), priority: 0, repeat: "none", done: false, createdAt: now },
+    { id: "k-team", title: "Созвон с командой", projectId: "pr-work", due: addDays(today, 1), time: "10:00", priority: 0, repeat: "none", done: false, createdAt: now },
+    { id: "k-gift", title: "Купить подарок Ане", note: "День рождения в субботу. Идеи: наушники, сертификат в книжный", projectId: "pr-personal", due: addDays(today, 3), priority: 1, repeat: "none", done: false, createdAt: now },
+    { id: "k-visa", title: "Проверить срок паспорта", projectId: "pr-japan", due: addDays(today, 6), priority: 0, repeat: "none", done: false, createdAt: now },
+    { id: "k-hotels", title: "Выбрать отели в Киото", projectId: "pr-japan", priority: 0, repeat: "none", done: false, createdAt: now },
+    { id: "k-route", title: "Составить маршрут по дням", projectId: "pr-japan", priority: 0, repeat: "none", done: true, doneAt: at(addDays(today, -3), "21:30"), createdAt: now },
+    { id: "k-cv", title: "Обновить резюме", projectId: "pr-work", priority: 0, repeat: "none", done: false, createdAt: now },
+    { id: "k-bulbs", title: "Купить лампочки в коридор", projectId: "pr-home", priority: 0, repeat: "none", done: false, createdAt: now },
+    // inbox: no list, no date
+    { id: "k-python", title: "Посмотреть курс по Python", priority: 0, repeat: "none", done: false, createdAt: now },
+    { id: "k-books", title: "Вернуть книги в библиотеку", priority: 0, repeat: "none", done: false, createdAt: now },
+    // money
+    { id: "k-1", title: "Вернуть долг Ольге", projectId: "pr-money", due: addDays(today, 3), priority: 2, repeat: "none", done: false, createdAt: now },
+    { id: "k-2", title: "Оплатить коммунальные услуги", projectId: "pr-money", due: addDays(today, 2), priority: 1, repeat: "month", done: false, createdAt: now },
+    { id: "k-3", title: "Проверить подписки", note: "В фитнес-клуб не хожу с лета — отменить или заморозить", projectId: "pr-money", due: addDays(today, 5), priority: 1, repeat: "none", done: false, createdAt: now },
+    { id: "k-4", title: "Отложить 25 000 ₽ на отпуск", projectId: "pr-money", due: nextDay27, priority: 1, repeat: "month", done: false, createdAt: now },
+    { id: "k-5", title: "Пересмотреть бюджет на следующий месяц", projectId: "pr-money", due: endOfMonth(today), priority: 0, repeat: "month", done: false, createdAt: now },
+    { id: "k-6", title: "Заказать справку для налогового вычета", projectId: "pr-money", priority: 0, repeat: "none", done: false, createdAt: now },
+    { id: "k-7", title: "Подать декларацию 3-НДФЛ", projectId: "pr-money", due: addDays(today, -6), priority: 1, repeat: "none", done: true, doneAt: `${addDays(today, -6)}T20:00`, createdAt: now },
+    // a few finished days for the streak
+    { id: "k-d1", title: "Сдать отчёт за месяц", projectId: "pr-work", due: addDays(today, -1), priority: 1, repeat: "none", done: true, doneAt: at(addDays(today, -1), "17:40"), createdAt: now },
+    { id: "k-d2", title: "Забрать посылку", projectId: "pr-home", due: addDays(today, -1), priority: 0, repeat: "none", done: true, doneAt: at(addDays(today, -1), "19:05"), createdAt: now },
+    { id: "k-d3", title: "Записать сына на плавание", projectId: "pr-personal", due: addDays(today, -2), priority: 0, repeat: "none", done: true, doneAt: at(addDays(today, -2), "12:20"), createdAt: now }
   ];
 
   const notes: Note[] = [
+    {
+      id: "n-day",
+      title: `${parseDay(addDays(today, -1)).getDate()} ${MONTHS_GEN[parseDay(addDays(today, -1)).getMonth()]}`,
+      body: "Сдал отчёт раньше срока — помогло, что утром выбрал одно главное дело и не отвлекался.\n\nЗавтра важно: презентация для клиента и записаться к стоматологу.",
+      pinned: false,
+      tags: [],
+      links: [],
+      journal: addDays(today, -1),
+      createdAt: `${addDays(today, -1)}T22:10`,
+      updatedAt: `${addDays(today, -1)}T22:14`
+    },
+    {
+      id: "n-shop",
+      title: "Покупки к выходным",
+      body: "",
+      pinned: true,
+      tags: ["дом"],
+      links: [{ type: "project", id: "pr-home" }],
+      checklist: [
+        { id: "c-1", title: "Молоко и яйца", done: true },
+        { id: "c-2", title: "Овощи на неделю", done: false },
+        { id: "c-3", title: "Бумажные полотенца", done: false },
+        { id: "c-4", title: "Корм для кота", done: false }
+      ],
+      createdAt: `${addDays(today, -2)}T18:00`,
+      updatedAt: `${addDays(today, -1)}T09:00`
+    },
     {
       id: "n-1",
       title: "Как я распределяю доход",
@@ -303,7 +370,7 @@ export function createDemoData(today: DayKey = todayKey()): AppData {
       body: "Билеты — около 96 000 ₽ на двоих.\nЖильё — 12 ночей, ~180 000 ₽.\nJR Pass — 45 000 ₽.\nЕда и транспорт — 90 000 ₽.\nЗапас — 40 000 ₽.",
       pinned: false,
       tags: ["отпуск"],
-      links: [{ type: "goal", id: "g-japan" }, { type: "plan", id: "p-tickets" }],
+      links: [{ type: "goal", id: "g-japan" }, { type: "plan", id: "p-tickets" }, { type: "project", id: "pr-japan" }],
       createdAt: `${addDays(today, -30)}T20:15`,
       updatedAt: `${addDays(today, -2)}T23:05`
     },
@@ -348,6 +415,7 @@ export function createDemoData(today: DayKey = todayKey()): AppData {
     plans,
     debts,
     tasks,
+    projects,
     notes,
     favorites,
     settings: { ...defaultSettings(), name: "Алекс", defaultWalletId: "w-main" },

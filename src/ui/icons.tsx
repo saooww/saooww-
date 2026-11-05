@@ -1,4 +1,5 @@
 import type { LucideIcon, LucideProps } from "lucide-react";
+import { Camera, Hammer, Palette, Rocket, Star, User, Users } from "lucide-react";
 import {
   ArrowLeftRight,
   SlidersHorizontal,
@@ -141,7 +142,15 @@ const REGISTRY: Record<string, LucideIcon> = {
   Wallet,
   Wifi,
   Wine,
-  Wrench
+  Wrench,
+  // planner lists
+  Camera,
+  Hammer,
+  Palette,
+  Rocket,
+  Star,
+  User,
+  Users
 };
 
 export function iconByName(name: string | undefined): LucideIcon {
