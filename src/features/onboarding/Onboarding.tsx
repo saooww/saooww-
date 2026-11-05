@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Banknote, Check, ChevronLeft, CreditCard, PiggyBank, ShieldCheck, Target, WalletCards, type LucideIcon } from "lucide-react";
+import { Banknote, Check, ChevronLeft, CircleCheckBig, CreditCard, PiggyBank, ShieldCheck, Target, WalletCards, type LucideIcon } from "lucide-react";
 import { cn } from "../../lib/cn";
 import { nowISO } from "../../lib/dates";
 import { haptic } from "../../lib/haptics";
@@ -9,6 +9,7 @@ import { CURRENCIES, currencySymbol, parseAmount } from "../../lib/money";
 import { completeOnboarding } from "../../store/boot";
 import { createDemoData, createEmptyData, defaultSettings } from "../../store/seed";
 import type { CardStyle, Wallet, WalletKind } from "../../store/types";
+import { FullLogo } from "../../ui/Brand";
 import { ease } from "../../ui/motion";
 import { Button, IconButton, inputCls } from "../../ui/primitives";
 
@@ -32,6 +33,7 @@ const PRESETS: Preset[] = [
 const FEATURES: Array<{ icon: LucideIcon; text: string }> = [
   { icon: WalletCards, text: "Все карты, наличные и накопления в одном месте" },
   { icon: Target, text: "Бюджеты, цели и планы — и сколько можно потратить сегодня" },
+  { icon: CircleCheckBig, text: "Дела, списки и заметки: план на день, чтобы ничего не забыть" },
   { icon: ShieldCheck, text: "Данные только на вашем устройстве, вход по коду или Face ID" }
 ];
 
@@ -102,18 +104,10 @@ export function Onboarding() {
           >
             {step === 0 && (
               <div className="flex min-h-full flex-col justify-center pb-6">
-                <motion.svg width="64" height="64" viewBox="0 0 24 24" fill="none" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.6, ease: ease.out }}>
-                  <defs>
-                    <linearGradient id="ob-k" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stopColor="var(--accent-hi)" />
-                      <stop offset="100%" stopColor="var(--accent-lo)" />
-                    </linearGradient>
-                  </defs>
-                  <rect x="3.5" y="3" width="3.6" height="18" rx="1.8" fill="url(#ob-k)" />
-                  <path d="M19.2 3.6 10.6 12l8.6 8.4" stroke="url(#ob-k)" strokeWidth="3.6" strokeLinecap="round" strokeLinejoin="round" />
-                </motion.svg>
-                <h1 className="mt-7 text-[34px] font-bold leading-[40px] tracking-[-0.03em] text-ink">Капитал</h1>
-                <p className="mt-2 text-body text-ink-2">Ваши деньги — спокойно и под контролем.</p>
+                <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: ease.out }}>
+                  <FullLogo layout="row" size={27} />
+                </motion.div>
+                <p className="mt-7 text-body text-ink-2">Деньги и дела — спокойно и под контролем.</p>
                 <div className="mt-10 flex flex-col gap-5">
                   {FEATURES.map((f, i) => (
                     <motion.div key={f.text} className="flex items-start gap-3.5" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 + i * 0.08, duration: 0.5, ease: ease.out }}>

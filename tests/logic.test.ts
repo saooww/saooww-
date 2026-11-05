@@ -38,7 +38,7 @@ const bal = (id: string) => computeBalances(st().wallets, st().transactions)[id]
 const today = todayKey();
 const month = () => periodStats(buildLedger(data()).entries, periodRange("month", 0, today), today);
 
-console.log("Капитал — проверка учёта");
+console.log("Ardessa — проверка учёта и дел");
 
 test("демо-данные сходятся к 2 480 000 ₽", () => {
   const b = computeBalances(st().wallets, st().transactions);

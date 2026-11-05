@@ -16,6 +16,7 @@ import { CARD_RATIO, WalletCard } from "../../ui/WalletCard";
 import { pluralN } from "../../lib/dates";
 import type { ID } from "../../store/types";
 import { Layers } from "lucide-react";
+import { INTRO_SHIFT } from "../../ui/intro";
 
 const GAP = 14;
 
@@ -202,7 +203,7 @@ export function WalletCarousel({ onOpen, onAdd, intro = false }: { onOpen: (card
           aria-hidden="true"
           initial={intro ? { opacity: 0 } : false}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.05, duration: 0.4 }}
+          transition={{ delay: 1.05 + INTRO_SHIFT, duration: 0.4 }}
         >
           {cards.map((c, i) => (
             <motion.span
@@ -262,7 +263,7 @@ function CarouselItem({
       style={{ width, scale, opacity: invisible ? 0 : opacity, willChange: "transform" }}
       initial={intro ? { y: 26 } : false}
       animate={{ y: 0 }}
-      transition={{ duration: 0.9, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.9, delay: 0.5 + INTRO_SHIFT, ease: [0.22, 1, 0.36, 1] }}
       onTap={(e) => {
         const target = e.target as HTMLElement | null;
         if (target?.closest("[data-no-tap]")) return;
@@ -303,7 +304,7 @@ function AmbientGlow({ color, i, x, step, intro }: { color: string; i: number; x
         style={{ background: `radial-gradient(50% 46% at 50% 54%, ${color}, transparent 100%)` }}
         initial={intro ? { opacity: 0 } : false}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.6, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ delay: 0.6 + INTRO_SHIFT, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
       />
     </motion.div>
   );

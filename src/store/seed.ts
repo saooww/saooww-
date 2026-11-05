@@ -24,7 +24,7 @@ export function defaultSettings(): Settings {
     lockAfter: 1,
     autoRates: true,
     launchAction: "home",
-    accent: "vermilion",
+    accent: "ardessa",
     textSize: "m"
   };
 }

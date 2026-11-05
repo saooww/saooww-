@@ -57,8 +57,8 @@ export async function registerBiometric(): Promise<string | null> {
     const cred = (await navigator.credentials.create({
       publicKey: {
         challenge: random(32),
-        rp: { name: "Капитал" },
-        user: { id: random(16), name: "kapital", displayName: "Капитал" },
+        rp: { name: "Ardessa" },
+        user: { id: random(16), name: "ardessa", displayName: "Ardessa" },
         pubKeyCredParams: [
           { type: "public-key", alg: -7 },
           { type: "public-key", alg: -257 }

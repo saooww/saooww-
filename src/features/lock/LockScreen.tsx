@@ -4,7 +4,7 @@ import { ScanFace } from "lucide-react";
 import { haptic } from "../../lib/haptics";
 import { freshData, useData, wipeDevice } from "../../store/store";
 import { useUI } from "../../store/ui";
-import { BrandMark } from "../../ui/Brand";
+import { LogoMark } from "../../ui/Brand";
 import { ease } from "../../ui/motion";
 import { biometricAvailable, hashPin, verifyBiometric } from "./lock";
 import { PinPad } from "./PinPad";
@@ -101,7 +101,7 @@ function LockScreen() {
       aria-modal="true"
       aria-label="Приложение заблокировано"
     >
-      <BrandMark size={34} color="var(--accent)" />
+      <LogoMark size={46} />
       <div className="mt-10">
         <PinPad
           title={cooling ? "Слишком много попыток" : "Введите код"}

@@ -275,7 +275,7 @@ export interface Settings {
   ratesFetchedAt?: LocalISO;
   /** What opens when the app starts */
   launchAction: "home" | "expense";
-  accent: "vermilion" | "indigo" | "sakura" | "gold";
+  accent: "ardessa" | "vermilion" | "indigo" | "sakura" | "gold";
   textSize: "m" | "l" | "xl";
   /** Month (YYYY-MM) whose summary story was already shown */
   storySeen?: string;
@@ -285,6 +285,8 @@ export interface Settings {
   dayReviewedOn?: DayKey;
   /** The planner's introduction has been shown */
   plannerIntroSeen?: boolean;
+  /** The move to the Ardessa brand has been applied to these settings */
+  ardessa?: boolean;
 }
 
 export interface AppData {

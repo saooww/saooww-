@@ -40,8 +40,8 @@ function utcStamp(d = new Date()): string {
 
 export function taskToICS(task: Task, opts: { listName?: string; remindBefore?: number } = {}): string {
   if (!task.due) throw new Error("A task needs a date to become an event");
-  const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Kapital//Planner//RU", "CALSCALE:GREGORIAN", "METHOD:PUBLISH", "BEGIN:VEVENT"];
-  lines.push(`UID:${task.id}@kapital.app`, `DTSTAMP:${utcStamp()}`);
+  const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Ardessa//Planner//RU", "CALSCALE:GREGORIAN", "METHOD:PUBLISH", "BEGIN:VEVENT"];
+  lines.push(`UID:${task.id}@ardessa.app`, `DTSTAMP:${utcStamp()}`);
   if (task.time) {
     const [h, m] = task.time.split(":").map(Number);
     const endMin = h * 60 + m + 30;

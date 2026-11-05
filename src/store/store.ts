@@ -644,7 +644,7 @@ export function parseImport(text: string): AppData {
     // Maybe a file from the first version of the app
     const migrated = migrateFromV1(text);
     if (migrated) return migrated;
-    throw new Error("Файл не похож на резервную копию «Капитала»");
+    throw new Error("Файл не похож на резервную копию Ardessa");
   }
   const base = createEmptyData();
   const out = { ...base } as Record<string, unknown>;
