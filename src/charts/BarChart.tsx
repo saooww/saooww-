@@ -41,7 +41,7 @@ function barPath(x: number, top: number, w: number, h: number): string {
 export function BarChart({
   data,
   height = 176,
-  color = "var(--accent)",
+  color = "var(--ink)",
   color2 = "var(--positive)",
   selected,
   onSelect,

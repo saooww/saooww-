@@ -62,6 +62,26 @@
   --num-display-tracking: -0.04em;
 }
 
+/*
+ * Display face for large titles: Montserrat Bold, the open typeface closest
+ * to the ARDESSA wordmark. Body text stays in the system font.
+ */
+@font-face {
+  font-family: "Ardessa Display";
+  src: url("../assets/fonts/montserrat-cyrillic-700.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+@font-face {
+  font-family: "Ardessa Display";
+  src: url("../assets/fonts/montserrat-latin-700.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+  unicode-range: ;
+}
+
 /* ------------------------------------------------------------------ */
 /*  Design tokens                                                      */
 /* ------------------------------------------------------------------ */
@@ -116,6 +136,8 @@
   --positive: #3cc896;
   --positive-hi: #63dcb0;
   --positive-soft: rgba(60, 200, 150, 0.14);
+  /* text on a jade fill */
+  --positive-on: #04170e;
   --negative: #ff5b5f;
   --negative-soft: rgba(255, 91, 95, 0.14);
   --warning: #f0b14e;
@@ -172,6 +194,7 @@
   --positive: #148f5a;
   --positive-hi: #1fae70;
   --positive-soft: rgba(20, 143, 90, 0.1);
+  --positive-on: #ffffff;
   --negative: #d6333a;
   --negative-soft: rgba(214, 51, 58, 0.09);
   --warning: #b07408;
@@ -406,6 +429,13 @@
 }
 
 @layer utilities {
+  /* Large titles in the brand's display face */
+  .font-display {
+    font-family: "Ardessa Display", -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
   .tnum {
     font-variant-numeric: tabular-nums;
     font-feature-settings: "tnum", "kern";
@@ -493,14 +523,13 @@
       var(--shadow-sheet);
   }
 
-  /* Small tracked caps used for section labels and eyebrows. */
-  .label-caps {
-    font-size: calc(11.5px * var(--text-scale));
-    line-height: calc(14px * var(--text-scale));
+  /* Section labels and eyebrows: quiet sentence case, never shouting caps. */
+  .section-label {
+    font-size: calc(13.5px * var(--text-scale));
+    line-height: calc(18px * var(--text-scale));
     font-weight: 600;
-    letter-spacing: 0.085em;
-    text-transform: uppercase;
-    color: var(--ink-3);
+    letter-spacing: -0.005em;
+    color: var(--ink-2);
   }
 
   .glass {

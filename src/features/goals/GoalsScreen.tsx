@@ -81,7 +81,7 @@ function GoalCard({ goal, info, index }: { goal: Goal; info: GoalInfo; index: nu
         </div>
         <div className="text-title-3 font-semibold tnum">{Math.floor(info.progress * 100)}%</div>
       </div>
-      <ProgressBar value={info.progress} tone={info.done ? "positive" : "accent"} className="mt-3.5" />
+      <ProgressBar value={info.progress} tone={info.done ? "positive" : "ink"} className="mt-3.5" />
       <div className="mt-2 flex justify-between text-footnote text-ink-2">
         <Money value={info.saved} currency={goal.currency} privacy className="text-ink" />
         <span>

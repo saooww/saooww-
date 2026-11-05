@@ -38,7 +38,7 @@ export function SafeToSpendCard() {
       aria-label={`${label}: ${Math.abs(s.today) / 100} ${base}`}
     >
       <div className="flex items-center justify-between">
-        <span className="label-caps">{label}</span>
+        <span className="section-label">{label}</span>
         <ChevronRight size={16} className="text-ink-3" />
       </div>
       <div className="mt-2 flex items-end justify-between gap-3">
@@ -47,7 +47,7 @@ export function SafeToSpendCard() {
           {s.daysLeft === 1 ? "последний день месяца" : `${s.daysLeft} ${s.daysLeft % 10 === 1 && s.daysLeft !== 11 ? "день" : [2, 3, 4].includes(s.daysLeft % 10) && ![12, 13, 14].includes(s.daysLeft) ? "дня" : "дней"} до конца месяца`}
         </span>
       </div>
-      <ProgressBar value={progress} tone={over || tight ? "negative" : progress > 0.85 ? "warning" : "accent"} className="mt-3" height={5} />
+      <ProgressBar value={progress} tone={over || tight ? "negative" : progress > 0.85 ? "warning" : "ink"} className="mt-3" height={5} />
       <div className="mt-2 flex justify-between gap-2 text-caption text-ink-3">
         <span>
           потрачено <Money value={s.spentToday} currency={base} privacy className="text-ink-2" />

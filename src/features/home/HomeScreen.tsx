@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowDownLeft, ArrowLeftRight, ArrowUpRight, ChevronRight, Search, type LucideIcon } from "lucide-react";
 import { cn } from "../../lib/cn";
-import { formatDate } from "../../lib/dates";
+import { capitalize, formatDate } from "../../lib/dates";
 import { formatMoney } from "../../lib/money";
 import { goalInfo, goalSaved } from "../../lib/finance";
 import { haptic } from "../../lib/haptics";
@@ -97,8 +97,8 @@ function Greeting({ name }: { name: string }) {
   const first = name.trim().split(/\s+/)[0];
   return (
     <div>
-      <div className="label-caps">{date}</div>
-      <h1 className="mt-1.5 text-title-2 font-semibold tracking-[-0.025em] text-ink">
+      <div className="section-label">{capitalize(date)}</div>
+      <h1 className="font-display mt-1.5 text-title-2 text-ink">
         {greetingFor(new Date().getHours())}
         {first ? <span className="text-ink-2">, {first}</span> : null}
       </h1>
@@ -214,7 +214,7 @@ function PrimaryGoal() {
             </div>
           </div>
         </div>
-        <ProgressBar value={info.progress} className="mt-3.5" tone={info.done ? "positive" : "accent"} />
+        <ProgressBar value={info.progress} className="mt-3.5" tone={info.done ? "positive" : "ink"} />
         <div className="mt-2 flex justify-between text-footnote text-ink-2">
           <Money value={info.saved} currency={goal.currency} privacy />
           <Money value={goal.target} currency={goal.currency} />

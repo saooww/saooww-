@@ -226,7 +226,7 @@ export function Checklist({ items, onChange, header = "Пункты", placeholde
   return (
     <section className="mx-4">
       <div className="flex items-baseline justify-between px-1 pb-2.5">
-        <span className="label-caps">{header}</span>
+        <span className="section-label">{header}</span>
         {items.length > 0 && <span className="num text-footnote text-ink-3">{done} из {items.length}</span>}
       </div>
       <div className="panel overflow-hidden rounded-lg [&>*+*]:hairline-t">

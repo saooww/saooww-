@@ -7,7 +7,19 @@ import { App } from "./App";
 import { ErrorBoundary } from "./app/ErrorBoundary";
 import { startBoot } from "./store/boot";
 
-registerSW({ immediate: true });
+// An installed app on iPhone can stay suspended for days; when it comes back
+// after a while, ask for a newer version (it installs and reloads on its own).
+registerSW({
+  immediate: true,
+  onRegisteredSW(_url, registration) {
+    if (!registration) return;
+    let hiddenAt = 0;
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") hiddenAt = Date.now();
+      else if (hiddenAt && Date.now() - hiddenAt > 10 * 60_000) void registration.update().catch(() => {});
+    });
+  }
+});
 startBoot();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

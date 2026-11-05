@@ -238,3 +238,17 @@ test("пункты заметки превращаются в дела", async (
   await page.getByRole("button", { name: /^Дом/ }).click();
   await expect(page.getByRole("button", { name: /Корм для кота/ })).toBeVisible();
 });
+
+test("калькулятор в сумме: 1200 + 350 записывается как 1 550", async ({ page }) => {
+  await startDemo(page);
+  await page.getByRole("button", { name: "Расход", exact: true }).click();
+  await page.keyboard.type("1200+350");
+  const sheet = page.getByRole("dialog", { name: "Новая операция" });
+  await expect(sheet).toContainText("1 200 + 350 =");
+  await sheet.locator('button[aria-pressed="false"]', { hasText: /^Продукты$/ }).click();
+  await expect(sheet.getByRole("button", { name: /Добавить расход/ })).toContainText("1 550");
+  await sheet.getByRole("button", { name: /Добавить расход/ }).click();
+  await expect(page.getByText("Расход добавлен")).toBeVisible();
+  await page.getByRole("tab", { name: "Операции" }).click();
+  await expect(page.locator("section").filter({ hasText: "Сегодня" }).first()).toContainText("1 550");
+});

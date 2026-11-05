@@ -59,7 +59,7 @@ export function ProjectScreen({ id }: { id: ID }) {
     <Screen title={project.name} ownTitle actions={<IconButton icon={Pencil} label="Изменить список" onClick={() => nav.sheet("project", { editId: id })} />}>
       <div className="px-5 pb-5">
         <IconChip name={project.icon} color={project.color} size={52} />
-        <h1 className="mt-3 text-title-1 font-bold">{project.name}</h1>
+        <h1 className="mt-3 text-title-1 font-display">{project.name}</h1>
         {project.note && <p className="mt-1 text-callout text-ink-2">{project.note}</p>}
         <div className="mt-2 text-footnote text-ink-2">
           {total ? `Сделано ${st.done} из ${total}` : "Пока пусто"}
