@@ -303,7 +303,7 @@ export function ComposerSheet(props: ComposerProps) {
   const dateLabel = (() => {
     const d = dayOf(date);
     const rel = d === todayKey() || d === addDays(todayKey(), -1) ? formatDayHeading(d) : formatDate(d);
-    return `${rel}, ${timeOf(date)}`;
+    return { day: rel, time: timeOf(date) };
   })();
 
   const titleFor: Record<View, string | undefined> = {
@@ -341,7 +341,7 @@ export function ComposerSheet(props: ComposerProps) {
               ) : (
                 <KindSwitch value={kind} onChange={setKind} />
               )}
-              <span className="w-[38px] shrink-0" />
+              <span className="w-[38px] shrink-0 max-[389px]:hidden" />
             </div>
 
             {/* amount */}
@@ -444,7 +444,10 @@ export function ComposerSheet(props: ComposerProps) {
             <div className="mt-3 flex shrink-0 items-center gap-1.5 px-4 pb-2">
               <button type="button" onClick={() => setView("details")} className="tile flex h-9 min-w-0 items-center gap-1.5 rounded-full px-3 text-subhead font-medium text-ink-2">
                 <CalendarDays size={15} strokeWidth={2} className="shrink-0" />
-                <span className="truncate">{dateLabel}</span>
+                <span className="truncate">
+                  {dateLabel.day}
+                  <span className="max-[389px]:hidden">, {dateLabel.time}</span>
+                </span>
               </button>
               <div className="ml-auto flex shrink-0 gap-1.5">
                 <ToolButton icon={MessageSquareText} label={note ? `Комментарий: ${note}` : "Комментарий"} active={!!note} onClick={() => setView("details")} />
@@ -762,10 +765,10 @@ function KindSwitch({ value, onChange }: { value: FlowKind; onChange: (k: FlowKi
               haptic();
               onChange(k);
             }}
-            className="relative flex h-9 flex-1 items-center justify-center gap-1 rounded-full text-subhead font-semibold"
+            className="relative flex h-9 min-w-0 flex-1 items-center justify-center gap-1 rounded-full text-[min(calc(14px*var(--text-scale)),15px)] font-semibold"
           >
-            <m.icon size={15} strokeWidth={2.4} className={cn("relative transition-colors duration-200", on ? m.on : "text-ink-3")} />
-            <span className={cn("relative transition-colors duration-200", on ? m.on : "text-ink-2")}>{m.label}</span>
+            <m.icon size={15} strokeWidth={2.4} className={cn("relative shrink-0 transition-colors duration-200 max-[389px]:hidden", on ? m.on : "text-ink-3")} />
+            <span className={cn("relative truncate transition-colors duration-200", on ? m.on : "text-ink-2")}>{m.label}</span>
           </button>
         );
       })}

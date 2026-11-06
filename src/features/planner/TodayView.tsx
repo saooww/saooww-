@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, Inbox, Moon, Sunrise } from "lucide-react";
+import { ChevronDown, ChevronRight, Inbox, Moon, Sunrise } from "lucide-react";
 import { cn } from "../../lib/cn";
 import { MONTHS_GEN, WEEKDAYS_LONG, capitalize, parseDay, pluralN, weekdayIndex } from "../../lib/dates";
 import { dayPlan, isInbox } from "../../lib/tasks";
@@ -36,7 +36,12 @@ export function TodayView() {
             iconTone="accent"
             title={`Во входящих ${pluralN(inbox, ["дело", "дела", "дел"])}`}
             subtitle="Решите, когда за них взяться"
-            trailing={<span className="text-subhead font-semibold text-accent-ink">Разобрать</span>}
+            trailing={
+              <>
+                <span className="text-subhead font-semibold text-accent-ink max-[389px]:hidden">Разобрать</span>
+                <ChevronRight size={18} className="-mr-1 hidden shrink-0 text-ink-3 max-[389px]:block" />
+              </>
+            }
             onClick={() => nav.sheet("planDay", { start: "inbox" })}
           />
         </Group>
@@ -105,6 +110,21 @@ export function TodayView() {
   );
 }
 
+const NARROW = "(max-width: 389px)";
+
+/** True on small phones (iPhone SE, mini). Follows rotation and zoom. */
+function useNarrowScreen(): boolean {
+  return useSyncExternalStore(
+    (onChange) => {
+      const mq = window.matchMedia(NARROW);
+      mq.addEventListener("change", onChange);
+      return () => mq.removeEventListener("change", onChange);
+    },
+    () => window.matchMedia(NARROW).matches,
+    () => false
+  );
+}
+
 function DayCard({ total, completed }: { total: number; completed: number }) {
   const today = useToday();
   const planned = useData((s) => s.settings.dayPlannedOn === today);
@@ -117,10 +137,11 @@ function DayCard({ total, completed }: { total: number; completed: number }) {
   const status = total === 0 ? "Дел на сегодня пока нет" : allDone ? "Всё сделано. Можно выдохнуть" : `Осталось ${pluralN(left, ["дело", "дела", "дел"])}`;
   const evening = hour >= 17;
   const cta = evening && !reviewed ? "review" : !planned && hour < 17 ? "plan" : !planned && total === 0 ? "plan" : null;
+  const narrow = useNarrowScreen();
 
   return (
     <section className="mx-4 panel flex items-center gap-4 rounded-[24px] p-4 pr-5">
-      <Enso value={total ? completed / total : 0} complete={allDone} size={104}>
+      <Enso value={total ? completed / total : 0} complete={allDone} size={narrow ? 86 : 104}>
         <div className="flex items-baseline">
           <span className="num-display text-[30px] leading-none text-ink">{completed}</span>
           <span className="num text-subhead text-ink-3">/{total}</span>
@@ -133,12 +154,12 @@ function DayCard({ total, completed }: { total: number; completed: number }) {
         </div>
         <div className="mt-2 text-footnote text-ink-2">{status}</div>
         {cta === "plan" && (
-          <Button size="sm" variant="tinted" icon={Sunrise} className="mt-3" onClick={() => nav.sheet("planDay", {})}>
+          <Button size="sm" variant="tinted" icon={Sunrise} className="mt-3 max-w-full" onClick={() => nav.sheet("planDay", {})}>
             Спланировать день
           </Button>
         )}
         {cta === "review" && (
-          <Button size="sm" variant="tinted" icon={Moon} className="mt-3" onClick={() => nav.sheet("reviewDay", {})}>
+          <Button size="sm" variant="tinted" icon={Moon} className="mt-3 max-w-full" onClick={() => nav.sheet("reviewDay", {})}>
             Подвести итоги
           </Button>
         )}

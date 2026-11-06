@@ -285,3 +285,38 @@ test("скрытый экран догоняет изменения, сдела�
   await page.getByRole("tab", { name: "Операции" }).click();
   await expect(onView).toContainText("4 321");
 });
+
+/* ---------------- small phones and large text ---------------- */
+
+test.describe("маленький экран", () => {
+  test.use({ viewport: { width: 375, height: 667 } });
+
+  test("огромный шрифт: подписи в переключателях не обрезаются", async ({ page }) => {
+    await startDemo(page);
+    const onView = page.locator('.app-canvas > [aria-hidden="false"]');
+    // labels that don't fit their button: cut short, spilling out, wrapped, or off the screen
+    const cutLabels = () =>
+      onView.locator('[role="tablist"] button').evaluateAll((buttons) =>
+        buttons
+          .filter((b) => {
+            const box = b.getBoundingClientRect();
+            if (!box.width) return false;
+            const range = document.createRange();
+            range.selectNodeContents(b);
+            const text = range.getBoundingClientRect();
+            return text.left < box.left - 0.5 || text.right > box.right + 0.5 || text.height > box.height + 0.5 || box.right > window.innerWidth + 0.5;
+          })
+          .map((b) => b.textContent)
+      );
+    await page.getByRole("tab", { name: "Ещё" }).click();
+    await onView.getByText("Настройки", { exact: true }).click();
+    await onView.getByRole("tab", { name: "Огромный" }).click();
+    await expect(page.locator("html")).toHaveAttribute("data-text", "xl");
+    await expect.poll(cutLabels).toEqual([]);
+    await page.getByRole("tab", { name: "Аналитика" }).click();
+    await expect.poll(cutLabels).toEqual([]);
+    await onView.getByRole("tab", { name: "Тренды" }).click();
+    await expect(onView.getByRole("tab", { name: "Накопления" })).toBeVisible();
+    await expect.poll(cutLabels).toEqual([]);
+  });
+});

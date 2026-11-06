@@ -22,7 +22,7 @@ export function TabBar() {
   const setTab = useUI((s) => s.setTab);
   const [intro] = useState(introActive);
   return (
-    <nav aria-label="Разделы" className="pointer-events-none fixed inset-x-0 z-40 px-3" style={{ bottom: "var(--tabbar-bottom)" }}>
+    <nav aria-label="Разделы" className="pointer-events-none fixed inset-x-0 z-40 px-3 max-[389px]:px-2" style={{ bottom: "var(--tabbar-bottom)" }}>
       <motion.div
         role="tablist"
         className="glass pointer-events-auto relative mx-auto flex max-w-[480px] rounded-[26px] p-[5px]"
@@ -63,7 +63,7 @@ export function TabBar() {
               className={cn("relative flex flex-1 flex-col items-center justify-center gap-[4px] rounded-[21px] transition-colors duration-200", active ? "text-ink" : "text-ink-3")}
             >
               <Icon size={22} strokeWidth={active ? 2.05 : 1.75} className={cn("relative transition-colors duration-200", active && "text-accent-ink")} />
-              <span className="relative text-[10px] font-semibold leading-none tracking-[0.02em]">{label}</span>
+              <span className="relative max-w-full truncate text-[10px] font-semibold leading-none tracking-[0.02em] max-[389px]:text-[9.5px] max-[389px]:tracking-normal">{label}</span>
             </motion.button>
           );
         })}

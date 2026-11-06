@@ -171,14 +171,14 @@ export function WalletDetail({ id, from }: { id: ID; from?: Origin }) {
           </div>
 
           <section className="mt-6 px-5">
-            <div className="flex items-end justify-between">
-              <div>
+            <div className="flex flex-wrap items-end gap-3">
+              <div className="min-w-0 grow-[999] basis-[140px]">
                 <div className="text-footnote font-medium text-ink-2">{shown ? formatDate(shown.day, { year: "auto" }) : "История баланса"}</div>
                 <Money value={shown ? shown.value : series[series.length - 1]?.value ?? 0} currency={base} privacy className="text-title-3 font-semibold" />
               </div>
               <Segmented
                 size="sm"
-                className="w-[150px]"
+                className="min-w-0 grow basis-[calc(150px*var(--text-scale))]"
                 value={range}
                 onChange={setRange}
                 options={[

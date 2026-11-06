@@ -238,15 +238,49 @@ export function Segmented<T extends string>({
               onChange(o.value);
             }}
             className={cn(
-              "relative flex-1 rounded-[9px] font-semibold transition-colors duration-200",
+              "relative min-w-0 flex-1 rounded-[9px] px-1 font-semibold transition-colors duration-200",
               size === "md" ? "h-8 text-subhead" : "h-7 text-footnote",
               active ? "text-ink" : "text-ink-2"
             )}
           >
-            <span className="relative z-[1]">{o.label}</span>
+            <span className="relative z-[1] block truncate">{o.label}</span>
           </button>
         );
       })}
+    </div>
+  );
+}
+
+/** Switch widths that fit their labels at every text size. */
+const SWITCH_WIDTH = {
+  sm: "basis-[calc(190px*var(--text-scale))]",
+  md: "basis-[calc(214px*var(--text-scale))]",
+  lg: "basis-[calc(236px*var(--text-scale))]"
+};
+
+/**
+ * A setting with a segmented switch. The label takes the slack, so the
+ * switch keeps its own width beside it; when the row is too narrow (small
+ * phone, large text) the switch drops to its own line at full width.
+ */
+export function SwitchRow<T extends string>({
+  icon,
+  label,
+  width = "md",
+  ...switchProps
+}: {
+  icon: LucideIcon;
+  label: ReactNode;
+  width?: keyof typeof SWITCH_WIDTH;
+  options: SegOption<T>[];
+  value: T;
+  onChange: (v: T) => void;
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-2.5 px-4 py-3">
+      <IconChip icon={icon} size={30} />
+      <span className="grow-[999] text-body">{label}</span>
+      <Segmented {...switchProps} size="sm" className={cn("min-w-0 grow", SWITCH_WIDTH[width])} />
     </div>
   );
 }
