@@ -3,7 +3,7 @@ import { KeyRound, LockKeyhole, ScanFace, Timer } from "lucide-react";
 import { haptic } from "../../lib/haptics";
 import { useData } from "../../store/store";
 import { nav } from "../../store/ui";
-import { FormRow, Group, IconChip, Row, Segmented, Toggle } from "../../ui/primitives";
+import { FormRow, Group, IconChip, Row, SwitchRow, Toggle } from "../../ui/primitives";
 import { biometricAvailable, registerBiometric } from "./lock";
 import { askPin } from "./PinSheet";
 
@@ -63,11 +63,7 @@ export function SecuritySettings() {
         </FormRow>
       )}
       {s.lockEnabled && (
-        <div className="flex items-center gap-3 px-4 py-3">
-          <IconChip icon={Timer} size={30} />
-          <span className="text-body">Блокировать</span>
-          <Segmented className="ml-auto w-[214px]" size="sm" value={String(s.lockAfter)} onChange={(v) => update({ lockAfter: Number(v) })} options={AFTER_OPTIONS} />
-        </div>
+        <SwitchRow icon={Timer} label="Блокировать" value={String(s.lockAfter)} onChange={(v) => update({ lockAfter: Number(v) })} options={AFTER_OPTIONS} />
       )}
       {s.lockEnabled && <Row icon={KeyRound} title="Сменить код" chevron onClick={() => askPin("verify", () => askPin("set", () => nav.toast("Код изменён", { tone: "positive" })))} />}
     </Group>

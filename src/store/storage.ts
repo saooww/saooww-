@@ -1,4 +1,4 @@
-import type { StateStorage } from "zustand/middleware";
+import type { PersistStorage, StateStorage, StorageValue } from "zustand/middleware";
 
 /**
  * Where the app keeps its data.
@@ -178,6 +178,121 @@ export const appStorage: StateStorage = {
     await kvDel(name);
   }
 };
+
+/* ------------------------------------------------------------------ */
+/*  Saving without getting in the way                                   */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The whole state is one JSON document, so saving it on every keystroke
+ * would serialise and write hundreds of kilobytes per letter. A single
+ * change (an expense, a tick) is saved at once; a burst of changes
+ * (typing) is saved at most every SAVE_EVERY ms. Whatever is waiting is
+ * written when the app goes to the background.
+ */
+export const SAVE_EVERY = 800;
+
+let pending: { name: string; value: StorageValue<unknown> } | null = null;
+let timer: ReturnType<typeof setTimeout> | null = null;
+let lastWrite = -Infinity;
+let lastWriting: Promise<unknown> = Promise.resolve();
+let seq = 0;
+/** Sequence number of the write that a rescue copy (below) stands in for; 0 — none */
+let rescueSeq = 0;
+
+/** Where changes not yet in IndexedDB are kept when the page is going away. */
+const rescueKey = (name: string) => `${name}-unsaved`;
+
+function writePending(): Promise<unknown> {
+  if (timer) {
+    clearTimeout(timer);
+    timer = null;
+  }
+  if (!pending) return lastWriting;
+  const { name, value } = pending;
+  pending = null;
+  lastWrite = Date.now();
+  const mySeq = ++seq;
+  lastWriting = Promise.resolve(appStorage.setItem(name, JSON.stringify(value))).then(() => {
+    // The database has caught up with the rescue copy — it is no longer needed.
+    if (rescueSeq && mySeq >= rescueSeq) {
+      rescueSeq = 0;
+      try {
+        localStorage.removeItem(rescueKey(name));
+      } catch {
+        /* ignore */
+      }
+    }
+  });
+  return lastWriting;
+}
+
+/**
+ * The app is being hidden, closed or reloaded with changes still waiting:
+ * an IndexedDB write may not finish in time, so the changes are also put in
+ * localStorage, synchronously. The next launch prefers that copy.
+ */
+function rescuePending() {
+  if (!pending) return;
+  try {
+    localStorage.setItem(rescueKey(pending.name), JSON.stringify(pending.value));
+    rescueSeq = seq + 1;
+  } catch {
+    /* no room — the IndexedDB write below still tries */
+  }
+  void writePending();
+}
+
+/** Writes anything still waiting to be saved; resolves when it is stored. */
+export function flushPersist(): Promise<unknown> {
+  return writePending();
+}
+
+export function persistStorage<S>(): PersistStorage<S> {
+  return {
+    async getItem(name) {
+      // Changes rescued when the app last went away are newer than the database.
+      let rescued: string | null = null;
+      try {
+        rescued = localStorage.getItem(rescueKey(name));
+      } catch {
+        /* ignore */
+      }
+      if (rescued) {
+        try {
+          const value = JSON.parse(rescued) as StorageValue<S>;
+          foundStored = true;
+          pending = { name, value: value as StorageValue<unknown> };
+          rescueSeq = seq + 1;
+          void writePending();
+          return value;
+        } catch {
+          /* a broken copy — fall back to the database */
+        }
+      }
+      const raw = await appStorage.getItem(name);
+      return raw ? (JSON.parse(raw) as StorageValue<S>) : null;
+    },
+    setItem(name, value) {
+      pending = { name, value: value as StorageValue<unknown> };
+      if (timer) return;
+      const since = Date.now() - lastWrite;
+      if (since >= SAVE_EVERY) return void writePending();
+      timer = setTimeout(() => void writePending(), SAVE_EVERY - since);
+    },
+    removeItem(name) {
+      pending = null;
+      return appStorage.removeItem(name);
+    }
+  };
+}
+
+if (typeof document !== "undefined") {
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") rescuePending();
+  });
+  window.addEventListener("pagehide", rescuePending);
+}
 
 /* ------------------------------------------------------------------ */
 /*  Protection from eviction                                           */

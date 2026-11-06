@@ -125,10 +125,10 @@ export function AnalyticsScreen() {
       ) : (
         <>
           {/* Summary */}
-          <div className="mt-3 grid grid-cols-3 gap-2 px-4">
+          <div className="mt-3 grid grid-cols-2 gap-2 px-4 min-[390px]:grid-cols-3">
             <SummaryTile label="Доходы" value={stats.income} change={incChange} goodWhenUp currency={base} tone="positive" />
             <SummaryTile label="Расходы" value={stats.expense} change={expChange} currency={base} />
-            <SummaryTile label="Поток" value={stats.net} currency={base} signed />
+            <SummaryTile label="Поток" value={stats.net} currency={base} signed className="col-span-2 min-[390px]:col-span-1" />
           </div>
           {partialCompare && (prev.income > 0 || prev.expense > 0) && <div className="mt-2 px-5 text-caption text-ink-3">Проценты — к тем же дням {PREV_GEN[period]}</div>}
           {period === "month" && hab.expenseCount >= 5 && (
@@ -162,8 +162,9 @@ export function AnalyticsScreen() {
           {/* Flow chart */}
           <section className="mt-4 px-4">
             <div className="panel rounded-xl p-4">
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
+              {/* The switch sits beside the amount; on small phones and large text it gets its own line */}
+              <div className="flex flex-wrap items-start gap-3">
+                <div className="min-w-0 grow-[999] basis-[156px]">
                   <div className="text-footnote font-medium text-ink-2">{selectedBucket ? capitalize(selectedBucket.tip) : metric === "expense" ? "Расходы за период" : metric === "income" ? "Доходы за период" : "Денежный поток"}</div>
                   <AnimatedMoney value={headline} currency={base} sign={metric === "net" ? "always" : "auto"} tone={metric === "income" || (metric === "net" && headline > 0) ? "positive" : "default"} variant="hero" className="mt-0.5 block text-[28px] font-semibold tracking-[-0.03em]" duration={0.45} />
                   {avgLine ? (
@@ -174,7 +175,7 @@ export function AnalyticsScreen() {
                 </div>
                 <Segmented
                   size="sm"
-                  className="w-[150px] shrink-0"
+                  className="min-w-0 grow basis-[calc(150px*var(--text-scale))]"
                   value={metric}
                   onChange={(m) => {
                     setMetric(m);
@@ -207,9 +208,9 @@ export function AnalyticsScreen() {
           {forecast && (
             <section className="mt-4 px-4">
               <div className="panel rounded-xl p-4">
-                <div className="flex items-baseline justify-between">
+                <div className="flex items-baseline justify-between gap-3">
                   <div className="text-headline font-semibold">Прогноз до конца месяца</div>
-                  <div className="text-footnote text-ink-3">{pluralN(forecast.daysLeft, ["день", "дня", "дней"])}</div>
+                  <div className="shrink-0 text-footnote text-ink-3">{pluralN(forecast.daysLeft, ["день", "дня", "дней"])}</div>
                 </div>
                 <div className="mt-3 flex items-baseline gap-2">
                   <Money value={forecast.projected} currency={base} variant="hero" className="text-title-2 font-semibold" />
@@ -311,7 +312,7 @@ export function AnalyticsScreen() {
           {period === "month" && (
             <section className="mt-4 px-4">
               <div className="panel rounded-xl p-4">
-                <div className="mb-3 flex items-center justify-between">
+                <div className="mb-3 flex items-center justify-between gap-3">
                   <div className="text-headline font-semibold">Календарь трат</div>
                   {hab.noSpendDays > 0 && <div className="text-footnote text-ink-2">{pluralN(hab.noSpendDays, ["день", "дня", "дней"])} без трат</div>}
                 </div>
@@ -329,11 +330,11 @@ export function AnalyticsScreen() {
           {capital.length > 1 && (
             <section className="mt-4 px-4">
               <div className="panel rounded-xl p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="text-footnote font-medium text-ink-2">{capShown ? formatDate(capShown.day, { year: "auto" }) : capMode === "capital" ? "Изменение капитала" : "Динамика накоплений"}</div>
+                <div className="flex flex-wrap items-start gap-3">
+                  <div className="min-w-0 grow-[999] basis-[110px] text-footnote font-medium text-ink-2">{capShown ? formatDate(capShown.day, { year: "auto" }) : capMode === "capital" ? "Изменение капитала" : "Динамика накоплений"}</div>
                   <Segmented
                     size="sm"
-                    className="w-[176px] shrink-0"
+                    className="min-w-0 grow basis-[calc(184px*var(--text-scale))]"
                     value={capMode}
                     onChange={(m) => {
                       setCapMode(m);
@@ -365,7 +366,7 @@ export function AnalyticsScreen() {
           {/* Six months */}
           <section className="mt-4 px-4">
             <div className="panel rounded-xl p-4">
-              <div className="flex items-baseline justify-between">
+              <div className="flex items-baseline justify-between gap-3">
                 <div className="text-headline font-semibold">Полгода</div>
                 <div className="flex items-center gap-3 text-caption text-ink-2">
                   <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-positive" />Доходы</span>
@@ -414,10 +415,10 @@ export function AnalyticsScreen() {
   );
 }
 
-function SummaryTile({ label, value, change, currency, goodWhenUp, signed, tone }: { label: string; value: number; change?: number | null; currency: string; goodWhenUp?: boolean; signed?: boolean; tone?: "positive" }) {
+function SummaryTile({ label, value, change, currency, goodWhenUp, signed, tone, className }: { label: string; value: number; change?: number | null; currency: string; goodWhenUp?: boolean; signed?: boolean; tone?: "positive"; className?: string }) {
   const good = change == null ? null : goodWhenUp ? change >= 0 : change <= 0;
   return (
-    <div className="panel rounded-md px-3 py-3">
+    <div className={cn("panel rounded-md px-3 py-3", className)}>
       <div className="text-caption font-medium text-ink-2">{label}</div>
       <div className={cn("mt-0.5 truncate text-[15px] font-semibold tracking-[-0.01em] tnum", tone === "positive" && value > 0 && "text-positive", signed && value < 0 && "text-negative")}>
         {signed && value > 0 ? "+" : ""}

@@ -1,8 +1,9 @@
-import type { ComponentType } from "react";
+import { createContext, memo, useContext, useLayoutEffect, useMemo, useState, type ComponentType } from "react";
 import { AnimatePresence, motion, useDragControls } from "framer-motion";
 import { useUI, type Route, type RouteName, type Tab } from "../store/ui";
 import { dur, ease, gpu } from "../ui/motion";
 import { RouteContext } from "./Screen";
+import { FreezeContext, createFreezeSwitch } from "../store/freeze";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type RouteComponent = ComponentType<any>;
@@ -20,23 +21,37 @@ export function registerRoutes(t: RouteTable) {
 
 const navTransition = { type: "tween" as const, ease: ease.nav, duration: dur.nav };
 
+/** Whether this tab is the one on screen; read only by the screen content, never by the sliding layer. */
+const TabActiveContext = createContext(false);
+
 /** One navigation stack per tab: push slides in from the right, the screen below parallaxes and dims. */
 export function StackView({ tab, active }: { tab: Tab; active: boolean }) {
   const stack = useUI((s) => s.stacks[tab]);
   // A "hero" screen (opened from a card) handles its own entrance: the card flies, nothing slides.
   const topIsHero = !!stack[stack.length - 1]?.params?.from;
   return (
-    <div className="absolute inset-0 overflow-hidden">
-      <AnimatePresence initial={false}>
-        {stack.map((route, i) => (
-          <Layer key={route.key} route={route} index={i} depth={stack.length - 1 - i} tab={tab} active={active} coverIsHero={topIsHero} />
-        ))}
-      </AnimatePresence>
-    </div>
+    <TabActiveContext.Provider value={active}>
+      <div className="absolute inset-0 overflow-hidden">
+        {/* Screens are stacked absolutely, so one leaving never moves another: without
+            presenceAffectsLayout every re-render here would make the motion library
+            re-measure every animated element of the tab. */}
+        <AnimatePresence initial={false} presenceAffectsLayout={false}>
+          {stack.map((route, i) => (
+            <Layer key={route.key} route={route} index={i} depth={stack.length - 1 - i} tab={tab} coverIsHero={topIsHero} />
+          ))}
+        </AnimatePresence>
+      </div>
+    </TabActiveContext.Provider>
   );
 }
 
-function Layer({ route, index, depth, tab, active, coverIsHero }: { route: Route; index: number; depth: number; tab: Tab; active: boolean; coverIsHero: boolean }) {
+/**
+ * The sliding layer of one screen. It is memoised and doesn't know whether
+ * its tab is on screen: re-rendering it (a draggable motion element) makes
+ * the motion library re-measure every animated element inside, which made
+ * switching tabs stutter.
+ */
+const Layer = memo(function Layer({ route, index, depth, tab, coverIsHero }: { route: Route; index: number; depth: number; tab: Tab; coverIsHero: boolean }) {
   const controls = useDragControls();
   const pop = useUI((s) => s.pop);
   const Comp = route.name === "root" ? table?.roots[tab] : table?.routes[route.name];
@@ -72,9 +87,7 @@ function Layer({ route, index, depth, tab, active, coverIsHero }: { route: Route
         if (canSwipe && e.clientX < 24) controls.start(e);
       }}
     >
-      <RouteContext.Provider value={{ tab, route, isRoot: index === 0, active: active && depth === 0 }}>
-        <Comp {...(route.params ?? {})} />
-      </RouteContext.Provider>
+      <LayerContent Comp={Comp} route={route} index={index} depth={depth} tab={tab} />
       <motion.div
         className="pointer-events-none absolute inset-0 z-50 bg-black"
         initial={false}
@@ -82,5 +95,24 @@ function Layer({ route, index, depth, tab, active, coverIsHero }: { route: Route
         transition={navTransition}
       />
     </motion.div>
+  );
+});
+
+/** The screen itself, plus whether it is on top and on screen (which freezes or wakes its data). */
+function LayerContent({ Comp, route, index, depth, tab }: { Comp: RouteComponent; route: Route; index: number; depth: number; tab: Tab }) {
+  const active = useContext(TabActiveContext);
+  const onTop = active && depth === 0;
+
+  // Out of sight → its data holds still (see FreezeContext).
+  const [freeze] = useState(() => createFreezeSwitch(!onTop));
+  useLayoutEffect(() => freeze.set(!onTop), [freeze, onTop]);
+  // The same element is handed back, so the screen doesn't redraw; only what depends on the change updates.
+  const ctx = useMemo(() => ({ tab, route, isRoot: index === 0, active: onTop }), [tab, route, index, onTop]);
+  const content = useMemo(() => <Comp {...(route.params ?? {})} />, [Comp, route.params]);
+
+  return (
+    <FreezeContext.Provider value={freeze}>
+      <RouteContext.Provider value={ctx}>{content}</RouteContext.Provider>
+    </FreezeContext.Provider>
   );
 }

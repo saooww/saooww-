@@ -22,15 +22,29 @@ export function TabBar() {
   const setTab = useUI((s) => s.setTab);
   const [intro] = useState(introActive);
   return (
-    <nav aria-label="Разделы" className="pointer-events-none fixed inset-x-0 z-40 px-3" style={{ bottom: "var(--tabbar-bottom)" }}>
+    <nav aria-label="Разделы" className="pointer-events-none fixed inset-x-0 z-40 px-3 max-[389px]:px-2" style={{ bottom: "var(--tabbar-bottom)" }}>
       <motion.div
         role="tablist"
-        className="glass pointer-events-auto mx-auto flex max-w-[480px] rounded-[26px] p-[5px]"
+        className="glass pointer-events-auto relative mx-auto flex max-w-[480px] rounded-[26px] p-[5px]"
         style={{ height: "var(--tabbar-h)" }}
         initial={intro ? { y: 16, opacity: 0 } : false}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.85 + INTRO_SHIFT }}
       >
+        {/* One pill that slides by transform: a shared-layout animation here would
+            make the motion library re-measure every animated element in the app. */}
+        <motion.span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-[5px] left-[5px] rounded-[21px]"
+          style={{
+            width: `calc((100% - 10px) / ${ITEMS.length})`,
+            background: "linear-gradient(180deg, var(--panel-highlight), transparent 80%), color-mix(in srgb, var(--ink) 7%, transparent)",
+            boxShadow: "inset 0 0 0 0.5px var(--line-strong)"
+          }}
+          initial={false}
+          animate={{ x: `${Math.max(0, ITEMS.findIndex((i) => i.tab === tab)) * 100}%` }}
+          transition={spring.snappy}
+        />
         {ITEMS.map(({ tab: t, label, icon: Icon }) => {
           const active = t === tab;
           return (
@@ -48,19 +62,8 @@ export function TabBar() {
               }}
               className={cn("relative flex flex-1 flex-col items-center justify-center gap-[4px] rounded-[21px] transition-colors duration-200", active ? "text-ink" : "text-ink-3")}
             >
-              {active && (
-                <motion.span
-                  layoutId="tab-pill"
-                  className="absolute inset-0 rounded-[21px]"
-                  style={{
-                    background: "linear-gradient(180deg, var(--panel-highlight), transparent 80%), color-mix(in srgb, var(--ink) 7%, transparent)",
-                    boxShadow: "inset 0 0 0 0.5px var(--line-strong)"
-                  }}
-                  transition={spring.snappy}
-                />
-              )}
               <Icon size={22} strokeWidth={active ? 2.05 : 1.75} className={cn("relative transition-colors duration-200", active && "text-accent-ink")} />
-              <span className="relative text-[10px] font-semibold leading-none tracking-[0.02em]">{label}</span>
+              <span className="relative max-w-full truncate text-[10px] font-semibold leading-none tracking-[0.02em] max-[389px]:text-[9.5px] max-[389px]:tracking-normal">{label}</span>
             </motion.button>
           );
         })}

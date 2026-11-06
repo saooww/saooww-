@@ -19,6 +19,8 @@ import { dayPlan, nextOccurrence, nextRepeatDate } from "../src/lib/tasks";
 import { taskToICS } from "../src/lib/ics";
 import { parseImport } from "../src/store/store";
 import { applyCalcKey, evaluate, formatExpression } from "../src/lib/calc";
+import { SAVE_EVERY, flushPersist } from "../src/store/storage";
+import { STORAGE_KEY } from "../src/store/store";
 
 let passed = 0;
 function test(name: string, fn: () => void) {
@@ -418,5 +420,38 @@ test("калькулятор суммы: порядок действий, коп
   assert.equal(evaluate("100-300"), -20_000);
   assert.equal(formatExpression("12000+350-5"), "12\u202F000 + 350 − 5");
 });
+
+/* ---------------- saving ---------------- */
+
+{
+  // Typing changes the store on every letter; the saved copy is written in bursts, and the last letter is never lost.
+  const name = "сохранение: набор текста пишется пачками, последняя буква не теряется";
+  useData.getState().replaceAll(createDemoData());
+  await flushPersist();
+  const writes: string[] = [];
+  const realSet = localStorage.setItem.bind(localStorage);
+  localStorage.setItem = (k: string, v: string) => {
+    if (k === STORAGE_KEY) writes.push(v);
+    realSet(k, v);
+  };
+  const id = st().addNote({ title: "Черновик" });
+  const text = "Купить подарок к пятнице";
+  for (let i = 1; i <= text.length; i++) st().updateNote(id, { body: text.slice(0, i) });
+  try {
+    assert.ok(writes.length <= 2, `writes while typing: ${writes.length}`);
+    await new Promise((r) => setTimeout(r, SAVE_EVERY + 50));
+    await flushPersist();
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)!).state.notes.find((n: { id: string }) => n.id === id);
+    assert.equal(saved.body, text);
+    assert.ok(writes.length <= 3, `writes in total: ${writes.length}`);
+    passed++;
+    console.log(`  ✓ ${name}`);
+  } catch (e) {
+    console.error(`  ✗ ${name}`);
+    throw e;
+  } finally {
+    localStorage.setItem = realSet;
+  }
+}
 
 console.log(`\nВсе проверки пройдены: ${passed}`);

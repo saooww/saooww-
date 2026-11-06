@@ -82,8 +82,9 @@ export function WalletCarousel({ onOpen, onAdd, intro = false }: { onOpen: (card
   const setIndex = useUI((s) => s.setHomeCardIndex);
   const heroWalletId = useUI((s) => s.heroWalletId);
   const hidden = useData((s) => s.settings.hideAmounts);
-  const flight = useUI((s) => s.flight);
-  const tab = useUI((s) => s.tab);
+  // Only a saved amount flying into the card on the home tab; switching tabs must not
+  // re-render this draggable carousel (that makes the motion library re-measure).
+  const flight = useUI((s) => (s.tab === "home" ? s.flight : null));
   // Stable, so the memoised cards don't re-render when the index changes.
   const toggleHidden = useCallback(() => {
     haptic();
@@ -195,7 +196,7 @@ export function WalletCarousel({ onOpen, onAdd, intro = false }: { onOpen: (card
         )}
       </div>
 
-      <AnimatePresence>{flight && tab === "home" && <SaveFlight key={flight.id} flight={flight} target={wrap} />}</AnimatePresence>
+      <AnimatePresence>{flight && <SaveFlight key={flight.id} flight={flight} target={wrap} />}</AnimatePresence>
 
       {count > 1 && (
         <motion.div

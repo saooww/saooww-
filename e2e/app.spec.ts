@@ -252,3 +252,71 @@ test("калькулятор в сумме: 1200 + 350 записывается 
   await page.getByRole("tab", { name: "Операции" }).click();
   await expect(page.locator("section").filter({ hasText: "Сегодня" }).first()).toContainText("1 550");
 });
+
+/* ---------------- speed without losing data ---------------- */
+
+test("изменения подряд и сразу перезапуск: ничего не теряется", async ({ page }) => {
+  await startDemo(page);
+  await page.getByRole("tab", { name: "Дела" }).click();
+  await page.getByRole("button", { name: "Начать" }).click();
+  // two changes well within the saving interval, then an immediate reload
+  await page.getByRole("checkbox", { name: "Сделано: Позвонить маме" }).click();
+  await page.getByRole("checkbox", { name: "Сделано: Записаться к стоматологу" }).click();
+  await page.reload();
+  await page.getByRole("tab", { name: "Дела" }).click();
+  await expect(page.getByRole("checkbox", { name: "Вернуть: Позвонить маме" })).toBeVisible();
+  await expect(page.getByRole("checkbox", { name: "Вернуть: Записаться к стоматологу" })).toBeVisible();
+});
+
+test("скрытый экран догоняет изменения, сделанные на другой вкладке", async ({ page }) => {
+  await startDemo(page);
+  // the tab on view is the one layer not hidden from assistive tech
+  const onView = page.locator('.app-canvas > [aria-hidden="false"]');
+  await page.getByRole("tab", { name: "Операции" }).click();
+  await expect(onView).toContainText("Всё время");
+  await expect(onView).not.toContainText("4 321");
+  // the list stays alive but out of sight while a new expense is added on the home tab
+  await page.getByRole("tab", { name: "Главная" }).click();
+  await page.getByRole("button", { name: "Расход", exact: true }).click();
+  await page.keyboard.type("4321");
+  await page.getByRole("dialog").locator('button[aria-pressed="false"]', { hasText: /^Продукты$/ }).click();
+  await page.getByRole("button", { name: /Добавить расход/ }).click();
+  await expect(page.getByText("Расход добавлен")).toBeVisible();
+  await page.getByRole("tab", { name: "Операции" }).click();
+  await expect(onView).toContainText("4 321");
+});
+
+/* ---------------- small phones and large text ---------------- */
+
+test.describe("маленький экран", () => {
+  test.use({ viewport: { width: 375, height: 667 } });
+
+  test("огромный шрифт: подписи в переключателях не обрезаются", async ({ page }) => {
+    await startDemo(page);
+    const onView = page.locator('.app-canvas > [aria-hidden="false"]');
+    // labels that don't fit their button: cut short, spilling out, wrapped, or off the screen
+    const cutLabels = () =>
+      onView.locator('[role="tablist"] button').evaluateAll((buttons) =>
+        buttons
+          .filter((b) => {
+            const box = b.getBoundingClientRect();
+            if (!box.width) return false;
+            const range = document.createRange();
+            range.selectNodeContents(b);
+            const text = range.getBoundingClientRect();
+            return text.left < box.left - 0.5 || text.right > box.right + 0.5 || text.height > box.height + 0.5 || box.right > window.innerWidth + 0.5;
+          })
+          .map((b) => b.textContent)
+      );
+    await page.getByRole("tab", { name: "Ещё" }).click();
+    await onView.getByText("Настройки", { exact: true }).click();
+    await onView.getByRole("tab", { name: "Огромный" }).click();
+    await expect(page.locator("html")).toHaveAttribute("data-text", "xl");
+    await expect.poll(cutLabels).toEqual([]);
+    await page.getByRole("tab", { name: "Аналитика" }).click();
+    await expect.poll(cutLabels).toEqual([]);
+    await onView.getByRole("tab", { name: "Тренды" }).click();
+    await expect(onView.getByRole("tab", { name: "Накопления" })).toBeVisible();
+    await expect.poll(cutLabels).toEqual([]);
+  });
+});

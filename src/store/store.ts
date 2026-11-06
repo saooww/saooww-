@@ -1,6 +1,8 @@
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
-import { appStorage, kvDel, kvGet, kvSet } from "./storage";
+import { persist } from "zustand/middleware";
+import { useCallback, useContext, useRef, useSyncExternalStore } from "react";
+import { kvDel, kvGet, kvSet, persistStorage } from "./storage";
+import { FreezeContext } from "./freeze";
 import { MONTHS_GEN, nowISO, parseDay, todayKey, type DayKey } from "../lib/dates";
 import { computeBalances, debtInfo } from "../lib/finance";
 import { uid } from "../lib/id";
@@ -124,7 +126,7 @@ export function pickData(s: AppData): AppData {
 
 const mapById = <T extends { id: ID }>(arr: T[], id: ID, patch: Partial<T>): T[] => arr.map((x) => (x.id === id ? { ...x, ...patch } : x));
 
-export const useData = create<DataState>()(
+const useDataStore = create<DataState>()(
   persist(
     (set, get) => ({
       ...initialData(),
@@ -614,7 +616,7 @@ export const useData = create<DataState>()(
     {
       name: STORAGE_KEY,
       version: 1,
-      storage: createJSONStorage(() => appStorage),
+      storage: persistStorage<AppData>(),
       partialize: (s) => pickData(s),
       merge: (persisted, current) => {
         const p = (persisted ?? {}) as Partial<AppData>;
@@ -628,6 +630,50 @@ export const useData = create<DataState>()(
     }
   )
 );
+
+/**
+ * The data hook — zustand's, plus one thing: in a screen that is out of
+ * sight (see FreezeContext) it keeps returning what it returned last, so
+ * the screen doesn't re-render while you work elsewhere. When the screen
+ * comes back, only components whose data actually changed redraw.
+ */
+function useDataHook(): DataState;
+function useDataHook<T>(selector: (s: DataState) => T): T;
+function useDataHook<T>(selector?: (s: DataState) => T): T {
+  const freeze = useContext(FreezeContext);
+  const select = useRef(selector);
+  select.current = selector;
+  const cache = useRef<{ state: DataState; select: typeof selector; value: T } | null>(null);
+
+  const subscribe = useCallback(
+    (onChange: () => void) => {
+      const offData = useDataStore.subscribe(onChange);
+      const offFreeze = freeze.subscribe(onChange);
+      return () => {
+        offData();
+        offFreeze();
+      };
+    },
+    [freeze]
+  );
+
+  const getSnapshot = (): T => {
+    const c = cache.current;
+    if (freeze.frozen && c) return c.value;
+    const state = useDataStore.getState();
+    const f = select.current;
+    if (c && c.state === state && c.select === f) return c.value;
+    const next = f ? f(state) : (state as unknown as T);
+    // Same selection as before — keep the old reference, so nothing re-renders.
+    const value = c && Object.is(c.value, next) ? c.value : next;
+    cache.current = { state, select: f, value };
+    return value;
+  };
+
+  return useSyncExternalStore(subscribe, getSnapshot);
+}
+
+export const useData = Object.assign(useDataHook, useDataStore) as unknown as typeof useDataStore;
 
 /* ------------------------------------------------------------------ */
 /*  Import / export / backups                                          */

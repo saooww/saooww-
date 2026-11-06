@@ -208,9 +208,23 @@ export function Segmented<T extends string>({
   size?: "md" | "sm";
   className?: string;
 }) {
-  const id = useId();
+  const index = options.findIndex((o) => o.value === value);
   return (
     <div role="tablist" className={cn("relative flex rounded-[12px] p-[3px]", className)} style={{ background: "color-mix(in srgb, var(--ink) 6%, transparent)", boxShadow: "inset 0 0 0 0.5px var(--line)" }}>
+      {index >= 0 && (
+        <motion.span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-[3px] left-[3px] rounded-[9px]"
+          style={{
+            width: `calc((100% - 6px) / ${options.length})`,
+            background: "linear-gradient(180deg, var(--panel-highlight), transparent 70%), var(--seg-thumb)",
+            boxShadow: "inset 0 0 0 0.5px var(--line-strong), 0 2px 6px -1px rgba(0,0,0,0.28)"
+          }}
+          initial={false}
+          animate={{ x: `${index * 100}%` }}
+          transition={spring.snappy}
+        />
+      )}
       {options.map((o) => {
         const active = o.value === value;
         return (
@@ -224,26 +238,49 @@ export function Segmented<T extends string>({
               onChange(o.value);
             }}
             className={cn(
-              "relative flex-1 rounded-[9px] font-semibold transition-colors duration-200",
+              "relative min-w-0 flex-1 rounded-[9px] px-1 font-semibold transition-colors duration-200",
               size === "md" ? "h-8 text-subhead" : "h-7 text-footnote",
               active ? "text-ink" : "text-ink-2"
             )}
           >
-            {active && (
-              <motion.span
-                layoutId={`seg-${id}`}
-                className="absolute inset-0 rounded-[9px]"
-                style={{
-                  background: "linear-gradient(180deg, var(--panel-highlight), transparent 70%), var(--seg-thumb)",
-                  boxShadow: "inset 0 0 0 0.5px var(--line-strong), 0 2px 6px -1px rgba(0,0,0,0.28)"
-                }}
-                transition={spring.snappy}
-              />
-            )}
-            <span className="relative z-[1]">{o.label}</span>
+            <span className="relative z-[1] block truncate">{o.label}</span>
           </button>
         );
       })}
+    </div>
+  );
+}
+
+/** Switch widths that fit their labels at every text size. */
+const SWITCH_WIDTH = {
+  sm: "basis-[calc(190px*var(--text-scale))]",
+  md: "basis-[calc(214px*var(--text-scale))]",
+  lg: "basis-[calc(236px*var(--text-scale))]"
+};
+
+/**
+ * A setting with a segmented switch. The label takes the slack, so the
+ * switch keeps its own width beside it; when the row is too narrow (small
+ * phone, large text) the switch drops to its own line at full width.
+ */
+export function SwitchRow<T extends string>({
+  icon,
+  label,
+  width = "md",
+  ...switchProps
+}: {
+  icon: LucideIcon;
+  label: ReactNode;
+  width?: keyof typeof SWITCH_WIDTH;
+  options: SegOption<T>[];
+  value: T;
+  onChange: (v: T) => void;
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-2.5 px-4 py-3">
+      <IconChip icon={icon} size={30} />
+      <span className="grow-[999] text-body">{label}</span>
+      <Segmented {...switchProps} size="sm" className={cn("min-w-0 grow", SWITCH_WIDTH[width])} />
     </div>
   );
 }

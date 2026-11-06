@@ -1,8 +1,8 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { buildLedger, computeBalances, goalEnvelopes, netWorth, sumWallets, totalWallets, type LedgerEntry } from "../lib/finance";
 import { pickData, useData } from "./store";
 import { useUI } from "./ui";
-import type { AppData, Category, ID, Wallet } from "./types";
+import { DATA_KEYS, type AppData, type Category, type ID, type Wallet } from "./types";
 
 export function useToday() {
   return useUI((s) => s.today);
@@ -33,14 +33,25 @@ export function useEnvelopes() {
   return useMemo(() => goalEnvelopes(transactions), [transactions]);
 }
 
-/** Snapshot of all data fields; recomputed only when any of them changes. */
+// The planner's lists change on every keystroke while a task or note is typed;
+// money screens don't read them, so they don't wake those screens up.
+const MONEY_KEYS = DATA_KEYS.filter((k) => k !== "tasks" && k !== "projects" && k !== "notes");
+
+/**
+ * Snapshot of the data for money screens. It changes only when a money
+ * field changes (wallets, transactions, settings…); the planner's lists in
+ * it may lag behind — read those with their own selectors.
+ */
 export function useAppData(): AppData {
-  const s = useData();
-  return useMemo(
-    () => pickData(s),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [s.wallets, s.transactions, s.categories, s.budgets, s.goals, s.recurring, s.plans, s.debts, s.tasks, s.projects, s.notes, s.favorites, s.settings, s.meta]
-  );
+  const cache = useRef<{ src: unknown[]; out: AppData } | null>(null);
+  return useData((s) => {
+    const src = MONEY_KEYS.map((k) => s[k]);
+    const c = cache.current;
+    if (c && src.every((v, i) => v === c.src[i])) return c.out;
+    const out = pickData(s);
+    cache.current = { src, out };
+    return out;
+  });
 }
 
 export function useLedger(): { entries: LedgerEntry[]; skipped: number } {

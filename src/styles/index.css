@@ -118,8 +118,10 @@
   --line: rgba(255, 248, 240, 0.075);
   --line-strong: rgba(255, 248, 240, 0.13);
   --ink: #f5f3f0;
-  --ink-2: #9b9893;
-  --ink-3: #66635f;
+  --ink-2: #a29f9a;
+  /* faint text still reads at ≥ 4.5:1 on panels; sheets and tiles take the raised step */
+  --ink-3: #8a8783;
+  --ink-3-raised: #96938f;
   --ink-4: #3d3b39;
   --ink-inverse: #0b0a09;
   /* the logo's own red — never follows the chosen accent */
@@ -178,8 +180,10 @@
   --line: rgba(30, 20, 10, 0.08);
   --line-strong: rgba(30, 20, 10, 0.14);
   --ink: #15130f;
-  --ink-2: #74706a;
-  --ink-3: #a6a19a;
+  --ink-2: #5a5650;
+  /* faint text still reads at ≥ 4.5:1 on the page and panels; sheets and tiles take the raised step */
+  --ink-3: #706c66;
+  --ink-3-raised: #6a6660;
   --ink-4: #d3cec6;
   --ink-inverse: #ffffff;
   --brand: #f00515;
@@ -191,14 +195,14 @@
   --accent-ink: #c80511;
   --accent-glow: rgba(227, 6, 19, 0.3);
   --accent-on: #ffffff;
-  --positive: #148f5a;
-  --positive-hi: #1fae70;
-  --positive-soft: rgba(20, 143, 90, 0.1);
+  --positive: #117b4d;
+  --positive-hi: #16915c;
+  --positive-soft: rgba(17, 123, 77, 0.1);
   --positive-on: #ffffff;
-  --negative: #d6333a;
-  --negative-soft: rgba(214, 51, 58, 0.09);
-  --warning: #b07408;
-  --warning-soft: rgba(176, 116, 8, 0.11);
+  --negative: #c52f35;
+  --negative-soft: rgba(197, 47, 53, 0.09);
+  --warning: #946107;
+  --warning-soft: rgba(148, 97, 7, 0.11);
   --gold: #9a7a45;
   --scrim: rgba(20, 15, 10, 0.32);
   --tabbar-bg: rgba(255, 255, 255, 0.84);
@@ -512,9 +516,10 @@
       var(--shadow-panel);
   }
 
-  /* Bottom sheets sit one step above the page; panels inside lift with them. */
+  /* Bottom sheets sit one step above the page; panels and faint text lift with them. */
   .sheet-surface {
     --surface: var(--sheet-panel);
+    --ink-3: var(--ink-3-raised);
     --tile-top: var(--sheet-tile-top);
     --tile-bottom: var(--sheet-tile-bottom);
     background: var(--sheet-bg);
@@ -557,6 +562,8 @@
 
   /* Raised key / tile: a subtle vertical gradient like milled stone. */
   .tile {
+    /* the raised face is lighter (darker in light), so faint text steps up to stay readable */
+    --ink-3: var(--ink-3-raised);
     background: linear-gradient(180deg, var(--tile-top), var(--tile-bottom));
     box-shadow:
       inset 0 0.5px 0 var(--panel-highlight),

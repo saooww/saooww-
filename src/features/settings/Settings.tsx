@@ -13,7 +13,7 @@ import { nav, useUI } from "../../store/ui";
 import { undoable } from "../../store/undo";
 import { Screen } from "../../nav/Screen";
 import { NamedIcon } from "../../ui/icons";
-import { Avatar, FormRow, Group, IconChip, Row, Segmented, Toggle, inputCls } from "../../ui/primitives";
+import { Avatar, FormRow, Group, IconChip, Row, Segmented, SwitchRow, Toggle, inputCls } from "../../ui/primitives";
 import { FullLogo } from "../../ui/Brand";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
 import { NUMBER_FONTS, type NumberFont } from "../../ui/numFont";
@@ -66,38 +66,31 @@ export function SettingsScreen() {
         </Group>
 
         <Group header="Оформление">
-          <div className="flex items-center gap-3 px-4 py-3">
-            <IconChip icon={Moon} size={30} />
-            <span className="text-body">Тема</span>
-            <Segmented
-              className="ml-auto w-[210px]"
-              size="sm"
-              value={s.theme}
-              onChange={(theme) => update({ theme })}
-              options={[
-                { value: "dark", label: "Тёмная" },
-                { value: "light", label: "Светлая" },
-                { value: "system", label: "Авто" }
-              ]}
-            />
-          </div>
+          <SwitchRow
+            icon={Moon}
+            label="Тема"
+            value={s.theme}
+            onChange={(theme) => update({ theme })}
+            options={[
+              { value: "dark", label: "Тёмная" },
+              { value: "light", label: "Светлая" },
+              { value: "system", label: "Авто" }
+            ]}
+          />
           <AccentPicker value={s.accent} onChange={(accent) => update({ accent })} />
           <NumberFontPicker value={s.numberFont} onChange={(numberFont) => update({ numberFont })} />
-          <div className="flex items-center gap-3 px-4 py-3">
-            <IconChip icon={ALargeSmall} size={30} />
-            <span className="text-body">Текст</span>
-            <Segmented
-              className="ml-auto w-[214px]"
-              size="sm"
-              value={s.textSize}
-              onChange={(textSize) => update({ textSize })}
-              options={[
-                { value: "m", label: "Обычный" },
-                { value: "l", label: "Крупный" },
-                { value: "xl", label: "Огромный" }
-              ]}
-            />
-          </div>
+          <SwitchRow
+            icon={ALargeSmall}
+            label="Текст"
+            width="lg"
+            value={s.textSize}
+            onChange={(textSize) => update({ textSize })}
+            options={[
+              { value: "m", label: "Обычный" },
+              { value: "l", label: "Крупный" },
+              { value: "xl", label: "Огромный" }
+            ]}
+          />
           <FormRow label={<span className="flex items-center gap-3"><IconChip icon={Sparkles} size={30} />Анимации</span>}>
             <Toggle checked={s.animations} onChange={(v) => update({ animations: v })} label="Анимации" />
           </FormRow>
@@ -107,38 +100,22 @@ export function SettingsScreen() {
         </Group>
 
         <Group header="Запуск" footer={s.launchAction === "expense" ? "При открытии сразу появляется ввод расхода — сумма, категория, готово. Закройте его, чтобы попасть на главную." : "Самый быстрый способ записывать траты — открывать сразу ввод расхода."}>
-          <div className="flex items-center gap-3 px-4 py-3">
-            <IconChip icon={Zap} size={30} />
-            <span className="text-body">Открывать</span>
-            <Segmented
-              className="ml-auto w-[214px]"
-              size="sm"
-              value={s.launchAction}
-              onChange={(launchAction) => update({ launchAction })}
-              options={[
-                { value: "home", label: "Главную" },
-                { value: "expense", label: "Новый расход" }
-              ]}
-            />
-          </div>
+          <SwitchRow
+            icon={Zap}
+            label="Открывать"
+            value={s.launchAction}
+            onChange={(launchAction) => update({ launchAction })}
+            options={[
+              { value: "home", label: "Главную" },
+              { value: "expense", label: "Новый расход" }
+            ]}
+          />
         </Group>
 
         <Group header="Форматы" footer={`Пример: ${s.numberFormat === "ru" ? "1 234 567,89" : "1,234,567.89"} ${currencySymbol(s.baseCurrency)} · ${s.dateStyle === "short" ? "21 окт" : "21.10.2026"}`}>
-          <div className="flex items-center gap-3 px-4 py-3">
-            <IconChip icon={Calendar} size={30} />
-            <span className="text-body">Дата</span>
-            <Segmented className="ml-auto w-[190px]" size="sm" value={s.dateStyle} onChange={(dateStyle) => update({ dateStyle })} options={[{ value: "short", label: "21 окт" }, { value: "numeric", label: "21.10.26" }]} />
-          </div>
-          <div className="flex items-center gap-3 px-4 py-3">
-            <IconChip icon={Hash} size={30} />
-            <span className="text-body">Числа</span>
-            <Segmented className="ml-auto w-[190px]" size="sm" value={s.numberFormat} onChange={(numberFormat) => update({ numberFormat })} options={[{ value: "ru", label: "1 234,5" }, { value: "en", label: "1,234.5" }]} />
-          </div>
-          <div className="flex items-center gap-3 px-4 py-3">
-            <IconChip icon={Palette} size={30} />
-            <span className="text-body">Копейки</span>
-            <Segmented className="ml-auto w-[190px]" size="sm" value={s.kopecks} onChange={(kopecks) => update({ kopecks })} options={[{ value: "auto", label: "Авто" }, { value: "always", label: "Всегда" }, { value: "never", label: "Нет" }]} />
-          </div>
+          <SwitchRow icon={Calendar} label="Дата" width="sm" value={s.dateStyle} onChange={(dateStyle) => update({ dateStyle })} options={[{ value: "short", label: "21 окт" }, { value: "numeric", label: "21.10.26" }]} />
+          <SwitchRow icon={Hash} label="Числа" width="sm" value={s.numberFormat} onChange={(numberFormat) => update({ numberFormat })} options={[{ value: "ru", label: "1 234,5" }, { value: "en", label: "1,234.5" }]} />
+          <SwitchRow icon={Palette} label="Копейки" width="sm" value={s.kopecks} onChange={(kopecks) => update({ kopecks })} options={[{ value: "auto", label: "Авто" }, { value: "always", label: "Всегда" }, { value: "never", label: "Нет" }]} />
         </Group>
 
         <Group header="Приватность" footer="Скрытые суммы заменяются точками на картах, в капитале и целях. Коснитесь «глаза» на карте, чтобы переключить.">
