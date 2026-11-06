@@ -252,3 +252,36 @@ test("калькулятор в сумме: 1200 + 350 записывается 
   await page.getByRole("tab", { name: "Операции" }).click();
   await expect(page.locator("section").filter({ hasText: "Сегодня" }).first()).toContainText("1 550");
 });
+
+/* ---------------- speed without losing data ---------------- */
+
+test("изменения подряд и сразу перезапуск: ничего не теряется", async ({ page }) => {
+  await startDemo(page);
+  await page.getByRole("tab", { name: "Дела" }).click();
+  await page.getByRole("button", { name: "Начать" }).click();
+  // two changes well within the saving interval, then an immediate reload
+  await page.getByRole("checkbox", { name: "Сделано: Позвонить маме" }).click();
+  await page.getByRole("checkbox", { name: "Сделано: Записаться к стоматологу" }).click();
+  await page.reload();
+  await page.getByRole("tab", { name: "Дела" }).click();
+  await expect(page.getByRole("checkbox", { name: "Вернуть: Позвонить маме" })).toBeVisible();
+  await expect(page.getByRole("checkbox", { name: "Вернуть: Записаться к стоматологу" })).toBeVisible();
+});
+
+test("скрытый экран догоняет изменения, сделанные на другой вкладке", async ({ page }) => {
+  await startDemo(page);
+  // the tab on view is the one layer not hidden from assistive tech
+  const onView = page.locator('.app-canvas > [aria-hidden="false"]');
+  await page.getByRole("tab", { name: "Операции" }).click();
+  await expect(onView).toContainText("Всё время");
+  await expect(onView).not.toContainText("4 321");
+  // the list stays alive but out of sight while a new expense is added on the home tab
+  await page.getByRole("tab", { name: "Главная" }).click();
+  await page.getByRole("button", { name: "Расход", exact: true }).click();
+  await page.keyboard.type("4321");
+  await page.getByRole("dialog").locator('button[aria-pressed="false"]', { hasText: /^Продукты$/ }).click();
+  await page.getByRole("button", { name: /Добавить расход/ }).click();
+  await expect(page.getByText("Расход добавлен")).toBeVisible();
+  await page.getByRole("tab", { name: "Операции" }).click();
+  await expect(onView).toContainText("4 321");
+});

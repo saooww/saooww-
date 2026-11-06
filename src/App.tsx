@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { MotionConfig, motion } from "framer-motion";
 import { setDateStyle, todayKey } from "./lib/dates";
 import { setHapticsEnabled } from "./lib/haptics";
@@ -182,7 +182,8 @@ function Main({ formatKey }: { formatKey: string }) {
   );
 }
 
-function TabLayer({ tab, active }: { tab: Tab; active: boolean }) {
+/** Memoised: switching tabs touches only the two tabs involved, not every tab kept alive. */
+const TabLayer = memo(function TabLayer({ tab, active }: { tab: Tab; active: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = ref.current;
@@ -203,4 +204,4 @@ function TabLayer({ tab, active }: { tab: Tab; active: boolean }) {
       <StackView tab={tab} active={active} />
     </motion.div>
   );
-}
+});

@@ -24,19 +24,6 @@ export function PlannerScreen() {
   const view = useUI((s) => s.plannerView);
   const setView = useUI((s) => s.setPlannerView);
   const today = useToday();
-  const { active } = useRoute();
-  const introSeen = useData((s) => s.settings.plannerIntroSeen);
-  const asked = useRef(false);
-
-  useEffect(() => {
-    if (!active || introSeen || asked.current) return;
-    asked.current = true;
-    const t = window.setTimeout(() => {
-      const ui = useUI.getState();
-      if (!ui.locked && !ui.onboarding && ui.tab === "planner") nav.sheet("plannerIntro", {});
-    }, 450);
-    return () => window.clearTimeout(t);
-  }, [active, introSeen]);
 
   const add = () => {
     if (view === "notes") createNote();
@@ -45,6 +32,7 @@ export function PlannerScreen() {
 
   return (
     <div className="absolute inset-0">
+      <IntroOnFirstVisit />
       <Screen title="Дела" large actions={<IconButton icon={Search} label="Поиск" onClick={() => nav.sheet("search")} />}>
         <div className="px-4 pb-5">
           <Segmented value={view} onChange={setView} options={VIEWS} />
@@ -68,4 +56,26 @@ export function PlannerScreen() {
       </motion.button>
     </div>
   );
+}
+
+/**
+ * Opens the introduction the first time the tab is shown. Kept apart from
+ * the screen: it re-renders whenever the tab is switched, the lists don't.
+ */
+function IntroOnFirstVisit() {
+  const { active } = useRoute();
+  const introSeen = useData((s) => s.settings.plannerIntroSeen);
+  const asked = useRef(false);
+
+  useEffect(() => {
+    if (!active || introSeen || asked.current) return;
+    asked.current = true;
+    const t = window.setTimeout(() => {
+      const ui = useUI.getState();
+      if (!ui.locked && !ui.onboarding && ui.tab === "planner") nav.sheet("plannerIntro", {});
+    }, 450);
+    return () => window.clearTimeout(t);
+  }, [active, introSeen]);
+
+  return null;
 }

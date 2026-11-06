@@ -739,7 +739,15 @@ function effectOf(tx: Transaction): Minor {
 /** Расход · Доход · Перевод — the pill slides and takes the colour of the kind. */
 function KindSwitch({ value, onChange }: { value: FlowKind; onChange: (k: FlowKind) => void }) {
   return (
-    <div role="tablist" aria-label="Тип операции" className="relative flex flex-1 rounded-full p-1" style={{ background: "color-mix(in srgb, var(--ink) 6%, transparent)", boxShadow: "inset 0 0 0 0.5px var(--line)" }}>
+    <div role="tablist" aria-label="Тип операции" className="relative flex min-w-0 flex-1 rounded-full p-1" style={{ background: "color-mix(in srgb, var(--ink) 6%, transparent)", boxShadow: "inset 0 0 0 0.5px var(--line)" }}>
+      <motion.span
+        aria-hidden="true"
+        className={cn("pointer-events-none absolute inset-y-1 left-1 rounded-full", KIND_META[value].fill)}
+        style={{ width: "calc((100% - 8px) / 3)", boxShadow: KIND_META[value].shadow }}
+        initial={false}
+        animate={{ x: `${KIND_ORDER.indexOf(value) * 100}%` }}
+        transition={spring.snappy}
+      />
       {KIND_ORDER.map((k) => {
         const m = KIND_META[k];
         const on = k === value;
@@ -756,7 +764,6 @@ function KindSwitch({ value, onChange }: { value: FlowKind; onChange: (k: FlowKi
             }}
             className="relative flex h-9 flex-1 items-center justify-center gap-1 rounded-full text-subhead font-semibold"
           >
-            {on && <motion.span layoutId="composer-kind" className={cn("absolute inset-0 rounded-full", m.fill)} style={{ boxShadow: m.shadow }} transition={spring.snappy} />}
             <m.icon size={15} strokeWidth={2.4} className={cn("relative transition-colors duration-200", on ? m.on : "text-ink-3")} />
             <span className={cn("relative transition-colors duration-200", on ? m.on : "text-ink-2")}>{m.label}</span>
           </button>

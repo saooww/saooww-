@@ -208,9 +208,23 @@ export function Segmented<T extends string>({
   size?: "md" | "sm";
   className?: string;
 }) {
-  const id = useId();
+  const index = options.findIndex((o) => o.value === value);
   return (
     <div role="tablist" className={cn("relative flex rounded-[12px] p-[3px]", className)} style={{ background: "color-mix(in srgb, var(--ink) 6%, transparent)", boxShadow: "inset 0 0 0 0.5px var(--line)" }}>
+      {index >= 0 && (
+        <motion.span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-[3px] left-[3px] rounded-[9px]"
+          style={{
+            width: `calc((100% - 6px) / ${options.length})`,
+            background: "linear-gradient(180deg, var(--panel-highlight), transparent 70%), var(--seg-thumb)",
+            boxShadow: "inset 0 0 0 0.5px var(--line-strong), 0 2px 6px -1px rgba(0,0,0,0.28)"
+          }}
+          initial={false}
+          animate={{ x: `${index * 100}%` }}
+          transition={spring.snappy}
+        />
+      )}
       {options.map((o) => {
         const active = o.value === value;
         return (
@@ -229,17 +243,6 @@ export function Segmented<T extends string>({
               active ? "text-ink" : "text-ink-2"
             )}
           >
-            {active && (
-              <motion.span
-                layoutId={`seg-${id}`}
-                className="absolute inset-0 rounded-[9px]"
-                style={{
-                  background: "linear-gradient(180deg, var(--panel-highlight), transparent 70%), var(--seg-thumb)",
-                  boxShadow: "inset 0 0 0 0.5px var(--line-strong), 0 2px 6px -1px rgba(0,0,0,0.28)"
-                }}
-                transition={spring.snappy}
-              />
-            )}
             <span className="relative z-[1]">{o.label}</span>
           </button>
         );

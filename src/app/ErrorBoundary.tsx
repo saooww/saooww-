@@ -1,11 +1,12 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import { nowISO } from "../lib/dates";
 import { saveBackupFile } from "../lib/backupFile";
-import { kvGet } from "../store/storage";
+import { flushPersist, kvGet } from "../store/storage";
 import { STORAGE_KEY } from "../store/store";
 
 /** What is in storage right now, as a backup file the app can import. */
 async function storedBackup(): Promise<string | null> {
+  await flushPersist();
   const raw = await kvGet(STORAGE_KEY);
   if (!raw) return null;
   try {
