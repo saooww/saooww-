@@ -419,14 +419,11 @@ export function IconChip({
   tone?: "accent" | "positive" | "warning" | "negative";
   color?: string;
 }) {
-  const toneCls = tone ? { accent: "bg-accent-soft text-accent-ink", positive: "bg-positive-soft text-positive", warning: "bg-warning-soft text-warning", negative: "bg-negative-soft text-negative" }[tone] : color ? "" : "tile text-ink";
+  // A colour (a category's, a list's) tints only the icon: the tile stays neutral, so long lists read calm.
+  const toneCls = tone ? { accent: "bg-accent-soft text-accent-ink", positive: "bg-positive-soft text-positive", warning: "bg-warning-soft text-warning", negative: "bg-negative-soft text-negative" }[tone] : "tile text-ink";
   const iconSize = Math.round(size * 0.48);
   const style: CSSProperties = { width: size, height: size, borderRadius: Math.round(size * 0.34) };
-  if (color && !tone) {
-    style.color = color;
-    style.background = `linear-gradient(180deg, color-mix(in srgb, ${color} 22%, transparent), color-mix(in srgb, ${color} 11%, transparent))`;
-    style.boxShadow = `inset 0 0 0 0.5px color-mix(in srgb, ${color} 22%, transparent)`;
-  }
+  if (color && !tone) style.color = `color-mix(in srgb, ${color} var(--icon-mix), black)`;
   return (
     <span className={cn("inline-grid shrink-0 place-items-center", toneCls, className)} style={style}>
       {Icon ? <Icon size={iconSize} strokeWidth={1.9} /> : <NamedIcon name={name} size={iconSize} strokeWidth={1.9} />}

@@ -22,7 +22,7 @@ export function WalletSheet({ editId }: { editId?: ID }) {
   const [name, setName] = useState(existing?.name ?? "");
   const [kind, setKind] = useState<WalletKind>(existing?.kind ?? "card");
   const [currency, setCurrency] = useState(existing?.currency ?? base);
-  const [style, setStyle] = useState<CardStyle>(existing?.style ?? (CARD_MATERIALS[count % CARD_MATERIALS.length].id as CardStyle));
+  const [style, setStyle] = useState<CardStyle>(existing ? materialOf(existing.style).id : CARD_MATERIALS[count % CARD_MATERIALS.length].id);
   const [ident, setIdent] = useState(existing?.ident ?? "");
   const [balance, setBalance] = useState(existing ? amountToInput(balances[existing.id] ?? 0).replace(",", ".") : "");
   const [include, setInclude] = useState(existing?.includeInTotal ?? true);
@@ -69,7 +69,7 @@ export function WalletSheet({ editId }: { editId?: ID }) {
           />
         </div>
 
-        <div className="grid grid-cols-8 gap-3 px-5 py-1">
+        <div className="grid grid-cols-6 gap-4 px-6 py-1">
           {CARD_MATERIALS.map((m) => (
             <button
               key={m.id}

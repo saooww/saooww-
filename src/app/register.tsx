@@ -4,7 +4,7 @@ import { ConfirmSheet } from "../sheets/ConfirmSheet";
 import { PickerSheet } from "../sheets/PickerSheet";
 import { CategorySheet } from "../sheets/CategorySheet";
 import { RangeSheet } from "../sheets/RangeSheet";
-import { HomeScreen } from "../features/home/HomeScreen";
+import { HomeLayoutSheet, HomeScreen } from "../features/home/HomeScreen";
 import { ComposerSheet } from "../features/transactions/Composer";
 import { TxDetailSheet } from "../features/transactions/TxDetailSheet";
 import { TransactionsScreen } from "../features/transactions/TransactionsScreen";
@@ -88,5 +88,6 @@ registerSheets({
   linkPicker: LinkPickerSheet,
   search: SearchSheet,
   backupText: BackupTextSheet,
-  pin: PinSheet
+  pin: PinSheet,
+  homeLayout: HomeLayoutSheet
 });

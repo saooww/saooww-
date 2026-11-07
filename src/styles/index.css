@@ -122,6 +122,8 @@
   /* faint text still reads at ≥ 4.5:1 on panels; sheets and tiles take the raised step */
   --ink-3: #8a8783;
   --ink-3-raised: #96938f;
+  /* coloured icons on neutral tiles: as is on dark, deepened on light paper */
+  --icon-mix: 100%;
   --ink-4: #3d3b39;
   --ink-inverse: #0b0a09;
   /* the logo's own red — never follows the chosen accent */
@@ -184,6 +186,7 @@
   /* faint text still reads at ≥ 4.5:1 on the page and panels; sheets and tiles take the raised step */
   --ink-3: #706c66;
   --ink-3-raised: #6a6660;
+  --icon-mix: 72%;
   --ink-4: #d3cec6;
   --ink-inverse: #ffffff;
   --brand: #f00515;

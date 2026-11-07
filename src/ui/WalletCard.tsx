@@ -1,4 +1,4 @@
-import { memo, useId, type ReactNode } from "react";
+import { memo, type ReactNode } from "react";
 import { motion, useMotionValue, useTransform, type MotionValue } from "framer-motion";
 import { Eye, EyeOff, type LucideIcon } from "lucide-react";
 import { cn } from "../lib/cn";
@@ -6,6 +6,7 @@ import { moneyParts, type Minor } from "../lib/money";
 import type { CardMaterial } from "../store/catalog";
 import { useData } from "../store/store";
 import { BrandMark } from "./Brand";
+import { MARK } from "./brandPaths";
 import { INTRO_SHIFT } from "./intro";
 import { displayGroups, useCountMotion } from "./Money";
 import { numberFontScale } from "./numFont";
@@ -46,34 +47,20 @@ function amountSize(text: string): number {
 }
 
 /**
- * Shippō — interlocking circles, a traditional Japanese pattern for
- * prosperity. Drawn as hairlines and faded in from the lower-right corner.
+ * The Ardessa sail as a watermark: one large mark cropped by the card's
+ * lower-right edge, with two hairline echoes around it, like wind lines.
  */
-const Shippo = memo(function Shippo({ color }: { color: string }) {
-  const id = useId().replace(/:/g, "");
-  const r = 13;
+const Sail = memo(function Sail({ color }: { color: string }) {
   return (
-    <svg className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true">
-      <defs>
-        <pattern id={`p${id}`} width={r * 2} height={r * 2} patternUnits="userSpaceOnUse">
-          <g fill="none" stroke={color} strokeWidth="0.6">
-            <circle cx={0} cy={0} r={r} />
-            <circle cx={r * 2} cy={0} r={r} />
-            <circle cx={0} cy={r * 2} r={r} />
-            <circle cx={r * 2} cy={r * 2} r={r} />
-            <circle cx={r} cy={r} r={r} />
-          </g>
-        </pattern>
-        <radialGradient id={`g${id}`} cx="100%" cy="100%" r="95%">
-          <stop offset="0%" stopColor="#fff" stopOpacity="1" />
-          <stop offset="45%" stopColor="#fff" stopOpacity="0.45" />
-          <stop offset="100%" stopColor="#fff" stopOpacity="0" />
-        </radialGradient>
-        <mask id={`m${id}`}>
-          <rect width="100%" height="100%" fill={`url(#g${id})`} />
-        </mask>
-      </defs>
-      <rect width="100%" height="100%" fill={`url(#p${id})`} mask={`url(#m${id})`} />
+    <svg
+      className="pointer-events-none absolute -bottom-[16%] right-[-4%] h-[122%] overflow-visible"
+      viewBox={`0 0 ${MARK.w} ${MARK.h}`}
+      aria-hidden="true"
+    >
+      <path d={MARK.d} fill={color} />
+      {[1.14, 1.3].map((k) => (
+        <path key={k} d={MARK.d} fill="none" stroke={color} strokeWidth={0.6} vectorEffect="non-scaling-stroke" transform={`translate(0 ${MARK.h}) scale(${k}) translate(0 ${-MARK.h})`} />
+      ))}
     </svg>
   );
 });
@@ -224,7 +211,7 @@ export const WalletCard = memo(function WalletCard({
         ].join(", ")
       }}
     >
-      <Shippo color={material.line} />
+      <Sail color={material.line} />
 
       {/* moving light */}
       <motion.div

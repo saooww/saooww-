@@ -21,6 +21,7 @@ import { parseImport } from "../src/store/store";
 import { applyCalcKey, evaluate, formatExpression } from "../src/lib/calc";
 import { SAVE_EVERY, flushPersist } from "../src/store/storage";
 import { STORAGE_KEY } from "../src/store/store";
+import { CARD_MATERIALS, materialOf } from "../src/store/catalog";
 
 let passed = 0;
 function test(name: string, fn: () => void) {
@@ -405,6 +406,18 @@ test("старая резервная копия без списков откр�
   const restored = parseImport(JSON.stringify({ app: "kapital", version: 2, data: old }));
   assert.deepEqual(restored.projects, []);
   assert.equal(restored.tasks.length, st().tasks.length);
+});
+
+test("цвета карт: прежние показываются ближайшим фирменным, новые — как есть", () => {
+  assert.deepEqual(CARD_MATERIALS.map((m) => m.id), ["ardessa", "obsidian", "graphite", "titanium", "bordeaux", "ivory"]);
+  assert.equal(materialOf("ember").id, "ardessa");
+  assert.equal(materialOf("sand").id, "titanium");
+  assert.equal(materialOf("midnight").id, "obsidian");
+  assert.equal(materialOf("forest").id, "graphite");
+  assert.equal(materialOf("plum").id, "bordeaux");
+  for (const m of CARD_MATERIALS) assert.equal(materialOf(m.id), m);
+  // the demo uses only current colours
+  for (const w of createDemoData().wallets) assert.ok(CARD_MATERIALS.some((m) => m.id === w.style), w.style);
 });
 
 test("калькулятор суммы: порядок действий, копейки, ввод с клавиатуры", () => {

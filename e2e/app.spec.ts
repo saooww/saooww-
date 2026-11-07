@@ -286,6 +286,21 @@ test("скрытый экран догоняет изменения, сдела�
   await expect(onView).toContainText("4 321");
 });
 
+/* ---------------- home layout ---------------- */
+
+test("скрытый блок главной остаётся скрытым после перезапуска", async ({ page }) => {
+  await startDemo(page);
+  const onView = page.locator('.app-canvas > [aria-hidden="false"]');
+  await expect(onView.getByText("Последние операции")).toBeVisible();
+  await onView.getByRole("button", { name: "Настроить главную" }).click();
+  await page.getByRole("dialog").getByRole("switch", { name: "Последние операции" }).click();
+  await page.keyboard.press("Escape");
+  await expect(onView.getByText("Последние операции")).toHaveCount(0);
+  await page.reload();
+  await expect(page.getByRole("button", { name: SAFE_CARD })).toBeVisible();
+  await expect(onView.getByText("Последние операции")).toHaveCount(0);
+});
+
 /* ---------------- small phones and large text ---------------- */
 
 test.describe("маленький экран", () => {

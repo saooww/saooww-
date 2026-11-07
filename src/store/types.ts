@@ -8,7 +8,11 @@ export type ID = string;
 /* ------------------------------------------------------------------ */
 
 export type WalletKind = "card" | "cash" | "savings" | "bank" | "investment" | "other";
-export type CardStyle = "graphite" | "ember" | "titanium" | "midnight" | "forest" | "plum" | "sand" | "ivory";
+/** Blocks of the home screen that can be hidden. */
+export type HomeBlock = "safe" | "today" | "feed" | "recent" | "goal";
+
+/** Current card colours, then retired ones still found in older data (shown as their nearest current colour). */
+export type CardStyle = "ardessa" | "obsidian" | "graphite" | "titanium" | "bordeaux" | "ivory" | "ember" | "midnight" | "forest" | "plum" | "sand";
 
 export interface Wallet {
   id: ID;
@@ -279,6 +283,10 @@ export interface Settings {
   textSize: "m" | "l" | "xl";
   /** Month (YYYY-MM) whose summary story was already shown */
   storySeen?: string;
+  /** Home blocks the user chose to hide */
+  homeHidden?: HomeBlock[];
+  /** Home hints dismissed with ×, by id (newest last, a few kept) */
+  dismissedHints?: string[];
   /** Planner: the day the morning plan was made */
   dayPlannedOn?: DayKey;
   /** Planner: the day the evening review was done */

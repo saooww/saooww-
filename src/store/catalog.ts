@@ -113,89 +113,79 @@ function lit(from: string, mid: string, to: string, spec: number): string {
   ].join(", ");
 }
 
+/** Card colours in the Ardessa palette: the brand red, blacks and greys, a deep wine, paper white. */
 export const CARD_MATERIALS: CardMaterial[] = [
+  {
+    id: "ardessa",
+    name: "Ardessa",
+    background: lit("#ff3b46", "#df0714", "#5e0206", 0.24),
+    ink: "#FFF7F6",
+    inkMuted: "rgba(255,247,246,0.72)",
+    line: "rgba(255,255,255,0.14)",
+    swatch: "#df0714",
+    glow: "rgba(250,7,23,0.42)"
+  },
+  {
+    id: "obsidian",
+    name: "Обсидиан",
+    background: lit("#1d1d20", "#0d0d0f", "#020203", 0.1),
+    ink: "#F6F5F3",
+    inkMuted: "rgba(246,245,243,0.56)",
+    line: "rgba(250,7,23,0.22)",
+    swatch: "#0f0f11",
+    glow: "rgba(250,7,23,0.16)"
+  },
   {
     id: "graphite",
     name: "Графит",
-    background: lit("#313136", "#1c1c1f", "#0c0c0e", 0.13),
+    background: lit("#3a3a40", "#232327", "#111113", 0.13),
     ink: "#F6F5F3",
-    inkMuted: "rgba(246,245,243,0.56)",
-    line: "rgba(255,255,255,0.075)",
-    swatch: "#26262a",
+    inkMuted: "rgba(246,245,243,0.58)",
+    line: "rgba(255,255,255,0.085)",
+    swatch: "#2a2a2f",
     glow: "rgba(160,160,175,0.20)"
-  },
-  {
-    id: "ember",
-    name: "Киноварь",
-    background: lit("#ff7a48", "#e3481d", "#7d1f08", 0.3),
-    ink: "#FFF8F4",
-    inkMuted: "rgba(255,248,244,0.7)",
-    line: "rgba(255,255,255,0.12)",
-    swatch: "#e04d22",
-    glow: "rgba(244,83,43,0.45)"
   },
   {
     id: "titanium",
     name: "Титан",
     background: lit("#a19d96", "#6a6762", "#33322e", 0.3),
     ink: "#FCFBF9",
-    inkMuted: "rgba(252,251,249,0.68)",
-    line: "rgba(255,255,255,0.1)",
+    inkMuted: "rgba(252,251,249,0.7)",
+    line: "rgba(255,255,255,0.12)",
     swatch: "#76736e",
     glow: "rgba(205,198,188,0.22)"
   },
   {
-    id: "midnight",
-    name: "Полночь",
-    background: lit("#2a3a72", "#17214c", "#090d22", 0.2),
-    ink: "#F3F5FF",
-    inkMuted: "rgba(243,245,255,0.62)",
-    line: "rgba(255,255,255,0.085)",
-    swatch: "#1d2a50",
-    glow: "rgba(80,110,235,0.36)"
-  },
-  {
-    id: "forest",
-    name: "Мох",
-    background: lit("#2b5a4a", "#183c31", "#0a1b16", 0.18),
-    ink: "#F2FAF6",
-    inkMuted: "rgba(242,250,246,0.62)",
-    line: "rgba(255,255,255,0.085)",
-    swatch: "#1f4035",
-    glow: "rgba(60,200,150,0.28)"
-  },
-  {
-    id: "plum",
-    name: "Слива",
-    background: lit("#603468", "#361c3e", "#170a1b", 0.18),
-    ink: "#FBF3FC",
-    inkMuted: "rgba(251,243,252,0.62)",
-    line: "rgba(255,255,255,0.085)",
-    swatch: "#432647",
-    glow: "rgba(195,95,210,0.30)"
-  },
-  {
-    id: "sand",
-    name: "Песок",
-    background: lit("#dcc097", "#ad8d62", "#6a5131", 0.32),
-    ink: "#FFFBF5",
-    inkMuted: "rgba(255,251,245,0.76)",
-    line: "rgba(255,255,255,0.13)",
-    swatch: "#b8986d",
-    glow: "rgba(215,170,110,0.32)"
+    id: "bordeaux",
+    name: "Бордо",
+    background: lit("#86202b", "#4f0d15", "#1c0306", 0.18),
+    ink: "#FFF5F5",
+    inkMuted: "rgba(255,245,245,0.64)",
+    line: "rgba(255,255,255,0.1)",
+    swatch: "#5c111a",
+    glow: "rgba(170,25,45,0.34)"
   },
   {
     id: "ivory",
-    name: "Рисовая бумага",
-    background: lit("#f8f6f0", "#e9e4d9", "#d3ccbe", 0.9),
+    name: "Белая",
+    background: lit("#fbfaf6", "#ece8df", "#d6d0c4", 0.9),
     ink: "#16140F",
-    inkMuted: "rgba(22,20,15,0.55)",
-    line: "rgba(0,0,0,0.07)",
-    swatch: "#ece7dc",
+    inkMuted: "rgba(22,20,15,0.58)",
+    line: "rgba(250,7,23,0.09)",
+    swatch: "#ece8df",
     glow: "rgba(255,244,220,0.22)",
     light: true
   }
 ];
+
+/** Retired colours from earlier versions, shown as their nearest current one. */
+const RETIRED: Partial<Record<CardStyle, CardStyle>> = {
+  ember: "ardessa",
+  sand: "titanium",
+  midnight: "obsidian",
+  forest: "graphite",
+  plum: "bordeaux"
+};
 
 /** The overview card: sumi black with a low vermilion sun. */
 export const TOTAL_MATERIAL: CardMaterial = {
@@ -215,5 +205,6 @@ export const TOTAL_MATERIAL: CardMaterial = {
 };
 
 export function materialOf(style: CardStyle): CardMaterial {
-  return CARD_MATERIALS.find((m) => m.id === style) ?? CARD_MATERIALS[0];
+  const id = RETIRED[style] ?? style;
+  return CARD_MATERIALS.find((m) => m.id === id) ?? CARD_MATERIALS[0];
 }
