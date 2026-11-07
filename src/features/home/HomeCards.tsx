@@ -1,17 +1,18 @@
 import { useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronRight, Share, Sparkles, X } from "lucide-react";
+import { ChevronRight, Share, Sparkles, X, type LucideIcon } from "lucide-react";
 import { addDays, addMonths, diffDays, parseDay, startOfMonth } from "../../lib/dates";
 import { isEmbedded, saveBackupFile } from "../../lib/backupFile";
 import { haptic } from "../../lib/haptics";
 import { safeToSpend } from "../../lib/safeToSpend";
+import { homeInsight } from "../../lib/insights";
 import { hasStory, monthKey, monthSummary } from "../../lib/story";
 import { useAppData, useBalances, useCategoryMap, useLedger, useToday } from "../../store/hooks";
 import { useData } from "../../store/store";
 import { nav } from "../../store/ui";
 import { AnimatedMoney, Money } from "../../ui/Money";
 import { spring } from "../../ui/motion";
-import { IconChip, ProgressBar } from "../../ui/primitives";
+import { IconChip, ProgressBar, SectionHeader } from "../../ui/primitives";
 
 /** «Можно потратить сегодня» — one honest number for the day. */
 export function SafeToSpendCard() {
@@ -62,15 +63,32 @@ export function SafeToSpendCard() {
   );
 }
 
+type FeedItem = {
+  id: string;
+  icon: LucideIcon | string;
+  tone?: "accent" | "positive" | "warning" | "negative";
+  title: string;
+  subtitle?: string;
+  onOpen?: () => void;
+  /** A button of its own, e.g. «Сохранить» */
+  action?: { label: string; run: () => void };
+  /** × — hide it; the hint knows for how long */
+  onDismiss: () => void;
+  dismissLabel?: string;
+};
+
 /**
- * At most one gentle reminder: the monthly story in the first days of a
- * month, otherwise a nudge to save a copy outside the phone once a week.
+ * «Важное» — the reminders and the one useful hint of the day in a single
+ * short list instead of separate cards: the month's story in its first
+ * days, a nudge to save a copy outside the phone, a budget, debt or
+ * payment worth knowing about. Each line can be hidden with ×.
  */
-export function HomeReminder() {
+export function HomeFeed() {
   const settings = useData((s) => s.settings);
   const meta = useData((s) => s.meta);
   const txCount = useData((s) => s.transactions.length);
   const update = useData((s) => s.updateSettings);
+  const data = useAppData();
   const { entries } = useLedger();
   const categories = useCategoryMap();
   const today = useToday();
@@ -89,65 +107,80 @@ export function HomeReminder() {
     return diffDays(today, settings.lastExternalBackup.slice(0, 10)) >= 7;
   }, [meta, txCount, settings.backupSnoozeUntil, settings.lastExternalBackup, today]);
 
-  const kind = story ? "story" : backupDue ? "backup" : null;
+  const insight = useMemo(() => homeInsight(data, entries, today), [data, entries, today]);
+  const dismissed = settings.dismissedHints ?? [];
+
+  const items: FeedItem[] = [];
+  if (story) {
+    items.push({
+      id: "story",
+      icon: Sparkles,
+      tone: "accent",
+      title: `Итоги ${story.nameGen} готовы`,
+      subtitle: "Куда ушли деньги и что получилось сберечь",
+      onOpen: () => {
+        haptic();
+        update({ storySeen: monthKey(prevMonth) });
+        nav.story(prevMonth);
+      },
+      onDismiss: () => update({ storySeen: monthKey(prevMonth) })
+    });
+  }
+  if (backupDue) {
+    items.push({
+      id: "backup",
+      icon: Share,
+      tone: "accent",
+      title: "Сохраните копию данных",
+      subtitle: settings.lastExternalBackup ? `Последняя — ${diffDays(today, settings.lastExternalBackup.slice(0, 10))} дн. назад` : "В Файлы или iCloud — на случай потери телефона",
+      action: {
+        label: "Сохранить",
+        run: async () => {
+          const r = await saveBackupFile();
+          if (r === "shared" || r === "downloaded") {
+            haptic("success");
+            nav.toast("Копия сохранена", { tone: "positive" });
+          } else if (r === "failed") nav.toast("Не получилось — попробуйте в «Настройки → Данные»", { tone: "warning" });
+        }
+      },
+      onDismiss: () => update({ backupSnoozeUntil: addDays(today, 3) }),
+      dismissLabel: "Напомнить через 3 дня"
+    });
+  }
+  // a hint hidden with × stays hidden for today; the same situation can come back tomorrow
+  const hintKey = insight ? `${today}:${insight.id}` : "";
+  if (insight && !dismissed.includes(hintKey)) {
+    items.push({
+      id: insight.id,
+      icon: insight.icon,
+      tone: insight.tone === "neutral" ? undefined : insight.tone,
+      title: insight.text,
+      onOpen: insight.action
+        ? () => {
+            const { tab, route, params } = insight.action!;
+            if (route) nav.push(route, params);
+            else nav.tab(tab);
+          }
+        : undefined,
+      onDismiss: () => update({ dismissedHints: [...dismissed.filter((k) => k.startsWith(today)), hintKey].slice(-8) }),
+      dismissLabel: "Скрыть на сегодня"
+    });
+  }
 
   return (
     <AnimatePresence initial={false}>
-      {kind === "story" && story && (
-        <motion.div key="story" className="mx-5 mt-3" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3 }}>
-          <div
-            className="relative overflow-hidden rounded-[20px] text-white"
-            style={{ background: "radial-gradient(90% 120% at 100% 100%, color-mix(in srgb, var(--accent) 70%, transparent), transparent 70%), linear-gradient(160deg, #26262b, #0b0b0d)", boxShadow: "inset 0 0.5px 0 rgba(255,255,255,0.12)" }}
-          >
-            <button
-              type="button"
-              className="flex w-full items-center gap-3 px-4 py-4 text-left"
-              onClick={() => {
-                haptic();
-                update({ storySeen: monthKey(prevMonth) });
-                nav.story(prevMonth);
-              }}
-            >
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[13px] bg-white/15">
-                <Sparkles size={19} strokeWidth={1.9} />
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block text-callout font-semibold">Итоги {story.nameGen} готовы</span>
-                <span className="block text-footnote text-white/70">Куда ушли деньги и что получилось сберечь</span>
-              </span>
-            </button>
-            <button type="button" aria-label="Скрыть" onClick={() => update({ storySeen: monthKey(prevMonth) })} className="absolute right-2 top-2 grid h-8 w-8 place-items-center rounded-full text-white/60 active:bg-white/10">
-              <X size={16} />
-            </button>
-          </div>
-        </motion.div>
-      )}
-      {kind === "backup" && (
-        <motion.div key="backup" className="mx-5 mt-3" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3 }}>
-          <div className="panel flex items-center gap-3 rounded-[18px] py-3 pl-3 pr-2">
-            <IconChip icon={Share} tone="accent" size={34} />
-            <div className="min-w-0 flex-1">
-              <div className="text-subhead font-semibold text-ink">Сохраните копию данных</div>
-              <div className="truncate text-caption text-ink-2">
-                {settings.lastExternalBackup ? `Последняя — ${diffDays(today, settings.lastExternalBackup.slice(0, 10))} дн. назад` : "В Файлы или iCloud — на случай потери телефона"}
-              </div>
-            </div>
-            <button type="button" onClick={() => update({ backupSnoozeUntil: addDays(today, 3) })} className="h-9 px-2 text-footnote font-medium text-ink-3 active:opacity-60">
-              Позже
-            </button>
-            <button
-              type="button"
-              onClick={async () => {
-                const r = await saveBackupFile();
-                if (r === "shared" || r === "downloaded") {
-                  haptic("success");
-                  nav.toast("Копия сохранена", { tone: "positive" });
-                } else if (r === "failed") nav.toast("Не получилось — попробуйте в «Настройки → Данные»", { tone: "warning" });
-              }}
-              className="tile h-9 rounded-full px-3.5 text-footnote font-semibold text-ink"
-            >
-              Сохранить
-            </button>
+      {items.length > 0 && (
+        <motion.div key="feed" className="mt-8" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3 }}>
+          <SectionHeader title="Важное" />
+          <div className="panel mx-4 overflow-hidden rounded-lg">
+            <AnimatePresence initial={false}>
+              {items.map((it, i) => (
+                <motion.div key={it.id} layout="position" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.25 }}>
+                  {i > 0 && <div className="ml-[62px] h-px bg-line" />}
+                  <FeedRow item={it} />
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
         </motion.div>
       )}
@@ -155,3 +188,35 @@ export function HomeReminder() {
   );
 }
 
+function FeedRow({ item }: { item: FeedItem }) {
+  const Icon = typeof item.icon === "string" ? undefined : item.icon;
+  const body = (
+    <>
+      <IconChip icon={Icon} name={typeof item.icon === "string" ? item.icon : undefined} tone={item.tone} size={34} />
+      <span className="min-w-0 flex-1">
+        <span className="block text-subhead font-medium leading-[19px] text-ink">{item.title}</span>
+        {item.subtitle && <span className="mt-0.5 block text-caption text-ink-2">{item.subtitle}</span>}
+      </span>
+    </>
+  );
+  return (
+    <div className="flex items-center gap-1 py-1 pl-4 pr-1.5">
+      {item.onOpen ? (
+        <button type="button" onClick={item.onOpen} className="flex min-w-0 flex-1 items-center gap-3 py-2 text-left active:opacity-70">
+          {body}
+          {!item.action && <ChevronRight size={16} className="shrink-0 text-ink-3" />}
+        </button>
+      ) : (
+        <div className="flex min-w-0 flex-1 items-center gap-3 py-2">{body}</div>
+      )}
+      {item.action && (
+        <button type="button" onClick={item.action.run} className="tile ml-2 h-9 shrink-0 rounded-full px-3.5 text-footnote font-semibold text-ink">
+          {item.action.label}
+        </button>
+      )}
+      <button type="button" aria-label={item.dismissLabel ?? "Скрыть"} onClick={item.onDismiss} className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-ink-3 active:bg-surface-press">
+        <X size={16} />
+      </button>
+    </div>
+  );
+}

@@ -25,9 +25,9 @@ interface Preset {
 }
 
 const PRESETS: Preset[] = [
-  { kind: "card", name: "Карта", icon: CreditCard, style: "ember", on: true, amount: "" },
-  { kind: "cash", name: "Наличные", icon: Banknote, style: "sand", on: true, amount: "" },
-  { kind: "savings", name: "Накопления", icon: PiggyBank, style: "forest", on: false, amount: "" }
+  { kind: "card", name: "Карта", icon: CreditCard, style: "ardessa", on: true, amount: "" },
+  { kind: "cash", name: "Наличные", icon: Banknote, style: "graphite", on: true, amount: "" },
+  { kind: "savings", name: "Накопления", icon: PiggyBank, style: "titanium", on: false, amount: "" }
 ];
 
 const FEATURES: Array<{ icon: LucideIcon; text: string }> = [

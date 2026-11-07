@@ -1,13 +1,12 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowDownLeft, ArrowLeftRight, ArrowUpRight, ChevronRight, Search, type LucideIcon } from "lucide-react";
+import { ArrowDownLeft, ArrowLeftRight, ArrowUpRight, Gauge, ListChecks, ReceiptText, Search, SlidersHorizontal, Sparkles, Target, type LucideIcon } from "lucide-react";
 import { cn } from "../../lib/cn";
 import { capitalize, formatDate } from "../../lib/dates";
 import { formatMoney } from "../../lib/money";
 import { goalInfo, goalSaved } from "../../lib/finance";
 import { haptic } from "../../lib/haptics";
-import { homeInsight } from "../../lib/insights";
-import { useAppData, useBalances, useEnvelopes, useLedger, useToday } from "../../store/hooks";
+import { useBalances, useEnvelopes, useToday } from "../../store/hooks";
 import { useData } from "../../store/store";
 import { nav, useUI } from "../../store/ui";
 import { Screen } from "../../nav/Screen";
@@ -15,10 +14,12 @@ import { Wordmark } from "../../ui/Brand";
 import { Money } from "../../ui/Money";
 import { introActive, Reveal } from "../../ui/intro";
 import { spring } from "../../ui/motion";
-import { Avatar, Group, IconButton, IconChip, ProgressBar, SectionHeader } from "../../ui/primitives";
+import { Avatar, Group, IconButton, IconChip, ProgressBar, SectionHeader, Toggle } from "../../ui/primitives";
+import { Sheet } from "../../ui/Sheet";
+import type { HomeBlock } from "../../store/types";
 import { TxRow, usePresentCtx } from "../transactions/TxRow";
 import { WalletCarousel, useCardModels } from "./WalletCarousel";
-import { HomeReminder, SafeToSpendCard } from "./HomeCards";
+import { HomeFeed, SafeToSpendCard } from "./HomeCards";
 import { HomeToday } from "../planner/HomeToday";
 
 export function HomeScreen() {
@@ -73,12 +74,7 @@ export function HomeScreen() {
       </div>
 
       <Reveal intro={intro} delay={0.95} y={12}>
-        <SafeToSpendCard />
-        <HomeToday />
-        <HomeReminder />
-        <HomeInsight />
-        <RecentOperations />
-        <PrimaryGoal />
+        <HomeBlocks />
       </Reveal>
     </Screen>
   );
@@ -130,30 +126,59 @@ function ActionButton({ icon: Icon, label, tone, onClick }: { icon: LucideIcon; 
   );
 }
 
-function HomeInsight() {
-  const data = useAppData();
-  const { entries } = useLedger();
-  const today = useToday();
-  const insight = useMemo(() => homeInsight(data, entries, today), [data, entries, today]);
-  if (!insight) return null;
-  const tone = ({ neutral: undefined, positive: "positive", warning: "warning", negative: "negative" } as const)[insight.tone];
+/** The blocks under the quick actions; any of them can be hidden in «Настроить главную». */
+function HomeBlocks() {
+  const hidden = useData((s) => s.settings.homeHidden);
+  const shown = (b: HomeBlock) => !hidden?.includes(b);
   return (
-    <motion.button
-      type="button"
-      whileTap={{ scale: 0.98 }}
-      transition={spring.press}
-      onClick={() => {
-        if (!insight.action) return;
-        const { tab, route, params } = insight.action;
-        if (route) nav.push(route, params);
-        else nav.tab(tab);
-      }}
-      className="panel mx-5 mt-3 flex w-[calc(100%-40px)] items-center gap-3 rounded-[18px] py-3 pl-3 pr-3.5 text-left"
-    >
-      <IconChip name={insight.icon} tone={tone} size={34} />
-      <span className="min-w-0 flex-1 text-subhead leading-[19px] text-ink">{insight.text}</span>
-      {insight.action && <ChevronRight size={16} className="shrink-0 text-ink-3" />}
-    </motion.button>
+    <>
+      {shown("safe") && <SafeToSpendCard />}
+      {shown("today") && <HomeToday />}
+      {shown("feed") && <HomeFeed />}
+      {shown("recent") && <RecentOperations />}
+      {shown("goal") && <PrimaryGoal />}
+      <div className="mt-8 flex justify-center">
+        <button type="button" onClick={() => nav.sheet("homeLayout")} className="flex h-10 items-center gap-2 rounded-full px-4 text-footnote font-medium text-ink-2 active:bg-surface-press">
+          <SlidersHorizontal size={15} strokeWidth={2} />
+          Настроить главную
+        </button>
+      </div>
+    </>
+  );
+}
+
+const HOME_BLOCKS: Array<{ id: HomeBlock; title: string; subtitle: string; icon: LucideIcon }> = [
+  { id: "safe", title: "Можно потратить сегодня", subtitle: "Сумма на день, чтобы уложиться до конца месяца", icon: Gauge },
+  { id: "today", title: "Дела на сегодня", subtitle: "Прогресс дня и ближайшие дела", icon: ListChecks },
+  { id: "feed", title: "Важное", subtitle: "Итоги месяца, копия данных, подсказки", icon: Sparkles },
+  { id: "recent", title: "Последние операции", subtitle: "Три последние записи", icon: ReceiptText },
+  { id: "goal", title: "Цель", subtitle: "Главная цель и её прогресс", icon: Target }
+];
+
+/** Which blocks the home screen shows. Cards, balance and quick actions always stay. */
+export function HomeLayoutSheet() {
+  const hidden = useData((s) => s.settings.homeHidden ?? []);
+  const update = useData((s) => s.updateSettings);
+  return (
+    <Sheet title="Главная" ariaLabel="Настроить главную">
+      <p className="px-6 pb-4 text-center text-footnote text-ink-2">Карты и кнопки «Доход / Расход / Перемещение» видны всегда. Остальное — по желанию.</p>
+      <Group>
+        {HOME_BLOCKS.map((b) => (
+          <div key={b.id} className="flex min-h-[58px] items-center gap-3 px-4 py-2.5">
+            <IconChip icon={b.icon} size={30} />
+            <div className="min-w-0 flex-1">
+              <div className="text-body text-ink">{b.title}</div>
+              <div className="text-footnote text-ink-2">{b.subtitle}</div>
+            </div>
+            <Toggle
+              checked={!hidden.includes(b.id)}
+              label={b.title}
+              onChange={(on) => update({ homeHidden: on ? hidden.filter((h) => h !== b.id) : [...hidden, b.id] })}
+            />
+          </div>
+        ))}
+      </Group>
+    </Sheet>
   );
 }
 

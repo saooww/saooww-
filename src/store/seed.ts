@@ -39,7 +39,7 @@ export function createEmptyData(): AppData {
         name: "Основная карта",
         kind: "card",
         currency: "RUB",
-        style: "graphite",
+        style: "ardessa",
         openingBalance: 0,
         includeInTotal: true,
         createdAt: now
@@ -79,10 +79,10 @@ export function createDemoData(today: DayKey = todayKey()): AppData {
   const created = `${addMonths(today, -7, 1)}T09:00`;
 
   const wallets: Wallet[] = [
-    { id: "w-main", name: "Основная карта", kind: "card", currency: "RUB", style: "ember", ident: "4821", openingBalance: 0, includeInTotal: true, createdAt: created },
-    { id: "w-cash", name: "Наличные", kind: "cash", currency: "RUB", style: "sand", openingBalance: 0, includeInTotal: true, createdAt: created },
+    { id: "w-main", name: "Основная карта", kind: "card", currency: "RUB", style: "ardessa", ident: "4821", openingBalance: 0, includeInTotal: true, createdAt: created },
+    { id: "w-cash", name: "Наличные", kind: "cash", currency: "RUB", style: "graphite", openingBalance: 0, includeInTotal: true, createdAt: created },
     { id: "w-savings", name: "Накопительный счёт", kind: "savings", currency: "RUB", style: "titanium", ident: "7710", openingBalance: 0, includeInTotal: true, createdAt: created },
-    { id: "w-broker", name: "Брокерский счёт", kind: "investment", currency: "RUB", style: "midnight", ident: "ИИС", openingBalance: 0, includeInTotal: true, createdAt: created },
+    { id: "w-broker", name: "Брокерский счёт", kind: "investment", currency: "RUB", style: "obsidian", ident: "ИИС", openingBalance: 0, includeInTotal: true, createdAt: created },
     { id: "w-usd", name: "Валютный счёт", kind: "bank", currency: "USD", style: "ivory", ident: "0392", openingBalance: 0, includeInTotal: true, createdAt: created }
   ];
 
