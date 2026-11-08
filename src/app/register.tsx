@@ -41,6 +41,7 @@ const loaders = {
   rituals: () => import("../features/planner/Rituals"),
   intro: () => import("../features/planner/Intro"),
   week: () => import("../features/planner/WeekReview"),
+  day: () => import("../features/home/DaySheet"),
   settings: () => import("../features/settings/Settings"),
   search: () => import("../features/search/SearchSheet")
 };
@@ -92,6 +93,7 @@ const PlanDaySheet = named(L.rituals, "PlanDaySheet");
 const ReviewDaySheet = named(L.rituals, "ReviewDaySheet");
 const PlannerIntroSheet = named(L.intro, "PlannerIntroSheet");
 const WeekReviewSheet = named(L.week, "WeekReviewSheet");
+const DaySheet = named(L.day, "DaySheet");
 const SettingsScreen = named(L.settings, "SettingsScreen");
 const CategoriesScreen = named(L.settings, "CategoriesScreen");
 const CurrenciesScreen = named(L.settings, "CurrenciesScreen");
@@ -158,5 +160,6 @@ registerSheets({
   pin: PinSheet,
   homeLayout: HomeLayoutSheet,
   create: CreateSheet,
+  day: DaySheet,
   weekReview: WeekReviewSheet
 });

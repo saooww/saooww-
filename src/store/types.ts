@@ -9,7 +9,7 @@ export type ID = string;
 
 export type WalletKind = "card" | "cash" | "savings" | "bank" | "investment" | "other";
 /** Blocks of the home screen that can be hidden. */
-export type HomeBlock = "safe" | "today" | "feed" | "recent" | "goal";
+export type HomeBlock = "cards" | "today" | "feed" | "recent" | "goal";
 
 /** Current card colours, then retired ones still found in older data (shown as their nearest current colour). */
 export type CardStyle = "ardessa" | "obsidian" | "graphite" | "titanium" | "bordeaux" | "ivory" | "ember" | "midnight" | "forest" | "plum" | "sand";

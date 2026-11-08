@@ -31,6 +31,15 @@ async function safeToSpend(page: Page): Promise<number> {
   return prev.startsWith("Сегодня сверх нормы") ? -value : value;
 }
 
+/** «+» in the tab bar, then one of the tiles of «Создать». */
+async function createNew(page: Page, what: "Расход" | "Доход" | "Перевод" | "Дело" | "Заметка" | "Цель") {
+  await page.getByRole("button", { name: "Создать" }).click();
+  await page.getByRole("dialog", { name: "Создать" }).getByRole("button", { name: what, exact: true }).click();
+  await expect(page.getByRole("dialog", { name: "Создать" })).toHaveCount(0);
+  // the next sheet is up and listening before anything is typed
+  if (what === "Расход" || what === "Доход" || what === "Перевод") await expect(page.getByRole("dialog", { name: "Новая операция" })).toBeVisible();
+}
+
 /** «Деньги» in the tab bar, then one of its three views. */
 async function openMoney(page: Page, view: "Счета" | "Операции" | "Аналитика") {
   await page.getByRole("tab", { name: "Деньги" }).click();
@@ -66,7 +75,7 @@ test("первый запуск: знакомство, счета и сохра�
 test("расход уменьшает «можно потратить сегодня» ровно на свою сумму", async ({ page }) => {
   await startDemo(page);
   const before = await safeToSpend(page);
-  await page.getByRole("button", { name: "Расход", exact: true }).click();
+  await createNew(page, "Расход");
   await page.keyboard.type("1000");
   await page.getByRole("dialog").locator('button[aria-pressed="false"]', { hasText: /^Продукты$/ }).click();
   await page.getByRole("button", { name: "Добавить расход" }).click();
@@ -77,7 +86,7 @@ test("расход уменьшает «можно потратить сегод
 test("перевод между своими кошельками не меняет общий баланс", async ({ page }) => {
   await startDemo(page);
   await expect(carousel(page)).toContainText("2 480 000");
-  await page.getByRole("button", { name: "Перевод", exact: true }).click();
+  await createNew(page, "Перевод");
   await page.keyboard.type("5000");
   await page.getByRole("button", { name: "Перевести" }).click();
   await expect(page.getByText("Перевод выполнен")).toBeVisible();
@@ -86,7 +95,7 @@ test("перевод между своими кошельками не меня�
 
 test("чек делится на категории", async ({ page }) => {
   await startDemo(page);
-  await page.getByRole("button", { name: "Расход", exact: true }).click();
+  await createNew(page, "Расход");
   await page.keyboard.type("3450");
   await page.getByRole("dialog").locator('button[aria-pressed="false"]', { hasText: /^Продукты$/ }).click();
   await page.getByRole("button", { name: "Разделить" }).click();
@@ -138,7 +147,7 @@ test("итоги месяца открываются из аналитики", a
 
 test("фото чека сохраняется вместе с операцией", async ({ page }) => {
   await startDemo(page);
-  await page.getByRole("button", { name: "Расход", exact: true }).click();
+  await createNew(page, "Расход");
   await page.keyboard.type("777");
   await page.getByRole("dialog").locator('button[aria-pressed="false"]', { hasText: /^Продукты$/ }).click();
   await page.getByRole("button", { name: "Фото чека" }).click();
@@ -247,7 +256,7 @@ test("пункты заметки превращаются в дела", async (
 
 test("калькулятор в сумме: 1200 + 350 записывается как 1 550", async ({ page }) => {
   await startDemo(page);
-  await page.getByRole("button", { name: "Расход", exact: true }).click();
+  await createNew(page, "Расход");
   await page.keyboard.type("1200+350");
   const sheet = page.getByRole("dialog", { name: "Новая операция" });
   await expect(sheet).toContainText("1 200 + 350 =");
@@ -283,7 +292,7 @@ test("скрытый экран догоняет изменения, сдела�
   await expect(onView).not.toContainText("4 321");
   // the list stays alive but out of sight while a new expense is added on the home tab
   await page.getByRole("tab", { name: "Главная" }).click();
-  await page.getByRole("button", { name: "Расход", exact: true }).click();
+  await createNew(page, "Расход");
   await page.keyboard.type("4321");
   await page.getByRole("dialog").locator('button[aria-pressed="false"]', { hasText: /^Продукты$/ }).click();
   await page.getByRole("button", { name: /Добавить расход/ }).click();
@@ -309,8 +318,7 @@ test("скрытый блок главной остаётся скрытым п�
 
 test("двойное нажатие открывает одно окно, а не два", async ({ page }) => {
   await startDemo(page);
-  const expense = page.getByRole("button", { name: "Расход", exact: true });
-  await expense.dblclick();
+  await page.getByRole("button", { name: "Создать" }).dblclick();
   await expect(page.getByRole("dialog")).toHaveCount(1);
 });
 

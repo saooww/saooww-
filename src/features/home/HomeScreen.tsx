@@ -1,38 +1,29 @@
 import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
-import { ArrowDownLeft, ArrowLeftRight, ArrowUpRight, Gauge, ListChecks, ReceiptText, Search, SlidersHorizontal, Sparkles, Target, type LucideIcon } from "../../ui/glyphs";
-import { cn } from "../../lib/cn";
+import { WalletCards, ListChecks, ReceiptText, Search, SlidersHorizontal, Sparkles, Target, type LucideIcon } from "../../ui/glyphs";
 import { capitalize, formatDate } from "../../lib/dates";
 import { formatMoney } from "../../lib/money";
 import { goalInfo, goalSaved } from "../../lib/finance";
-import { haptic } from "../../lib/haptics";
 import { useBalances, useEnvelopes, useToday } from "../../store/hooks";
 import { useData } from "../../store/store";
-import { nav, useUI } from "../../store/ui";
+import { nav } from "../../store/ui";
 import { Screen } from "../../nav/Screen";
 import { Wordmark } from "../../ui/Brand";
 import { Money } from "../../ui/Money";
 import { introActive, Reveal } from "../../ui/intro";
-import { spring } from "../../ui/motion";
 import { Avatar, Group, IconButton, IconChip, ProgressBar, SectionHeader, Toggle } from "../../ui/primitives";
 import { Sheet } from "../../ui/Sheet";
 import type { HomeBlock } from "../../store/types";
 import { TxRow, usePresentCtx } from "../transactions/TxRow";
-import { WalletCarousel, useCardModels } from "./WalletCarousel";
-import { HomeFeed, SafeToSpendCard } from "./HomeCards";
+import { WalletCarousel } from "./WalletCarousel";
+import { DaySphere } from "./DaySphere";
+import { SmartLine } from "../create/SmartLine";
+import { HomeFeed } from "./HomeCards";
 import { HomeToday } from "../planner/HomeToday";
 
 export function HomeScreen() {
   const name = useData((s) => s.settings.name);
-  const cards = useCardModels();
   const [intro] = useState(introActive);
 
-  const openComposer = (kind: "expense" | "income" | "transfer") => {
-    haptic();
-    // Read the card index only on tap: swiping the carousel shouldn't re-render the whole screen.
-    const current = cards[Math.min(useUI.getState().homeCardIndex, cards.length - 1)];
-    nav.sheet("composer", { kind, walletId: current?.walletId ?? undefined });
-  };
 
   return (
     <Screen
@@ -52,26 +43,13 @@ export function HomeScreen() {
         <Greeting name={name} />
       </Reveal>
 
-      <WalletCarousel
-        intro={intro}
-        onOpen={(card, rect) => {
-          if (card.walletId) nav.push("wallet", { id: card.walletId, from: { x: rect.x, y: rect.y, w: rect.width, h: rect.height } });
-          else nav.tab("wallets");
-        }}
-        onAdd={() => nav.sheet("wallet")}
-      />
+      <Reveal intro={intro} delay={0.7} y={14}>
+        <DaySphere />
+      </Reveal>
 
-      <div className="mt-6 grid grid-cols-3 gap-2.5 px-5">
-        <Reveal intro={intro} delay={0.75} y={12}>
-          <ActionButton icon={ArrowDownLeft} label="Доход" tone="income" onClick={() => openComposer("income")} />
-        </Reveal>
-        <Reveal intro={intro} delay={0.8} y={12}>
-          <ActionButton icon={ArrowUpRight} label="Расход" tone="expense" onClick={() => openComposer("expense")} />
-        </Reveal>
-        <Reveal intro={intro} delay={0.85} y={12}>
-          <ActionButton icon={ArrowLeftRight} label="Перевод" tone="transfer" onClick={() => openComposer("transfer")} />
-        </Reveal>
-      </div>
+      <Reveal intro={intro} delay={0.82} y={12} className="mt-6 px-4">
+        <SmartLine compact />
+      </Reveal>
 
       <Reveal intro={intro} delay={0.95} y={12}>
         <HomeBlocks />
@@ -102,29 +80,6 @@ function Greeting({ name }: { name: string }) {
   );
 }
 
-const ACTION_TONE = {
-  income: { tile: "bg-positive-soft text-positive", ring: "color-mix(in srgb, var(--positive) 28%, transparent)" },
-  expense: { tile: "fill-accent text-[var(--accent-on)]", ring: "" },
-  transfer: { tile: "tile text-ink", ring: "" }
-};
-
-function ActionButton({ icon: Icon, label, tone, onClick }: { icon: LucideIcon; label: string; tone: keyof typeof ACTION_TONE; onClick: () => void }) {
-  const t = ACTION_TONE[tone];
-  return (
-    <motion.button
-      type="button"
-      onClick={onClick}
-      whileTap={{ scale: 0.94 }}
-      transition={spring.press}
-      className="panel flex h-[88px] w-full flex-col items-center justify-center gap-2.5 rounded-[20px]"
-    >
-      <span className={cn("grid h-10 w-10 place-items-center rounded-[14px]", t.tile)} style={t.ring ? { boxShadow: `inset 0 0 0 0.5px ${t.ring}` } : undefined}>
-        <Icon size={19} strokeWidth={2.1} />
-      </span>
-      <span className="text-footnote font-semibold tracking-[-0.005em] text-ink">{label}</span>
-    </motion.button>
-  );
-}
 
 /** The blocks under the quick actions; any of them can be hidden in «Настроить главную». */
 function HomeBlocks() {
@@ -132,9 +87,9 @@ function HomeBlocks() {
   const shown = (b: HomeBlock) => !hidden?.includes(b);
   return (
     <>
-      {shown("safe") && <SafeToSpendCard />}
       {shown("today") && <HomeToday />}
       {shown("feed") && <HomeFeed />}
+      {shown("cards") && <HomeCardsBlock />}
       {shown("recent") && <RecentOperations />}
       {shown("goal") && <PrimaryGoal />}
       <div className="mt-8 flex justify-center">
@@ -147,21 +102,37 @@ function HomeBlocks() {
   );
 }
 
+/** The wallet cards, now a block of their own under the day. */
+function HomeCardsBlock() {
+  return (
+    <div className="mt-8">
+      <SectionHeader title="Счета" action={{ label: "Все", onClick: () => nav.tab("wallets") }} />
+      <WalletCarousel
+        onOpen={(card, rect) => {
+          if (card.walletId) nav.push("wallet", { id: card.walletId, from: { x: rect.x, y: rect.y, w: rect.width, h: rect.height } });
+          else nav.tab("wallets");
+        }}
+        onAdd={() => nav.sheet("wallet")}
+      />
+    </div>
+  );
+}
+
 const HOME_BLOCKS: Array<{ id: HomeBlock; title: string; subtitle: string; icon: LucideIcon }> = [
-  { id: "safe", title: "Можно потратить сегодня", subtitle: "Сумма на день, чтобы уложиться до конца месяца", icon: Gauge },
   { id: "today", title: "Дела на сегодня", subtitle: "Прогресс дня и ближайшие дела", icon: ListChecks },
   { id: "feed", title: "Важное", subtitle: "Итоги месяца, копия данных, подсказки", icon: Sparkles },
+  { id: "cards", title: "Карты счетов", subtitle: "Баланс каждого кошелька, свайпом", icon: WalletCards },
   { id: "recent", title: "Последние операции", subtitle: "Три последние записи", icon: ReceiptText },
   { id: "goal", title: "Цель", subtitle: "Главная цель и её прогресс", icon: Target }
 ];
 
-/** Which blocks the home screen shows. Cards, balance and quick actions always stay. */
+/** Which blocks the home screen shows. The day sphere and the smart line always stay. */
 export function HomeLayoutSheet() {
   const hidden = useData((s) => s.settings.homeHidden ?? []);
   const update = useData((s) => s.updateSettings);
   return (
     <Sheet title="Главная" ariaLabel="Настроить главную">
-      <p className="px-6 pb-4 text-center text-footnote text-ink-2">Карты и кнопки «Доход / Расход / Перевод» видны всегда. Остальное — по желанию.</p>
+      <p className="px-6 pb-4 text-center text-footnote text-ink-2">Сфера дня и умная строка видны всегда. Остальное — по желанию.</p>
       <Group>
         {HOME_BLOCKS.map((b) => (
           <div key={b.id} className="flex min-h-[58px] items-center gap-3 px-4 py-2.5">

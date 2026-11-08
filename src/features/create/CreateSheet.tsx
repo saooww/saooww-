@@ -47,8 +47,7 @@ export function CreateSheet() {
             onClick={() => {
               haptic();
               close();
-              // let this sheet go before the next one comes up
-              window.setTimeout(a.run, 120);
+              a.run();
             }}
             className="panel flex h-[92px] flex-col items-center justify-center gap-2.5 rounded-[20px]"
           >

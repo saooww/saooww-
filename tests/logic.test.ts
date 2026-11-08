@@ -24,6 +24,7 @@ import { STORAGE_KEY } from "../src/store/store";
 import { CARD_MATERIALS, materialOf } from "../src/store/catalog";
 import { weekSummary, weekToReview } from "../src/lib/week";
 import { goalStatus } from "../src/lib/goals";
+import { parseSmart } from "../src/lib/smart";
 import { goalInfo } from "../src/lib/finance";
 
 let passed = 0;
@@ -443,6 +444,23 @@ test("статус цели: в графике, отстаёт, стоит, до
   assert.equal(goalStatus(goal, info, 0, today).kind, "stalled");
   assert.equal(goalStatus(goal, goalInfo(goal, 1_200_000, today), 0, today).kind, "done");
   assert.equal(goalStatus({ ...goal, deadline: undefined }, info, 100_000, today).kind, "open");
+});
+
+test("умная строка: трата, доход, цель и дело из одной фразы", () => {
+  const d = createDemoData();
+  const ctx = { today: "2026-11-08", categories: d.categories, goals: d.goals, projects: d.projects, history: d.transactions };
+  const coffee = parseSmart("кофе 300", ctx);
+  assert.ok(coffee.kind === "expense" && coffee.amount === 30_000 && coffee.categoryId === "c-cafe");
+  const salary = parseSmart("зарплата 120 000", ctx);
+  assert.ok(salary.kind === "income" && salary.amount === 12_000_000 && salary.categoryId === "i-salary");
+  const gas = parseSmart("бензин 2,5к вчера", ctx);
+  assert.ok(gas.kind === "expense" && gas.amount === 250_000 && gas.day === "2026-11-07" && gas.title === "Бензин");
+  const goal = parseSmart("отложить 5000 на отпуск", ctx);
+  assert.ok(goal.kind === "goal" && goal.amount === 500_000);
+  const task = parseSmart("позвонить маме завтра в 18", ctx);
+  assert.ok(task.kind === "task" && task.task.title === "Позвонить маме" && task.task.due === "2026-11-09" && task.task.time === "18:00");
+  assert.equal(parseSmart("купить хлеб", ctx).kind, "task");
+  assert.equal(parseSmart("   ", ctx).kind, "empty");
 });
 
 test("цвета карт: прежние показываются ближайшим фирменным, новые — как есть", () => {
