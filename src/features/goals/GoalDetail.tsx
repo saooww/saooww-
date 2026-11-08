@@ -1,7 +1,9 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { ArrowDownToLine, ArrowUpFromLine, Pencil, Star, Target, Trash2 } from "lucide-react";
-import { addDays, addMonths, dayOf, formatDate, formatDayHeading, monthTitle, pluralN } from "../../lib/dates";
-import { balanceSeries, goalInfo, goalSaved } from "../../lib/finance";
+import { cn } from "../../lib/cn";
+import { dayOf, formatDate, formatDayHeading, pluralN } from "../../lib/dates";
+import { goalPace, goalStatus, goalStatusText } from "../../lib/goals";
+import { goalInfo, goalSaved } from "../../lib/finance";
 import { formatMoney } from "../../lib/money";
 import { useAppData, useBalances, useEnvelopes, useToday } from "../../store/hooks";
 import { useData } from "../../store/store";
@@ -27,16 +29,8 @@ export function GoalDetail({ id }: { id: ID }) {
     [transactions, id]
   );
 
-  const pace = useMemo(() => {
-    if (!goal) return 0;
-    if (goal.walletId) {
-      const s = balanceSeries(data, balances, new Set([goal.walletId]), addDays(today, -90), today);
-      return s.length > 1 ? (s[s.length - 1].value - s[0].value) / 3 : 0;
-    }
-    const from = addDays(today, -90);
-    const net = history.filter((t) => dayOf(t.date) >= from).reduce((acc, t) => acc + (t.flow === "out" ? t.amount : -t.amount), 0);
-    return net / 3;
-  }, [goal, history, data, balances, today]);
+  const pace = useMemo(() => (goal ? goalPace(goal, data, balances, today) : 0), [goal, data, balances, today]);
+  const [allHistory, setAllHistory] = useState(false);
 
   if (!goal) {
     return (
@@ -48,8 +42,9 @@ export function GoalDetail({ id }: { id: ID }) {
 
   const info = goalInfo(goal, goalSaved(goal, env, balances), today);
   const linked = goal.walletId ? wallets.find((w) => w.id === goal.walletId) : undefined;
-  const eta = !info.done && pace > 0 ? addMonths(today, Math.ceil(info.remaining / pace)) : null;
-  const late = eta && goal.deadline && eta > goal.deadline;
+  const status = goalStatus(goal, info, pace, today);
+  const st = goalStatusText(status, goal.currency);
+  const shown = allHistory ? history : history.slice(0, 5);
 
   return (
     <Screen title={goal.name} actions={<button type="button" className="h-9 px-1 text-body text-accent-ink" onClick={() => nav.sheet("goal", { editId: goal.id })}>Изменить</button>}>
@@ -63,6 +58,9 @@ export function GoalDetail({ id }: { id: ID }) {
         <div className="mt-4 text-title-2 font-semibold">{goal.name}</div>
         <div className="mt-1 text-callout text-ink-2">
           <Money value={info.saved} currency={goal.currency} privacy className="font-semibold text-ink" /> из <Money value={goal.target} currency={goal.currency} />
+        </div>
+        <div className={cn("mt-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-footnote font-semibold", st.tone === "positive" ? "bg-positive-soft text-positive" : st.tone === "warning" ? "bg-warning-soft text-warning" : "tile text-ink-2")}>
+          {st.text}
         </div>
       </div>
 
@@ -82,12 +80,7 @@ export function GoalDetail({ id }: { id: ID }) {
           {!info.done && <Row title="Осталось накопить" value={<Money value={info.remaining} currency={goal.currency} />} />}
           <Row title="Срок" value={goal.deadline ? `${formatDate(goal.deadline, { year: "always" })}${info.monthsLeft !== null && info.monthsLeft > 0 ? ` · ${pluralN(Math.max(1, Math.round(info.monthsLeft)), ["месяц", "месяца", "месяцев"])}` : ""}` : "Без срока"} />
           {info.monthly !== null && !info.done && <Row title="Откладывать в месяц" value={<span className="font-semibold text-ink">{formatMoney(info.monthly, { currency: goal.currency })}</span>} />}
-          {!info.done && (
-            <Row
-              title="При текущем темпе"
-              value={pace > 0 && eta ? <span className={late ? "text-warning" : "text-positive"}>{monthTitle(eta, "always")}</span> : "нет пополнений за 3 мес."}
-            />
-          )}
+          {!info.done && <Row title="Темп за 3 месяца" value={pace > 0 ? `${formatMoney(Math.round(pace / 100) * 100, { currency: goal.currency })} в месяц` : "нет пополнений"} />}
           {linked && <Row title="Кошелёк" value={linked.name} chevron onClick={() => nav.push("wallet", { id: linked.id })} />}
         </Group>
 
@@ -97,7 +90,7 @@ export function GoalDetail({ id }: { id: ID }) {
             <div className="mx-5 rounded-lg border border-dashed border-line-strong px-4 py-6 text-center text-subhead text-ink-2">Пополнений пока не было</div>
           ) : (
             <Group>
-              {history.slice(0, 40).map((t) => {
+              {shown.map((t) => {
                 const deposit = t.kind === "transfer" ? t.toWalletId === goal.walletId : t.flow === "out";
                 const w = wallets.find((x) => x.id === (t.kind === "transfer" ? (deposit ? t.walletId : t.toWalletId) : t.walletId));
                 return (
@@ -111,6 +104,11 @@ export function GoalDetail({ id }: { id: ID }) {
                   />
                 );
               })}
+              {history.length > 5 && (
+                <button type="button" onClick={() => setAllHistory((v) => !v)} className="w-full py-3 text-center text-subhead font-medium text-accent-ink active:opacity-60">
+                  {allHistory ? "Свернуть" : `Показать все · ${history.length}`}
+                </button>
+              )}
             </Group>
           )}
         </section>

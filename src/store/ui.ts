@@ -162,6 +162,10 @@ export const useUI = create<UIState>()((set, get) => ({
   },
 
   openSheet(type, props = {}) {
+    // A double tap — or Space on a still-focused button while the sheet loads —
+    // must not stack the same sheet on top of itself.
+    const top = get().sheets[get().sheets.length - 1];
+    if (top && top.type === type && JSON.stringify(top.props) === JSON.stringify(props)) return top.id;
     const id = `s${++seq}`;
     set((s) => ({ sheets: [...s.sheets, { id, type, props }] }));
     return id;

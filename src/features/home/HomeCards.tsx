@@ -1,11 +1,13 @@
 import { useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronRight, Share, Sparkles, X, type LucideIcon } from "lucide-react";
+import { CalendarCheck, ChevronRight, Share, Sparkles, X, type LucideIcon } from "lucide-react";
 import { addDays, addMonths, diffDays, parseDay, startOfMonth } from "../../lib/dates";
 import { isEmbedded, saveBackupFile } from "../../lib/backupFile";
 import { haptic } from "../../lib/haptics";
 import { safeToSpend } from "../../lib/safeToSpend";
 import { homeInsight } from "../../lib/insights";
+import { weekToReview } from "../../lib/week";
+import { useWeekSummary } from "../planner/WeekReview";
 import { hasStory, monthKey, monthSummary } from "../../lib/story";
 import { useAppData, useBalances, useCategoryMap, useLedger, useToday } from "../../store/hooks";
 import { useData } from "../../store/store";
@@ -23,6 +25,20 @@ export function SafeToSpendCard() {
   const base = data.settings.baseCurrency;
   const s = useMemo(() => safeToSpend(data, balances, entries, today), [data, balances, entries, today]);
   if (!s) return null;
+  // Nothing to count from yet (fresh start, no balances, no spending): a calm hint, not a red alarm.
+  const nothingYet = s.allowance <= 0 && s.spentToday === 0 && s.obligations === 0 && Object.values(balances).every((v) => v <= 0);
+  if (nothingYet) {
+    return (
+      <motion.button type="button" whileTap={{ scale: 0.985 }} transition={spring.press} onClick={() => nav.tab("wallets")} className="panel mx-5 mt-3 flex w-[calc(100%-40px)] items-center gap-3 rounded-[20px] px-4 py-3.5 text-left">
+        <IconChip name="WalletCards" size={34} />
+        <span className="min-w-0 flex-1">
+          <span className="block text-subhead font-semibold text-ink">Можно потратить сегодня</span>
+          <span className="block text-footnote text-ink-2">Укажите остатки на счетах — посчитаем сумму на каждый день</span>
+        </span>
+        <ChevronRight size={16} className="shrink-0 text-ink-3" />
+      </motion.button>
+    );
+  }
 
   const tight = s.allowance <= 0;
   const over = !tight && s.today < 0;
@@ -108,6 +124,8 @@ export function HomeFeed() {
   }, [meta, txCount, settings.backupSnoozeUntil, settings.lastExternalBackup, today]);
 
   const insight = useMemo(() => homeInsight(data, entries, today), [data, entries, today]);
+  const reviewFrom = weekToReview(today);
+  const week = useWeekSummary(reviewFrom && settings.weekSeen !== reviewFrom ? reviewFrom : null);
   const dismissed = settings.dismissedHints ?? [];
 
   const items: FeedItem[] = [];
@@ -124,6 +142,20 @@ export function HomeFeed() {
         nav.story(prevMonth);
       },
       onDismiss: () => update({ storySeen: monthKey(prevMonth) })
+    });
+  }
+  if (week && !week.empty) {
+    items.push({
+      id: "week",
+      icon: CalendarCheck,
+      tone: "accent",
+      title: "Итоги недели готовы",
+      subtitle: `Деньги и дела за ${week.label}`,
+      onOpen: () => {
+        haptic();
+        nav.sheet("weekReview", { from: week.from });
+      },
+      onDismiss: () => update({ weekSeen: week.from })
     });
   }
   if (backupDue) {

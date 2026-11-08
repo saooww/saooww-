@@ -134,7 +134,7 @@ export function SettingsScreen() {
         </Group>
 
         <Group footer="Ardessa хранит все данные только на этом устройстве. На сервер уходит только запрос курсов валют ЦБ — без ваших данных. Чтобы перенести данные на другое устройство, сохраните копию в Файлы и загрузите её там.">
-          <Row icon={Info} title="Версия" value="3.0" />
+          <Row icon={Info} title="Версия" value={__APP_VERSION__} />
         </Group>
 
         <div className="flex justify-center pb-2 pt-4 opacity-90">

@@ -1,4 +1,4 @@
-import { createContext, memo, useContext, useLayoutEffect, useMemo, useState, type ComponentType } from "react";
+import { createContext, memo, useContext, useLayoutEffect, useMemo, useState, type ComponentType, Suspense } from "react";
 import { AnimatePresence, motion, useDragControls } from "framer-motion";
 import { useUI, type Route, type RouteName, type Tab } from "../store/ui";
 import { dur, ease, gpu } from "../ui/motion";
@@ -108,7 +108,8 @@ function LayerContent({ Comp, route, index, depth, tab }: { Comp: RouteComponent
   useLayoutEffect(() => freeze.set(!onTop), [freeze, onTop]);
   // The same element is handed back, so the screen doesn't redraw; only what depends on the change updates.
   const ctx = useMemo(() => ({ tab, route, isRoot: index === 0, active: onTop }), [tab, route, index, onTop]);
-  const content = useMemo(() => <Comp {...(route.params ?? {})} />, [Comp, route.params]);
+  // Screens load as separate chunks; a blank frame for the rare first open before it arrives.
+  const content = useMemo(() => <Suspense fallback={null}><Comp {...(route.params ?? {})} /></Suspense>, [Comp, route.params]);
 
   return (
     <FreezeContext.Provider value={freeze}>

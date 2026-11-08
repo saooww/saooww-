@@ -136,7 +136,8 @@ function DayCard({ total, completed }: { total: number; completed: number }) {
 
   const status = total === 0 ? "Дел на сегодня пока нет" : allDone ? "Всё сделано. Можно выдохнуть" : `Осталось ${pluralN(left, ["дело", "дела", "дел"])}`;
   const evening = hour >= 17;
-  const cta = evening && !reviewed ? "review" : !planned && hour < 17 ? "plan" : !planned && total === 0 ? "plan" : null;
+  // Nothing to review on an empty day — offer to plan it instead.
+  const cta = evening && !reviewed && total > 0 ? "review" : !planned && hour < 17 ? "plan" : !planned && total === 0 ? "plan" : null;
   const narrow = useNarrowScreen();
 
   return (

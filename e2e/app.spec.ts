@@ -71,7 +71,7 @@ test("расход уменьшает «можно потратить сегод
 test("перевод между своими кошельками не меняет общий баланс", async ({ page }) => {
   await startDemo(page);
   await expect(carousel(page)).toContainText("2 480 000");
-  await page.getByRole("button", { name: "Перемещение", exact: true }).click();
+  await page.getByRole("button", { name: "Перевод", exact: true }).click();
   await page.keyboard.type("5000");
   await page.getByRole("button", { name: "Перевести" }).click();
   await expect(page.getByText("Перевод выполнен")).toBeVisible();
@@ -299,6 +299,13 @@ test("скрытый блок главной остаётся скрытым п�
   await page.reload();
   await expect(page.getByRole("button", { name: SAFE_CARD })).toBeVisible();
   await expect(onView.getByText("Последние операции")).toHaveCount(0);
+});
+
+test("двойное нажатие открывает одно окно, а не два", async ({ page }) => {
+  await startDemo(page);
+  const expense = page.getByRole("button", { name: "Расход", exact: true });
+  await expense.dblclick();
+  await expect(page.getByRole("dialog")).toHaveCount(1);
 });
 
 /* ---------------- small phones and large text ---------------- */

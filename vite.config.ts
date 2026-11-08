@@ -1,12 +1,15 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
+import pkg from "./package.json";
 
 // KAPITAL_TARGET=artifact builds one self-contained bundle (no service worker,
 // relative paths) that can be inlined into a single HTML page.
 const artifact = process.env.KAPITAL_TARGET === "artifact";
 
 export default defineConfig({
+  // one version number for the app, taken from package.json
+  define: { __APP_VERSION__: JSON.stringify(pkg.version) },
   base: artifact ? "./" : "/",
   plugins: [
     react(),
@@ -47,7 +50,14 @@ export default defineConfig({
         ? { inlineDynamicImports: true }
         : {
             // Libraries change rarely — keep them in their own long-cached chunks.
-            manualChunks: { react: ["react", "react-dom"], motion: ["framer-motion"], state: ["zustand"] }
+            // Icons go in one chunk too, instead of dozens of tiny files.
+            manualChunks(id) {
+              if (!id.includes("node_modules")) return;
+              if (/node_modules\/(react|react-dom|scheduler)\//.test(id)) return "react";
+              if (id.includes("node_modules/framer-motion") || id.includes("node_modules/motion-")) return "motion";
+              if (id.includes("node_modules/zustand")) return "state";
+              if (id.includes("node_modules/lucide-react")) return "icons";
+            }
           }
     }
   },

@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { cn } from "../../lib/cn";
 import { addMonths, todayKey } from "../../lib/dates";
-import { activeWallets, goalSaved } from "../../lib/finance";
+import { activeWallets, goalInfo, goalSaved } from "../../lib/finance";
 import { monthlyTotals } from "../../lib/analytics";
 import { haptic } from "../../lib/haptics";
 import { amountToInput, formatMoney, parseAmount } from "../../lib/money";
@@ -172,6 +172,18 @@ export function GoalMoneySheet({ goalId, direction: d0 }: { goalId: ID; directio
   const saved = goalSaved(goal, env, balances);
   const amount = parseAmount(buf);
   const tooMuch = direction === "withdraw" && amount > saved;
+  const info = goalInfo(goal, saved, todayKey());
+  const fmt = (v: number) => formatMoney(v, { currency: goal.currency });
+  const quick: Array<{ label: string; amount: number }> =
+    direction === "deposit"
+      ? [
+          ...(info.monthly ? [{ label: `В месяц · ${fmt(info.monthly)}`, amount: info.monthly }] : []),
+          ...(info.remaining > 0 && info.remaining !== info.monthly ? [{ label: `Остаток · ${fmt(info.remaining)}`, amount: info.remaining }] : []),
+          ...[100_000, 500_000, 1_000_000].map((v) => ({ label: fmt(v), amount: v }))
+        ]
+      : saved > 0
+        ? [{ label: `Всё · ${fmt(saved)}`, amount: saved }, ...(saved >= 200_000 ? [{ label: `Половину · ${fmt(Math.round(saved / 200) * 100)}`, amount: Math.round(saved / 200) * 100 }] : [])]
+        : [];
 
   const save = () => {
     if (!amount || !walletId || tooMuch) {
@@ -195,16 +207,27 @@ export function GoalMoneySheet({ goalId, direction: d0 }: { goalId: ID; directio
             {tooMuch ? "Больше, чем накоплено" : <>В цели <Money value={saved} currency={goal.currency} /></>}
           </div>
         </div>
+        {/* ready-made amounts: the monthly instalment, what's left, round sums */}
+        <div className="scroll-x flex gap-2 px-4">
+          {quick.map((q) => (
+            <Chip key={q.label} selected={amount === q.amount} onClick={() => setBuf(amountToInput(q.amount).replace(/\s/g, ""))}>
+              {q.label}
+            </Chip>
+          ))}
+        </div>
         {live.length === 0 ? (
           <div className="px-6 text-center text-callout text-ink-2">Нужен ещё один кошелёк в {goal.currency}, чтобы переводить деньги в цель.</div>
         ) : (
-          <div className="scroll-x flex gap-2 px-4">
+          <div>
+            <div className="section-label px-5 pb-2">{direction === "deposit" ? "С кошелька" : "В кошелёк"}</div>
+            <div className="scroll-x flex gap-2 px-4">
             {live.map((w) => (
               <Chip key={w.id} selected={walletId === w.id} onClick={() => setWalletId(w.id)}>
                 <NamedIcon name={walletKindInfo(w.kind).icon} size={14} className="mr-1 inline" />
                 {w.name}
               </Chip>
             ))}
+            </div>
           </div>
         )}
         <Keypad compact onKey={(k: KeypadKey) => setBuf((b) => applyKey(b, k))} />

@@ -7,7 +7,7 @@ const EASE_OUT = ease.out;
 
 /**
  * The cold-start intro: a short splash, then the home screen assembles
- * itself. It plays once per launch, only when animations are on.
+ * itself. It plays on the first launch of the day, only when animations are on.
  */
 const START = typeof performance !== "undefined" ? performance.now() : 0;
 
@@ -23,9 +23,28 @@ export function introEnabled(): boolean {
     const deepLink = typeof window !== "undefined" && new URLSearchParams(window.location.search).has("add");
     const s = useData.getState().settings;
     // No show when the lock screen or the composer comes first.
-    enabled = !reduce && !deepLink && s.animations && !s.lockEnabled && s.launchAction !== "expense";
+    enabled = !reduce && !deepLink && s.animations && !s.lockEnabled && s.launchAction !== "expense" && firstLaunchToday();
   }
   return enabled;
+}
+
+const INTRO_DAY_KEY = "ardessa-intro-day";
+
+/**
+ * The full intro plays on the first launch of the day only; later launches
+ * open straight on the home screen. Remembered in localStorage, which is
+ * read synchronously, before the first frame.
+ */
+function firstLaunchToday(): boolean {
+  try {
+    const d = new Date();
+    const today = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+    if (localStorage.getItem(INTRO_DAY_KEY) === today) return false;
+    localStorage.setItem(INTRO_DAY_KEY, today);
+    return true;
+  } catch {
+    return true;
+  }
 }
 
 /** True while the app is still in its first moments — read once on mount. */

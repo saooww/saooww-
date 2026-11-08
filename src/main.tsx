@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { registerSW } from "virtual:pwa-register";
 import "./styles/index.css";
-import "./app/register";
+import { prefetchScreens } from "./app/register";
 import { App } from "./App";
 import { ErrorBoundary } from "./app/ErrorBoundary";
 import { startBoot } from "./store/boot";
@@ -21,6 +21,13 @@ registerSW({
   }
 });
 startBoot();
+
+// Once the first screen is up, fetch the rest of the app in the background.
+window.setTimeout(() => {
+  const idle = (window as Window & { requestIdleCallback?: (cb: () => void) => void }).requestIdleCallback;
+  if (idle) idle(prefetchScreens);
+  else prefetchScreens();
+}, 700);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
