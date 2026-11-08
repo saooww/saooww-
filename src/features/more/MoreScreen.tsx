@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { CalendarDays, FlaskConical, Gauge, HandCoins, Repeat, Search, Settings, Shapes, Target } from "lucide-react";
+import { CalendarDays, FlaskConical, Gauge, HandCoins, Repeat, Search, Settings, Shapes, Target } from "../../ui/glyphs";
 import { budgetStates } from "../../lib/insights";
 import { debtInfo, goalInfo, goalSaved } from "../../lib/finance";
 import { formatMoney } from "../../lib/money";

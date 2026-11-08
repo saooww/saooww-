@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { addDays, addMonths, endOfMonth, formatDayHeading, monthTitle, parseDay, startOfMonth, startOfWeek, WEEKDAYS_SHORT, type DayKey } from "../../lib/dates";
 import { haptic } from "../../lib/haptics";

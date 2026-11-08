@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { CalendarDays, CalendarPlus, Hash, NotebookPen, Plus, Repeat, Stamp, Trash2, X } from "lucide-react";
+import { CalendarDays, CalendarPlus, Hash, NotebookPen, Plus, Repeat, Stamp, Trash2, X } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { dayOf, formatDate, formatDateTime, type DayKey } from "../../lib/dates";
 import { haptic } from "../../lib/haptics";

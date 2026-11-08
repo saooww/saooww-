@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Archive, CalendarRange, CheckCheck, Inbox, Layers, Plus, Sun, type LucideIcon } from "lucide-react";
+import { Archive, CalendarRange, CheckCheck, Inbox, Layers, Plus, Sun, type LucideIcon } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { WEEKDAYS_SHORT, formatDate, plural, pluralN, weekdayIndex } from "../../lib/dates";
 import { haptic } from "../../lib/haptics";

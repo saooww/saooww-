@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Check } from "lucide-react";
+import { Check } from "../ui/glyphs";
 import { haptic } from "../lib/haptics";
 import { Sheet, useSheet } from "../ui/Sheet";
 import { IconChip } from "../ui/primitives";

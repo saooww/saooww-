@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowDownLeft, ArrowLeftRight, ArrowUpRight, Gauge, ListChecks, ReceiptText, Search, SlidersHorizontal, Sparkles, Target, type LucideIcon } from "lucide-react";
+import { ArrowDownLeft, ArrowLeftRight, ArrowUpRight, Gauge, ListChecks, ReceiptText, Search, SlidersHorizontal, Sparkles, Target, type LucideIcon } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { capitalize, formatDate } from "../../lib/dates";
 import { formatMoney } from "../../lib/money";
@@ -69,7 +69,7 @@ export function HomeScreen() {
           <ActionButton icon={ArrowUpRight} label="Расход" tone="expense" onClick={() => openComposer("expense")} />
         </Reveal>
         <Reveal intro={intro} delay={0.85} y={12}>
-          <ActionButton icon={ArrowLeftRight} label="Перемещение" tone="transfer" onClick={() => openComposer("transfer")} />
+          <ActionButton icon={ArrowLeftRight} label="Перевод" tone="transfer" onClick={() => openComposer("transfer")} />
         </Reveal>
       </div>
 
@@ -161,7 +161,7 @@ export function HomeLayoutSheet() {
   const update = useData((s) => s.updateSettings);
   return (
     <Sheet title="Главная" ariaLabel="Настроить главную">
-      <p className="px-6 pb-4 text-center text-footnote text-ink-2">Карты и кнопки «Доход / Расход / Перемещение» видны всегда. Остальное — по желанию.</p>
+      <p className="px-6 pb-4 text-center text-footnote text-ink-2">Карты и кнопки «Доход / Расход / Перевод» видны всегда. Остальное — по желанию.</p>
       <Group>
         {HOME_BLOCKS.map((b) => (
           <div key={b.id} className="flex min-h-[58px] items-center gap-3 px-4 py-2.5">

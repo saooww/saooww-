@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search } from "../../ui/glyphs";
 import { useData } from "../../store/store";
 import { nav, useUI, type PlannerView } from "../../store/ui";
 import { Screen, useRoute } from "../../nav/Screen";

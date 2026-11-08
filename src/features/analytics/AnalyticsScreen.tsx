@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChartColumn, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { ChartColumn, ChevronLeft, ChevronRight, Sparkles } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { bucketSeries, bucketsFor, capitalSeries, categoryRows, donutSlices, habits, monthForecast, monthlyTotals, type SeriesKind } from "../../lib/analytics";
 import { addDays, capitalize, formatDate, pluralN, WEEKDAYS_ACC, WEEKDAYS_SHORT } from "../../lib/dates";
@@ -128,7 +128,7 @@ export function AnalyticsScreen() {
           <div className="mt-3 grid grid-cols-2 gap-2 px-4 min-[390px]:grid-cols-3">
             <SummaryTile label="Доходы" value={stats.income} change={incChange} goodWhenUp currency={base} tone="positive" />
             <SummaryTile label="Расходы" value={stats.expense} change={expChange} currency={base} />
-            <SummaryTile label="Поток" value={stats.net} currency={base} signed className="col-span-2 min-[390px]:col-span-1" />
+            <SummaryTile label="Итог" value={stats.net} currency={base} signed className="col-span-2 min-[390px]:col-span-1" />
           </div>
           {partialCompare && (prev.income > 0 || prev.expense > 0) && <div className="mt-2 px-5 text-caption text-ink-3">Проценты — к тем же дням {PREV_GEN[period]}</div>}
           {period === "month" && hab.expenseCount >= 5 && (
@@ -165,7 +165,7 @@ export function AnalyticsScreen() {
               {/* The switch sits beside the amount; on small phones and large text it gets its own line */}
               <div className="flex flex-wrap items-start gap-3">
                 <div className="min-w-0 grow-[999] basis-[156px]">
-                  <div className="text-footnote font-medium text-ink-2">{selectedBucket ? capitalize(selectedBucket.tip) : metric === "expense" ? "Расходы за период" : metric === "income" ? "Доходы за период" : "Денежный поток"}</div>
+                  <div className="text-footnote font-medium text-ink-2">{selectedBucket ? capitalize(selectedBucket.tip) : metric === "expense" ? "Расходы за период" : metric === "income" ? "Доходы за период" : "Итог: доходы минус расходы"}</div>
                   <AnimatedMoney value={headline} currency={base} sign={metric === "net" ? "always" : "auto"} tone={metric === "income" || (metric === "net" && headline > 0) ? "positive" : "default"} variant="hero" className="mt-0.5 block text-[28px] font-semibold tracking-[-0.03em]" duration={0.45} />
                   {avgLine ? (
                     <div className="mt-0.5 flex items-center gap-1.5 text-caption text-ink-3">
@@ -184,7 +184,7 @@ export function AnalyticsScreen() {
                   options={[
                     { value: "expense", label: "Расх." },
                     { value: "income", label: "Дох." },
-                    { value: "net", label: "Поток" }
+                    { value: "net", label: "Итог" }
                   ]}
                 />
               </div>

@@ -1,6 +1,6 @@
 import { useMemo, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, ChevronRight, Inbox, Moon, Sunrise } from "lucide-react";
+import { ChevronDown, ChevronRight, Inbox, Moon, Sunrise } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { MONTHS_GEN, WEEKDAYS_LONG, capitalize, parseDay, pluralN, weekdayIndex } from "../../lib/dates";
 import { dayPlan, isInbox } from "../../lib/tasks";
@@ -136,7 +136,8 @@ function DayCard({ total, completed }: { total: number; completed: number }) {
 
   const status = total === 0 ? "Дел на сегодня пока нет" : allDone ? "Всё сделано. Можно выдохнуть" : `Осталось ${pluralN(left, ["дело", "дела", "дел"])}`;
   const evening = hour >= 17;
-  const cta = evening && !reviewed ? "review" : !planned && hour < 17 ? "plan" : !planned && total === 0 ? "plan" : null;
+  // Nothing to review on an empty day — offer to plan it instead.
+  const cta = evening && !reviewed && total > 0 ? "review" : !planned && hour < 17 ? "plan" : !planned && total === 0 ? "plan" : null;
   const narrow = useNarrowScreen();
 
   return (

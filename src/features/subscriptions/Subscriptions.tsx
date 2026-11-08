@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Pause, Play, Plus, Repeat, SkipForward, Trash2, Zap } from "lucide-react";
+import { Pause, Play, Plus, Repeat, SkipForward, Trash2, Zap } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { addDays, capitalize, formatDate, formatRelative, todayKey } from "../../lib/dates";
 import { activeWallets } from "../../lib/finance";

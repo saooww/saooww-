@@ -22,6 +22,9 @@ import { applyCalcKey, evaluate, formatExpression } from "../src/lib/calc";
 import { SAVE_EVERY, flushPersist } from "../src/store/storage";
 import { STORAGE_KEY } from "../src/store/store";
 import { CARD_MATERIALS, materialOf } from "../src/store/catalog";
+import { weekSummary, weekToReview } from "../src/lib/week";
+import { goalStatus } from "../src/lib/goals";
+import { goalInfo } from "../src/lib/finance";
 
 let passed = 0;
 function test(name: string, fn: () => void) {
@@ -406,6 +409,40 @@ test("старая резервная копия без списков откр�
   const restored = parseImport(JSON.stringify({ app: "kapital", version: 2, data: old }));
   assert.deepEqual(restored.projects, []);
   assert.equal(restored.tasks.length, st().tasks.length);
+});
+
+test("итоги недели: воскресенье и понедельник, деньги и дела за неделю", () => {
+  assert.equal(weekToReview("2026-11-08"), "2026-11-02"); // Sunday: the week now ending
+  assert.equal(weekToReview("2026-11-09"), "2026-11-02"); // Monday: the week just finished
+  assert.equal(weekToReview("2026-11-07"), null);
+  const data = createDemoData();
+  const { entries } = buildLedger(data);
+  const today = todayKey();
+  const cats = new Map(data.categories.map((c) => [c.id, c]));
+  const w = weekSummary(entries, data.tasks, data.notes, cats, today, today);
+  assert.equal(w.net, w.income - w.expense);
+  assert.ok(w.from <= today && today <= w.to);
+  const inWeek = entries.filter((e) => e.day >= w.from && e.day <= w.to && e.tx.kind === "expense").reduce((a, e) => a + e.base, 0);
+  assert.equal(w.expense, inWeek);
+  assert.ok(w.top.reduce((a, c) => a + c.share, 0) <= 1.0001);
+  const done = data.tasks.filter((t) => t.done && t.doneAt && t.doneAt.slice(0, 10) >= w.from && t.doneAt.slice(0, 10) <= w.to).length;
+  assert.equal(w.tasksDone, done);
+  assert.ok(w.noSpendDays <= w.daysCounted && w.daysCounted <= 7);
+  // a week with nothing in it
+  const empty = weekSummary([], [], [], cats, "2020-01-06", today);
+  assert.ok(empty.empty);
+  assert.equal(empty.label, "6 – 12 января");
+});
+
+test("статус цели: в графике, отстаёт, стоит, достигнута", () => {
+  const today = "2026-01-01";
+  const goal = { id: "g", name: "Отпуск", icon: "Plane", target: 1_200_000, currency: "RUB", deadline: "2027-01-01", createdAt: today } as unknown as import("../src/store/types").Goal;
+  const info = goalInfo(goal, 0, today);
+  assert.equal(goalStatus(goal, info, 120_000, today).kind, "onTrack"); // 1 200 ₽/мес → 10 months, before the deadline
+  assert.equal(goalStatus(goal, info, 50_000, today).kind, "late"); // 24 months — too slow
+  assert.equal(goalStatus(goal, info, 0, today).kind, "stalled");
+  assert.equal(goalStatus(goal, goalInfo(goal, 1_200_000, today), 0, today).kind, "done");
+  assert.equal(goalStatus({ ...goal, deadline: undefined }, info, 100_000, today).kind, "open");
 });
 
 test("цвета карт: прежние показываются ближайшим фирменным, новые — как есть", () => {

@@ -1,6 +1,6 @@
 import { memo, type ReactNode } from "react";
 import { motion, useMotionValue, useTransform, type MotionValue } from "framer-motion";
-import { Eye, EyeOff, type LucideIcon } from "lucide-react";
+import { Eye, EyeOff, type LucideIcon } from "./glyphs";
 import { cn } from "../lib/cn";
 import { moneyParts, type Minor } from "../lib/money";
 import type { CardMaterial } from "../store/catalog";

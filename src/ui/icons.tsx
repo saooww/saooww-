@@ -1,5 +1,5 @@
-import type { LucideIcon, LucideProps } from "lucide-react";
-import { Camera, Hammer, Palette, Rocket, Star, User, Users } from "lucide-react";
+import type { LucideIcon, LucideProps } from "./glyphs";
+import { Camera, Hammer, Palette, Rocket, Star, User, Users } from "./glyphs";
 import {
   ArrowLeftRight,
   SlidersHorizontal,
@@ -70,7 +70,7 @@ import {
   Wifi,
   Wine,
   Wrench
-} from "lucide-react";
+} from "./glyphs";
 
 /** Icons that are referenced by name from data (categories, goals, wallet kinds, insights). */
 const REGISTRY: Record<string, LucideIcon> = {

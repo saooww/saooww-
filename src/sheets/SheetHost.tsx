@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { ComponentType } from "react";
 import { AnimatePresence } from "framer-motion";
 import { useUI } from "../store/ui";
@@ -21,7 +22,9 @@ export function SheetHost() {
         if (!C) return null;
         return (
           <SheetContext.Provider key={s.id} value={{ id: s.id, depth: sheets.length - 1 - i, index: i, close: () => close(s.id) }}>
-            <C {...s.props} />
+            <Suspense fallback={null}>
+              <C {...s.props} />
+            </Suspense>
           </SheetContext.Provider>
         );
       })}

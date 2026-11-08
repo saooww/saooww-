@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeftRight, ChartColumn, CircleCheckBig, House, LayoutGrid, WalletCards, type LucideIcon } from "lucide-react";
+import { ArrowLeftRight, ChartColumn, CircleCheckBig, House, LayoutGrid, WalletCards, type LucideIcon } from "../ui/glyphs";
 import { cn } from "../lib/cn";
 import { haptic } from "../lib/haptics";
 import { useUI, type Tab } from "../store/ui";
@@ -62,7 +62,7 @@ export function TabBar() {
               }}
               className={cn("relative flex flex-1 flex-col items-center justify-center gap-[4px] rounded-[21px] transition-colors duration-200", active ? "text-ink" : "text-ink-3")}
             >
-              <Icon size={22} strokeWidth={active ? 2.05 : 1.75} className={cn("relative transition-colors duration-200", active && "text-accent-ink")} />
+              <Icon size={23} weight={active ? "fill" : "regular"} className={cn("relative transition-colors duration-200", active && "text-accent-ink")} />
               <span className="relative max-w-full truncate text-[10px] font-semibold leading-none tracking-[0.02em] max-[389px]:text-[9.5px] max-[389px]:tracking-normal">{label}</span>
             </motion.button>
           );

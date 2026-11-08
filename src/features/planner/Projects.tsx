@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Archive, ArchiveRestore, CheckCheck, ChevronDown, Inbox, NotebookPen, Pencil, Plus, Sunrise, Trash2 } from "lucide-react";
+import { Archive, ArchiveRestore, CheckCheck, ChevronDown, Inbox, NotebookPen, Pencil, Plus, Sunrise, Trash2 } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { MONTHS_GEN, WEEKDAYS_LONG, addDays, capitalize, dayOf, formatDate, formatDayHeading, parseDay, pluralN, todayKey, weekdayIndex, type DayKey } from "../../lib/dates";
 import { haptic } from "../../lib/haptics";

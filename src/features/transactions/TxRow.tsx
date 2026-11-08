@@ -1,6 +1,6 @@
 import { memo, useMemo, useRef, useState } from "react";
 import { animate, motion, useMotionValue, useTransform } from "framer-motion";
-import { Camera, Split, Trash2 } from "lucide-react";
+import { Camera, Split, Trash2 } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { haptic } from "../../lib/haptics";
 import { presentTx, type PresentCtx } from "../../lib/present";

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Banknote, Check, ChevronLeft, CircleCheckBig, CreditCard, PiggyBank, ShieldCheck, Target, WalletCards, type LucideIcon } from "lucide-react";
+import { Banknote, Check, ChevronLeft, CircleCheckBig, CreditCard, PiggyBank, ShieldCheck, Target, WalletCards, type LucideIcon } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { nowISO } from "../../lib/dates";
 import { haptic } from "../../lib/haptics";

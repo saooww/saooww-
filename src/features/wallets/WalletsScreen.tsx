@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Archive, ChevronDown, LifeBuoy, Plus, WalletCards } from "lucide-react";
+import { Archive, ChevronDown, LifeBuoy, Plus, WalletCards } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { addDays, formatDate } from "../../lib/dates";
 import { capitalSeries } from "../../lib/analytics";

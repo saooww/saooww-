@@ -1,3 +1,4 @@
+import { lazy, type ComponentType } from "react";
 import { registerRoutes } from "../nav/StackView";
 import { registerSheets } from "../sheets/SheetHost";
 import { ConfirmSheet } from "../sheets/ConfirmSheet";
@@ -6,31 +7,95 @@ import { CategorySheet } from "../sheets/CategorySheet";
 import { RangeSheet } from "../sheets/RangeSheet";
 import { HomeLayoutSheet, HomeScreen } from "../features/home/HomeScreen";
 import { ComposerSheet } from "../features/transactions/Composer";
-import { TxDetailSheet } from "../features/transactions/TxDetailSheet";
-import { TransactionsScreen } from "../features/transactions/TransactionsScreen";
-import { WalletsScreen } from "../features/wallets/WalletsScreen";
-import { WalletDetail } from "../features/wallets/WalletDetail";
-import { WalletSheet } from "../features/wallets/WalletSheet";
-import { AnalyticsScreen } from "../features/analytics/AnalyticsScreen";
-import { MoreScreen } from "../features/more/MoreScreen";
-import { GoalsScreen } from "../features/goals/GoalsScreen";
-import { GoalDetail } from "../features/goals/GoalDetail";
-import { GoalMoneySheet, GoalSheet } from "../features/goals/GoalSheets";
-import { BudgetSheet, BudgetsScreen } from "../features/budgets/Budgets";
-import { PlanActionsSheet, PlanSheet, PlansScreen } from "../features/plans/Plans";
-import { RecurringSheet, SubscriptionsScreen } from "../features/subscriptions/Subscriptions";
-import { DebtDetail, DebtPaySheet, DebtSheet, DebtsScreen } from "../features/debts/Debts";
-import { LinkPickerSheet, NoteEditor, NotesScreen } from "../features/notes/Notes";
-import { PlannerScreen } from "../features/planner/PlannerScreen";
-import { TaskSheet } from "../features/planner/TaskSheet";
-import { QuickAddSheet } from "../features/planner/QuickAdd";
-import { DatePickerSheet } from "../features/planner/DatePicker";
-import { ProjectScreen, ProjectSheet, TaskListScreen } from "../features/planner/Projects";
-import { PlanDaySheet, ReviewDaySheet } from "../features/planner/Rituals";
-import { PlannerIntroSheet } from "../features/planner/Intro";
-import { BackupTextSheet, CategoriesScreen, CurrenciesScreen, DataScreen, SettingsScreen } from "../features/settings/Settings";
-import { SearchSheet } from "../features/search/SearchSheet";
 import { PinSheet } from "../features/lock/PinSheet";
+// typed into right after a tap — must be there at once, like the composer
+import { QuickAddSheet } from "../features/planner/QuickAdd";
+
+/*
+ * What the first screen needs — home, the composer, the lock — loads with
+ * the app. Every other screen and sheet is its own chunk, fetched on first
+ * use or, more often, quietly in the background right after launch.
+ */
+const loaders = {
+  tx: () => import("../features/transactions/TxDetailSheet"),
+  transactions: () => import("../features/transactions/TransactionsScreen"),
+  wallets: () => import("../features/wallets/WalletsScreen"),
+  wallet: () => import("../features/wallets/WalletDetail"),
+  walletSheet: () => import("../features/wallets/WalletSheet"),
+  analytics: () => import("../features/analytics/AnalyticsScreen"),
+  more: () => import("../features/more/MoreScreen"),
+  goals: () => import("../features/goals/GoalsScreen"),
+  goal: () => import("../features/goals/GoalDetail"),
+  goalSheets: () => import("../features/goals/GoalSheets"),
+  budgets: () => import("../features/budgets/Budgets"),
+  plans: () => import("../features/plans/Plans"),
+  subscriptions: () => import("../features/subscriptions/Subscriptions"),
+  debts: () => import("../features/debts/Debts"),
+  notes: () => import("../features/notes/Notes"),
+  planner: () => import("../features/planner/PlannerScreen"),
+  task: () => import("../features/planner/TaskSheet"),
+  datePicker: () => import("../features/planner/DatePicker"),
+  projects: () => import("../features/planner/Projects"),
+  rituals: () => import("../features/planner/Rituals"),
+  intro: () => import("../features/planner/Intro"),
+  week: () => import("../features/planner/WeekReview"),
+  settings: () => import("../features/settings/Settings"),
+  search: () => import("../features/search/SearchSheet")
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function named<M>(load: () => Promise<M>, key: keyof M): ComponentType<any> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return lazy(() => load().then((m) => ({ default: m[key] as unknown as ComponentType<any> })));
+}
+
+/** Fetch every screen's chunk ahead of time, so the first open is instant too. */
+export function prefetchScreens() {
+  for (const load of Object.values(loaders)) load().catch(() => {});
+}
+
+const L = loaders;
+const TransactionsScreen = named(L.transactions, "TransactionsScreen");
+const TxDetailSheet = named(L.tx, "TxDetailSheet");
+const WalletsScreen = named(L.wallets, "WalletsScreen");
+const WalletDetail = named(L.wallet, "WalletDetail");
+const WalletSheet = named(L.walletSheet, "WalletSheet");
+const AnalyticsScreen = named(L.analytics, "AnalyticsScreen");
+const MoreScreen = named(L.more, "MoreScreen");
+const GoalsScreen = named(L.goals, "GoalsScreen");
+const GoalDetail = named(L.goal, "GoalDetail");
+const GoalSheet = named(L.goalSheets, "GoalSheet");
+const GoalMoneySheet = named(L.goalSheets, "GoalMoneySheet");
+const BudgetsScreen = named(L.budgets, "BudgetsScreen");
+const BudgetSheet = named(L.budgets, "BudgetSheet");
+const PlansScreen = named(L.plans, "PlansScreen");
+const PlanSheet = named(L.plans, "PlanSheet");
+const PlanActionsSheet = named(L.plans, "PlanActionsSheet");
+const SubscriptionsScreen = named(L.subscriptions, "SubscriptionsScreen");
+const RecurringSheet = named(L.subscriptions, "RecurringSheet");
+const DebtsScreen = named(L.debts, "DebtsScreen");
+const DebtDetail = named(L.debts, "DebtDetail");
+const DebtSheet = named(L.debts, "DebtSheet");
+const DebtPaySheet = named(L.debts, "DebtPaySheet");
+const NotesScreen = named(L.notes, "NotesScreen");
+const NoteEditor = named(L.notes, "NoteEditor");
+const LinkPickerSheet = named(L.notes, "LinkPickerSheet");
+const PlannerScreen = named(L.planner, "PlannerScreen");
+const TaskSheet = named(L.task, "TaskSheet");
+const DatePickerSheet = named(L.datePicker, "DatePickerSheet");
+const ProjectScreen = named(L.projects, "ProjectScreen");
+const ProjectSheet = named(L.projects, "ProjectSheet");
+const TaskListScreen = named(L.projects, "TaskListScreen");
+const PlanDaySheet = named(L.rituals, "PlanDaySheet");
+const ReviewDaySheet = named(L.rituals, "ReviewDaySheet");
+const PlannerIntroSheet = named(L.intro, "PlannerIntroSheet");
+const WeekReviewSheet = named(L.week, "WeekReviewSheet");
+const SettingsScreen = named(L.settings, "SettingsScreen");
+const CategoriesScreen = named(L.settings, "CategoriesScreen");
+const CurrenciesScreen = named(L.settings, "CurrenciesScreen");
+const DataScreen = named(L.settings, "DataScreen");
+const BackupTextSheet = named(L.settings, "BackupTextSheet");
+const SearchSheet = named(L.search, "SearchSheet");
 
 registerRoutes({
   roots: {
@@ -89,5 +154,6 @@ registerSheets({
   search: SearchSheet,
   backupText: BackupTextSheet,
   pin: PinSheet,
-  homeLayout: HomeLayoutSheet
+  homeLayout: HomeLayoutSheet,
+  weekReview: WeekReviewSheet
 });

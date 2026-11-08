@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { CircleCheck, HandCoins, Pencil, Plus, RotateCcw, Trash2 } from "lucide-react";
+import { CircleCheck, HandCoins, Pencil, Plus, RotateCcw, Trash2 } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { dayOf, formatDate, formatDayHeading, nowISO, pluralN, todayKey } from "../../lib/dates";
 import { activeWallets, debtInfo, type DebtInfo } from "../../lib/finance";

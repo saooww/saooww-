@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { KeyRound, LockKeyhole, ScanFace, Timer } from "lucide-react";
+import { KeyRound, LockKeyhole, ScanFace, Timer } from "../../ui/glyphs";
 import { haptic } from "../../lib/haptics";
 import { useData } from "../../store/store";
 import { nav } from "../../store/ui";

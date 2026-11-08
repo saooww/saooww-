@@ -283,6 +283,8 @@ export interface Settings {
   textSize: "m" | "l" | "xl";
   /** Month (YYYY-MM) whose summary story was already shown */
   storySeen?: string;
+  /** Monday of the week whose «Итоги недели» were already looked at */
+  weekSeen?: DayKey;
   /** Home blocks the user chose to hide */
   homeHidden?: HomeBlock[];
   /** Home hints dismissed with ×, by id (newest last, a few kept) */

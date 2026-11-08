@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { CalendarDays, Check, Clock, Flag, Hash, Inbox, Repeat, X, type LucideIcon } from "lucide-react";
+import { CalendarDays, Check, Clock, Flag, Hash, Inbox, Repeat, X, type LucideIcon } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { addDays, pluralN, type DayKey } from "../../lib/dates";
 import { haptic } from "../../lib/haptics";

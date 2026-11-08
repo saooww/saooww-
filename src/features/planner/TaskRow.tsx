@@ -1,6 +1,6 @@
 import { memo, useRef, useState } from "react";
 import { AnimatePresence, animate, motion, useMotionValue, useTransform } from "framer-motion";
-import { AlignLeft, CalendarDays, ListChecks, Repeat, Sunrise, Trash2 } from "lucide-react";
+import { AlignLeft, CalendarDays, ListChecks, Repeat, Sunrise, Trash2 } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { dueLabel } from "../../lib/tasks";
 import { useToday } from "../../store/hooks";

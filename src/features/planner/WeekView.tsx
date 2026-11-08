@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { CalendarCheck, ChevronLeft, ChevronRight, Plus } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { MONTHS_GEN, WEEKDAYS_LONG, WEEKDAYS_SHORT, addDays, capitalize, parseDay, startOfWeek, weekdayIndex, type DayKey } from "../../lib/dates";
 import { haptic } from "../../lib/haptics";
@@ -87,6 +87,16 @@ export function WeekView() {
           );
         })}
       </div>
+
+      {/* past weeks and the one now ending can be looked back on */}
+      {from <= today && (
+        <div className="mt-3 px-4">
+          <button type="button" onClick={() => nav.sheet("weekReview", { from })} className="tile flex h-11 w-full items-center justify-center gap-2 rounded-[14px] text-subhead font-semibold text-ink active:opacity-80">
+            <CalendarCheck size={17} strokeWidth={2} className="text-accent-ink" />
+            Итоги недели
+          </button>
+        </div>
+      )}
 
       <div className="mt-6 flex flex-col gap-6">
         {days.map((d) => {

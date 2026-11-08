@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { animate, motion, useMotionValue, usePresence } from "framer-motion";
-import { Archive, ArchiveRestore, ArrowDownLeft, ArrowLeftRight, ArrowUpRight, Pencil, SlidersHorizontal, Star, Trash2, type LucideIcon } from "lucide-react";
+import { Archive, ArchiveRestore, ArrowDownLeft, ArrowLeftRight, ArrowUpRight, Pencil, SlidersHorizontal, Star, Trash2, type LucideIcon } from "../../ui/glyphs";
 import { addDays, dayOf, formatDate, formatDayHeading, startOfMonth } from "../../lib/dates";
 import { balanceSeries } from "../../lib/finance";
 import { haptic } from "../../lib/haptics";

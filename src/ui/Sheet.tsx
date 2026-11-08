@@ -45,6 +45,7 @@ export function Sheet({ title, left, right, children, footer, ariaLabel, tall, c
   const { close, depth, index } = useSheet();
   const controls = useDragControls();
   const panel = useRef<HTMLDivElement>(null);
+  const openedAt = useRef(performance.now());
 
   const dismiss = () => {
     onClose?.();
@@ -80,7 +81,8 @@ export function Sheet({ title, left, right, children, footer, ariaLabel, tall, c
         animate={{ opacity: depth === 0 ? 1 : 0.4 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.24 }}
-        onClick={() => dismissible && depth === 0 && dismiss()}
+        // the second tap of a double tap lands here — don't let it close the sheet it just opened
+        onClick={() => dismissible && depth === 0 && performance.now() - openedAt.current > 400 && dismiss()}
       />
       <motion.div
         ref={panel}
