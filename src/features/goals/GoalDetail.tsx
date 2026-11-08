@@ -12,6 +12,7 @@ import { nav } from "../../store/ui";
 import { confirmDelete, undoable } from "../../store/undo";
 import { Screen } from "../../nav/Screen";
 import { NamedIcon } from "../../ui/icons";
+import { GoalJar } from "./GoalJar";
 import { Money } from "../../ui/Money";
 import { Button, EmptyState, Group, IconChip, ProgressRing, Row } from "../../ui/primitives";
 
@@ -49,12 +50,21 @@ export function GoalDetail({ id }: { id: ID }) {
   return (
     <Screen title={goal.name} actions={<button type="button" className="h-9 px-1 text-body text-accent-ink" onClick={() => nav.sheet("goal", { editId: goal.id })}>Изменить</button>}>
       <div className="flex flex-col items-center px-6 pt-2 text-center">
-        <ProgressRing value={info.progress} size={188} stroke={10} tone={info.done ? "positive" : "accent"}>
-          <div className="flex flex-col items-center">
-            <NamedIcon name={goal.icon} size={22} strokeWidth={1.9} className="text-ink-2" />
-            <div className="mt-1 text-[34px] font-semibold leading-none tracking-[-0.03em] tnum">{Math.floor(info.progress * 100)}%</div>
-          </div>
-        </ProgressRing>
+        {goal.look === "jar" ? (
+          <GoalJar value={info.progress} color={info.done ? "var(--positive)" : goal.color ?? "var(--accent)"}>
+            <div className="flex flex-col items-center" style={{ textShadow: info.progress > 0.45 ? "0 1px 10px rgba(0,0,0,0.3)" : undefined }}>
+              <NamedIcon name={goal.icon} size={22} className={info.progress > 0.45 ? "text-white/85" : "text-ink-2"} />
+              <div className={cn("mt-1 text-[34px] font-semibold leading-none tracking-[-0.03em] tnum", info.progress > 0.45 ? "text-white" : "text-ink")}>{Math.floor(info.progress * 100)}%</div>
+            </div>
+          </GoalJar>
+        ) : (
+          <ProgressRing value={info.progress} size={188} stroke={10} tone={info.done ? "positive" : "accent"} color={info.done ? undefined : goal.color}>
+            <div className="flex flex-col items-center">
+              <NamedIcon name={goal.icon} size={22} className="text-ink-2" />
+              <div className="mt-1 text-[34px] font-semibold leading-none tracking-[-0.03em] tnum">{Math.floor(info.progress * 100)}%</div>
+            </div>
+          </ProgressRing>
+        )}
         <div className="mt-4 text-title-2 font-semibold">{goal.name}</div>
         <div className="mt-1 text-callout text-ink-2">
           <Money value={info.saved} currency={goal.currency} privacy className="font-semibold text-ink" /> из <Money value={goal.target} currency={goal.currency} />

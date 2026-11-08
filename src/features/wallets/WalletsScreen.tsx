@@ -8,7 +8,7 @@ import { monthlyTotals } from "../../lib/analytics";
 import { rateOf } from "../../lib/finance";
 import { haptic } from "../../lib/haptics";
 import { formatCompact, formatMoney } from "../../lib/money";
-import { materialOf, walletKindInfo } from "../../store/catalog";
+import { materialFor, walletKindInfo } from "../../store/catalog";
 import { useAppData, useBalances, useLedger, useNetWorth, useToday } from "../../store/hooks";
 import { useData } from "../../store/store";
 import type { Wallet } from "../../store/types";
@@ -124,7 +124,7 @@ function WalletStack({ wallets, base, hidden }: { wallets: Wallet[]; base: strin
     <div ref={ref} className="mx-5 mt-7">
       {width > 0 &&
         wallets.map((w, i) => {
-          const m = materialOf(w.style);
+          const m = materialFor(w);
           return (
             <motion.button
               key={w.id}

@@ -4,7 +4,7 @@ import { Plus } from "../../ui/glyphs";
 import { haptic } from "../../lib/haptics";
 import { cn } from "../../lib/cn";
 import type { Minor } from "../../lib/money";
-import { materialOf, TOTAL_MATERIAL, walletKindInfo, type CardMaterial } from "../../store/catalog";
+import { materialFor, TOTAL_MATERIAL, walletKindInfo, type CardMaterial } from "../../store/catalog";
 import { useBalances, useTotalBalance } from "../../store/hooks";
 import { useData } from "../../store/store";
 import { activeWallets } from "../../lib/finance";
@@ -68,7 +68,7 @@ export function useCardModels(): CardModel[] {
         ident: w.ident,
         amount: balances[w.id] ?? 0,
         currency: w.currency,
-        material: materialOf(w.style),
+        material: materialFor(w),
         badge: w.currency !== base ? w.currency : undefined
       });
     }

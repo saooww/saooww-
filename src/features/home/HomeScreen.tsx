@@ -210,7 +210,7 @@ function PrimaryGoal() {
             </div>
           </div>
         </div>
-        <ProgressBar value={info.progress} className="mt-3.5" tone={info.done ? "positive" : "ink"} />
+        <ProgressBar value={info.progress} className="mt-3.5" tone={info.done ? "positive" : "ink"} color={info.done ? undefined : goal.color} />
         <div className="mt-2 flex justify-between text-footnote text-ink-2">
           <Money value={info.saved} currency={goal.currency} privacy />
           <Money value={goal.target} currency={goal.currency} />

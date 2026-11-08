@@ -296,25 +296,25 @@ export function ProgressBar({
   tone = "accent",
   height = 6,
   className,
-  marker
+  marker,
+  color: own
 }: {
   value: number;
   tone?: "accent" | "positive" | "warning" | "negative" | "ink";
+  /** Any colour instead of a tone (a goal's own colour) */
+  color?: string;
   height?: number;
   className?: string;
   /** Optional tick (0..1), e.g. "where you should be by today" */
   marker?: number;
 }) {
   const v = Math.max(0, Math.min(1, value));
-  const color = TONE_COLOR[tone];
+  const color = own ?? TONE_COLOR[tone];
   return (
     <div className={cn("relative w-full overflow-hidden rounded-full", className)} style={{ height, background: "var(--line)" }}>
       <motion.div
         className="absolute inset-y-0 left-0 w-full origin-left rounded-full"
-        style={{
-          background: tone === "accent" ? "linear-gradient(90deg, var(--accent-lo), var(--accent-hi))" : `linear-gradient(90deg, color-mix(in srgb, ${color} 72%, transparent), ${color})`,
-          boxShadow: tone === "ink" ? undefined : `0 0 12px -2px ${color}`
-        }}
+        style={{ background: color }}
         initial={{ scaleX: 0 }}
         animate={{ scaleX: v }}
         transition={{ type: "spring", stiffness: 140, damping: 26, mass: 1 }}
@@ -331,18 +331,21 @@ export function ProgressRing({
   size = 120,
   stroke = 8,
   tone = "accent",
+  color,
   children
 }: {
   value: number;
   size?: number;
   stroke?: number;
   tone?: "accent" | "positive";
+  /** Any colour instead of a tone */
+  color?: string;
   children?: ReactNode;
 }) {
   const r = (size - stroke) / 2;
   const v = Math.max(0, Math.min(1, value));
   const gid = useId().replace(/:/g, "");
-  const [from, to] = tone === "accent" ? ["var(--accent-hi)", "var(--accent-lo)"] : ["var(--positive-hi)", "var(--positive)"];
+  const [from, to] = color ? [color, color] : tone === "accent" ? ["var(--accent)", "var(--accent)"] : ["var(--positive)", "var(--positive)"];
   return (
     <div className="relative" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="-rotate-90 overflow-visible">

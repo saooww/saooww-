@@ -1,4 +1,4 @@
-import type { CardStyle, Category, WalletKind } from "./types";
+import type { CardStyle, Category, WalletKind, CardPattern } from "./types";
 
 /**
  * Chart palette: muted, evenly weighted hues. Colour is used only for data
@@ -86,6 +86,8 @@ export function walletKindInfo(kind: WalletKind) {
 
 export interface CardMaterial {
   id: CardStyle;
+  /** Line-work drawn on the card (default: the sail) */
+  pattern?: CardPattern;
   name: string;
   /** Card surface */
   background: string;
@@ -203,6 +205,33 @@ export const TOTAL_MATERIAL: CardMaterial = {
   swatch: "#1a1a1d",
   glow: "color-mix(in srgb, var(--accent) 30%, transparent)"
 };
+
+/** A card in any colour: the same lit slab, built from one hex. */
+/** Colours a goal can wear. */
+export const GOAL_COLORS = ["#fa0717", "#ff7a59", "#f0b14e", "#3cc896", "#2bb3c0", "#5b8cff", "#8e7ce3", "#e879b9"];
+
+export function customMaterial(hex: string): CardMaterial {
+  const v = hex.replace("#", "");
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(v.slice(i, i + 2), 16) / 255);
+  const light = 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.62;
+  return {
+    id: "graphite",
+    name: "Свой цвет",
+    background: lit(`color-mix(in srgb, ${hex} 78%, white)`, hex, `color-mix(in srgb, ${hex} 45%, black)`, light ? 0.6 : 0.22),
+    ink: light ? "#16140F" : "#FFFAF6",
+    inkMuted: light ? "rgba(22,20,15,0.58)" : "rgba(255,250,246,0.7)",
+    line: light ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.13)",
+    swatch: hex,
+    glow: `color-mix(in srgb, ${hex} 35%, transparent)`,
+    light
+  };
+}
+
+/** The look of a wallet's card: its colour (or own colour) and its pattern. */
+export function materialFor(w: { style: CardStyle; customColor?: string; pattern?: CardPattern }): CardMaterial {
+  const base = w.customColor ? customMaterial(w.customColor) : materialOf(w.style);
+  return w.pattern ? { ...base, pattern: w.pattern } : base;
+}
 
 export function materialOf(style: CardStyle): CardMaterial {
   const id = RETIRED[style] ?? style;

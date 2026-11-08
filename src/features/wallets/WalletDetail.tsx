@@ -5,7 +5,7 @@ import { addDays, dayOf, formatDate, formatDayHeading, startOfMonth } from "../.
 import { balanceSeries } from "../../lib/finance";
 import { haptic } from "../../lib/haptics";
 import { formatCompact } from "../../lib/money";
-import { materialOf, walletKindInfo } from "../../store/catalog";
+import { materialFor, walletKindInfo } from "../../store/catalog";
 import { useAppData, useBalances, useToday } from "../../store/hooks";
 import { useData } from "../../store/store";
 import type { ID, Transaction } from "../../store/types";
@@ -142,7 +142,7 @@ export function WalletDetail({ id, from }: { id: ID; from?: Origin }) {
               ident={wallet.ident}
               amount={balance}
               currency={wallet.currency}
-              material={materialOf(wallet.style)}
+              material={materialFor(wallet)}
               hidden={hidden}
               badge={wallet.currency !== base ? wallet.currency : undefined}
               onToggleHidden={() => useData.getState().updateSettings({ hideAmounts: !hidden })}

@@ -65,6 +65,38 @@ const Sail = memo(function Sail({ color }: { color: string }) {
   );
 });
 
+/** Fine flowing lines from the lower edge. */
+const Waves = memo(function Waves({ color }: { color: string }) {
+  return (
+    <svg className="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 320 200" preserveAspectRatio="none" aria-hidden="true">
+      {[0, 1, 2, 3, 4, 5].map((i) => (
+        <path key={i} d={`M -10 ${150 + i * 9} C 80 ${110 + i * 12}, 170 ${200 + i * 4}, 330 ${120 + i * 10}`} fill="none" stroke={color} strokeWidth="0.8" />
+      ))}
+    </svg>
+  );
+});
+
+/** A dot grid fading in from the right. */
+const Dots = memo(function Dots({ color }: { color: string }) {
+  return (
+    <svg className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true">
+      <defs>
+        <pattern id="card-dots" width="12" height="12" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="1.1" fill={color} />
+        </pattern>
+        <linearGradient id="card-dots-fade" x1="0" x2="1">
+          <stop offset="0.35" stopColor="#fff" stopOpacity="0" />
+          <stop offset="1" stopColor="#fff" stopOpacity="1" />
+        </linearGradient>
+        <mask id="card-dots-mask">
+          <rect width="100%" height="100%" fill="url(#card-dots-fade)" />
+        </mask>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#card-dots)" mask="url(#card-dots-mask)" />
+    </svg>
+  );
+});
+
 /**
  * A wallet card. The balance leads — top left, where the eye lands first;
  * the card's identity sits along the bottom edge, as on a real card
@@ -210,7 +242,9 @@ export const WalletCard = memo(function WalletCard({
         ].join(", ")
       }}
     >
-      <Sail color={material.line} />
+      {(material.pattern ?? "sail") === "sail" && <Sail color={material.line} />}
+      {material.pattern === "waves" && <Waves color={material.line} />}
+      {material.pattern === "dots" && <Dots color={material.line} />}
 
       {/* moving light */}
       <motion.div

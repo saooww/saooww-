@@ -249,9 +249,9 @@ export function createDemoData(today: DayKey = todayKey()): AppData {
   }
 
   const goals: Goal[] = [
-    { id: "g-japan", name: "Отпуск в Японии", icon: "Plane", target: rub(450_000), currency: "RUB", deadline: addMonths(today, 7), primary: true, createdAt: created },
-    { id: "g-cushion", name: "Финансовая подушка", icon: "LifeBuoy", target: rub(1_800_000), currency: "RUB", walletId: "w-savings", createdAt: created },
-    { id: "g-car", name: "Новый автомобиль", icon: "Car", target: rub(3_200_000), currency: "RUB", deadline: addMonths(today, 30), createdAt: created }
+    { id: "g-japan", name: "Отпуск в Японии", icon: "Plane", target: rub(450_000), currency: "RUB", deadline: addMonths(today, 7), primary: true, color: "#2bb3c0", look: "jar", createdAt: created },
+    { id: "g-cushion", name: "Финансовая подушка", icon: "LifeBuoy", target: rub(1_800_000), currency: "RUB", walletId: "w-savings", color: "#3cc896", createdAt: created },
+    { id: "g-car", name: "Новый автомобиль", icon: "Car", target: rub(3_200_000), currency: "RUB", deadline: addMonths(today, 30), color: "#f0b14e", createdAt: created }
   ];
 
   const budgets: Budget[] = [

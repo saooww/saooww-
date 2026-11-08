@@ -5,7 +5,7 @@ import { activeWallets, goalInfo, goalSaved } from "../../lib/finance";
 import { monthlyTotals } from "../../lib/analytics";
 import { haptic } from "../../lib/haptics";
 import { amountToInput, formatMoney, parseAmount } from "../../lib/money";
-import { GOAL_ICON_CHOICES, walletKindInfo } from "../../store/catalog";
+import { GOAL_COLORS, GOAL_ICON_CHOICES, walletKindInfo } from "../../store/catalog";
 import { useBalances, useEnvelopes, useLedger } from "../../store/hooks";
 import { useData } from "../../store/store";
 import type { ID } from "../../store/types";
@@ -41,6 +41,8 @@ export function GoalSheet({ editId }: { editId?: ID }) {
   const live = activeWallets(wallets);
   const [walletId, setWalletId] = useState<ID | undefined>(existing?.walletId ?? live.find((w) => w.kind === "savings")?.id ?? live[0]?.id);
   const [primary, setPrimary] = useState(existing?.primary ?? false);
+  const [color, setColor] = useState(existing?.color ?? GOAL_COLORS[0]);
+  const [look, setLook] = useState<"ring" | "jar">(existing?.look ?? "ring");
 
   const avgExpense = useMemo(() => {
     const m = monthlyTotals(entries, todayKey(), 4).slice(0, 3).filter((x) => x.expense > 0);
@@ -60,7 +62,9 @@ export function GoalSheet({ editId }: { editId?: ID }) {
       target: amount,
       currency,
       deadline: hasDeadline ? deadline : undefined,
-      walletId: mode === "wallet" ? walletId : undefined
+      walletId: mode === "wallet" ? walletId : undefined,
+      color,
+      look
     };
     if (existing) {
       st.updateGoal(existing.id, fields);
@@ -107,6 +111,29 @@ export function GoalSheet({ editId }: { editId?: ID }) {
         {name === "Финансовая подушка" && avgExpense > 0 && (
           <p className="-mt-3 px-8 text-footnote text-ink-3">Рекомендация: 6 месяцев ваших обычных расходов ≈ {formatMoney(Math.round(avgExpense * 6))}.</p>
         )}
+
+        <Group header="Оформление">
+          <div className="flex items-center justify-between gap-2 px-4 py-3" role="radiogroup" aria-label="Цвет цели">
+            {GOAL_COLORS.map((c) => (
+              <button
+                key={c}
+                type="button"
+                role="radio"
+                aria-checked={color === c}
+                aria-label={c}
+                onClick={() => {
+                  haptic();
+                  setColor(c);
+                }}
+                className="h-8 w-8 rounded-full transition-[outline-color] duration-200"
+                style={{ background: c, outline: `2px solid ${color === c ? "var(--ink)" : "transparent"}`, outlineOffset: 3 }}
+              />
+            ))}
+          </div>
+          <div className="px-4 pb-3">
+            <Segmented size="sm" value={look} onChange={setLook} options={[{ value: "ring", label: "Кольцо" }, { value: "jar", label: "Банка" }]} />
+          </div>
+        </Group>
 
         <Group header="Значок">
           <div className="grid grid-cols-6 gap-1 p-2">

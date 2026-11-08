@@ -17,6 +17,7 @@ import { Avatar, FormRow, Group, IconChip, Row, Segmented, SwitchRow, Toggle, in
 import { FullLogo } from "../../ui/Brand";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
 import { NUMBER_FONTS, type NumberFont } from "../../ui/numFont";
+import { PALETTES, paletteOf, type PaletteId } from "../../ui/palettes";
 import { SecuritySettings } from "../lock/SecuritySettings";
 
 export function SettingsScreen() {
@@ -66,18 +67,21 @@ export function SettingsScreen() {
         </Group>
 
         <Group header="Оформление">
-          <SwitchRow
-            icon={Moon}
-            label="Тема"
-            value={s.theme}
-            onChange={(theme) => update({ theme })}
-            options={[
-              { value: "dark", label: "Тёмная" },
-              { value: "light", label: "Светлая" },
-              { value: "system", label: "Авто" }
-            ]}
-          />
-          <AccentPicker value={s.accent} onChange={(accent) => update({ accent })} />
+          <ThemeGallery value={paletteOf(s.palette).id} onChange={(palette) => update({ palette, accent: palette === "ardessa" ? "ardessa" : "theme" })} />
+          {!paletteOf(s.palette).mode && (
+            <SwitchRow
+              icon={Moon}
+              label="Режим"
+              value={s.theme}
+              onChange={(theme) => update({ theme })}
+              options={[
+                { value: "dark", label: "Тёмный" },
+                { value: "light", label: "Светлый" },
+                { value: "system", label: "Авто" }
+              ]}
+            />
+          )}
+          <AccentPicker value={s.accent} custom={s.customAccent} themeAccent={paletteOf(s.palette).accent} onChange={(accent, customAccent) => update(customAccent ? { accent, customAccent } : { accent })} />
           <NumberFontPicker value={s.numberFont} onChange={(numberFont) => update({ numberFont })} />
           <SwitchRow
             icon={ALargeSmall}
@@ -565,21 +569,77 @@ const ACCENTS: Array<{ id: Settings["accent"]; label: string; color: string }> =
   { id: "ardessa", label: "Ardessa", color: "#fa0717" },
   { id: "vermilion", label: "Киноварь", color: "#f4532b" },
   { id: "indigo", label: "Индиго", color: "#5b7cfa" },
-  { id: "sakura", label: "Сакура", color: "#f06a8e" },
+  { id: "sakura", label: "Роза", color: "#f06a8e" },
   { id: "gold", label: "Золото", color: "#d9a441" }
 ];
 
-/** The app's one accent colour: buttons, highlights, the brand mark. */
-function AccentPicker({ value, onChange }: { value: Settings["accent"]; onChange: (v: Settings["accent"]) => void }) {
+/** Each theme as a tiny screen: its background, a card, the accent and a sphere. */
+function ThemeGallery({ value, onChange }: { value: PaletteId; onChange: (v: PaletteId) => void }) {
+  return (
+    <div className="py-3">
+      <div className="flex items-center gap-3 px-4">
+        <IconChip icon={Palette} size={30} />
+        <span className="text-body">Тема</span>
+      </div>
+      <div className="scroll-x mt-3 flex gap-3 px-4 pb-1" role="radiogroup" aria-label="Тема оформления">
+        {PALETTES.map((p) => {
+          const on = p.id === value;
+          const bg = p.bg ?? "#070708";
+          const card = p.surface ?? "#111113";
+          const ink = p.mode === "light" ? "#15130f" : "#f5f3f0";
+          const accent = p.accent ?? "#fa0717";
+          return (
+            <button
+              key={p.id}
+              type="button"
+              role="radio"
+              aria-checked={on}
+              aria-label={p.name}
+              onClick={() => {
+                if (!on) haptic();
+                onChange(p.id);
+              }}
+              className="flex shrink-0 flex-col items-center gap-1.5"
+            >
+              <span
+                className="relative block h-[118px] w-[78px] overflow-hidden rounded-[16px] transition-[outline-color] duration-200"
+                style={{ background: bg, outline: `2px solid ${on ? "var(--ink)" : "transparent"}`, outlineOffset: 2, boxShadow: "inset 0 0 0 0.5px var(--line-strong)" }}
+              >
+                {p.id === "ardessa" && <span className="absolute inset-y-0 right-0 w-1/2" style={{ background: "#f3f1ec" }} />}
+                <span className="absolute left-1/2 top-3 h-9 w-9 -translate-x-1/2 overflow-hidden rounded-full" style={{ background: card }}>
+                  <span className="absolute inset-x-0 bottom-0 h-[60%]" style={{ background: accent }} />
+                </span>
+                <span className="absolute inset-x-2 top-[58px] h-[18px] rounded-[6px]" style={{ background: card }} />
+                <span className="absolute left-2 top-[82px] h-[5px] w-8 rounded-full" style={{ background: ink, opacity: 0.7 }} />
+                <span className="absolute bottom-2 left-1/2 h-[14px] w-[14px] -translate-x-1/2 rounded-[5px]" style={{ background: accent }} />
+              </span>
+              <span className={cn("text-[11px] font-medium", on ? "text-ink" : "text-ink-2")}>{p.name}</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/** The accent: the theme's own, one of the house colours, or any colour at all. */
+function AccentPicker({ value, custom, themeAccent, onChange }: { value: Settings["accent"]; custom?: string; themeAccent?: string; onChange: (v: Settings["accent"], custom?: string) => void }) {
+  const picker = useRef<HTMLInputElement>(null);
+  const options: Array<{ id: Settings["accent"]; label: string; color: string }> = [
+    ...(themeAccent ? [{ id: "theme" as const, label: "Из темы", color: themeAccent }] : []),
+    ...ACCENTS,
+    { id: "custom", label: "Свой", color: custom ?? "#8e7ce3" }
+  ];
+  const current = value === "theme" && !themeAccent ? "ardessa" : value;
   return (
     <div className="px-4 py-3">
       <div className="flex items-center gap-3">
-        <IconChip icon={Palette} size={30} />
+        <IconChip icon={Sparkles} size={30} />
         <span className="text-body">Акцент</span>
       </div>
-      <div className="mt-3 grid grid-cols-5 gap-1" role="radiogroup" aria-label="Цвет акцента">
-        {ACCENTS.map((a) => {
-          const on = a.id === value;
+      <div className="scroll-x -mx-1 mt-3 flex gap-1 px-1" role="radiogroup" aria-label="Цвет акцента">
+        {options.map((a) => {
+          const on = a.id === current;
           return (
             <button
               key={a.id}
@@ -587,25 +647,38 @@ function AccentPicker({ value, onChange }: { value: Settings["accent"]; onChange
               role="radio"
               aria-checked={on}
               onClick={() => {
+                if (a.id === "custom") {
+                  picker.current?.click();
+                  return;
+                }
                 if (!on) haptic();
                 onChange(a.id);
               }}
-              className="flex flex-col items-center gap-1.5 py-1"
+              className="flex w-[62px] shrink-0 flex-col items-center gap-1.5 py-1"
             >
               <span
-                className="h-10 w-10 rounded-full transition-[outline-color] duration-200"
+                className="grid h-10 w-10 place-items-center rounded-full transition-[outline-color] duration-200"
                 style={{
-                  background: `linear-gradient(160deg, color-mix(in srgb, ${a.color} 70%, white), ${a.color} 55%, color-mix(in srgb, ${a.color} 75%, black))`,
-                  boxShadow: `0 6px 16px -6px ${a.color}`,
+                  background: a.id === "custom" && !custom ? "conic-gradient(#fa0717, #f0b14e, #3cc896, #5b8cff, #e879b9, #fa0717)" : a.color,
                   outline: `2px solid ${on ? "var(--ink)" : "transparent"}`,
                   outlineOffset: 3
                 }}
-              />
+              >
+                {a.id === "custom" && <Palette size={16} className="text-white mix-blend-difference" />}
+              </span>
               <span className={cn("text-[11px] font-medium", on ? "text-ink" : "text-ink-2")}>{a.label}</span>
             </button>
           );
         })}
       </div>
+      <input
+        ref={picker}
+        type="color"
+        aria-label="Свой цвет акцента"
+        value={custom ?? "#8e7ce3"}
+        onChange={(e) => onChange("custom", e.target.value)}
+        className="pointer-events-none absolute h-0 w-0 opacity-0"
+      />
     </div>
   );
 }

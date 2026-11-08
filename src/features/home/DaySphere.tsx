@@ -15,7 +15,7 @@ const R = 100; // the sphere, in a 248-wide box
 const RING = 116; // the tasks ring around it
 
 /** One wave of the liquid's surface, wide enough to slide by one period without a seam. */
-function wave(amp: number, period: number, width: number): string {
+export function wave(amp: number, period: number, width: number): string {
   let d = `M 0 0`;
   for (let x = 0; x <= width; x += period / 2) {
     const up = (x / (period / 2)) % 2 === 0;

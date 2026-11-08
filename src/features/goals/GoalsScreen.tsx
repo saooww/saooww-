@@ -103,7 +103,7 @@ function GoalCard({ goal, info, status, index }: { goal: Goal; info: GoalInfo; s
       className="panel cursor-pointer rounded-lg px-4 py-4 text-left"
     >
       <div className="flex items-center gap-3">
-        <span className={cn("grid h-10 w-10 shrink-0 place-items-center rounded-full", info.done ? "bg-positive-soft text-positive" : "tile")}>
+        <span className={cn("grid h-10 w-10 shrink-0 place-items-center rounded-full", info.done ? "bg-positive-soft text-positive" : "tile")} style={!info.done && goal.color ? { color: goal.color, background: `color-mix(in srgb, ${goal.color} 14%, transparent)` } : undefined}>
           {info.done ? <Check size={19} strokeWidth={2.4} /> : <NamedIcon name={goal.icon} size={19} strokeWidth={1.9} />}
         </span>
         <div className="min-w-0 flex-1">
@@ -115,7 +115,7 @@ function GoalCard({ goal, info, status, index }: { goal: Goal; info: GoalInfo; s
         </div>
         <div className="text-title-3 font-semibold tnum">{Math.floor(info.progress * 100)}%</div>
       </div>
-      <ProgressBar value={info.progress} tone={info.done ? "positive" : "ink"} className="mt-3.5" />
+      <ProgressBar value={info.progress} tone={info.done ? "positive" : "ink"} color={info.done ? undefined : goal.color} className="mt-3.5" />
       <div className="mt-2 flex justify-between text-footnote text-ink-2">
         <Money value={info.saved} currency={goal.currency} privacy className="text-ink" />
         <span>

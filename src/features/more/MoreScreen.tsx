@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { CalendarDays, FlaskConical, Gauge, HandCoins, Repeat, Search, Settings, Shapes, Target } from "../../ui/glyphs";
+import { CalendarDays, Palette, FlaskConical, Gauge, HandCoins, Repeat, Search, Settings, Shapes, Target } from "../../ui/glyphs";
 import { budgetStates } from "../../lib/insights";
 import { debtInfo, goalInfo, goalSaved } from "../../lib/finance";
 import { formatMoney } from "../../lib/money";
@@ -85,6 +85,7 @@ export function MoreScreen() {
         </Group>
 
         <Group>
+          <Row icon={Palette} title="Оформление" subtitle="Темы, свой цвет, шрифт цифр" chevron onClick={() => nav.push("settings")} />
           <Row icon={Shapes} title="Категории" chevron onClick={() => nav.push("categories")} />
           <Row icon={Settings} title="Настройки" chevron onClick={() => nav.push("settings")} />
         </Group>
