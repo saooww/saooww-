@@ -206,8 +206,7 @@ export const WalletCard = memo(function WalletCard({
           material.light ? "inset 0 0 0 0.5px rgba(0,0,0,0.09)" : "inset 0 0 0 0.5px rgba(255,255,255,0.13)",
           material.light ? "inset 0 1px 0 rgba(255,255,255,0.9)" : "inset 0 1px 0 rgba(255,255,255,0.18)",
           "inset 0 -1px 0 rgba(0,0,0,0.22)",
-          "var(--card-drop)",
-          `0 34px 70px -34px ${material.glow}`
+          "var(--card-drop)"
         ].join(", ")
       }}
     >

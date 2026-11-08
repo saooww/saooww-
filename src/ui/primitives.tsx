@@ -359,7 +359,6 @@ export function ProgressRing({
           r={r}
           fill="none"
           stroke={`url(#ring-${gid})`}
-          style={{ filter: `drop-shadow(0 0 6px ${tone === "accent" ? "var(--accent-glow)" : "color-mix(in srgb, var(--positive) 50%, transparent)"})` }}
           strokeWidth={stroke}
           strokeLinecap="round"
           initial={{ pathLength: 0 }}

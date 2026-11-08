@@ -114,7 +114,7 @@
   --panel-top: rgba(255, 250, 245, 0.045);
   --panel-bottom: rgba(255, 250, 245, 0.012);
   --panel-highlight: rgba(255, 255, 255, 0.07);
-  --shadow-panel: 0 18px 40px -28px rgba(0, 0, 0, 0.9);
+  --shadow-panel: none;
   --line: rgba(255, 248, 240, 0.075);
   --line-strong: rgba(255, 248, 240, 0.13);
   --ink: #f5f3f0;
@@ -178,7 +178,7 @@
   --panel-top: rgba(255, 255, 255, 1);
   --panel-bottom: rgba(252, 251, 248, 1);
   --panel-highlight: rgba(255, 255, 255, 1);
-  --shadow-panel: 0 1px 2px rgba(40, 30, 20, 0.04), 0 14px 30px -22px rgba(60, 40, 20, 0.22);
+  --shadow-panel: 0 1px 2px rgba(40, 30, 20, 0.05);
   --line: rgba(30, 20, 10, 0.08);
   --line-strong: rgba(30, 20, 10, 0.14);
   --ink: #15130f;
@@ -512,11 +512,9 @@
   /* Raised surface: a soft top-lit gradient over the surface colour and a
      hairline ring with a brighter top edge — the base of every card. */
   .panel {
-    background:
-      linear-gradient(180deg, var(--panel-top), var(--panel-bottom)),
-      var(--surface);
+    /* flat and quiet: a surface and a hairline, no sheen */
+    background: var(--surface);
     box-shadow:
-      inset 0 0.5px 0 var(--panel-highlight),
       inset 0 0 0 0.5px var(--line),
       var(--shadow-panel);
   }
@@ -552,27 +550,21 @@
       var(--shadow-pop);
   }
 
-  /* Vermilion gradient fill with a coloured glow — primary actions. */
+  /* The brand colour, flat — primary actions. */
   .fill-accent {
-    background: linear-gradient(180deg, var(--accent-hi) 0%, var(--accent) 55%, var(--accent-lo) 100%);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.24),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.12),
-      0 10px 24px -10px var(--accent-glow);
+    background: var(--accent);
   }
 
   .fill-positive {
-    background: linear-gradient(180deg, var(--positive-hi), var(--positive));
+    background: var(--positive);
   }
 
   /* Raised key / tile: a subtle vertical gradient like milled stone. */
   .tile {
     /* the raised face is lighter (darker in light), so faint text steps up to stay readable */
     --ink-3: var(--ink-3-raised);
-    background: linear-gradient(180deg, var(--tile-top), var(--tile-bottom));
-    box-shadow:
-      inset 0 0.5px 0 var(--panel-highlight),
-      inset 0 0 0 0.5px var(--line);
+    background: var(--tile-top);
+    box-shadow: inset 0 0 0 0.5px var(--line);
   }
 
   .text-gradient {
@@ -584,12 +576,9 @@
 
 }
 
-/* App canvas: deep sumi black with a barely-there warm lift at the top,
-   so the background never reads as a flat fill. */
+/* App canvas: one calm colour. */
 .app-canvas {
-  background:
-    radial-gradient(130% 55% at 50% -12%, var(--bg-glow), transparent 62%),
-    var(--bg);
+  background: var(--bg);
 }
 
 @media (prefers-reduced-motion: reduce) {

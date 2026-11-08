@@ -55,11 +55,6 @@ const KIND_META: Record<FlowKind, { label: string; icon: LucideIcon; fill: strin
   transfer: { label: "Перевод", icon: ArrowLeftRight, fill: "bg-ink", on: "text-ink-inverse" }
 };
 
-const KIND_GLOW: Record<"expense" | "income" | "transfer", string> = {
-  expense: "color-mix(in srgb, var(--accent) 26%, transparent)",
-  income: "color-mix(in srgb, var(--positive) 24%, transparent)",
-  transfer: "color-mix(in srgb, var(--ink) 9%, transparent)"
-};
 
 const SAVE_LABEL: Record<FlowKind, string> = { expense: "Добавить расход", income: "Добавить доход", transfer: "Перевести" };
 
@@ -348,7 +343,7 @@ export function ComposerSheet(props: ComposerProps) {
             <motion.div animate={amountCtl} className="flex min-h-[112px] flex-1 flex-col items-center justify-center px-4 py-2">
               {cross ? (
                 <div className="flex w-full flex-col items-center gap-3">
-                  <AmountDisplay compact buffer={shown(buf)} currency={from!.currency} active={field === "amount"} label="Списать" onClick={() => setField("amount")} glow={field === "amount" ? KIND_GLOW.transfer : undefined} />
+                  <AmountDisplay compact buffer={shown(buf)} currency={from!.currency} active={field === "amount"} label="Списать" onClick={() => setField("amount")} />
                   <AmountDisplay compact buffer={shown(toBuf)} currency={to!.currency} active={field === "to"} label="Зачислить" onClick={() => setField("to")} />
                 </div>
               ) : (
@@ -362,7 +357,7 @@ export function ComposerSheet(props: ComposerProps) {
                       )}
                     </AnimatePresence>
                   </div>
-                  <AmountDisplay buffer={shown(buf)} currency={currency} sign={kind === "income" ? "+" : undefined} glow={KIND_GLOW[kind]} />
+                  <AmountDisplay buffer={shown(buf)} currency={currency} sign={kind === "income" ? "+" : undefined} />
                 </>
               )}
               <div className="mt-1 h-5 text-footnote">

@@ -83,7 +83,6 @@ export function TabBar() {
               nav.sheet("create");
             }}
             className="fill-accent grid h-[48px] w-[48px] place-items-center rounded-[17px] text-[var(--accent-on)]"
-            style={{ boxShadow: "0 6px 16px -6px var(--accent-glow)" }}
           >
             <Plus size={24} />
           </motion.button>

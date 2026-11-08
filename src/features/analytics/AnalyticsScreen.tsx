@@ -138,12 +138,11 @@ export function AnalyticsScreen() {
                 type="button"
                 whileTap={{ scale: 0.98 }}
                 onClick={() => nav.story(range.from)}
-                className="relative flex w-full items-center gap-3 overflow-hidden rounded-[18px] px-4 py-3 text-left text-white"
-                style={{ background: "radial-gradient(90% 140% at 100% 100%, color-mix(in srgb, var(--accent) 70%, transparent), transparent 70%), linear-gradient(160deg, #26262b, #0b0b0d)", boxShadow: "inset 0 0.5px 0 rgba(255,255,255,0.12)" }}
+                className="panel relative flex w-full items-center gap-3 overflow-hidden rounded-[18px] px-4 py-3 text-left"
               >
-                <Sparkles size={18} strokeWidth={1.9} />
-                <span className="flex-1 text-callout font-semibold">Итоги: {range.label.toLowerCase()}</span>
-                <ChevronRight size={16} className="text-white/60" />
+                <Sparkles size={18} className="text-accent-ink" />
+                <span className="flex-1 text-callout font-semibold text-ink">Итоги: {range.label.toLowerCase()}</span>
+                <ChevronRight size={16} className="text-ink-3" />
               </motion.button>
             </div>
           )}

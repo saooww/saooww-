@@ -156,9 +156,6 @@ export function WalletCarousel({ onOpen, onAdd, intro = false }: { onOpen: (card
         }}
         style={{ aspectRatio: String(CARD_RATIO) }}
       >
-        {/* ambient light cast by the card in front */}
-        {width > 0 &&
-          cards.map((c, i) => (Math.abs(i - safeIndex) <= 1 ? <AmbientGlow key={c.key} color={c.material.glow} i={i} x={x} step={step} intro={intro} /> : null))}
 
         {width > 0 && (
           <motion.div
@@ -292,21 +289,6 @@ function CarouselItem({
           intro={intro}
         />
       </motion.div>
-    </motion.div>
-  );
-}
-
-function AmbientGlow({ color, i, x, step, intro }: { color: string; i: number; x: MotionValue<number>; step: number; intro: boolean }) {
-  const opacity = useTransform(x, (v) => Math.max(0, 1 - Math.abs(v + i * step) / step));
-  return (
-    <motion.div aria-hidden="true" className="pointer-events-none absolute -inset-x-12 -bottom-24 -top-16" style={{ opacity, willChange: "opacity" }}>
-      <motion.div
-        className="absolute inset-0"
-        style={{ background: `radial-gradient(50% 46% at 50% 54%, ${color}, transparent 100%)` }}
-        initial={intro ? { opacity: 0 } : false}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 + INTRO_SHIFT, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-      />
     </motion.div>
   );
 }
