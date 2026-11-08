@@ -4,12 +4,12 @@ import { budgetStates } from "../../lib/insights";
 import { debtInfo, goalInfo, goalSaved } from "../../lib/finance";
 import { formatMoney } from "../../lib/money";
 import { monthlyEquivalent } from "../../lib/recurrence";
-import { pluralN } from "../../lib/dates";
+import { MONTHS_GEN, parseDay, pluralN } from "../../lib/dates";
 import { useAppData, useBalances, useEnvelopes, useLedger, useToday } from "../../store/hooks";
 import { useData } from "../../store/store";
 import { nav } from "../../store/ui";
 import { Screen } from "../../nav/Screen";
-import { Button, Group, Row } from "../../ui/primitives";
+import { Avatar, Button, Group, IconButton, Row } from "../../ui/primitives";
 
 export function MoreScreen() {
   const data = useAppData();
@@ -18,6 +18,9 @@ export function MoreScreen() {
   const env = useEnvelopes();
   const today = useToday();
   const demo = useData((s) => s.meta.demo);
+  const name = useData((s) => s.settings.name);
+  const createdAt = useData((s) => s.meta.createdAt);
+  const since = createdAt ? `${MONTHS_GEN[parseDay(createdAt.slice(0, 10)).getMonth()]} ${createdAt.slice(0, 4)}` : "";
 
   const s = useMemo(() => {
     const goals = data.goals.filter((g) => !g.archived);
@@ -35,13 +38,16 @@ export function MoreScreen() {
   }, [data, entries, balances, env, today]);
 
   return (
-    <Screen title="Ещё" large>
-      <div className="px-4">
-        <button type="button" onClick={() => nav.sheet("search")} className="flex h-10 w-full items-center gap-2 rounded-sm tile px-3 text-left text-body text-ink-3">
-          <Search size={17} />
-          Поиск по всему приложению
-        </button>
-      </div>
+    <Screen title="Профиль" large actions={<IconButton icon={Search} label="Поиск" onClick={() => nav.sheet("search")} />}>
+      {/* who you are, and the way into the app's look and settings */}
+      <button type="button" onClick={() => nav.push("settings")} className="panel mx-4 flex w-[calc(100%-32px)] items-center gap-4 rounded-[24px] p-4 text-left active:opacity-80">
+        <Avatar name={name || "Я"} size={56} />
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-title-3 font-semibold text-ink">{name || "Ваш профиль"}</span>
+          <span className="block text-footnote text-ink-2">{since ? `В Ardessa с ${since}` : "Имя, оформление, данные"}</span>
+        </span>
+        <Settings size={20} className="shrink-0 text-ink-3" />
+      </button>
 
       {demo && (
         <div className="mx-4 mt-4 rounded-lg border border-line-strong px-4 py-3.5">

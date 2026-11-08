@@ -12,6 +12,7 @@ import { Screen } from "../../nav/Screen";
 import { Money } from "../../ui/Money";
 import { Button, Chip, EmptyState, IconButton } from "../../ui/primitives";
 import { TxRow, usePresentCtx } from "./TxRow";
+import { MoneySwitch } from "../../nav/MoneySwitch";
 import { useToday } from "../../store/hooks";
 
 const PAGE = 80;
@@ -146,8 +147,9 @@ export function TransactionsScreen() {
 
   return (
     <Screen
-      title="Операции"
+      title="Деньги"
       large
+      subheader={<MoneySwitch current="transactions" />}
       scrollRef={scrollRef}
       actions={<IconButton icon={Plus} label="Новая операция" onClick={() => nav.sheet("composer", { kind: "expense" })} />}
     >

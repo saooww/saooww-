@@ -20,6 +20,7 @@ import { iconByName } from "../../ui/icons";
 import { AnimatedMoney, Money } from "../../ui/Money";
 import { spring } from "../../ui/motion";
 import { Button, EmptyState, Group, IconButton, Row } from "../../ui/primitives";
+import { MoneySwitch } from "../../nav/MoneySwitch";
 import { CARD_RATIO, WalletCard } from "../../ui/WalletCard";
 
 const PEEK = 72;
@@ -33,7 +34,7 @@ export function WalletsScreen() {
   const [showArchive, setShowArchive] = useState(false);
 
   return (
-    <Screen title="Кошельки" large actions={<IconButton icon={Plus} label="Новый кошелёк" onClick={() => nav.sheet("wallet")} />}>
+    <Screen title="Деньги" large subheader={<MoneySwitch current="wallets" />} actions={<IconButton icon={Plus} label="Новый кошелёк" onClick={() => nav.sheet("wallet")} />}>
       <NetWorthBlock />
 
       {live.length === 0 ? (

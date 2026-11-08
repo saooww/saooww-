@@ -4,6 +4,9 @@ import type { ID } from "./types";
 
 export type Tab = "home" | "planner" | "wallets" | "transactions" | "analytics" | "more";
 
+/** Tabs gathered under «Деньги» in the tab bar */
+export const MONEY_TABS: Tab[] = ["wallets", "transactions", "analytics"];
+
 export type PlannerView = "today" | "week" | "lists" | "notes";
 
 export type RouteName =
@@ -70,6 +73,8 @@ export const DEFAULT_FILTER: TxFilter = { query: "", kind: "all", period: "all",
 interface UIState {
   tab: Tab;
   stacks: Record<Tab, Route[]>;
+  /** The money screen last shown — where «Деньги» opens */
+  moneyTab: Tab;
   /** +1 forward, −1 back — drives screen transitions */
   navDir: 1 | -1;
   /** Increments when the active tab is tapped again (scroll to top / pop to root) */
@@ -115,6 +120,7 @@ const key = () => `r${++seq}`;
 
 export const useUI = create<UIState>()((set, get) => ({
   tab: "home",
+  moneyTab: "wallets",
   stacks: { home: [root()], planner: [root()], wallets: [root()], transactions: [root()], analytics: [root()], more: [root()] },
   navDir: 1,
   retap: { home: 0, planner: 0, wallets: 0, transactions: 0, analytics: 0, more: 0 },
@@ -133,6 +139,7 @@ export const useUI = create<UIState>()((set, get) => ({
 
   setTab(tab) {
     const s = get();
+    if (MONEY_TABS.includes(tab) && s.moneyTab !== tab) set({ moneyTab: tab });
     if (s.tab === tab) {
       const stack = s.stacks[tab];
       if (stack.length > 1) set({ navDir: -1, stacks: { ...s.stacks, [tab]: [stack[0]] } });

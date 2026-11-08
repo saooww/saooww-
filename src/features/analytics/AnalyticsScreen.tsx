@@ -17,6 +17,7 @@ import { NamedIcon } from "../../ui/icons";
 import { AnimatedMoney, Money } from "../../ui/Money";
 import { ease } from "../../ui/motion";
 import { EmptyState, IconButton, ProgressBar, Segmented } from "../../ui/primitives";
+import { MoneySwitch } from "../../nav/MoneySwitch";
 import { SpendingCalendar } from "./SpendingCalendar";
 
 const PERIODS: Array<{ value: Period; label: string }> = [
@@ -105,7 +106,7 @@ export function AnalyticsScreen() {
   const capDelta = capital.length ? capital[capital.length - 1].value - capital[0].value : 0;
 
   return (
-    <Screen title="Аналитика" large>
+    <Screen title="Деньги" large subheader={<MoneySwitch current="analytics" />}>
       <div className="px-4">
         <Segmented options={PERIODS} value={period} onChange={changePeriod} />
       </div>

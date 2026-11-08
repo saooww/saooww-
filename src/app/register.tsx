@@ -10,6 +10,8 @@ import { ComposerSheet } from "../features/transactions/Composer";
 import { PinSheet } from "../features/lock/PinSheet";
 // typed into right after a tap — must be there at once, like the composer
 import { QuickAddSheet } from "../features/planner/QuickAdd";
+// the «+» in the tab bar, typed into at once
+import { CreateSheet } from "../features/create/CreateSheet";
 
 /*
  * What the first screen needs — home, the composer, the lock — loads with
@@ -155,5 +157,6 @@ registerSheets({
   backupText: BackupTextSheet,
   pin: PinSheet,
   homeLayout: HomeLayoutSheet,
+  create: CreateSheet,
   weekReview: WeekReviewSheet
 });

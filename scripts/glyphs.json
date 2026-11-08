@@ -49,6 +49,12 @@
    "bold"
   ]
  },
+ "ArrowUp": {
+  "ph": "ArrowUp",
+  "weights": [
+   "bold"
+  ]
+ },
  "ArrowUpDown": {
   "ph": "ArrowsDownUp",
   "weights": [

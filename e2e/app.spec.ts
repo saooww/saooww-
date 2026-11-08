@@ -31,6 +31,12 @@ async function safeToSpend(page: Page): Promise<number> {
   return prev.startsWith("Сегодня сверх нормы") ? -value : value;
 }
 
+/** «Деньги» in the tab bar, then one of its three views. */
+async function openMoney(page: Page, view: "Счета" | "Операции" | "Аналитика") {
+  await page.getByRole("tab", { name: "Деньги" }).click();
+  await page.locator('.app-canvas > [aria-hidden="false"]').getByRole("tab", { name: view }).click();
+}
+
 const carousel = (page: Page) => page.locator('[aria-roledescription="карусель"]');
 
 const CBR = /cbr-xml-daily\.ru/;
@@ -91,7 +97,7 @@ test("чек делится на категории", async ({ page }) => {
   await page.getByRole("button", { name: "Готово" }).click();
   await page.getByRole("button", { name: "Добавить расход" }).click();
 
-  await page.getByRole("tab", { name: "Операции" }).click();
+  await openMoney(page, "Операции");
   const today = page.locator("section").filter({ hasText: "Сегодня" }).first();
   await expect(today).toContainText("3 000");
   await expect(today).toContainText("450");
@@ -99,7 +105,7 @@ test("чек делится на категории", async ({ page }) => {
 
 test("код-пароль закрывает приложение после перезапуска", async ({ page }) => {
   await startDemo(page);
-  await page.getByRole("tab", { name: "Ещё" }).click();
+  await page.getByRole("tab", { name: "Профиль" }).click();
   await page.getByText("Настройки", { exact: true }).click();
   await page.getByRole("switch", { name: "Код-пароль" }).click();
   await page.keyboard.type("1234");
@@ -120,7 +126,7 @@ test("код-пароль закрывает приложение после п�
 
 test("итоги месяца открываются из аналитики", async ({ page }) => {
   await startDemo(page);
-  await page.getByRole("tab", { name: "Аналитика" }).click();
+  await openMoney(page, "Аналитика");
   await page.getByRole("button", { name: "Предыдущий период" }).click();
   await page.getByRole("button", { name: /^Итоги:/ }).click();
   const story = page.getByRole("dialog", { name: /^Итоги:/ });
@@ -143,7 +149,7 @@ test("фото чека сохраняется вместе с операцие�
   await page.getByRole("button", { name: "Назад" }).click();
   await page.getByRole("button", { name: "Добавить расход" }).click();
 
-  await page.getByRole("tab", { name: "Операции" }).click();
+  await openMoney(page, "Операции");
   await page.getByRole("button", { name: /Продукты/ }).filter({ has: page.getByLabel("Есть фото чека") }).first().click();
   const sheet = page.getByRole("dialog", { name: "Операция" });
   await expect(sheet).toContainText("Фото чека");
@@ -160,7 +166,7 @@ test("курсы ЦБ подтягиваются и пересчитывают �
   await startDemo(page);
   // Demo: 2 480 000 ₽ with the dollar at 95; 2 400 $ at 100 adds 12 000 ₽.
   await expect(carousel(page)).toContainText("2 492 000");
-  await page.getByRole("tab", { name: "Ещё" }).click();
+  await page.getByRole("tab", { name: "Профиль" }).click();
   await page.getByText("Настройки", { exact: true }).click();
   await page.getByText("Курсы валют", { exact: true }).click();
   await expect(page.getByText(/Официальные курсы ЦБ РФ на/)).toBeVisible();
@@ -249,7 +255,7 @@ test("калькулятор в сумме: 1200 + 350 записывается 
   await expect(sheet.getByRole("button", { name: /Добавить расход/ })).toContainText("1 550");
   await sheet.getByRole("button", { name: /Добавить расход/ }).click();
   await expect(page.getByText("Расход добавлен")).toBeVisible();
-  await page.getByRole("tab", { name: "Операции" }).click();
+  await openMoney(page, "Операции");
   await expect(page.locator("section").filter({ hasText: "Сегодня" }).first()).toContainText("1 550");
 });
 
@@ -272,7 +278,7 @@ test("скрытый экран догоняет изменения, сдела�
   await startDemo(page);
   // the tab on view is the one layer not hidden from assistive tech
   const onView = page.locator('.app-canvas > [aria-hidden="false"]');
-  await page.getByRole("tab", { name: "Операции" }).click();
+  await openMoney(page, "Операции");
   await expect(onView).toContainText("Всё время");
   await expect(onView).not.toContainText("4 321");
   // the list stays alive but out of sight while a new expense is added on the home tab
@@ -282,7 +288,7 @@ test("скрытый экран догоняет изменения, сдела�
   await page.getByRole("dialog").locator('button[aria-pressed="false"]', { hasText: /^Продукты$/ }).click();
   await page.getByRole("button", { name: /Добавить расход/ }).click();
   await expect(page.getByText("Расход добавлен")).toBeVisible();
-  await page.getByRole("tab", { name: "Операции" }).click();
+  await openMoney(page, "Операции");
   await expect(onView).toContainText("4 321");
 });
 
@@ -330,12 +336,12 @@ test.describe("маленький экран", () => {
           })
           .map((b) => b.textContent)
       );
-    await page.getByRole("tab", { name: "Ещё" }).click();
+    await page.getByRole("tab", { name: "Профиль" }).click();
     await onView.getByText("Настройки", { exact: true }).click();
     await onView.getByRole("tab", { name: "Огромный" }).click();
     await expect(page.locator("html")).toHaveAttribute("data-text", "xl");
     await expect.poll(cutLabels).toEqual([]);
-    await page.getByRole("tab", { name: "Аналитика" }).click();
+    await openMoney(page, "Аналитика");
     await expect.poll(cutLabels).toEqual([]);
     await onView.getByRole("tab", { name: "Тренды" }).click();
     await expect(onView.getByRole("tab", { name: "Накопления" })).toBeVisible();
