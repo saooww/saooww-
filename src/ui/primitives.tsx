@@ -1,6 +1,6 @@
 import { forwardRef, useId, type CSSProperties, type ReactNode } from "react";
 import { motion, type HTMLMotionProps } from "framer-motion";
-import { ChevronRight, type LucideIcon } from "lucide-react";
+import { ChevronRight, type LucideIcon } from "./glyphs";
 import { cn } from "../lib/cn";
 import { haptic } from "../lib/haptics";
 import { NamedIcon } from "./icons";

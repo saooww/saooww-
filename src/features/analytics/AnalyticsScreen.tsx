@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChartColumn, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { ChartColumn, ChevronLeft, ChevronRight, Sparkles } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { bucketSeries, bucketsFor, capitalSeries, categoryRows, donutSlices, habits, monthForecast, monthlyTotals, type SeriesKind } from "../../lib/analytics";
 import { addDays, capitalize, formatDate, pluralN, WEEKDAYS_ACC, WEEKDAYS_SHORT } from "../../lib/dates";

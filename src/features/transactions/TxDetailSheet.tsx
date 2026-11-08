@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Copy, Pencil, Star, Trash2 } from "lucide-react";
+import { Copy, Pencil, Star, Trash2 } from "../../ui/glyphs";
 import { formatDayHeading, dayOf, nowISO, pluralN, timeOf } from "../../lib/dates";
 import { haptic } from "../../lib/haptics";
 import { KIND_LABEL, presentTx } from "../../lib/present";

@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { motion } from "framer-motion";
-import { Delete } from "lucide-react";
+import { Delete } from "./glyphs";
 import { haptic } from "../lib/haptics";
 import { getMoneyFormat } from "../lib/money";
 import { cn } from "../lib/cn";

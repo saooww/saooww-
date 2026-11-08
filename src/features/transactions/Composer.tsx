@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useAnimationControls } from "framer-motion";
-import { ArrowDownLeft, ArrowLeftRight, ArrowRight, ArrowUpRight, CalendarDays, Camera, ChevronDown, Hash, LayoutGrid, MessageSquareText, Plus, Repeat, Split, Star, X, type LucideIcon } from "lucide-react";
+import { ArrowDownLeft, ArrowLeftRight, ArrowRight, ArrowUpRight, CalendarDays, Camera, ChevronDown, Hash, LayoutGrid, MessageSquareText, Plus, Repeat, Split, Star, X, type LucideIcon } from "../../ui/glyphs";
 import { applyCalcKey, evaluate, formatExpression, hasOperator, type CalcKey } from "../../lib/calc";
 import { cn } from "../../lib/cn";
 import { dayOf, formatDate, formatDayHeading, nowISO, timeOf, todayKey, addDays } from "../../lib/dates";

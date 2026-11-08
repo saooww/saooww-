@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { motion, useAnimationControls } from "framer-motion";
-import { Delete } from "lucide-react";
+import { Delete } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { haptic } from "../../lib/haptics";
 import { spring } from "../../ui/motion";

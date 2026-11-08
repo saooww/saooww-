@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { animate, AnimatePresence, motion, useAnimationControls, useMotionValue, useTransform, type MotionValue } from "framer-motion";
-import { Plus } from "lucide-react";
+import { Plus } from "../../ui/glyphs";
 import { haptic } from "../../lib/haptics";
 import { cn } from "../../lib/cn";
 import type { Minor } from "../../lib/money";
@@ -15,7 +15,7 @@ import { spring } from "../../ui/motion";
 import { CARD_RATIO, WalletCard } from "../../ui/WalletCard";
 import { pluralN } from "../../lib/dates";
 import type { ID } from "../../store/types";
-import { Layers } from "lucide-react";
+import { Layers } from "../../ui/glyphs";
 import { INTRO_SHIFT } from "../../ui/intro";
 
 const GAP = 14;

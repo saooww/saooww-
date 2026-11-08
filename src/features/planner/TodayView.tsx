@@ -1,6 +1,6 @@
 import { useMemo, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, ChevronRight, Inbox, Moon, Sunrise } from "lucide-react";
+import { ChevronDown, ChevronRight, Inbox, Moon, Sunrise } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { MONTHS_GEN, WEEKDAYS_LONG, capitalize, parseDay, pluralN, weekdayIndex } from "../../lib/dates";
 import { dayPlan, isInbox } from "../../lib/tasks";

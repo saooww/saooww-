@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { CircleCheck, TriangleAlert } from "lucide-react";
+import { CircleCheck, TriangleAlert } from "./glyphs";
 import { useUI } from "../store/ui";
 import { spring } from "./motion";
 

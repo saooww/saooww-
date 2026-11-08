@@ -1,6 +1,6 @@
 import { useMemo, type ReactNode } from "react";
 import { motion } from "framer-motion";
-import { ArrowDownLeft, ArrowUpRight, BookOpen, CalendarRange, CheckCheck, Coffee, Flame, Sparkles, type LucideIcon } from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, BookOpen, CalendarRange, CheckCheck, Coffee, Flame, Sparkles, type LucideIcon } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { WEEKDAYS_LONG, formatDate, plural, pluralN } from "../../lib/dates";
 import { haptic } from "../../lib/haptics";

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowUpDown, CalendarRange, Plus, Search, SearchX, Shapes, Wallet as WalletIcon, X, ReceiptText, ListFilter } from "lucide-react";
+import { ArrowUpDown, CalendarRange, Plus, Search, SearchX, Shapes, Wallet as WalletIcon, X, ReceiptText, ListFilter } from "../../ui/glyphs";
 import { addDays, addMonths, dayOf, endOfMonth, formatDate, formatDayHeading, startOfMonth } from "../../lib/dates";
 import { toBase } from "../../lib/finance";
 import { haptic } from "../../lib/haptics";

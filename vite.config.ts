@@ -52,11 +52,13 @@ export default defineConfig({
             // Libraries change rarely — keep them in their own long-cached chunks.
             // Icons go in one chunk too, instead of dozens of tiny files.
             manualChunks(id) {
+              // icon path data changes rarely too
+              if (id.includes("/src/ui/glyphData")) return "icons";
               if (!id.includes("node_modules")) return;
               if (/node_modules\/(react|react-dom|scheduler)\//.test(id)) return "react";
               if (id.includes("node_modules/framer-motion") || id.includes("node_modules/motion-")) return "motion";
               if (id.includes("node_modules/zustand")) return "state";
-              if (id.includes("node_modules/lucide-react")) return "icons";
+              if (id.includes("node_modules/@phosphor-icons")) return "icons";
             }
           }
     }

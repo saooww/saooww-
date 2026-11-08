@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X } from "lucide-react";
+import { X } from "./glyphs";
 
 /** Free-form tags: type and press Enter (or a comma); tap a suggestion to add it. */
 export function TagInput({ value, onChange, suggestions = [], placeholder = "Добавить тег" }: { value: string[]; onChange: (tags: string[]) => void; suggestions?: string[]; placeholder?: string }) {

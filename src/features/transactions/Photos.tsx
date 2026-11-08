@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { Camera, X } from "lucide-react";
+import { Camera, X } from "../../ui/glyphs";
 import { haptic } from "../../lib/haptics";
 import { photoUrl, photosSupported, savePhoto } from "../../store/photos";
 import { nav } from "../../store/ui";

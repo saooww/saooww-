@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Gauge, Plus, ReceiptText } from "lucide-react";
+import { Gauge, Plus, ReceiptText } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { addMonths, diffDays, endOfMonth, monthTitle, pluralN, startOfMonth } from "../../lib/dates";
 import { haptic } from "../../lib/haptics";

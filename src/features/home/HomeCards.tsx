@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { CalendarCheck, ChevronRight, Share, Sparkles, X, type LucideIcon } from "lucide-react";
+import { CalendarCheck, ChevronRight, Share, Sparkles, X, type LucideIcon } from "../../ui/glyphs";
 import { addDays, addMonths, diffDays, parseDay, startOfMonth } from "../../lib/dates";
 import { isEmbedded, saveBackupFile } from "../../lib/backupFile";
 import { haptic } from "../../lib/haptics";

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronRight, Plus, Sunrise } from "lucide-react";
+import { ChevronRight, Plus, Sunrise } from "../../ui/glyphs";
 import { pluralN } from "../../lib/dates";
 import { dayPlan } from "../../lib/tasks";
 import { useToday } from "../../store/hooks";

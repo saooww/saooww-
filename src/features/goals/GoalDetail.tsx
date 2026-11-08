@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ArrowDownToLine, ArrowUpFromLine, Pencil, Star, Target, Trash2 } from "lucide-react";
+import { ArrowDownToLine, ArrowUpFromLine, Pencil, Star, Target, Trash2 } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { dayOf, formatDate, formatDayHeading, pluralN } from "../../lib/dates";
 import { goalPace, goalStatus, goalStatusText } from "../../lib/goals";

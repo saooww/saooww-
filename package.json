@@ -9,16 +9,17 @@
     "typecheck": "tsc",
     "preview": "vite preview",
     "test": "esbuild tests/logic.test.ts --bundle --platform=node --format=esm --outfile=node_modules/.cache/logic.test.mjs --log-level=warning && node node_modules/.cache/logic.test.mjs",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "glyphs": "node scripts/gen-glyphs.mjs"
   },
   "dependencies": {
     "framer-motion": "^11.18.2",
-    "lucide-react": "^1.61.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "zustand": "^4.5.7"
   },
   "devDependencies": {
+    "@phosphor-icons/react": "^2.1.10",
     "@playwright/test": "^1.65.0",
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",

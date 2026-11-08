@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { CalendarCheck, ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { CalendarCheck, ChevronLeft, ChevronRight, Plus } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { MONTHS_GEN, WEEKDAYS_LONG, WEEKDAYS_SHORT, addDays, capitalize, parseDay, startOfWeek, weekdayIndex, type DayKey } from "../../lib/dates";
 import { haptic } from "../../lib/haptics";

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { BookOpen, CalendarCheck, HandCoins, ListTodo, NotebookPen, Repeat, Search, Shapes, Target, X } from "lucide-react";
+import { BookOpen, CalendarCheck, HandCoins, ListTodo, NotebookPen, Repeat, Search, Shapes, Target, X } from "../../ui/glyphs";
 import { dayOf, formatDate, pluralN } from "../../lib/dates";
 import { useData } from "../../store/store";
 import { nav, useUI } from "../../store/ui";
@@ -7,7 +7,7 @@ import { walletKindInfo } from "../../store/catalog";
 import { IconChip } from "../../ui/primitives";
 import { Sheet, useSheet } from "../../ui/Sheet";
 import { TxRow, usePresentCtx } from "../transactions/TxRow";
-import type { LucideIcon } from "lucide-react";
+import type { LucideIcon } from "../../ui/glyphs";
 
 interface Hit {
   key: string;

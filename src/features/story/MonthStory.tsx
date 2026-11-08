@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { X } from "lucide-react";
+import { X } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { formatDate, todayKey, WEEKDAYS_ACC, WEEKDAYS_SHORT } from "../../lib/dates";
 import { haptic } from "../../lib/haptics";

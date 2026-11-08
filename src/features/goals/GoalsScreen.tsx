@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
-import { Check, Plus, Star, Target } from "lucide-react";
+import { Check, Plus, Star, Target } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { haptic } from "../../lib/haptics";
 import { goalPace, goalStatus, goalStatusText, type GoalStatus } from "../../lib/goals";

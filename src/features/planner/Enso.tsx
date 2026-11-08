@@ -1,6 +1,6 @@
 import { useId, type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Check } from "lucide-react";
+import { Check } from "../../ui/glyphs";
 
 /**
  * The day's progress as an ensō — a single brush circle. The ink fills the

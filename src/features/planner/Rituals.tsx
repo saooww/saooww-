@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, Plus, Trash2 } from "lucide-react";
+import { Check, Plus, Trash2 } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { addDays, formatDate, pluralN, type DayKey } from "../../lib/dates";
 import { haptic } from "../../lib/haptics";

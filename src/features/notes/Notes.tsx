@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { BookOpen, ListChecks, ListPlus, NotebookPen, Pin, PinOff, Plus, Search, Trash2, X } from "lucide-react";
+import { BookOpen, ListChecks, ListPlus, NotebookPen, Pin, PinOff, Plus, Search, Trash2, X } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { MONTHS_GEN, WEEKDAYS_LONG, capitalize, dayOf, formatDate, formatDayHeading, parseDay, pluralN, timeOf, todayKey, weekdayIndex } from "../../lib/dates";
 import { haptic } from "../../lib/haptics";

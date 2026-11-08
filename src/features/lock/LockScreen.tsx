@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ScanFace } from "lucide-react";
+import { ScanFace } from "../../ui/glyphs";
 import { haptic } from "../../lib/haptics";
 import { freshData, useData, wipeDevice } from "../../store/store";
 import { useUI } from "../../store/ui";

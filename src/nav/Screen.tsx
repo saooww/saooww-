@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useRef, type ReactNode, type RefObject } from "react";
 import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft } from "../ui/glyphs";
 import { cn } from "../lib/cn";
 import { useUI, type Route, type Tab } from "../store/ui";
 import { IconButton } from "../ui/primitives";
