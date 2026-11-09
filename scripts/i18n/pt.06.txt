@@ -1,0 +1,150 @@
+Ocultar por hoje
+Ocultar valores
+Próx. semana
+Próxima semana
+A próxima semana ainda está vazia
+As próximas operações serão registradas sozinhas. Você pode gerenciá-las em «Assinaturas e pagamentos».
+Próximo mês
+Próximo período
+Próximo pagamento: {0} pulado
+Da próxima vez
+Ameixa
+Tentativas demais
+Trocar código
+Primeiro adicione uma carteira
+Maiores primeiro
+Menores primeiro
+Mais novos primeiro
+Mais antigos primeiro
+Saque
+Sacar
+Criado
+Criar
+Criar orçamento
+Ordenação
+Salve uma cópia dos seus dados
+Vai para o diário — você vê em «Notas».
+Salvar
+Salvar cópia em Arquivos
+Salvar cópia dos dados
+Salvar cópia agora
+Nenhum dado salvo encontrado.
+Débito
+Débitos neste mês
+Debitar
+Debitar da carteira
+Listas
+Lista
+Lista arquivada
+Lista restaurada
+Lista excluída
+Lista: {0}
+Planejar o dia
+Esportes
+Qua
+Na hora
+Tíquete médio
+Prazo
+Data de devolução
+Prazo combina com projetos com resultado: «Mudança», «Preparação para a prova».
+Vence hoje
+Prazo da meta «{0}»
+Urgente
+Vai ficar
+Apagar
+Apagar (segure para limpar)
+Apagar tudo
+Apagar tudo de vez?
+Apagar tudo do aparelho
+Apagar dados
+Setas — variação vs.
+Sóbrias
+Valor
+O valor entra na carteira — não é receita, é dinheiro que precisa ser devolvido.
+Valor oculto
+O valor sai da carteira — não é despesa, é dinheiro que vai voltar para você.
+Valor da meta
+Valor da parte {0}
+Valor: {0} {1}
+Esfera do dia
+A esfera do dia e a linha inteligente aparecem sempre. O resto, como preferir.
+Áreas da vida
+Contas
+Contas, metas e dívidas em {0}
+Aqui cai tudo o que foi anotado na correria, sem data nem lista. Uma vez por dia decida quando cuidar disso — assim nada se perde.
+Assim dá para ver o que está sob controle e onde acumulam pendências. Dá para renomear as listas e criar as suas.
+Táxi
+Resposta tátil
+Nela há {0} e {1}. Os dados atuais serão substituídos — antes faremos um backup.
+Tags
+Tags: {0}
+Texto
+Texto da nota
+O texto não parece um backup
+Os dados atuais serão substituídos pelo exemplo. Antes faremos um backup.
+Saldo atual
+Código atual
+Tema
+Tema do app
+Ritmo em 3 meses
+Temas, cor própria, fonte dos números
+Tipo
+Tipo de operação
+Tipo de operações
+Titânio
+Uma semana tranquila
+Só registro: os saldos das carteiras não mudam.
+Pontos
+Transporte
+Tendências
+Os três últimos registros
+Três hábitos, e as tarefas param de se perder.
+Lira turca
+Escuro
+Credor
+A meta terá saldo próprio: você passa dinheiro para ela de qualquer carteira.
+A meta tem saldo próprio: os aportes tiram dinheiro de uma carteira e os saques devolvem.
+Arquivar
+Tirar da tela inicial
+Remover vínculo
+Remover tag {0}
+Remover foto
+Remover parte
+Remover: {0}
+Excluir
+Excluir «{0}»?
+Excluir orçamento
+Excluir o recibo inteiro
+Excluir o recibo inteiro?
+Excluir tarefa
+Excluir dívida
+Excluir a dívida?
+Excluir categoria
+Excluir carteira
+Excluir operação
+Excluir a operação?
+Excluir plano
+Excluir item: {0}
+Excluir lista
+Excluir meta
+Excluir esta parte
+Excluir: {0}
+Todas as {0} partes serão excluídas. Saldos e análises serão recalculados.
+As operações já registradas continuam no histórico.
+Já gasto
+Linha inteligente: gasto, receita, tarefa ou meta
+Multiplicar
+De manhã — plano
+Considera seu ritmo habitual de gastos de 60 dias, os pagamentos recorrentes e os planos para o resto do mês.
+Contar no saldo total
+Estudos
+O arquivo não parece um backup do Ardessa
+Arquivo de backup salvo
+Reserva de emergência
+Finanças
+Formatos
+Foto
+Foto do recibo
+Freelance
+Libra esterlina
+Dá para {0} meses de vida normal

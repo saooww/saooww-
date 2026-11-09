@@ -1,0 +1,150 @@
+Bugünlük gizle
+Tutarları gizle
+Sonraki hafta
+Gelecek hafta
+Gelecek hafta şimdilik boş
+Sonraki işlemler otomatik kaydedilecek. Bunları «Abonelikler ve ödemeler» bölümünden yönetebilirsiniz.
+Sonraki ay
+Sonraki dönem
+Sonraki ödeme: {0} atlandı
+Gelecek sefere
+Erik
+Çok fazla deneme
+Kodu değiştir
+Önce bir cüzdan ekleyin
+Önce büyükler
+Önce küçükler
+Önce yeniler
+Önce eskiler
+Çekme
+Çek
+Oluşturuldu
+Oluştur
+Bütçe oluştur
+Sıralama
+Verilerinizin bir kopyasını kaydedin
+Günlüğe kaydedilir — «Notlar»da görünür.
+Kaydet
+Dosyalar'a kopya kaydet
+Verilerin kopyasını kaydet
+Şimdi kopya kaydet
+Kayıtlı veri bulunamadı.
+Kesinti
+Bu ayki kesintiler
+Kes
+Cüzdandan kes
+Listeler
+Liste
+Liste arşivlendi
+Liste geri alındı
+Liste silindi
+Liste: {0}
+Günü planla
+Spor
+Çar
+Hemen
+Ortalama fiş
+Son tarih
+Geri verme tarihi
+Son tarih, sonucu olan projelere uygundur: «Taşınma», «Sınava hazırlık».
+Son tarih bugün
+«{0}» hedefinin son tarihi
+Acil
+Olacak
+Sil
+Sil (temizlemek için basılı tutun)
+Her şeyi sil
+Her şey kalıcı olarak silinsin mi?
+Cihazdan her şeyi sil
+Verileri sil
+Oklar — şuna göre değişim:
+Sade
+Tutar
+Tutar cüzdana girer — gelir değil, geri verilmesi gereken paradır.
+Tutar gizli
+Tutar cüzdandan çıkar — gider değil, size geri dönecek paradır.
+Hedef tutarı
+Parça tutarı {0}
+Tutar: {0} {1}
+Gün küresi
+Gün küresi ve akıllı satır her zaman görünür. Gerisi isteğe bağlı.
+Yaşam alanları
+Hesaplar
+{0} cinsinden hesaplar, hedefler ve borçlar
+Tarihsiz ve listesiz, aceleyle yazılan her şey buraya düşer. Günde bir kez ne zaman ilgileneceğinize karar verin — böylece hiçbir şey kaybolmaz.
+Böylece neyin kontrol altında olduğu, nerede işlerin biriktiği görünür. Listeleri yeniden adlandırabilir, kendinizinkileri ekleyebilirsiniz.
+Taksi
+Dokunsal geri bildirim
+İçinde {0} ve {1} var. Mevcut veriler değiştirilecek — önce yedeğini alacağız.
+Etiketler
+Etiketler: {0}
+Metin
+Not metni
+Metin yedeğe benzemiyor
+Mevcut veriler örnekle değiştirilecek. Önce yedek alacağız.
+Mevcut bakiye
+Mevcut kod
+Tema
+Uygulama teması
+3 aylık hız
+Temalar, kendi rengi, rakam yazı tipi
+Tür
+İşlem türü
+İşlem türü
+Titanyum
+Sakin bir hafta
+Yalnızca kayıt: cüzdan bakiyeleri değişmez.
+Noktalar
+Ulaşım
+Eğilimler
+Son üç kayıt
+Üç alışkanlık ve görevler kaybolmayı bırakır.
+Türk lirası
+Koyu
+Kimden
+Hedefin kendi bakiyesi olur: istediğiniz cüzdandan ona para aktarırsınız.
+Hedefin kendi bakiyesi var: yatırmalar cüzdandan para aktarır, çekmeler geri verir.
+Arşivle
+Ana ekrandan kaldır
+Bağlantıyı kaldır
+{0} etiketini kaldır
+Fotoğrafı kaldır
+Parçayı kaldır
+Kaldır: {0}
+Sil
+«{0}» silinsin mi?
+Bütçeyi sil
+Tüm fişi sil
+Tüm fiş silinsin mi?
+Görevi sil
+Borcu sil
+Borç silinsin mi?
+Kategoriyi sil
+Cüzdanı sil
+İşlemi sil
+İşlem silinsin mi?
+Planı sil
+Maddeyi sil: {0}
+Listeyi sil
+Hedefi sil
+Bu parçayı sil
+Sil: {0}
+{0} parçanın tamamı silinecek. Bakiyeler ve analiz yeniden hesaplanacak.
+Önceden kaydedilen işlemler geçmişte kalır.
+Zaten harcanan
+Akıllı satır: harcama, gelir, görev veya hedef
+Çarp
+Sabah — plan
+60 günlük olağan harcama hızınızı, düzenli ödemeleri ve ayın geri kalanı için planları hesaba katar.
+Toplam bakiyeye dahil et
+Eğitim
+Dosya bir Ardessa yedeğine benzemiyor
+Yedek dosyası kaydedildi
+Acil durum fonu
+Finans
+Biçimler
+Fotoğraf
+Fiş fotoğrafı
+Serbest çalışma
+İngiliz sterlini
+{0} ay normal yaşama yeter

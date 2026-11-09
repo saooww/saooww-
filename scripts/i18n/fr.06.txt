@@ -1,0 +1,150 @@
+Masquer pour aujourd'hui
+Masquer les montants
+Sem. suivante
+Semaine suivante
+La semaine prochaine est encore vide
+Les prochaines opérations s'enregistreront seules. Vous pouvez les gérer dans « Abonnements et paiements ».
+Mois suivant
+Période suivante
+Prochain paiement : {0} sauté
+La prochaine fois
+Prune
+Trop de tentatives
+Changer le code
+Ajoutez d'abord un portefeuille
+Les plus gros d'abord
+Les plus petits d'abord
+Les plus récents d'abord
+Les plus anciens d'abord
+Retrait
+Retirer
+Créé
+Créer
+Créer un budget
+Tri
+Enregistrez une copie de vos données
+Ira dans le journal — visible dans « Notes ».
+Enregistrer
+Enregistrer une copie dans Fichiers
+Enregistrer une copie des données
+Enregistrer une copie maintenant
+Aucune donnée enregistrée trouvée.
+Prélèvement
+Prélèvements ce mois-ci
+Débiter
+Débiter le portefeuille
+Listes
+Liste
+Liste archivée
+Liste restaurée
+Liste supprimée
+Liste : {0}
+Planifier la journée
+Sport
+Mer
+Immédiatement
+Panier moyen
+Échéance
+Date de remboursement
+Une échéance convient aux projets avec un résultat : « Déménagement », « Préparer l'examen ».
+Échéance aujourd'hui
+Échéance de l'objectif « {0} »
+Urgent
+Deviendra
+Effacer
+Effacer (maintenir pour vider)
+Tout effacer
+Tout effacer définitivement ?
+Tout effacer de l'appareil
+Effacer les données
+Flèches — évolution par rapport à
+Stricts
+Montant
+Le montant arrive sur le portefeuille — ce n'est pas un revenu mais de l'argent à rendre.
+Montant masqué
+Le montant quitte le portefeuille — ce n'est pas une dépense mais de l'argent qui vous reviendra.
+Montant de l'objectif
+Montant de la partie {0}
+Montant : {0} {1}
+Sphère du jour
+La sphère du jour et la ligne intelligente restent toujours. Le reste, à votre guise.
+Domaines de vie
+Comptes
+Comptes, objectifs et dettes en {0}
+Tout ce qui est noté à la volée, sans date ni liste, arrive ici. Une fois par jour, décidez quand vous en occuper — ainsi rien ne se perd.
+Ainsi on voit ce qui est sous contrôle et où les retards s'accumulent. Les listes peuvent être renommées et vous pouvez ajouter les vôtres.
+Taxi
+Retour haptique
+Elle contient {0} et {1}. Les données actuelles seront remplacées — nous les sauvegarderons d'abord.
+Tags
+Tags : {0}
+Texte
+Texte de la note
+Le texte ne ressemble pas à une sauvegarde
+Les données actuelles seront remplacées par l'exemple. Nous ferons d'abord une sauvegarde.
+Solde actuel
+Code actuel
+Thème
+Thème de l'app
+Rythme sur 3 mois
+Thèmes, couleur perso, police des chiffres
+Type
+Type d'opération
+Type d'opérations
+Titane
+Une semaine calme
+Suivi seulement : les soldes des portefeuilles ne changent pas.
+Points
+Transports
+Tendances
+Les trois derniers enregistrements
+Trois habitudes, et les tâches ne se perdent plus.
+Livre turque
+Sombre
+Prêteur
+L'objectif aura son propre solde : vous y transférez de l'argent depuis n'importe quel portefeuille.
+L'objectif a son propre solde : les versements prennent l'argent d'un portefeuille, les retraits l'y rendent.
+Archiver
+Retirer de l'écran d'accueil
+Supprimer le lien
+Retirer le tag {0}
+Retirer la photo
+Retirer la partie
+Retirer : {0}
+Supprimer
+Supprimer « {0} » ?
+Supprimer le budget
+Supprimer tout le ticket
+Supprimer tout le ticket ?
+Supprimer la tâche
+Supprimer la dette
+Supprimer la dette ?
+Supprimer la catégorie
+Supprimer le portefeuille
+Supprimer l'opération
+Supprimer l'opération ?
+Supprimer le plan
+Supprimer l'élément : {0}
+Supprimer la liste
+Supprimer l'objectif
+Supprimer cette partie
+Supprimer : {0}
+Les {0} parties seront supprimées. Les soldes et l'analyse seront recalculés.
+Les opérations déjà enregistrées restent dans l'historique.
+Déjà dépensé
+Ligne intelligente : dépense, revenu, tâche ou objectif
+Multiplier
+Le matin — plan
+Tient compte de votre rythme de dépenses habituel sur 60 jours, des paiements réguliers et des plans pour le reste du mois.
+Compter dans le solde total
+Études
+Le fichier ne ressemble pas à une sauvegarde Ardessa
+Fichier de sauvegarde enregistré
+Matelas de sécurité
+Finances
+Formats
+Photo
+Photo du ticket
+Freelance
+Livre sterling
+De quoi vivre {0} mois normalement

@@ -1,0 +1,150 @@
+Ocultar por hoy
+Ocultar importes
+Sem. siguiente
+Semana siguiente
+La semana que viene aún está vacía
+Las próximas operaciones se anotarán solas. Puedes gestionarlas en «Suscripciones y pagos».
+Mes siguiente
+Periodo siguiente
+Próximo pago: {0} omitido
+La próxima vez
+Ciruela
+Demasiados intentos
+Cambiar código
+Primero añade una cartera
+Primero los grandes
+Primero los pequeños
+Primero los nuevos
+Primero los antiguos
+Retirada
+Retirar
+Creado
+Crear
+Crear presupuesto
+Orden
+Guarda una copia de tus datos
+Se guardará en el diario: lo verás en «Notas».
+Guardar
+Guardar copia en Archivos
+Guardar copia de los datos
+Guardar copia ahora
+No se encontraron datos guardados.
+Cargo
+Cargos este mes
+Cargar
+Cargar a la cartera
+Listas
+Lista
+Lista archivada
+Lista recuperada
+Lista eliminada
+Lista: {0}
+Planificar el día
+Deporte
+Mié
+Al momento
+Ticket medio
+Plazo
+Fecha de devolución
+Un plazo sirve para proyectos con resultado: «Mudanza», «Preparar el examen».
+Vence hoy
+Plazo de la meta «{0}»
+Urgente
+Quedará
+Borrar
+Borrar (mantén pulsado para vaciar)
+Borrar todo
+¿Borrar todo para siempre?
+Borrar todo del dispositivo
+Borrar datos
+Flechas: cambio frente a
+Sobrias
+Importe
+El importe entra en la cartera: no es un ingreso, sino dinero que hay que devolver.
+Importe oculto
+El importe sale de la cartera: no es un gasto, sino dinero que volverá a ti.
+Importe de la meta
+Importe de la parte {0}
+Importe: {0} {1}
+Esfera del día
+La esfera del día y la línea inteligente se ven siempre. Lo demás, a tu gusto.
+Áreas de la vida
+Cuentas
+Cuentas, metas y deudas en {0}
+Aquí cae todo lo anotado sobre la marcha, sin fecha ni lista. Una vez al día decide cuándo hacerlo: así no se pierde nada.
+Así ves qué está bajo control y dónde se acumulan pendientes. Puedes renombrar las listas y añadir las tuyas.
+Taxi
+Respuesta háptica
+Contiene {0} y {1}. Los datos actuales se sustituirán; antes haremos una copia de seguridad.
+Etiquetas
+Etiquetas: {0}
+Texto
+Texto de la nota
+El texto no parece una copia de seguridad
+Los datos actuales se sustituirán por el ejemplo. Antes haremos una copia de seguridad.
+Saldo actual
+Código actual
+Tema
+Tema de la app
+Ritmo en 3 meses
+Temas, color propio, fuente de cifras
+Tipo
+Tipo de operación
+Tipo de operaciones
+Titanio
+Una semana tranquila
+Solo registro: los saldos de las carteras no cambian.
+Puntos
+Transporte
+Tendencias
+Los tres últimos registros
+Tres hábitos y las tareas dejan de perderse.
+Lira turca
+Oscuro
+Quién presta
+La meta tendrá su propio saldo: le pasas dinero desde cualquier cartera.
+La meta tiene su propio saldo: las aportaciones mueven dinero desde una cartera y las retiradas lo devuelven.
+Archivar
+Quitar de la pantalla principal
+Quitar vínculo
+Quitar etiqueta {0}
+Quitar foto
+Quitar parte
+Quitar: {0}
+Eliminar
+¿Eliminar «{0}»?
+Eliminar presupuesto
+Eliminar el recibo entero
+¿Eliminar el recibo entero?
+Eliminar tarea
+Eliminar deuda
+¿Eliminar la deuda?
+Eliminar categoría
+Eliminar cartera
+Eliminar operación
+¿Eliminar la operación?
+Eliminar plan
+Eliminar elemento: {0}
+Eliminar lista
+Eliminar meta
+Eliminar esta parte
+Eliminar: {0}
+Se eliminarán las {0} partes. Saldos y análisis se recalcularán.
+Las operaciones ya anotadas se quedan en el historial.
+Ya gastado
+Línea inteligente: gasto, ingreso, tarea o meta
+Multiplicar
+Por la mañana: plan
+Tiene en cuenta tu ritmo de gasto habitual de 60 días, los pagos periódicos y los planes para lo que queda de mes.
+Contar en el saldo total
+Estudios
+El archivo no parece una copia de Ardessa
+Archivo de copia guardado
+Colchón financiero
+Finanzas
+Formatos
+Foto
+Foto del recibo
+Freelance
+Libra esterlina
+Alcanza para {0} meses de vida normal

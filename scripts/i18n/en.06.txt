@@ -1,0 +1,150 @@
+Hide for today
+Hide amounts
+Next week
+Next week
+Next week is empty so far
+The next operations will be recorded automatically. You can manage them in «Subscriptions & payments».
+Next month
+Next period
+Next payment: {0} skipped
+Next time
+Plum
+Too many attempts
+Change code
+Add a wallet first
+Largest first
+Smallest first
+Newest first
+Oldest first
+Withdrawal
+Withdraw
+Created
+Create
+Create a budget
+Sort
+Save a copy of your data
+Goes into the diary — you'll find it in «Notes».
+Save
+Save a copy to Files
+Save a copy of data
+Save a copy now
+No saved data found.
+Charge
+Charges this month
+Debit
+Debit from wallet
+Lists
+List
+List archived
+List restored
+List deleted
+List: {0}
+Plan the day
+Sports
+Wed
+Immediately
+Average receipt
+Deadline
+Return date
+A deadline suits projects with a result: «Moving», «Exam prep».
+Due today
+Deadline of goal «{0}»
+Urgent
+Will be
+Erase
+Erase (hold to clear)
+Erase everything
+Erase everything for good?
+Erase everything from this device
+Erase data
+Arrows — change vs.
+Strict
+Amount
+The amount goes into the wallet — it's not income but money you need to return.
+Amount hidden
+The amount leaves the wallet — it's not an expense but money that will come back to you.
+Goal amount
+Part amount {0}
+Amount: {0} {1}
+Day sphere
+The day sphere and smart line are always shown. The rest is up to you.
+Areas of life
+Accounts
+Accounts, goals and debts in {0}
+Everything jotted down on the go, with no date or list, lands here. Once a day decide when to deal with it — that way nothing gets lost.
+That way you see what's under control and where loose ends pile up. Lists can be renamed and you can add your own.
+Taxi
+Haptic feedback
+It holds {0} and {1}. Current data will be replaced — we'll back it up first.
+Tags
+Tags: {0}
+Text
+Note text
+The text doesn't look like a backup
+Current data will be replaced with the example. We'll make a backup first.
+Current balance
+Current code
+Theme
+App theme
+Pace over 3 months
+Themes, own colour, number font
+Type
+Operation type
+Operation type
+Titanium
+A quiet week
+Tracking only: wallet balances won't change.
+Dots
+Transport
+Trends
+The last three records
+Three habits, and tasks stop getting lost.
+Turkish lira
+Dark
+Lender
+The goal will have its own balance: you move money into it from any wallet.
+The goal has its own balance: top-ups move money from a wallet, withdrawals return it.
+Archive
+Remove from the home screen
+Remove link
+Remove tag {0}
+Remove photo
+Remove part
+Remove: {0}
+Delete
+Delete «{0}»?
+Delete budget
+Delete the whole receipt
+Delete the whole receipt?
+Delete task
+Delete debt
+Delete debt?
+Delete category
+Delete wallet
+Delete operation
+Delete operation?
+Delete plan
+Delete item: {0}
+Delete list
+Delete goal
+Delete this part
+Delete: {0}
+All {0} parts will be deleted. Balances and analytics will be recalculated.
+Operations already recorded stay in the history.
+Already spent
+Smart line: a spend, income, task or goal
+Multiply
+Morning — plan
+Takes into account your usual spending pace over 60 days, regular payments and plans for the rest of the month.
+Count in the total balance
+Study
+The file doesn't look like an Ardessa backup
+Backup file saved
+Safety cushion
+Finance
+Formats
+Photo
+Receipt photo
+Freelance
+Pound sterling
+Enough for {0} mo. of normal life
