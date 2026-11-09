@@ -1,0 +1,150 @@
+Añadido al plan
+Añade una tarjeta, efectivo o una cuenta de ahorro.
+Añade algunos ingresos y gastos: los gráficos se crearán solos.
+Añade tus saldos y calcularé un importe por día
+Añade suscripciones, teléfono, préstamo o sueldo: se registrarán solos y entrarán en las previsiones.
+Buenos días
+Buenas noches
+Buenas noches
+Buenas tardes
+Deuda
+Deuda entregada: {0}
+Deuda cerrada
+Deuda anotada
+Deuda recibida: {0}
+Deuda guardada
+Deuda eliminada
+Deudas
+Sin deudas
+Dólar estadounidense
+Hogar
+Hogar y suministros
+Ingr.
+Ingreso
+Ingreso añadido
+Ingreso anotado
+Ingresos
+Ingresos del periodo
+Ingresos y gastos por mes
+Se borrarán los ingresos y gastos de esta cartera. Las transferencias a otras carteras quedarán como ajustes para que sus saldos no cambien. Si necesitas el historial, archiva la cartera.
+Otro
+Euro
+Copia diaria
+Si la categoría tiene operaciones, se ocultará de la selección y se conservará el historial.
+Si no se puede guardar el archivo
+Si borras la app o limpias Safari, los datos se van con ella. Una copia en Archivos (iCloud Drive) o en tu correo es un seguro fiable. La app te lo recordará una vez por semana.
+Tiene nota
+Tiene plazo
+Tiene foto del recibo
+Nunca todavía
+Más hoy
+Pendientes de ejecutar
+Hecho esta semana
+¿Olvidaste el código?
+Terminar el día
+Mañana
+Mira tus presupuestos: ahí se ve dónde ajustar.
+Título
+Cargando…
+Cargar
+Cargar datos de demostración
+¿Cargar datos de demostración?
+Fija un límite mensual para una categoría, por ejemplo «Supermercado — 30 000». Te avisaremos cuando esté cerca.
+Fijar
+Cerrada
+Cerrada {0}
+Cerradas · {0}
+Aún no hay deudas cerradas
+Cerrar
+Cerrar sin pago
+Sustituir
+¿Sustituir los datos {0}?
+Nota
+Nota eliminada
+Nota: detalles, enlaces, dirección
+Notas
+Ocupado
+Anotado {0}
+Anotar
+Anotar devolución
+Anotar tarea
+Anotar deuda
+Anotar pago
+Anotar ahora
+Anota ingresos y gastos: aquí aparecerá todo el historial con búsqueda y filtros.
+Anótalo enseguida
+Anota a quién prestaste y de quién pediste prestado: la app te recordará los plazos.
+Anota las cosas para no tenerlas en la cabeza
+Anotar automáticamente
+Se guardará como
+Se guardará como operación y cambiará el saldo
+Planificado
+Planificar
+Inicio
+Sueldo
+Para qué es esta lista, qué resultado se busca
+Abonado
+Abonar
+Abonar en la cartera
+Protección
+Protección contra el borrado automático
+Aquí estará el historial
+Aquí aún no hay nada
+Aquí aparecerán tus operaciones. Empieza con los botones de arriba.
+Aquí está vacío
+Salud
+Primeros pasos
+Icono
+Oro
+Ideas, listas de compra, acuerdos, planes de viaje. Los elementos de la lista se convierten en tareas con un toque.
+Desde una copia de Ardessa o Kapital
+Del tema
+De la meta «{0}»
+Favoritos
+Cambio del patrimonio
+Cambios guardados
+Editar
+Editar operación
+Editar lista
+Editar meta
+Elegantes
+Importar desde archivo
+Nombre
+Nombre (opcional)
+Nombre, aspecto, datos
+Inversiones
+Índigo
+Intervalo
+Historial
+Historial del saldo
+Historial de pagos
+Neto
+Neto: ingresos menos gastos
+El resumen de {0} está listo
+Resumen del día
+Resumen del mes
+Resumen del mes, copia de datos, consejos
+Resumen de la semana
+El resumen de la semana está listo
+Resumen:
+Resumen: {0}
+Total
+Busca por nombre, comentario, etiqueta, persona o importe
+A esta semana
+Cada línea será una tarea distinta.
+Cada semana
+Cada {0} {1}
+Cada año
+Cada día
+Cada mes
+Tenge kazajo
+Como la última vez:
+Cómo llevar las tareas
+Cómo quieres que te llamemos
+Cómo llamarte y en qué moneda contar.
+Con qué frecuencia lo usas
+El calendario del móvil te recordará la tarea aunque la app esté cerrada. 
+Calendario de gastos
+Patrimonio
+Patrimonio en 90 días
+Tarjeta

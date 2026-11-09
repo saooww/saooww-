@@ -1,0 +1,150 @@
+Plana eklendi
+Bir kart, nakit veya birikim hesabı ekleyin.
+Birkaç gelir ve gider ekleyin — grafikler kendiliğinden oluşur.
+Bakiyelerinizi ekleyin — günlük tutarı hesaplayayım
+Abonelikleri, telefonu, krediyi veya maaşı ekleyin — kendiliğinden kaydedilir ve tahminlere girer.
+Günaydın
+İyi geceler
+İyi akşamlar
+İyi günler
+Borç
+Borç verildi: {0}
+Borç kapandı
+Borç kaydedildi
+Borç alındı: {0}
+Borç kaydedildi
+Borç silindi
+Borçlar
+Borç yok
+ABD doları
+Ev
+Ev ve faturalar
+Gel.
+Gelir
+Gelir eklendi
+Gelir kaydedildi
+Gelirler
+Dönem gelirleri
+Aylara göre gelir ve gider
+Bu cüzdanın gelir ve giderleri silinecek. Diğer cüzdanlara transferler, bakiyeleri değişmesin diye düzeltme olarak kalır. Geçmişe ihtiyacınız varsa cüzdanı arşivleyin.
+Diğer
+Euro
+Günlük kopya
+Kategoride işlem varsa seçimden gizlenir, geçmiş korunur.
+Dosya kaydedilemiyorsa
+Uygulamayı silerseniz veya Safari'yi temizlerseniz veriler de gider. Dosyalar'daki (iCloud Drive) veya e-postanızdaki bir kopya güvenilir bir güvencedir. Uygulama haftada bir hatırlatır.
+Notu var
+Süresi var
+Fiş fotoğrafı var
+Henüz hiç
+Bugün ayrıca
+Gerçekleşmeyi bekliyor
+Bu hafta yapılan
+Kodu mu unuttunuz?
+Günü bitir
+Yarın
+Bütçelerinize bakın — nerede sıkılaştırabileceğiniz görünüyor.
+Başlık
+Yükleniyor…
+Yükle
+Demo verilerini yükle
+Demo verileri yüklensin mi?
+Bir kategori için aylık limit belirleyin — örneğin «Market — 30.000». Yaklaşınca haber veririz.
+Sabitle
+Kapandı
+Kapandı {0}
+Kapalı · {0}
+Henüz kapanmış borç yok
+Kapat
+Ödemesiz kapat
+Değiştir
+{0} verileri değiştirilsin mi?
+Not
+Not silindi
+Not: ayrıntılar, bağlantılar, adres
+Notlar
+Dolu
+Kaydedildi {0}
+Kaydet
+Geri ödemeyi kaydet
+Görev yaz
+Borç kaydet
+Ödeme kaydet
+Şimdi kaydet
+Gelir ve giderleri kaydedin — arama ve filtrelerle tüm geçmiş burada görünür.
+Hemen yazın
+Kime borç verdiğinizi ve kimden aldığınızı yazın — uygulama tarihleri hatırlatır.
+Kafanızda tutmamak için yazın
+Otomatik kaydet
+Şöyle kaydedilecek:
+İşlem olarak kaydedilir ve bakiyeyi değiştirir
+Planlandı
+Planla
+Açılış
+Maaş
+Bu liste neden var, hangi sonuç gerekiyor
+Yatırıldı
+Yatır
+Cüzdana yatır
+Koruma
+Otomatik temizlemeye karşı koruma
+Geçmiş burada görünecek
+Burada henüz bir şey yok
+İşlemleriniz burada görünecek. Yukarıdaki düğmelerle başlayın.
+Burası boş
+Sağlık
+Tanışma
+Simge
+Altın
+Fikirler, alışveriş listeleri, anlaşmalar, gezi planları. Kontrol listesi maddeleri tek dokunuşla göreve dönüşür.
+Ardessa veya Kapital yedeğinden
+Temadan
+«{0}» hedefinden
+Favoriler
+Varlık değişimi
+Değişiklikler kaydedildi
+Düzenle
+İşlemi düzenle
+Listeyi düzenle
+Hedefi düzenle
+Zarif
+Dosyadan içe aktar
+Ad
+Ad (isteğe bağlı)
+Ad, görünüm, veriler
+Yatırımlar
+Çivit
+Aralık
+Geçmiş
+Bakiye geçmişi
+Ödeme geçmişi
+Net
+Net: gelir eksi gider
+{0} özeti hazır
+Günün özeti
+Ayın özeti
+Ay özeti, veri yedeği, ipuçları
+Haftanın özeti
+Haftanın özeti hazır
+Özet:
+Özet: {0}
+Toplam
+Ada, yoruma, etikete, kişiye veya tutara göre arayın
+Bu haftaya
+Her satır ayrı bir görev olur.
+Her hafta
+Her {0} {1}
+Her yıl
+Her gün
+Her ay
+Kazak tengesi
+Geçen seferki gibi:
+Görevler nasıl yönetilir
+Size nasıl hitap edelim
+Size nasıl hitap edeceğimiz ve hangi para biriminde sayacağımız.
+Ne sıklıkla kullanıyorsunuz
+Uygulama kapalı olsa bile telefonun takvimi görevi hatırlatır. 
+Harcama takvimi
+Net varlık
+90 günlük net varlık
+Kart
