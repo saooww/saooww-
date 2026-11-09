@@ -1,0 +1,65 @@
++ Nova lista
+1–{0} {1} contra 1–{2} {3}: {4} contra {5}. Sem transferências e metas.
+{0} de todos os gastos
+{0} de todos os gastos · {1}{2} em relação ao mês passado
+{0} → {1}
+A maior parte
+Mais rápido que o previsto
+Nenhum pagamento previsto nas próximas duas semanas.
+Dentro da meta
+Ainda não há gastos este mês.
+Lista inteira
+Pergunta
+Todas as tarefas feitas
+Tarefas da meta
+Orçamento diário
+Adicionar tarefa
+Alcançada
+Se gastar como de costume, até {0} não sobrará nada (≈ {1}). Melhor não guardar nada agora.
+Se gastar como de costume, até {0} sobrará ≈ {1}. Dá para guardar {2} em «{3}» sem risco.
+Se gastar como de costume, até {0} sobrará ≈ {1}. Dá para guardar {2} sem risco.
+Em duas semanas sairão {0} — {1}. O próximo é «{2}», {3}.
+Sem gastos no mês passado — nada para comparar.
+Nos mesmos dias você gastou {0} a mais ({1}). {2} do aumento é {3}.
+Planeje o que fazer pela meta — a lista fica ao lado do dinheiro.
+Como é calculado
+Calendário
+Os cartões, o orçamento diário e «Em breve» ficam sempre visíveis; a linha inteligente fica acima do menu. O resto, como preferir.
+Pouco restante
+Restam {0} para hoje — menos de um quinto da meta
+Para onde foi mais dinheiro?
+Meta {0} por dia · recalculada após cada operação
+Meta do dia ultrapassada em {0}. A de amanhã será menor.
+Sobrará até o fim do mês
+Restante = dinheiro nas contas do dia a dia + receitas esperadas − pagamentos − gastos habituais (sua média de 60 dias). Sem poupança e investimentos.
+As respostas vêm só dos seus registros neste aparelho, com o cálculo. Sem suposições.
+Guardar em «{0}»
+Pagamentos até o fim do mês
+Por enquanto respondo estas perguntas — escolha uma:
+Mostrar: {0}
+Aportar em «{0}»
+Gasto hoje
+Por que os gastos aumentaram?
+Quase todo
+Ultrapassado
+Um quinto do restante fica de reserva.
+Gastos de 1 a {0}: {1}, {2}. Sem transferências entre contas e aportes em metas.
+Pagamentos recorrentes, compras planejadas e vencimentos de dívidas em 14 dias.
+Desde 1 de {0}, o que mais levou foi «{1}» — {2}, ou {3} de todos os gastos.
+Quanto posso guardar?
+Em breve · dinheiro e tarefas
+Criar lista de tarefas
+A lista aparecerá no cartão da meta: passagens, hotéis, roteiro — tudo o que fazer, ao lado do dinheiro.
+Pergunte sobre seu dinheiro
+Perguntar
+Pergunte à Ardessa
+São contados os gastos desde o início do mês.
+Os gastos não aumentaram: nos mesmos dias você gastou {0} a menos que no mês passado.
+Os gastos quase não mudaram — menos de 2% de diferença.
+O que será cobrado em breve?
+a caminho
+até {0} ≈ {1}
+hoje
+pelos seus dados
+no plano
+gasto {0}

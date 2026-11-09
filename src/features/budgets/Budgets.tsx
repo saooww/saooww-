@@ -18,6 +18,8 @@ import { spring } from "../../ui/motion";
 import { Button, EmptyState, FormRow, Group, IconButton, IconChip, ProgressBar, inputCls } from "../../ui/primitives";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
 import { tr } from "../../i18n/i18n";
+import { HeroCard } from "../../ui/HeroCard";
+import { materialOf } from "../../store/catalog";
 
 /** Spending noticeably ahead of the calendar: more than 15 points past the share of the month gone. */
 const isFast = (b: BudgetState, monthShare: number) => b.level === "ok" && b.progress > monthShare + 0.15 && b.projected > b.limit;
@@ -65,25 +67,31 @@ export function BudgetsScreen() {
       ) : (
         <div className="flex flex-col gap-3 px-4">
           {overall && (
-            <motion.button type="button" whileTap={{ scale: 0.985 }} onClick={() => nav.sheet("budget", { editId: overall.id })} className="panel rounded-xl p-4 text-left">
-              <div className="text-footnote font-medium text-ink-2">{tr("Все расходы за месяц")}</div>
-              <div className="mt-1 flex items-baseline justify-between gap-3">
-                <Money value={overall.spent} variant="hero" className="text-title-2 font-semibold" />
-                <span className="text-footnote text-ink-2">{tr("из")}{" "}<Money value={overall.limit} />
-                </span>
-              </div>
-              <ProgressBar value={overall.progress} tone={toneOf(overall, monthShare)} height={8} className="mt-3" marker={monthShare} />
-              <div className="mt-2.5 text-footnote text-ink-2">
-                {overall.remaining >= 0 ? (
-                  <>{tr("Осталось")}{" "}<span className="font-semibold text-ink">{formatMoney(overall.remaining)}</span>{" "}{tr("· примерно")}{" "}{formatMoney(Math.floor(overall.remaining / daysLeft / 100) * 100)}{" "}{tr("в день")}</>
-                ) : (
-                  <span className="text-negative">{tr("Превышен на")}{" "}{formatMoney(-overall.remaining)}</span>
+            <HeroCard material={materialOf("obsidian")} className="!mx-0" onClick={() => nav.sheet("budget", { editId: overall.id })} style={{ ["--ink" as string]: "#f5f3f0", ["--ink-2" as string]: "rgba(245,243,240,0.7)", ["--line" as string]: "rgba(255,255,255,0.12)" }}>
+              <div className="px-5 pb-4 pt-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/60">{tr("Все расходы за месяц")}</span>
+                  <span className={cn("rounded-full px-2.5 py-0.5 text-caption font-semibold", overall.level === "over" ? "bg-[var(--negative-soft)] text-negative" : toneOf(overall, monthShare) === "warning" ? "bg-[var(--warning-soft)] text-warning" : "bg-[var(--positive-soft)] text-positive")}>
+                    {overall.level === "over" ? tr("Превышен") : toneOf(overall, monthShare) === "warning" ? tr("Быстрее плана") : tr("В норме")}
+                  </span>
+                </div>
+                <div className="mt-2 flex items-baseline justify-between gap-3">
+                  <Money value={overall.spent} variant="hero" className="text-[40px] leading-none text-white" />
+                  <span className="text-footnote text-white/70">{tr("из")} <Money value={overall.limit} /></span>
+                </div>
+                <ProgressBar value={overall.progress} tone={overall.level === "over" ? "negative" : toneOf(overall, monthShare) === "warning" ? "warning" : "positive"} height={10} className="mt-4" marker={monthShare} />
+                <div className="mt-2.5 text-footnote text-white/75">
+                  {overall.remaining >= 0 ? (
+                    <>{tr("Осталось")}{" "}<span className="font-semibold text-white">{formatMoney(overall.remaining)}</span>{" "}{tr("· примерно")}{" "}{formatMoney(Math.floor(overall.remaining / daysLeft / 100) * 100)}{" "}{tr("в день")}</>
+                  ) : (
+                    <span className="text-negative">{tr("Превышен на")}{" "}{formatMoney(-overall.remaining)}</span>
+                  )}
+                </div>
+                {overall.level === "ok" && overall.projected > overall.limit && (
+                  <div className="mt-1 text-footnote text-warning">{tr("При текущем темпе к концу месяца выйдет около")}{" "}{formatMoney(Math.round(overall.projected / 10_000) * 10_000)}</div>
                 )}
               </div>
-              {overall.level === "ok" && overall.projected > overall.limit && (
-                <div className="mt-1 text-footnote text-warning">{tr("При текущем темпе к концу месяца выйдет около")}{" "}{formatMoney(Math.round(overall.projected / 10_000) * 10_000)}</div>
-              )}
-            </motion.button>
+            </HeroCard>
           )}
           {items.map((b, i) => {
             const c = b.categoryId ? cats.get(b.categoryId) : undefined;
@@ -97,7 +105,7 @@ export function BudgetsScreen() {
                 transition={{ ...spring.smooth, delay: i * 0.03 }}
                 whileTap={{ scale: 0.985 }}
                 onClick={() => nav.sheet("budget", { editId: b.id })}
-                className="panel rounded-lg px-4 py-3.5 text-left"
+                className="panel rounded-[20px] px-4 py-3.5 text-left"
               >
                 <div className="flex items-center gap-3">
                   <IconChip name={c?.icon} color={c?.color} size={34} />
@@ -109,7 +117,7 @@ export function BudgetsScreen() {
                   </div>
                   <span className={cn("text-callout font-semibold tnum", b.level === "over" ? "text-negative" : toneOf(b, monthShare) === "warning" ? "text-warning" : "text-ink-2")}>{Math.round(b.progress * 100)}%</span>
                 </div>
-                <ProgressBar value={b.progress} tone={toneOf(b, monthShare)} className="mt-3" marker={monthShare} />
+                <ProgressBar value={b.progress} tone={toneOf(b, monthShare)} height={8} className="mt-3" marker={monthShare} />
                 <div className={cn("mt-2 text-footnote", st.cls)}>{st.text}</div>
               </motion.button>
             );

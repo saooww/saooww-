@@ -27,6 +27,7 @@ import { goalStatus } from "../src/lib/goals";
 import { parseSmart } from "../src/lib/smart";
 import { monthDots } from "../src/lib/monthRing";
 import { personalProgress } from "../src/lib/progress";
+import { answerSave, answerTop, answerWhy, intentOf } from "../src/lib/assistant";
 import { goalInfo } from "../src/lib/finance";
 import { switchLanguage, type Lang } from "../src/i18n/i18n";
 
@@ -517,6 +518,28 @@ test("ваш путь: серия дней в норме и награды", () 
   assert.equal(p.plusMonths, 1);
   const done = new Set(p.achievements.filter((a) => a.done).map((a) => a.id));
   assert.ok(done.has("first") && done.has("plusMonth") && done.has("halfGoal") && !done.has("goalDone") && !done.has("normWeek"));
+});
+
+test("спросить Ardessa: вопрос понимается, ответы считаются по операциям", () => {
+  assert.equal(intentOf("почему расходы выросли"), "why");
+  assert.equal(intentOf("сколько можно отложить на отпуск"), "save");
+  assert.equal(intentOf("какие подписки скоро"), "upcoming");
+  assert.equal(intentOf("на что ушло больше всего денег"), "top");
+  assert.equal(intentOf("why did my spending grow"), "why");
+  assert.equal(intentOf("привет"), null);
+  const e = (day: string, base: number, categoryId: string) => ({ day, base, tx: { kind: "expense", categoryId } }) as unknown as import("../src/lib/finance").LedgerEntry;
+  const cats = new Map([["c-taxi", { id: "c-taxi", name: "Такси", icon: "CarTaxiFront", color: "#000", kind: "expense" }], ["c-cafe", { id: "c-cafe", name: "Кафе", icon: "Coffee", color: "#000", kind: "expense" }]]) as unknown as Map<string, import("../src/store/types").Category>;
+  const entries = [e("2026-10-03", 1_000_00, "c-taxi"), e("2026-10-04", 1_000_00, "c-cafe"), e("2026-11-03", 3_000_00, "c-taxi"), e("2026-11-05", 1_000_00, "c-cafe"), e("2026-10-20", 9_000_00, "c-cafe")];
+  const top = answerTop(entries, cats, "2026-11-09", "RUB");
+  assert.equal(top.rows[0].title, "Такси");
+  const why = answerWhy(entries, cats, "2026-11-09", "RUB");
+  // 4 000 against 2 000 over 1–9 November and October; 20 October is outside the window
+  assert.equal(why.rows.length, 1);
+  assert.equal(why.rows[0].title, "Такси");
+  assert.ok(why.text.includes("100%"));
+  const save = answerSave({ available: 50_000_00, income: 0, obligations: 10_000_00, everyday: 15_000_00, free: 25_000_00, until: "2026-11-30" }, { id: "g", name: "Отпуск" }, "RUB");
+  assert.equal(save.action?.amount, 20_000_00);
+  assert.equal(answerSave({ available: 0, income: 0, obligations: 0, everyday: 5_00, free: -5_00, until: "2026-11-30" }, null, "RUB").action, undefined);
 });
 
 test("цвета карт: прежние показываются ближайшим фирменным, новые — как есть", () => {

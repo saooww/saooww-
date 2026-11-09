@@ -18,3 +18,4 @@
 часть|части|частей = one:Teil; other:Teile
 человек|человека|человек = one:Person; other:Personen
 человеку|людям|людям = one:Person; other:Personen
+платёж|платежа|платежей = one:Zahlung; other:Zahlungen

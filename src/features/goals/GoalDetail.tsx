@@ -1,8 +1,7 @@
 import { useMemo, useState } from "react";
 import { ArrowDownToLine, ArrowUpFromLine, Pencil, Star, Target, Trash2 } from "../../ui/glyphs";
-import { cn } from "../../lib/cn";
 import { dayOf, formatDate, formatDayHeading, pluralN } from "../../lib/dates";
-import { goalPace, goalStatus, goalStatusText } from "../../lib/goals";
+import { goalPace, goalStatus } from "../../lib/goals";
 import { goalInfo, goalSaved } from "../../lib/finance";
 import { formatMoney } from "../../lib/money";
 import { useAppData, useBalances, useEnvelopes, useToday } from "../../store/hooks";
@@ -11,10 +10,10 @@ import type { ID } from "../../store/types";
 import { nav } from "../../store/ui";
 import { confirmDelete, undoable } from "../../store/undo";
 import { Screen } from "../../nav/Screen";
-import { NamedIcon } from "../../ui/icons";
-import { GoalJar } from "./GoalJar";
+import { GoalVisual } from "./GoalVisual";
+import { GoalTasks } from "./GoalTasks";
 import { Money } from "../../ui/Money";
-import { Button, EmptyState, Group, IconChip, ProgressRing, Row } from "../../ui/primitives";
+import { Button, EmptyState, Group, IconChip, Row } from "../../ui/primitives";
 import { tr } from "../../i18n/i18n";
 
 export function GoalDetail({ id }: { id: ID }) {
@@ -45,34 +44,12 @@ export function GoalDetail({ id }: { id: ID }) {
   const info = goalInfo(goal, goalSaved(goal, env, balances), today);
   const linked = goal.walletId ? wallets.find((w) => w.id === goal.walletId) : undefined;
   const status = goalStatus(goal, info, pace, today);
-  const st = goalStatusText(status, goal.currency);
   const shown = allHistory ? history : history.slice(0, 5);
 
   return (
     <Screen title={goal.name} actions={<button type="button" className="h-9 px-1 text-body text-accent-ink" onClick={() => nav.sheet("goal", { editId: goal.id })}>{tr("Изменить")}</button>}>
-      <div className="flex flex-col items-center px-6 pt-2 text-center">
-        {goal.look === "jar" ? (
-          <GoalJar value={info.progress} color={info.done ? "var(--positive)" : goal.color ?? "var(--accent)"}>
-            <div className="flex flex-col items-center" style={{ textShadow: info.progress > 0.45 ? "0 1px 10px rgba(0,0,0,0.3)" : undefined }}>
-              <NamedIcon name={goal.icon} size={22} className={info.progress > 0.45 ? "text-white/85" : "text-ink-2"} />
-              <div className={cn("mt-1 text-[34px] font-semibold leading-none tracking-[-0.03em] tnum", info.progress > 0.45 ? "text-white" : "text-ink")}>{Math.floor(info.progress * 100)}%</div>
-            </div>
-          </GoalJar>
-        ) : (
-          <ProgressRing value={info.progress} size={188} stroke={10} tone={info.done ? "positive" : "accent"} color={info.done ? undefined : goal.color}>
-            <div className="flex flex-col items-center">
-              <NamedIcon name={goal.icon} size={22} className="text-ink-2" />
-              <div className="mt-1 text-[34px] font-semibold leading-none tracking-[-0.03em] tnum">{Math.floor(info.progress * 100)}%</div>
-            </div>
-          </ProgressRing>
-        )}
-        <div className="mt-4 text-title-2 font-semibold">{goal.name}</div>
-        <div className="mt-1 text-callout text-ink-2">
-          <Money value={info.saved} currency={goal.currency} privacy className="font-semibold text-ink" />{" "}{tr("из")}{" "}<Money value={goal.target} currency={goal.currency} />
-        </div>
-        <div className={cn("mt-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-footnote font-semibold", st.tone === "positive" ? "bg-positive-soft text-positive" : st.tone === "warning" ? "bg-warning-soft text-warning" : "tile text-ink-2")}>
-          {st.text}
-        </div>
+      <div className="px-4 pt-1">
+        <GoalVisual goal={goal} info={info} status={status} big />
       </div>
 
       {!info.done && (
@@ -90,6 +67,8 @@ export function GoalDetail({ id }: { id: ID }) {
           {!info.done && <Row title={tr("Темп за 3 месяца")} value={pace > 0 ? tr("{0} в месяц", formatMoney(Math.round(pace / 100) * 100, { currency: goal.currency })) : tr("нет пополнений")} />}
           {linked && <Row title={tr("Кошелёк")} value={linked.name} chevron onClick={() => nav.push("wallet", { id: linked.id })} />}
         </Group>
+
+        <GoalTasks goal={goal} />
 
         <section>
           <h2 className="section-label px-5 pb-2.5">{tr("История")}</h2>

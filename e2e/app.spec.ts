@@ -107,7 +107,7 @@ test("чек делится на категории", async ({ page }) => {
   await page.getByRole("button", { name: "Добавить расход" }).click();
 
   await openMoney(page, "Операции");
-  const today = page.locator("section").filter({ hasText: "Сегодня" }).first();
+  const today = page.locator('.app-canvas > [aria-hidden="false"] section').filter({ hasText: "Сегодня" }).first();
   await expect(today).toContainText("3 000");
   await expect(today).toContainText("450");
 });
@@ -265,7 +265,7 @@ test("калькулятор в сумме: 1200 + 350 записывается 
   await sheet.getByRole("button", { name: /Добавить расход/ }).click();
   await expect(page.getByText("Расход добавлен")).toBeVisible();
   await openMoney(page, "Операции");
-  await expect(page.locator("section").filter({ hasText: "Сегодня" }).first()).toContainText("1 550");
+  await expect(page.locator('.app-canvas > [aria-hidden="false"] section').filter({ hasText: "Сегодня" }).first()).toContainText("1 550");
 });
 
 /* ---------------- speed without losing data ---------------- */

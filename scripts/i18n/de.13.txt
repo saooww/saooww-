@@ -1,0 +1,65 @@
++ Neue Liste
+1.–{0}. {1} gegenüber 1.–{2}. {3}: {4} gegenüber {5}. Ohne Umbuchungen und Ziele.
+{0} aller Ausgaben
+{0} aller Ausgaben · {1}{2} zum Vormonat
+{0} → {1}
+Der Großteil
+Schneller als geplant
+In den nächsten zwei Wochen sind keine Zahlungen geplant.
+Im Rahmen
+Diesen Monat noch keine Ausgaben.
+Ganze Liste
+Frage
+Alle Aufgaben erledigt
+Aufgaben zum Ziel
+Tagesbudget
+Aufgabe hinzufügen
+Erreicht
+Wenn du wie gewohnt ausgibst, bleibt bis zum {0} nichts übrig (≈ {1}). Lieber jetzt nichts zurücklegen.
+Wenn du wie gewohnt ausgibst, bleiben bis zum {0} ≈ {1}. Ohne Risiko kannst du {2} für „{3}“ zurücklegen.
+Wenn du wie gewohnt ausgibst, bleiben bis zum {0} ≈ {1}. Ohne Risiko kannst du {2} zurücklegen.
+In zwei Wochen gehen {0} ab — {1}. Als Nächstes: „{2}“, {3}.
+Im Vormonat keine Ausgaben — nichts zum Vergleichen.
+An denselben Tagen hast du {0} mehr ausgegeben ({1}). {2} des Anstiegs ist {3}.
+Plane, was für das Ziel zu tun ist — die Liste steht neben dem Geld.
+So wird gerechnet
+Kalender
+Karten, Tagesbudget und „Demnächst“ sind immer sichtbar, die smarte Zeile liegt über dem Menü. Der Rest nach Wunsch.
+Wird knapp
+Für heute bleiben {0} — weniger als ein Fünftel des Rahmens
+Wofür ging am meisten Geld?
+Rahmen {0} pro Tag · nach jeder Buchung neu berechnet
+Tagesrahmen um {0} überschritten. Der Rahmen für morgen wird kleiner.
+Bleibt bis Monatsende
+Rest = Geld auf Alltagskonten + erwartete Einnahmen − Zahlungen − übliche Ausgaben (dein 60-Tage-Schnitt). Spar- und Anlagekonten zählen nicht.
+Antworten nur aus deinen Daten auf diesem Gerät, mit Rechnung. Kein Raten.
+Für „{0}“ zurücklegen
+Zahlungen bis Monatsende
+Vorerst beantworte ich diese Fragen — wähle eine:
+Anzeigen: {0}
+„{0}“ aufstocken
+Heute ausgegeben
+Warum sind die Ausgaben gestiegen?
+Fast alles
+Überschritten
+Ein Fünftel des Rests bleibt als Reserve.
+Ausgaben vom 1. bis {0}: {1}, {2}. Umbuchungen und Einzahlungen auf Ziele zählen nicht.
+Regelmäßige Zahlungen, geplante Käufe und Fälligkeiten von Schulden für 14 Tage.
+Seit dem 1. {0} ging am meisten an „{1}“ — {2}, das sind {3} aller Ausgaben.
+Wie viel kann ich zurücklegen?
+Demnächst · Geld und Aufgaben
+Aufgabenliste erstellen
+Die Liste erscheint auf der Zielkarte: Tickets, Hotels, Route — alles zu Erledigende neben dem Geld.
+Frag nach deinem Geld
+Fragen
+Frag Ardessa
+Gezählt werden Ausgaben seit Monatsanfang.
+Die Ausgaben sind nicht gestiegen: an denselben Tagen hast du {0} weniger ausgegeben als im Vormonat.
+Die Ausgaben haben sich kaum verändert — weniger als 2 % Unterschied.
+Was wird bald abgebucht?
+unterwegs
+bis {0} ≈ {1}
+heute
+aus deinen Daten
+im Plan
+ausgegeben {0}

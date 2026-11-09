@@ -43,7 +43,8 @@ const loaders = {
   week: () => import("../features/planner/WeekReview"),
   day: () => import("../features/home/DaySheet"),
   settings: () => import("../features/settings/Settings"),
-  search: () => import("../features/search/SearchSheet")
+  search: () => import("../features/search/SearchSheet"),
+  assistant: () => import("../features/assistant/AssistantScreen")
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -100,6 +101,7 @@ const CurrenciesScreen = named(L.settings, "CurrenciesScreen");
 const DataScreen = named(L.settings, "DataScreen");
 const BackupTextSheet = named(L.settings, "BackupTextSheet");
 const SearchSheet = named(L.search, "SearchSheet");
+const AssistantScreen = named(L.assistant, "AssistantScreen");
 
 registerRoutes({
   roots: {
@@ -111,6 +113,7 @@ registerRoutes({
     more: MoreScreen
   },
   routes: {
+    assistant: AssistantScreen,
     wallet: WalletDetail,
     goals: GoalsScreen,
     goal: GoalDetail,

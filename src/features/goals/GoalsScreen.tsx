@@ -1,21 +1,17 @@
 import { useMemo } from "react";
-import { motion } from "framer-motion";
-import { Check, Plus, Star, Target } from "../../ui/glyphs";
+import { Plus, Target } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
-import { haptic } from "../../lib/haptics";
-import { goalPace, goalStatus, goalStatusText, type GoalStatus } from "../../lib/goals";
-import { formatDate, pluralN } from "../../lib/dates";
-import { goalInfo, goalSaved, type GoalInfo } from "../../lib/finance";
+import { goalPace, goalStatus } from "../../lib/goals";
+import { pluralN } from "../../lib/dates";
+import { goalInfo, goalSaved } from "../../lib/finance";
 import { formatMoney } from "../../lib/money";
 import { useAppData, useBalances, useEnvelopes, useToday } from "../../store/hooks";
 import { useData } from "../../store/store";
-import type { Goal } from "../../store/types";
 import { nav } from "../../store/ui";
 import { Screen } from "../../nav/Screen";
-import { NamedIcon } from "../../ui/icons";
 import { Money } from "../../ui/Money";
-import { spring } from "../../ui/motion";
-import { Button, EmptyState, IconButton, ProgressBar } from "../../ui/primitives";
+import { Button, EmptyState, IconButton } from "../../ui/primitives";
+import { GoalVisual } from "./GoalVisual";
 import { tr } from "../../i18n/i18n";
 
 export function GoalsScreen() {
@@ -55,88 +51,25 @@ export function GoalsScreen() {
       ) : (
         <>
           {/* all goals at a glance */}
-          <div className="panel mx-4 mb-4 rounded-lg px-4 py-4">
-            <div className="flex items-end justify-between gap-3">
-              <div className="min-w-0">
-                <div className="text-footnote font-medium text-ink-2">{tr("Накоплено на")}{" "}{pluralN(items.length, ["цель", "цели", "целей"])}</div>
-                <Money value={saved} currency={base} privacy variant="hero" className="mt-0.5 block text-[28px] font-semibold" />
-              </div>
-              {target > 0 && <div className="pb-1 text-right text-footnote text-ink-2">{tr("из")}{" "}<Money value={target} currency={base} /></div>}
+          <div className="mx-5 mb-4 flex items-end justify-between gap-3">
+            <div className="min-w-0">
+              <div className="text-footnote text-ink-2">{tr("Накоплено на")}{" "}{pluralN(items.length, ["цель", "цели", "целей"])}</div>
+              <Money value={saved} currency={base} privacy variant="hero" className="mt-0.5 block text-[30px]" />
+              {target > 0 && <div className="text-footnote text-ink-3">{tr("из")}{" "}<Money value={target} currency={base} /></div>}
             </div>
-            <ProgressBar value={target ? saved / target : 0} tone="ink" className="mt-3" />
-            <div className="mt-3 grid grid-cols-2 gap-2">
-              <div className="tile rounded-[14px] px-3 py-2.5">
-                <div className="text-caption text-ink-2">{tr("Откладывать в месяц")}</div>
-                <div className="mt-0.5 text-subhead font-semibold tnum text-ink">{monthly ? formatMoney(monthly, { currency: base }) : "—"}</div>
-              </div>
-              <div className="tile rounded-[14px] px-3 py-2.5">
-                <div className="text-caption text-ink-2">{tr("По графику")}</div>
-                <div className={cn("mt-0.5 text-subhead font-semibold", late ? "text-warning" : "text-ink")}>{late ? `${pluralN(late, ["цель", "цели", "целей"])} ${late === 1 ? tr("отстаёт") : tr("отстают")}` : tr("Всё идёт по плану")}</div>
-              </div>
+            <div className="pb-1 text-right">
+              <div className="text-caption text-ink-2">{tr("Откладывать в месяц")}</div>
+              <div className="text-subhead font-semibold tnum">{monthly ? formatMoney(monthly, { currency: base }) : "—"}</div>
+              <div className={cn("text-caption", late ? "text-warning" : "text-positive")}>{late ? `${pluralN(late, ["цель", "цели", "целей"])} ${late === 1 ? tr("отстаёт") : tr("отстают")}` : tr("Всё идёт по плану")}</div>
             </div>
           </div>
           <div className="flex flex-col gap-3 px-4">
             {items.map(({ g, info, status }, i) => (
-              <GoalCard key={g.id} goal={g} info={info} status={status} index={i} />
+              <GoalVisual key={g.id} goal={g} info={info} status={status} delay={i * 0.05} onOpen={() => nav.push("goal", { id: g.id })} />
             ))}
           </div>
         </>
       )}
     </Screen>
-  );
-}
-
-const STATUS_TONE = { positive: "text-positive", warning: "text-warning", muted: "text-ink-2" };
-
-function GoalCard({ goal, info, status, index }: { goal: Goal; info: GoalInfo; status: GoalStatus; index: number }) {
-  const st = goalStatusText(status, goal.currency);
-  const open = () => nav.push("goal", { id: goal.id });
-  return (
-    <motion.div
-      role="button"
-      tabIndex={0}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ ...spring.smooth, delay: index * 0.04 }}
-      whileTap={{ scale: 0.985 }}
-      onClick={open}
-      onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && open()}
-      className="panel cursor-pointer rounded-lg px-4 py-4 text-left"
-    >
-      <div className="flex items-center gap-3">
-        <span className={cn("grid h-10 w-10 shrink-0 place-items-center rounded-full", info.done ? "bg-positive-soft text-positive" : "tile")} style={!info.done && goal.color ? { color: goal.color, background: `color-mix(in srgb, ${goal.color} 14%, transparent)` } : undefined}>
-          {info.done ? <Check size={19} strokeWidth={2.4} /> : <NamedIcon name={goal.icon} size={19} strokeWidth={1.9} />}
-        </span>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-1.5">
-            <span className="truncate text-body font-semibold">{goal.name}</span>
-            {goal.primary && <Star size={13} className="shrink-0 fill-current text-accent-ink" />}
-          </div>
-          <div className="truncate text-footnote text-ink-2">{goal.deadline ? tr("до {0}", formatDate(goal.deadline, { year: "auto" })) : tr("Без срока")}</div>
-        </div>
-        <div className="text-title-3 font-semibold tnum">{Math.floor(info.progress * 100)}%</div>
-      </div>
-      <ProgressBar value={info.progress} tone={info.done ? "positive" : "ink"} color={info.done ? undefined : goal.color} className="mt-3.5" />
-      <div className="mt-2 flex justify-between text-footnote text-ink-2">
-        <Money value={info.saved} currency={goal.currency} privacy className="text-ink" />
-        <span>{tr("из")}{" "}<Money value={goal.target} currency={goal.currency} />
-        </span>
-      </div>
-      <div className="mt-3 flex items-center gap-2 border-t border-line pt-3">
-        <span className={cn("min-w-0 flex-1 truncate text-footnote font-medium", STATUS_TONE[st.tone])}>{st.text}</span>
-        {!info.done && (
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              haptic();
-              nav.sheet("goalMoney", { goalId: goal.id, direction: "deposit" });
-            }}
-            className="tile flex h-8 shrink-0 items-center gap-1 rounded-full px-3 text-footnote font-semibold text-ink active:opacity-70"
-          >
-            <Plus size={14} strokeWidth={2.4} />{tr("Пополнить")}</button>
-        )}
-      </div>
-    </motion.div>
   );
 }
