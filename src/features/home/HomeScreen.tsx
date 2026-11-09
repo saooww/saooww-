@@ -1,7 +1,6 @@
-import { locale } from "../../i18n/i18n";
 import { useMemo, useState } from "react";
 import { ListChecks, ReceiptText, Search, SlidersHorizontal, Sparkles, Target, type LucideIcon } from "../../ui/glyphs";
-import { capitalize, formatDate } from "../../lib/dates";
+import { formatDate } from "../../lib/dates";
 import { formatMoney } from "../../lib/money";
 import { goalInfo, goalSaved } from "../../lib/finance";
 import { useBalances, useEnvelopes, useToday } from "../../store/hooks";
@@ -39,10 +38,6 @@ export function HomeScreen() {
         </Reveal>
       }
     >
-      <Reveal intro={intro} delay={0.6} y={8} className="px-5 pb-5 pt-2">
-        <Greeting name={name} />
-      </Reveal>
-
       <Reveal intro={intro} delay={0.7} y={14}>
         <HomeHero />
       </Reveal>
@@ -53,29 +48,6 @@ export function HomeScreen() {
     </Screen>
   );
 }
-
-function greetingFor(hour: number): string {
-  if (hour >= 5 && hour < 12) return tr("Доброе утро");
-  if (hour >= 12 && hour < 18) return tr("Добрый день");
-  if (hour >= 18 && hour < 23) return tr("Добрый вечер");
-  return tr("Доброй ночи");
-}
-
-function Greeting({ name }: { name: string }) {
-  const today = useToday();
-  const date = useMemo(() => new Intl.DateTimeFormat(locale(), { weekday: "long", day: "numeric", month: "long" }).format(new Date()), [today]);
-  const first = name.trim().split(/\s+/)[0];
-  return (
-    <div>
-      <div className="section-label">{capitalize(date)}</div>
-      <h1 className="font-display mt-1.5 text-title-2 text-ink">
-        {greetingFor(new Date().getHours())}
-        {first ? <span className="text-ink-2">, {first}</span> : null}
-      </h1>
-    </div>
-  );
-}
-
 
 /** The blocks under the quick actions; any of them can be hidden in «Настроить главную». */
 function HomeBlocks() {

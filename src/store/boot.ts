@@ -50,6 +50,8 @@ export function startBoot() {
     // (a language switch, a closed tab) skip the welcome with empty data.
     const before = useData.getState().settings;
     if (!onboarding && !before.ardessa) useData.getState().updateSettings({ ardessa: true, accent: before.accent === "vermilion" ? "ardessa" : before.accent });
+    // The bold look: heavy figures, like a bank's balance — once, for everyone.
+    if (!onboarding && (useData.getState().settings.look ?? 0) < 5) useData.getState().updateSettings({ look: 5, numberFont: "bold" });
 
     const s = useData.getState().settings;
     useUI.setState({ booted: true, onboarding, locked: !onboarding && s.lockEnabled && !!s.lockPinHash });

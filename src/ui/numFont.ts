@@ -8,6 +8,7 @@ export type NumberFont = Settings["numberFont"];
  * inside the same box as the others.
  */
 export const NUMBER_FONTS: Array<{ id: NumberFont; label: string; scale: number }> = [
+  { id: "bold", label: tr("Жирные"), scale: 0.92 },
   { id: "elegant", label: tr("Изящные"), scale: 1 },
   { id: "strict", label: tr("Строгие"), scale: 1 },
   { id: "wide", label: tr("Широкие"), scale: 0.84 },

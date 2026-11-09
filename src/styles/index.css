@@ -36,6 +36,21 @@
   unicode-range: U+0020-0039, U+2212;
 }
 
+/* Bold: the Ardessa display face (Montserrat Bold) for figures, as big and heavy as a bank's balance */
+@font-face {
+  font-family: "Kapital Bold";
+  src: url("../assets/fonts/montserrat-latin-700.woff2") format("woff2");
+  font-weight: 700;
+  font-display: block;
+  unicode-range: U+0020-0039, U+00A0, U+202F, U+2212;
+}
+
+[data-num="bold"] {
+  --font-num: "Kapital Bold", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Inter, system-ui, sans-serif;
+  --num-display-weight: 700;
+  --num-display-tracking: -0.035em;
+}
+
 :root,
 [data-num="elegant"] {
   --font-num: "Kapital Manrope", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Inter, system-ui, sans-serif;
@@ -167,6 +182,8 @@
   --sheet-panel: #1e1e21;
   --sheet-tile-top: #2b2b2f;
   --sheet-tile-bottom: #232326;
+  --panel-bg: linear-gradient(180deg, color-mix(in srgb, var(--surface) 82%, white 4%), var(--surface) 60%);
+  --panel-edge: color-mix(in srgb, var(--accent) 32%, transparent);
 }
 
 [data-theme="light"] {
@@ -514,9 +531,10 @@
   /* Raised surface: a soft top-lit gradient over the surface colour and a
      hairline ring with a brighter top edge — the base of every card. */
   .panel {
-    /* flat and quiet: a surface and a hairline, no sheen */
-    background: var(--surface);
+    /* a soft top-lit surface whose upper edge catches a warm light */
+    background: var(--panel-bg, var(--surface));
     box-shadow:
+      inset 0 1px 0 var(--panel-edge, transparent),
       inset 0 0 0 0.5px var(--line),
       var(--shadow-panel);
   }
@@ -589,6 +607,23 @@
   *::after {
     scroll-behavior: auto !important;
   }
+}
+
+/* Light over the home hero: two diagonal streaks and a glow, drifting slowly */
+.hero-light {
+  background:
+    radial-gradient(55% 45% at 82% 28%, rgba(255, 255, 255, 0.22), transparent 70%),
+    linear-gradient(112deg, transparent 38%, rgba(255, 255, 255, 0.13) 46%, transparent 53%),
+    linear-gradient(98deg, transparent 60%, rgba(255, 255, 255, 0.08) 65%, transparent 71%);
+  background-size: 140% 100%;
+  animation: hero-drift 9s ease-in-out infinite alternate;
+}
+@keyframes hero-drift {
+  from { background-position: 0% 0%; }
+  to { background-position: 100% 0%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-light { animation: none; }
 }
 
 @keyframes caret {

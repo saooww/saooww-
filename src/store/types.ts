@@ -265,7 +265,7 @@ export interface Settings {
   animations: boolean;
   haptics: boolean;
   /** Typeface for amounts */
-  numberFont: "elegant" | "strict" | "wide" | "system";
+  numberFont: "bold" | "elegant" | "strict" | "wide" | "system";
   dateStyle: "short" | "numeric";
   numberFormat: "ru" | "en";
   kopecks: "auto" | "always" | "never";
@@ -315,6 +315,8 @@ export interface Settings {
   plannerIntroSeen?: boolean;
   /** The move to the Ardessa brand has been applied to these settings */
   ardessa?: boolean;
+  /** Version of the look the settings were moved to (5 — bold figures) */
+  look?: number;
 }
 
 export interface AppData {

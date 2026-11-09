@@ -1,21 +1,19 @@
-import { useMemo, useState, useSyncExternalStore } from "react";
+import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, ChevronRight, Inbox, Moon, Sunrise } from "../../ui/glyphs";
+import { ChevronDown, Moon, Sunrise } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
-import { MONTHS_GEN, WEEKDAYS_LONG, capitalize, parseDay, pluralN, weekdayIndex } from "../../lib/dates";
+import { WEEKDAYS_LONG, capitalize, pluralN, weekdayIndex } from "../../lib/dates";
 import { dayPlan, isInbox } from "../../lib/tasks";
 import { useToday } from "../../store/hooks";
 import { useData } from "../../store/store";
 import { nav } from "../../store/ui";
 import { spring } from "../../ui/motion";
-import { Button, Group, Row } from "../../ui/primitives";
+import { Button, Group } from "../../ui/primitives";
 import { EventRow, useEvents } from "../plans/Plans";
 import { moveTasks, useLingering } from "./actions";
 import { Heading, Invite, InviteButton } from "./bits";
-import { Enso } from "./Enso";
-import { HeroCard } from "../../ui/HeroCard";
-import { materialOf } from "../../store/catalog";
 import { Schedule } from "./Schedule";
+import { MonthCalendar } from "./MonthCalendar";
 import { TaskList } from "./TaskRow";
 import { tr } from "../../i18n/i18n";
 
@@ -31,25 +29,8 @@ export function TodayView() {
 
   return (
     <div className="flex flex-col gap-6">
-      <DayCard total={plan.total} completed={plan.completed} />
-
-      {inbox > 0 && (
-        <Group>
-          <Row
-            icon={Inbox}
-            iconTone="accent"
-            title={tr("Во входящих {0}", pluralN(inbox, ["дело", "дела", "дел"]))}
-            subtitle={tr("Решите, когда за них взяться")}
-            trailing={
-              <>
-                <span className="text-subhead font-semibold text-accent-ink max-[389px]:hidden">{tr("Разобрать")}</span>
-                <ChevronRight size={18} className="-mr-1 hidden shrink-0 text-ink-3 max-[389px]:block" />
-              </>
-            }
-            onClick={() => nav.sheet("planDay", { start: "inbox" })}
-          />
-        </Group>
-      )}
+      <DayCard total={plan.total} completed={plan.completed} focus={plan.focus.length} inbox={inbox} />
+      <MonthCalendar />
 
       <section>
         <Heading
@@ -114,59 +95,58 @@ export function TodayView() {
   );
 }
 
-const NARROW = "(max-width: 389px)";
-
-/** True on small phones (iPhone SE, mini). Follows rotation and zoom. */
-function useNarrowScreen(): boolean {
-  return useSyncExternalStore(
-    (onChange) => {
-      const mq = window.matchMedia(NARROW);
-      mq.addEventListener("change", onChange);
-      return () => mq.removeEventListener("change", onChange);
-    },
-    () => window.matchMedia(NARROW).matches,
-    () => false
-  );
-}
-
-function DayCard({ total, completed }: { total: number; completed: number }) {
+function DayCard({ total, completed, focus, inbox }: { total: number; completed: number; focus: number; inbox: number }) {
   const today = useToday();
+  const name = useData((s) => s.settings.name);
   const planned = useData((s) => s.settings.dayPlannedOn === today);
   const reviewed = useData((s) => s.settings.dayReviewedOn === today);
   const hour = new Date().getHours();
-  const d = parseDay(today);
   const allDone = total > 0 && completed === total;
   const left = total - completed;
-
-  const status = total === 0 ? tr("Дел на сегодня пока нет") : allDone ? tr("Всё сделано. Можно выдохнуть") : tr("Осталось {0}", pluralN(left, ["дело", "дела", "дел"]));
   const evening = hour >= 17;
   // Nothing to review on an empty day — offer to plan it instead.
   const cta = evening && !reviewed && total > 0 ? "review" : !planned && hour < 17 ? "plan" : !planned && total === 0 ? "plan" : null;
-  const narrow = useNarrowScreen();
+  const first = name.trim().split(/\s+/)[0];
+  const title = total === 0 ? tr("Дел на сегодня пока нет") : allDone ? tr("Всё сделано. Можно выдохнуть") : tr("{0} на сегодня", pluralN(left, ["дело", "дела", "дел"]));
+
+  const tiles: Array<{ n: number; label: string; aria?: string; onClick?: () => void; accent?: boolean }> = [
+    { n: completed, label: tr("Сделано") },
+    { n: left, label: tr("Осталось"), accent: left > 0 && evening },
+    { n: focus, label: tr("Главных"), onClick: () => nav.sheet("planDay", { start: "focus" }) },
+    { n: inbox, label: tr("Во входящих"), aria: tr("Во входящих {0}", pluralN(inbox, ["дело", "дела", "дел"])), onClick: inbox ? () => nav.sheet("planDay", { start: "inbox" }) : undefined }
+  ];
 
   return (
-    <HeroCard material={materialOf("graphite")} style={{ ["--ink" as string]: "#f5f3f0", ["--ink-2" as string]: "rgba(245,243,240,0.72)", ["--ink-3" as string]: "rgba(245,243,240,0.55)" }}>
-    <section className="flex items-center gap-4 p-5 pr-5">
-      <Enso value={total ? completed / total : 0} complete={allDone} size={narrow ? 86 : 104}>
-        <div className="flex items-baseline">
-          <span className="num-display text-[30px] leading-none text-ink">{completed}</span>
-          <span className="num text-subhead text-ink-3">/{total}</span>
-        </div>
-      </Enso>
-      <div className="min-w-0 flex-1">
-        <div className="text-title-3 font-semibold">{capitalize(WEEKDAYS_LONG[weekdayIndex(today)])}</div>
-        <div className="text-subhead text-ink-2">
-          {d.getDate()} {MONTHS_GEN[d.getMonth()]}
-        </div>
-        <div className="mt-2 text-footnote text-ink-2">{status}</div>
-        {cta === "plan" && (
-          <Button size="sm" variant="tinted" icon={Sunrise} className="mt-3 max-w-full" onClick={() => nav.sheet("planDay", {})}>{tr("Спланировать день")}</Button>
-        )}
-        {cta === "review" && (
-          <Button size="sm" variant="tinted" icon={Moon} className="mt-3 max-w-full" onClick={() => nav.sheet("reviewDay", {})}>{tr("Подвести итоги")}</Button>
-        )}
+    <section className="px-4">
+      <div className="px-1">
+        <div className="text-subhead text-ink-2">{first ? tr("Привет, {0}", first) : capitalize(WEEKDAYS_LONG[weekdayIndex(today)])}</div>
+        <h2 className="font-display mt-0.5 text-title-2">{title}</h2>
       </div>
+      <div className="mt-3 grid grid-cols-2 gap-2.5">
+        {tiles.map((t, i) => (
+          <motion.button
+            key={t.label}
+            type="button"
+            disabled={!t.onClick}
+            aria-label={t.aria}
+            onClick={t.onClick}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.04 }}
+            whileTap={t.onClick ? { scale: 0.96 } : undefined}
+            className="panel flex h-[92px] flex-col items-center justify-center rounded-[22px]"
+          >
+            <span className={cn("num-display text-[32px] leading-none", t.accent ? "text-accent-ink" : "text-ink")}>{t.n}</span>
+            <span className="mt-1.5 text-caption text-ink-2">{t.label}</span>
+          </motion.button>
+        ))}
+      </div>
+      {cta === "plan" && (
+        <Button size="md" variant="tinted" block icon={Sunrise} className="mt-3" onClick={() => nav.sheet("planDay", {})}>{tr("Спланировать день")}</Button>
+      )}
+      {cta === "review" && (
+        <Button size="md" variant="tinted" block icon={Moon} className="mt-3" onClick={() => nav.sheet("reviewDay", {})}>{tr("Подвести итоги")}</Button>
+      )}
     </section>
-    </HeroCard>
   );
 }

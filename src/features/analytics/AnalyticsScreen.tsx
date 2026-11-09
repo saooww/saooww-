@@ -198,6 +198,10 @@ export function AnalyticsScreen() {
                   data={buckets.map((b, i) => ({ label: b.label, value: Math.abs(barValues[i]) }))}
                   selected={bar}
                   onSelect={setBar}
+                  emphasis={(() => {
+                    const k = buckets.findIndex((b) => b.from <= today && today <= b.to);
+                    return k >= 0 ? k : undefined;
+                  })()}
                   color={metric === "income" ? "var(--positive)" : metric === "net" ? "var(--ink-2)" : "var(--ink)"}
                   average={avgLine}
                   formatAxis={(v) => formatCompact(v)}

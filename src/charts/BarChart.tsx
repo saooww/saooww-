@@ -104,6 +104,14 @@ export function BarChart({
                 <stop offset="100%" stopColor={c} stopOpacity={0.5} />
               </linearGradient>
             ))}
+            <linearGradient id={`hi-${gid}`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="var(--accent)" stopOpacity={0.5} />
+              <stop offset="100%" stopColor="var(--accent)" stopOpacity={0.02} />
+            </linearGradient>
+            <linearGradient id={`hibar-${gid}`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="var(--accent-hi)" />
+              <stop offset="100%" stopColor="var(--accent)" />
+            </linearGradient>
           </defs>
           {/* grid */}
           {[0.5, 1].map((f) => (
@@ -118,6 +126,14 @@ export function BarChart({
           ))}
           <line x1={0} x2={width} y1={y(0)} y2={y(0)} stroke="var(--line-strong)" strokeWidth={1} />
 
+          {/* the chosen (or current) bar stands in a glowing column */}
+          {(() => {
+            const hi = selected ?? emphasis;
+            if (hi === undefined || hi === null || dual) return null;
+            const w = Math.min(slot * 0.86, 44);
+            return <rect x={slot * hi + slot / 2 - w / 2} y={PAD_TOP} width={w} height={y(0) - PAD_TOP} rx={w / 2} fill={`url(#hi-${gid})`} />;
+          })()}
+
           {/* bars */}
           <g key={animKey}>
             {data.map((d, i) => {
@@ -128,7 +144,7 @@ export function BarChart({
                     { v: d.value2 ?? 0, x: cx - barW - 1, c: `url(#bar1-${gid})` },
                     { v: d.value, x: cx + 1, c: `url(#bar0-${gid})` }
                   ]
-                : [{ v: d.value, x: cx - barW / 2, c: `url(#bar0-${gid})` }];
+                : [{ v: d.value, x: cx - barW / 2, c: i === (selected ?? emphasis) ? `url(#hibar-${gid})` : `url(#bar0-${gid})` }];
               return (
                 <g key={i} style={{ opacity: dim ? 0.32 : emphasis !== undefined && selected === null && i !== emphasis && !dual ? 0.72 : 1, transition: "opacity 160ms" }}>
                   {bars.map((b, j) => {

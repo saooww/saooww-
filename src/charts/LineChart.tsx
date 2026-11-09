@@ -101,6 +101,9 @@ export function LineChart({
       {width > 0 && n > 0 && (
         <svg width={width} height={height} className="block overflow-visible">
           <defs>
+            <filter id={`glow${gid}`} x="-10%" y="-40%" width="120%" height="180%">
+              <feGaussianBlur stdDeviation="4" />
+            </filter>
             <linearGradient id={`g${gid}`} x1="0" x2="0" y1="0" y2="1">
               <stop offset="0%" stopColor={color} stopOpacity={0.22} />
               <stop offset="100%" stopColor={color} stopOpacity={0} />
@@ -113,6 +116,8 @@ export function LineChart({
             {fill && (
               <motion.path d={area} fill={`url(#g${gid})`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.7, delay: 0.25 }} />
             )}
+            {/* a soft glow under the line */}
+            <path d={path} fill="none" stroke={color} strokeWidth={strokeWidth * 3} strokeLinecap="round" strokeLinejoin="round" opacity={0.45} filter={`url(#glow${gid})`} />
             <motion.path
               d={path}
               fill="none"

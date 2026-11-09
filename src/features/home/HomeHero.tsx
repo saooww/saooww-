@@ -9,7 +9,7 @@ import { useData } from "../../store/store";
 import { nav } from "../../store/ui";
 import { Group, SectionHeader } from "../../ui/primitives";
 import { EventRow, useEvents, type CalEvent } from "../plans/Plans";
-import { CardStack } from "./CardStack";
+import { BalanceHero } from "./BalanceHero";
 import { DayBudget } from "./DayBudget";
 import { tr } from "../../i18n/i18n";
 
@@ -21,7 +21,7 @@ import { tr } from "../../i18n/i18n";
 export function HomeHero() {
   return (
     <div>
-      <CardStack />
+      <BalanceHero />
       <QuickActions />
       <DayBudget />
       <AskEntry />
