@@ -1,0 +1,4 @@
+Días de este mes
+Tarjeta del día
+La tarjeta y la línea del día siempre se ven; la línea inteligente está sobre el menú. Lo demás, a tu gusto.
+La norma es el importe diario de hoy.

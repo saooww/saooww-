@@ -51,7 +51,7 @@ function amountSize(text: string): number {
  * The Ardessa sail as a watermark: one large mark cropped by the card's
  * lower-right edge, with two hairline echoes around it, like wind lines.
  */
-const Sail = memo(function Sail({ color }: { color: string }) {
+export const Sail = memo(function Sail({ color }: { color: string }) {
   return (
     <svg
       className="pointer-events-none absolute -bottom-[16%] right-[-4%] h-[122%] overflow-visible"

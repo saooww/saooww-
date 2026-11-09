@@ -12,6 +12,9 @@ import { Screen } from "../../nav/Screen";
 import { Avatar, Button, Group, IconButton, Row } from "../../ui/primitives";
 import { getLang, locale, tr } from "../../i18n/i18n";
 import { ProgressPanel } from "./ProgressPanel";
+import { HeroCard } from "../../ui/HeroCard";
+import { LogoWord } from "../../ui/Brand";
+import { materialOf } from "../../store/catalog";
 
 export function MoreScreen() {
   const data = useAppData();
@@ -42,14 +45,21 @@ export function MoreScreen() {
   return (
     <Screen title={tr("Профиль")} large actions={<IconButton icon={Search} label={tr("Поиск")} onClick={() => nav.sheet("search")} />}>
       {/* who you are, and the way into the app's look and settings */}
-      <button type="button" onClick={() => nav.push("settings")} className="panel mx-4 flex w-[calc(100%-32px)] items-center gap-4 rounded-[24px] p-4 text-left active:opacity-80">
-        <Avatar name={name || tr("Я")} size={56} />
-        <span className="min-w-0 flex-1">
-          <span className="block truncate text-title-3 font-semibold text-ink">{name || tr("Ваш профиль")}</span>
-          <span className="block text-footnote text-ink-2">{since ? tr("В Ardessa с {0}", since) : tr("Имя, оформление, данные")}</span>
-        </span>
-        <Settings size={20} className="shrink-0 text-ink-3" />
-      </button>
+      <HeroCard material={materialOf("titanium")} onClick={() => nav.push("settings")} ariaLabel={tr("Настройки и профиль")}>
+        <div className="flex min-h-[196px] flex-col p-5">
+          <div className="flex items-center justify-between">
+            <LogoWord size={11} color={materialOf("titanium").ink} />
+            <Settings size={18} style={{ color: materialOf("titanium").inkMuted }} />
+          </div>
+          <div className="mt-auto flex items-center gap-3.5">
+            <Avatar name={name || tr("Я")} size={52} />
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-title-2 font-semibold">{name || tr("Ваш профиль")}</span>
+              <span className="block text-footnote" style={{ color: materialOf("titanium").inkMuted }}>{since ? tr("В Ardessa с {0}", since) : tr("Имя, оформление, данные")}</span>
+            </span>
+          </div>
+        </div>
+      </HeroCard>
 
       <ProgressPanel />
 

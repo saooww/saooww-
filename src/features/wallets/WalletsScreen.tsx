@@ -8,7 +8,9 @@ import { monthlyTotals } from "../../lib/analytics";
 import { rateOf } from "../../lib/finance";
 import { haptic } from "../../lib/haptics";
 import { formatCompact, formatMoney } from "../../lib/money";
-import { materialFor, walletKindInfo } from "../../store/catalog";
+import { materialFor, materialOf, walletKindInfo } from "../../store/catalog";
+import { HeroCard } from "../../ui/HeroCard";
+import { BrandMark } from "../../ui/Brand";
 import { useAppData, useBalances, useLedger, useNetWorth, useToday } from "../../store/hooks";
 import { useData } from "../../store/store";
 import type { Wallet } from "../../store/types";
@@ -78,18 +80,28 @@ function NetWorthBlock() {
   const delta = (shown?.value ?? nw.total) - startOfWindow;
 
   return (
-    <section className="px-5">
-      <div className="text-footnote font-medium text-ink-2">{shown ? formatDate(shown.day, { year: "auto" }) : tr("Чистый капитал")}</div>
-      <div className="mt-1 text-[34px] font-semibold leading-[40px] tracking-[-0.035em]">
-        {shown ? <Money value={shown.value} currency={base} variant="hero" privacy /> : <AnimatedMoney value={nw.total} currency={base} variant="hero" privacy />}
-      </div>
-      <div className={cn("mt-1 text-footnote font-medium tnum", delta >= 0 ? "text-positive" : "text-negative")}>
-        {delta >= 0 ? "+" : "−"}
-        {formatMoney(Math.abs(delta), { currency: base })} <span className="font-normal text-ink-3">{shown ? tr("с начала периода") : tr("за 90 дней")}</span>
-      </div>
-      <div className="-mx-1 mt-3">
-        <LineChart points={series.map((p) => ({ value: p.value }))} height={92} onScrub={setScrub} formatValue={(v) => formatCompact(v)} ariaLabel={tr("Капитал за 90 дней")} padY={14} />
-      </div>
+    <section>
+      <HeroCard material={materialOf("obsidian")} tilt={false}>
+        <div className="px-5 pb-3 pt-5">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/60">{shown ? formatDate(shown.day, { year: "auto" }) : tr("Чистый капитал")}</span>
+            <span className="opacity-80">
+              <BrandMark size={16} color="#fff" />
+            </span>
+          </div>
+          <div className="mt-2.5 text-[40px] leading-none text-white">
+            {shown ? <Money value={shown.value} currency={base} variant="hero" privacy /> : <AnimatedMoney value={nw.total} currency={base} variant="hero" privacy />}
+          </div>
+          <div className={cn("mt-2 text-footnote font-medium tnum", delta >= 0 ? "text-positive" : "text-negative")}>
+            {delta >= 0 ? "+" : "−"}
+            {formatMoney(Math.abs(delta), { currency: base })} <span className="font-normal text-white/55">{shown ? tr("с начала периода") : tr("за 90 дней")}</span>
+          </div>
+          <div className="-mx-1 mt-2" style={{ ["--ink" as string]: "#ffffff", ["--ink-3" as string]: "rgba(255,255,255,0.55)", ["--bg" as string]: "#0d0d0f" }}>
+            <LineChart points={series.map((p) => ({ value: p.value }))} height={84} onScrub={setScrub} formatValue={(v) => formatCompact(v)} ariaLabel={tr("Капитал за 90 дней")} padY={14} />
+          </div>
+        </div>
+      </HeroCard>
+      <div className="px-5">
       {nw.missing.length > 0 && (
         <button type="button" onClick={() => nav.push("currencies")} className="mt-2 text-footnote text-warning">{tr("Без учёта")}{" "}{nw.missing.join(", ")}{tr(": задайте курс →")}</button>
       )}
@@ -98,6 +110,7 @@ function NetWorthBlock() {
         <Stat label={tr("В целях")} value={nw.goals} currency={base} onClick={() => nav.push("goals")} />
         <Stat label={tr("Вам должны")} value={nw.receivables} currency={base} onClick={() => nav.push("debts")} />
         <Stat label={tr("Вы должны")} value={-nw.liabilities} currency={base} onClick={() => nav.push("debts")} />
+      </div>
       </div>
     </section>
   );

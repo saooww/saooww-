@@ -13,6 +13,8 @@ import { EventRow, useEvents } from "../plans/Plans";
 import { moveTasks, useLingering } from "./actions";
 import { Heading, Invite, InviteButton } from "./bits";
 import { Enso } from "./Enso";
+import { HeroCard } from "../../ui/HeroCard";
+import { materialOf } from "../../store/catalog";
 import { Schedule } from "./Schedule";
 import { TaskList } from "./TaskRow";
 import { tr } from "../../i18n/i18n";
@@ -143,7 +145,8 @@ function DayCard({ total, completed }: { total: number; completed: number }) {
   const narrow = useNarrowScreen();
 
   return (
-    <section className="mx-4 panel flex items-center gap-4 rounded-[24px] p-4 pr-5">
+    <HeroCard material={materialOf("graphite")} style={{ ["--ink" as string]: "#f5f3f0", ["--ink-2" as string]: "rgba(245,243,240,0.72)", ["--ink-3" as string]: "rgba(245,243,240,0.55)" }}>
+    <section className="flex items-center gap-4 p-5 pr-5">
       <Enso value={total ? completed / total : 0} complete={allDone} size={narrow ? 86 : 104}>
         <div className="flex items-baseline">
           <span className="num-display text-[30px] leading-none text-ink">{completed}</span>
@@ -164,5 +167,6 @@ function DayCard({ total, completed }: { total: number; completed: number }) {
         )}
       </div>
     </section>
+    </HeroCard>
   );
 }
