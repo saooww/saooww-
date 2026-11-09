@@ -1,0 +1,153 @@
+Pendientes de días anteriores
+Un buen mes.
+Almacenamiento
+Se guardan solo en este dispositivo y no entran en la copia de seguridad.
+Color
+Color {0}
+Color de acento
+Color en los gráficos
+Color de la meta
+Metas
+Meta
+Meta alcanzada
+Meta aportada
+Meta creada
+Meta guardada
+Meta eliminada
+Teclado numérico
+Cifras
+Las partes del recibo superan su total
+A menudo
+Parte del recibo
+Lo más frecuente: «
+Recibo de
+Recibo dividido en {0}: cada una cuenta en su categoría y presupuesto.
+Recibo eliminado
+Lista de control
+Dentro de {0}
+A través de la cartera
+Números
+Patrimonio neto
+Jue
+¿Qué hay que hacer?
+¿Qué salió bien? ¿Qué estorbó? ¿Qué importa mañana?
+Algo salió mal
+Para fijar el tipo a mano, desactiva los tipos del Banco Central
+Paso {0} de {1}
+Anchas
+Fuente de importes
+Esta semana
+Estas tres categorías:
+Esto es
+Esta tarea fue eliminada.
+Es una suscripción
+Este mes
+Yo
+ago
+abr
+sin {0}: no hay tipo
+sin fecha
+sin un solo gasto
+sin plazo
+sin gastos
+más
+estaba en {0}
+en
+en «{0}»
+al año
+al año.
+al día
+al mes
+a la semana
+de media
+te deben {0}
+te deben
+dom
+de todo el gasto del mes.
+todo hecho
+mar
+debes {0}
+debes
+casi no usas. Cancelarla ahorraría
+elige una categoría
+elige una cartera
+{0} de {1} elegidos
+dic
+día
+días
+días
+hasta {0}
+∅
+más
+en 90 días
+planificado
+sueldo 120 000
+y
+de
+desde «{0}»
+desde texto
+desde archivo
+neto
+jul
+jun
+carrusel
+café 300
+cartera
+mar
+may
+menos
+M
+a «
+al día
+nada para hoy
+no elegidas
+sin fijar
+sin fijar
+no lo uso
+sin aportaciones
+nov
+oct
+de la categoría principal
+quedan {0}
+de los ingresos en
+ahorrar 5000 para vacaciones
+van atrasadas
+va atrasada
+lun
+al tipo actual
+llamar a mamá mañana a las 18
+nada todavía
+gastado
+ejecutado
+omitido
+vencido hace {0} días
+del año pasado
+del trimestre pasado
+del mes pasado
+la semana pasada
+de la semana pasada
+el año pasado
+el trimestre pasado
+el mes pasado
+vie
+vacío
+poco
+desde el inicio del periodo
+sáb
+hoy
+sep
+el siguiente: {0}
+mié
+taxi 450 ayer
+gastos
+gasto
+gastos
+mil
+ya vinculado
+feb
+х
+jue
+ene
+ — no hay tipo de cambio →
+≈ {0} al día hasta fin de mes
+≈ {0} al mes

@@ -17,6 +17,11 @@ for (const lang of LANGS) {
     if (key === undefined) return;
     let v = line.trim();
     if (!v) return;
+    // «∅» — deliberately empty (a Russian word ending that other languages don't have)
+    if (v === "∅") {
+      out[key] = "";
+      return;
+    }
     if (ph(v) !== ph(key)) {
       problems++;
       console.log(`${lang} #${i}: placeholders differ\n  ru: ${key}\n  ${lang}: ${v}`);

@@ -72,7 +72,7 @@ export function switchLanguage(next: Lang, restart = true) {
  */
 export function t(ru: string, ...args: Array<string | number>): string {
   const tr = lang === "ru" ? ru : dict[ru];
-  const s = typeof tr === "string" && tr ? tr : ru;
+  const s = typeof tr === "string" ? tr : ru;
   return args.length ? s.replace(/\{(\d+)\}/g, (m, i) => (args[+i] !== undefined ? String(args[+i]) : m)) : s;
 }
 

@@ -1,0 +1,153 @@
+Önceki günlerden kalanlar
+İyi bir ay.
+Depolama
+Yalnızca bu cihazda saklanır ve yedeğe dahil edilmez.
+Renk
+Renk {0}
+Vurgu rengi
+Grafiklerdeki renk
+Hedef rengi
+Hedefler
+Hedef
+Hedefe ulaşıldı
+Hedefe para yatırıldı
+Hedef oluşturuldu
+Hedef kaydedildi
+Hedef silindi
+Sayı klavyesi
+Rakamlar
+Fişin parçaları toplamını aşıyor
+Sık
+Fiş parçası
+En sık — «
+Fiş:
+Fiş {0} parçaya bölündü — her biri kendi kategorisinde ve bütçesinde sayılır.
+Fiş silindi
+Kontrol listesi
+{0} içinde
+Cüzdan üzerinden
+Sayılar
+Net varlık
+Per
+Ne yapılması gerekiyor?
+Ne iyi gitti? Ne engel oldu? Yarın ne önemli?
+Bir şeyler ters gitti
+Kuru elle belirlemek için Merkez Bankası kurlarını kapatın
+Adım {0} / {1}
+Geniş
+Tutar yazı tipi
+Bu hafta
+Bu üç kategori —
+Bu
+Bu görev silindi.
+Bu bir abonelik
+Bu ay
+Ben
+Ağu
+Nis
+{0} hariç — kur yok
+tarihsiz
+tek harcama olmadan
+süresiz
+harcamasız
+fazla
+{0} idi
+şurada:
+«{0}» içinde
+yılda
+yılda.
+günde
+ayda
+haftada
+ortalama
+size {0} borçlular
+size borçlular
+Paz
+ayın tüm harcamalarının.
+hepsi tamam
+Sal
+{0} borçlusunuz
+borçlusunuz
+neredeyse hiç kullanmıyorsunuz. İptal etmek şunu kazandırır:
+kategori seçin
+cüzdan seçin
+{1} içinden {0} seçildi
+Ara
+gün
+gün
+gün
+{0} tarihine kadar
+∅
+daha
+90 günde
+planlandı
+maaş 120.000
+ve
+/
+«{0}» cüzdanından
+metinden
+dosyadan
+net
+Tem
+Haz
+karusel
+kahve 300
+cüzdan
+Mar
+May
+az
+mn
+«
+günlük
+bugün için bir şey yok
+seçilmedi
+belirlenmedi
+belirlenmedi
+kullanmıyorum
+yatırma yok
+Kas
+Eki
+ana kategorinin
+{0} kaldı
+gelirden, şu ayda:
+tatil için 5000 biriktir
+geride
+geride
+Pzt
+güncel kurla
+yarın 18'de annemi ara
+henüz bir şey yok
+harcanan
+gerçekleşti
+atlandı
+{0} gün gecikti
+geçen yılın
+geçen çeyreğin
+geçen ayın
+geçen hafta
+geçen haftanın
+geçen yıl
+geçen çeyrekte
+geçen ay
+Cum
+boş
+nadiren
+dönem başından beri
+Cmt
+bugün
+Eyl
+sonraki — {0}
+Çar
+taksi 450 dün
+harcama
+harcama
+harcama
+bin
+zaten bağlı
+Şub
+х
+Per
+Oca
+ — döviz kuru yok →
+≈ ay sonuna kadar günde {0}
+≈ ayda {0}
