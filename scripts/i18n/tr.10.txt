@@ -1,0 +1,35 @@
+100 işlem
+Art arda 5 gün yapılmış iş
+Art arda 7 gün sınırı aşmadan
+Günlükte 7 kayıt
+{0}/{1} ödül
+{0}, {1}
+Yolculuğun
+Zirve
+Bir ayda gelir giderden fazla
+İlk işlemini kaydet
+Ay hikâyeleri
+Günün akışı
+Artıda bir ay
+Kürenin etrafındaki ay
+Ödüller
+Sınır içinde bir hafta
+İlk kayıt
+Şimdilik boş — ilkini kaydet
+Yarı yol
+Program
+İş serisi
+Olaylar: {0}
+Yüz kayıt — bir alışkanlık
+Küre ve günün akışı her zaman görünür, akıllı satır menünün üstünde. Gerisi isteğe bağlı.
+Kürenin etrafındaki noktalar ayın günleri. Sınır, bugünkü günlük tutardır.
+Bir hedefin yarısı biriktirildi
+sınır içinde
+art arda sınır içinde gün
+art arda işli gün
+dolu
+bu yıl artıda geçen ay
+taşımak için sürükleyin
+kazanıldı
+sınırın üstünde
+boş

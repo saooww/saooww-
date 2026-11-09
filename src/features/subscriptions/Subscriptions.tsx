@@ -75,7 +75,7 @@ export function SubscriptionsScreen() {
             <div className="panel rounded-md px-3.5 py-3">
               <div className="text-caption font-medium text-ink-2">{tr("Подписки в месяц")}</div>
               <Money value={monthlySubs} currency={base} className="mt-0.5 block text-headline font-semibold" />
-              <div className="text-caption text-ink-3">{formatMoney(monthlySubs * 12, { currency: base })}{tr("в год")}</div>
+              <div className="text-caption text-ink-3">{formatMoney(monthlySubs * 12, { currency: base })}{" "}{tr("в год")}</div>
             </div>
             <div className="panel rounded-md px-3.5 py-3">
               <div className="text-caption font-medium text-ink-2">{tr("Все регулярные списания")}</div>
@@ -88,7 +88,7 @@ export function SubscriptionsScreen() {
             <div className="mx-4 mt-3 flex items-start gap-3 rounded-lg border border-line-strong px-4 py-3">
               <Zap size={18} className="mt-0.5 shrink-0 text-warning" />
               <p className="text-subhead">
-                {unused.length === 1 ? `«${unused[0].title}»` : tr("{0} подписки", unused.length)}{tr("вы почти не используете. Отмена сэкономит")}{" "}<span className="font-semibold">{formatMoney(unusedYear)}</span>{tr("в год.")}</p>
+                {unused.length === 1 ? `«${unused[0].title}»` : tr("{0} подписки", unused.length)}{" "}{tr("вы почти не используете. Отмена сэкономит")}{" "}<span className="font-semibold">{formatMoney(unusedYear)}</span>{" "}{tr("в год.")}</p>
             </div>
           )}
 

@@ -68,7 +68,7 @@ export function Screen({ title, large, ownTitle, actions, header, children, clas
 
   return (
     <div className={cn("absolute inset-0 overflow-hidden", !bare && "app-canvas")}>
-      <div ref={ref} className={cn("scroll-y absolute inset-0", className)} style={{ paddingTop: `calc(var(--safe-top) + ${BAR_H}px)`, paddingBottom: "calc(var(--tabbar-space) + 32px)" }}>
+      <div ref={ref} className={cn("scroll-y absolute inset-0", className)} style={{ paddingTop: `calc(var(--safe-top) + ${BAR_H}px)`, paddingBottom: "calc(var(--tabbar-space) + var(--dock) + 32px)" }}>
         {large && title && <h1 className="px-5 pb-4 pt-1 text-title-1 font-display">{title}</h1>}
         {subheader}
         {children}

@@ -103,7 +103,7 @@ export function WeekReviewSheet({ from }: { from: string }) {
           </Stat>
           <Stat icon={Sparkles} label={tr("Главное дня")}>
             <div className="text-title-3 font-semibold tnum text-ink">
-              {w.focusDone}
+              {w.focusDone}{" "}
               <span className="text-subhead font-normal text-ink-3">{tr("из")}{" "}{w.focusTotal}</span>
             </div>
             <div className="text-caption text-ink-2">{w.focusTotal ? tr("{0}% выполнено", Math.round((w.focusDone / w.focusTotal) * 100)) : tr("не выбирали")}</div>

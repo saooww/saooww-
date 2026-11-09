@@ -5,6 +5,7 @@ import { cn } from "../lib/cn";
 import { haptic } from "../lib/haptics";
 import { NamedIcon } from "./icons";
 import { spring } from "./motion";
+import { MARK } from "./brandPaths";
 import { tr } from "../i18n/i18n";
 
 /* ------------------------------------------------------------------ */
@@ -490,8 +491,14 @@ export const inputCls = "w-full min-w-0 bg-transparent text-body text-ink outlin
 export function EmptyState({ icon: Icon, title, text, action, className }: { icon: LucideIcon; title: string; text?: string; action?: ReactNode; className?: string }) {
   return (
     <div className={cn("flex flex-col items-center px-8 py-10 text-center", className)}>
-      <span className="tile mb-5 grid h-16 w-16 place-items-center rounded-[22px] text-ink-2">
-        <Icon size={26} strokeWidth={1.7} />
+      {/* the Ardessa sail drawn faintly behind the icon — the brand's mark on every empty screen */}
+      <span className="relative mb-5 grid h-24 w-24 place-items-center">
+        <svg viewBox={`0 0 ${MARK.w} ${MARK.h}`} className="absolute inset-0 h-full w-full" aria-hidden="true">
+          <path d={MARK.d} fill="none" stroke="var(--accent)" strokeOpacity={0.35} strokeWidth={0.8} />
+        </svg>
+        <span className="tile relative grid h-14 w-14 place-items-center rounded-[20px] text-ink-2">
+          <Icon size={24} strokeWidth={1.7} />
+        </span>
       </span>
       <div className="text-headline font-semibold">{title}</div>
       {text && <p className="mt-1.5 max-w-[280px] text-callout text-ink-2 text-balance">{text}</p>}

@@ -194,7 +194,7 @@ function TaskDetails({ task }: { task: Task }) {
             }}
           >{tr("Удалить дело")}</Button>
           <p className="px-4 pt-1 text-center text-footnote text-ink-3">
-            {task.due ? tr("Календарь телефона сам напомнит о деле, даже если приложение закрыто. ") : ""}{tr("Создано")}{" "}{formatDate(dayOf(task.createdAt))}
+            {task.due ? tr("Календарь телефона сам напомнит о деле, даже если приложение закрыто. ") : ""}{" "}{tr("Создано")}{" "}{formatDate(dayOf(task.createdAt))}
             {task.done && task.doneAt ? tr(", сделано {0}", formatDateTime(task.doneAt)) : ""}
           </p>
         </div>
@@ -221,7 +221,7 @@ export function Checklist({ items, onChange, header = tr("Пункты"), placeh
     <section className="mx-4">
       <div className="flex items-baseline justify-between px-1 pb-2.5">
         <span className="section-label">{header}</span>
-        {items.length > 0 && <span className="num text-footnote text-ink-3">{done}{tr("из")}{" "}{items.length}</span>}
+        {items.length > 0 && <span className="num text-footnote text-ink-3">{done}{" "}{tr("из")}{" "}{items.length}</span>}
       </div>
       <div className="panel overflow-hidden rounded-lg [&>*+*]:hairline-t">
         <AnimatePresence initial={false}>

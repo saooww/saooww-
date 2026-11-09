@@ -1,0 +1,35 @@
+100 operaciones
+5 días seguidos con una tarea hecha
+7 días seguidos sin pasarse
+7 entradas en el diario
+{0} de {1} logros
+{0}, {1}
+Tu camino
+Cumbre
+Más ingresos que gastos en un mes
+Registra tu primera operación
+Historias de los meses
+Línea del día
+Mes en positivo
+El mes alrededor de la esfera
+Logros
+Semana en la norma
+Primer registro
+Vacío por ahora — registra lo primero
+A mitad de camino
+Agenda
+Racha de tareas
+Eventos: {0}
+Cien registros — un hábito
+La esfera y la línea del día siempre se ven; la línea inteligente está sobre el menú. Lo demás, a tu gusto.
+Los puntos alrededor de la esfera son los días del mes. La norma es el importe diario de hoy.
+Una meta ahorrada a la mitad
+en la norma
+días seguidos en la norma
+días seguidos con tareas
+ocupado
+meses en positivo este año
+arrastra para mover
+conseguido
+por encima de la norma
+libre

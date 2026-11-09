@@ -221,7 +221,7 @@ function buildSlides(s: MonthSummary, cur: string): Slide[] {
           </Line>
         )}
         <Line className="text-white/70">
-          {s.purchases} {s.purchases % 10 === 1 && s.purchases % 100 !== 11 ? tr("трата") : [2, 3, 4].includes(s.purchases % 10) && ![12, 13, 14].includes(s.purchases % 100) ? tr("траты") : tr("трат")}{tr("· в среднем")}{" "}{money(s.avgPerDay)}{tr("в день")}</Line>
+          {s.purchases} {s.purchases % 10 === 1 && s.purchases % 100 !== 11 ? tr("трата") : [2, 3, 4].includes(s.purchases % 10) && ![12, 13, 14].includes(s.purchases % 100) ? tr("траты") : tr("трат")}{" "}{tr("· в среднем")}{" "}{money(s.avgPerDay)}{" "}{tr("в день")}</Line>
       </div>
     )
   });
@@ -237,7 +237,7 @@ function buildSlides(s: MonthSummary, cur: string): Slide[] {
           <Big value={Math.abs(s.net)} currency={cur} />
           <Line>
             {rate >= 0 ? (
-              <>{tr("Это")}{" "}<b className="font-semibold text-white">{formatPercent(rate)}</b>{tr("от дохода в")}{" "}{money(s.income)}.
+              <>{tr("Это")}{" "}<b className="font-semibold text-white">{formatPercent(rate)}</b>{" "}{tr("от дохода в")}{" "}{money(s.income)}.
               </>
             ) : (
               <>{tr("Расходы превысили доходы (")}{money(s.income)}{tr("). Ничего страшного — главное это видеть.")}</>
@@ -274,7 +274,7 @@ function buildSlides(s: MonthSummary, cur: string): Slide[] {
               </motion.div>
             ))}
           </div>
-          <Line className="text-white/70">{tr("Эти три категории —")}{" "}{formatPercent(s.top.reduce((a, c) => a + c.share, 0))}{tr("всех трат месяца.")}</Line>
+          <Line className="text-white/70">{tr("Эти три категории —")}{" "}{formatPercent(s.top.reduce((a, c) => a + c.share, 0))}{" "}{tr("всех трат месяца.")}</Line>
         </div>
       )
     });

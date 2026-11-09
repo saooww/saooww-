@@ -1,0 +1,35 @@
+100 operations
+5 days in a row with a task done
+7 days in a row within the norm
+7 diary entries
+{0} of {1} awards
+{0}, {1}
+Your path
+Summit
+More income than spending in a month
+Record your first operation
+Month stories
+Day timeline
+Month in the plus
+The month around the sphere
+Awards
+Week within the norm
+First entry
+Empty so far — record the first one
+Halfway
+Schedule
+Task streak
+Events: {0}
+A hundred entries — a habit
+The day sphere and timeline are always shown, the smart line sits above the menu. The rest is up to you.
+The dots around the sphere are the days of the month. The norm is today's daily amount.
+A goal is half saved
+within the norm
+days within the norm in a row
+days with tasks in a row
+busy
+months in the plus this year
+drag to move
+earned
+over the norm
+free

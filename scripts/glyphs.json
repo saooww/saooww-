@@ -94,7 +94,8 @@
  "BookOpen": {
   "ph": "BookOpen",
   "weights": [
-   "duotone"
+   "duotone",
+   "fill"
   ]
  },
  "BriefcaseBusiness": {
@@ -186,7 +187,8 @@
  "CheckCheck": {
   "ph": "Checks",
   "weights": [
-   "bold"
+   "bold",
+   "fill"
   ]
  },
  "ChevronDown": {
@@ -314,13 +316,15 @@
  "Flag": {
   "ph": "Flag",
   "weights": [
-   "duotone"
+   "duotone",
+   "fill"
   ]
  },
  "Flame": {
   "ph": "Flame",
   "weights": [
-   "duotone"
+   "duotone",
+   "fill"
   ]
  },
  "FlaskConical": {
@@ -528,7 +532,8 @@
  "Mountain": {
   "ph": "Mountains",
   "weights": [
-   "duotone"
+   "duotone",
+   "fill"
   ]
  },
  "Music": {
@@ -631,7 +636,8 @@
  "ReceiptText": {
   "ph": "Receipt",
   "weights": [
-   "duotone"
+   "duotone",
+   "fill"
   ]
  },
  "RefreshCw": {
@@ -769,7 +775,8 @@
  "Stamp": {
   "ph": "Stamp",
   "weights": [
-   "duotone"
+   "duotone",
+   "fill"
   ]
  },
  "Star": {
@@ -836,7 +843,8 @@
  "TrendingUp": {
   "ph": "TrendUp",
   "weights": [
-   "duotone"
+   "duotone",
+   "fill"
   ]
  },
  "TriangleAlert": {

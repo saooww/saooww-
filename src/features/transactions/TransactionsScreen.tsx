@@ -121,6 +121,9 @@ export function TransactionsScreen() {
     return out;
   }, [visible, byDate]);
 
+  // each day's spending as a thin bar, measured against the biggest day shown
+  const daySpent = (items: Transaction[]) => items.reduce((s, t) => s + (t.kind === "expense" ? t.amount : 0), 0);
+  const maxDay = useMemo(() => Math.max(1, ...groups.map((g) => daySpent(g.items))), [groups]);
   const dayNet = (items: Transaction[]) => items.reduce((s, t) => s + (t.kind === "income" ? t.amount : t.kind === "expense" ? -t.amount : 0), 0);
 
   const active = filter.period !== "all" || filter.kind !== "all" || !!filter.walletId || !!filter.categoryId || filter.sort !== "date-desc";
@@ -270,9 +273,16 @@ export function TransactionsScreen() {
           {groups.map((g) => (
             <section key={g.day || "all"} className="mt-3">
               {g.day && (
-                <div className="flex items-baseline justify-between px-5 pb-2.5 pt-2">
-                  <span className="section-label">{formatDayHeading(g.day)}</span>
-                  <Money value={dayNet(g.items)} sign="always" currency={settings.baseCurrency} className="text-footnote text-ink-3" />
+                <div className="px-5 pb-2.5 pt-2">
+                  <div className="flex items-baseline justify-between">
+                    <span className="section-label">{formatDayHeading(g.day)}</span>
+                    <Money value={dayNet(g.items)} sign="always" currency={settings.baseCurrency} className="text-footnote text-ink-3" />
+                  </div>
+                  {daySpent(g.items) > 0 && (
+                    <div aria-hidden="true" className="mt-2 h-[3px] overflow-hidden rounded-full bg-[var(--chart-grid)]">
+                      <div className="h-full rounded-full bg-accent" style={{ width: `${Math.max(3, (daySpent(g.items) / maxDay) * 100)}%`, opacity: 0.85 }} />
+                    </div>
+                  )}
                 </div>
               )}
               <div className="mx-4 overflow-hidden panel rounded-lg [&>*+*]:hairline-t">

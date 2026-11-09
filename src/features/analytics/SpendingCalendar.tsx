@@ -93,7 +93,7 @@ export function SpendingCalendar({ entries, from, to, today, categories, currenc
         </div>
         <div className="flex shrink-0 items-center gap-1 text-[10.5px] text-ink-3" aria-hidden="true">{tr("меньше")}{[0.2, 0.45, 0.7, 1].map((k) => (
             <span key={k} className="h-2.5 w-2.5 rounded-[3px]" style={{ background: `color-mix(in srgb, var(--ink) ${Math.round(10 + 80 * k)}%, transparent)` }} />
-          ))}{tr("больше")}</div>
+          ))}{" "}{tr("больше")}</div>
       </div>
     </div>
   );

@@ -68,7 +68,7 @@ export function GoalDetail({ id }: { id: ID }) {
         )}
         <div className="mt-4 text-title-2 font-semibold">{goal.name}</div>
         <div className="mt-1 text-callout text-ink-2">
-          <Money value={info.saved} currency={goal.currency} privacy className="font-semibold text-ink" />{tr("из")}{" "}<Money value={goal.target} currency={goal.currency} />
+          <Money value={info.saved} currency={goal.currency} privacy className="font-semibold text-ink" />{" "}{tr("из")}{" "}<Money value={goal.target} currency={goal.currency} />
         </div>
         <div className={cn("mt-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-footnote font-semibold", st.tone === "positive" ? "bg-positive-soft text-positive" : st.tone === "warning" ? "bg-warning-soft text-warning" : "tile text-ink-2")}>
           {st.text}

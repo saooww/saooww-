@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { CalendarCheck, CircleCheckBig, ReceiptText } from "../../ui/glyphs";
 import { capitalize, dayOf, startOfWeek } from "../../lib/dates";
 import { safeToSpend } from "../../lib/safeToSpend";
+import { monthDots, type DayMark } from "../../lib/monthRing";
 import { dayPlan } from "../../lib/tasks";
 import { useAppData, useBalances, useLedger, useToday } from "../../store/hooks";
 import { useData } from "../../store/store";
@@ -29,6 +30,8 @@ export function DaySheet() {
   const s = useMemo(() => safeToSpend(data, balances, entries, today), [data, balances, entries, today]);
   const plan = useMemo(() => dayPlan(tasks, today, keep), [tasks, today, keep]);
   const todays = useMemo(() => transactions.filter((t) => dayOf(t.date) === today && (t.kind === "expense" || t.kind === "income")).sort((a, b) => (a.date < b.date ? 1 : -1)), [transactions, today]);
+  const dots = useMemo(() => monthDots(entries, today, s?.allowance ?? 0), [entries, today, s]);
+  const count = (m: DayMark) => dots.filter((d) => d.mark === m).length;
   const title = capitalize(new Intl.DateTimeFormat(locale(), { weekday: "long", day: "numeric", month: "long" }).format(new Date()));
 
   const go = (fn: () => void) => {
@@ -56,7 +59,17 @@ export function DaySheet() {
           <div className="px-4 pb-4">
             <ProgressBar value={s.allowance ? Math.min(1, s.spentToday / s.allowance) : 0} tone={s.today < 0 ? "negative" : "ink"} />
             <div className="mt-2 text-footnote text-ink-2">
-              {s.daysLeft === 1 ? tr("Последний день месяца") : tr("До конца месяца {0} дн.", s.daysLeft)}{tr("· норма пересчитывается каждое утро")}</div>
+              {s.daysLeft === 1 ? tr("Последний день месяца") : tr("До конца месяца {0} дн.", s.daysLeft)}{" "}{tr("· норма пересчитывается каждое утро")}</div>
+          </div>
+        </Group>
+      )}
+
+      {s && s.allowance > 0 && (
+        <Group header={tr("Месяц вокруг шара")} footer={tr("Точки вокруг шара — дни месяца. Норма — сегодняшняя сумма на день.")}>
+          <div className="grid grid-cols-3 gap-2 p-3">
+            <Legend color="var(--positive)" label={tr("без трат")} n={count("free")} />
+            <Legend color="color-mix(in srgb, var(--ink) 62%, transparent)" label={tr("в норме")} n={count("ok")} />
+            <Legend color="var(--accent)" label={tr("сверх нормы")} n={count("over")} />
           </div>
         </Group>
       )}
@@ -76,7 +89,7 @@ export function DaySheet() {
           <div className="p-4">
             <div className="flex items-baseline justify-between">
               <span className="text-title-3 font-semibold tnum">
-                {plan.completed}
+                {plan.completed}{" "}
                 <span className="text-subhead font-normal text-ink-3">{tr("из")}{" "}{plan.total}</span>
               </span>
               <span className="text-footnote text-ink-2">{plan.total === 0 ? tr("на сегодня ничего") : plan.completed === plan.total ? tr("всё сделано") : tr("осталось {0}", plan.total - plan.completed)}</span>
@@ -100,6 +113,18 @@ function Stat({ label, children }: { label: string; children: React.ReactNode })
     <div className="tile rounded-[14px] px-3 py-2.5">
       <div className="text-caption text-ink-2">{label}</div>
       <div className="mt-0.5 truncate text-subhead font-semibold tnum text-ink">{children}</div>
+    </div>
+  );
+}
+
+function Legend({ color, label, n }: { color: string; label: string; n: number }) {
+  return (
+    <div className="tile flex flex-col items-start rounded-[14px] px-3 py-2.5">
+      <span className="flex items-center gap-1.5 text-caption text-ink-2">
+        <span className="h-2 w-2 rounded-full" style={{ background: color }} />
+        {label}
+      </span>
+      <span className="num mt-1 text-title-3 font-semibold text-ink">{n}</span>
     </div>
   );
 }

@@ -17,7 +17,7 @@ import type { HomeBlock } from "../../store/types";
 import { TxRow, usePresentCtx } from "../transactions/TxRow";
 import { WalletCarousel } from "./WalletCarousel";
 import { DaySphere } from "./DaySphere";
-import { SmartLine } from "../create/SmartLine";
+import { DayTimeline } from "./DayTimeline";
 import { HomeFeed } from "./HomeCards";
 import { HomeToday } from "../planner/HomeToday";
 import { tr } from "../../i18n/i18n";
@@ -49,8 +49,8 @@ export function HomeScreen() {
         <DaySphere />
       </Reveal>
 
-      <Reveal intro={intro} delay={0.82} y={12} className="mt-6 px-4">
-        <SmartLine compact />
+      <Reveal intro={intro} delay={0.82} y={12}>
+        <DayTimeline />
       </Reveal>
 
       <Reveal intro={intro} delay={0.95} y={12}>
@@ -132,7 +132,7 @@ export function HomeLayoutSheet() {
   const update = useData((s) => s.updateSettings);
   return (
     <Sheet title={tr("Главная")} ariaLabel={tr("Настроить главную")}>
-      <p className="px-6 pb-4 text-center text-footnote text-ink-2">{tr("Сфера дня и умная строка видны всегда. Остальное — по желанию.")}</p>
+      <p className="px-6 pb-4 text-center text-footnote text-ink-2">{tr("Сфера дня и лента дня видны всегда, умная строка — над меню. Остальное — по желанию.")}</p>
       <Group>
         {HOME_BLOCKS.map((b) => (
           <div key={b.id} className="flex min-h-[58px] items-center gap-3 px-4 py-2.5">

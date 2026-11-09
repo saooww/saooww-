@@ -8,12 +8,21 @@ import { useData } from "../../store/store";
 import { nav } from "../../store/ui";
 import { AnimatedMoney, Money } from "../../ui/Money";
 import { useLingering } from "../planner/actions";
+import { monthDots, type DayMark } from "../../lib/monthRing";
 import { tr } from "../../i18n/i18n";
 
 const SIZE = 248; // drawn in 248 units, shown a little larger
 const SHOWN = 276;
 const R = 100; // the sphere, in a 248-wide box
-const RING = 116; // the tasks ring around it
+const RING = 116; // the ring of the month's days around it
+
+const DOT: Record<DayMark, { r: number; fill: string }> = {
+  free: { r: 2.7, fill: "var(--positive)" },
+  ok: { r: 2.7, fill: "color-mix(in srgb, var(--ink) 62%, transparent)" },
+  over: { r: 2.9, fill: "var(--accent)" },
+  today: { r: 3.6, fill: "var(--ink)" },
+  future: { r: 1.7, fill: "color-mix(in srgb, var(--ink) 22%, transparent)" }
+};
 
 /** One wave of the liquid's surface, wide enough to slide by one period without a seam. */
 export function wave(amp: number, period: number, width: number): string {
@@ -27,8 +36,9 @@ export function wave(amp: number, period: number, width: number): string {
 
 /**
  * «Сфера дня» — the day at a glance. The liquid is today's money: full in
- * the morning, it sinks as you spend; red when you're over. The ring around
- * fills with the day's tasks. Tap for the details.
+ * the morning, it sinks as you spend; red when you're over. Around it, a
+ * ring of the month's days: jade — no spending, grey — within the norm,
+ * red — over it; today is ringed. Tap for the details.
  */
 export function DaySphere() {
   const id = useId().replace(/:/g, "");
@@ -50,9 +60,8 @@ export function DaySphere() {
   const empty = !s || allowance <= 0;
   // how full the sphere is: today's money left (a sliver stays when it's all spent)
   const level = empty ? 0.12 : over ? 1 : Math.max(0.06, Math.min(1, left / allowance));
-  const taskShare = plan.total ? plan.completed / plan.total : 0;
   const surfaceY = 124 + R - level * 2 * R; // top of the liquid in box coordinates
-  const circ = 2 * Math.PI * RING;
+  const dots = useMemo(() => monthDots(entries, today, allowance), [entries, today, allowance]);
 
   return (
     <motion.button
@@ -109,22 +118,28 @@ export function DaySphere() {
         <circle cx="124" cy="124" r={R} fill={`url(#g${id})`} />
         <circle cx="124" cy="124" r={R - 0.5} fill="none" stroke="var(--line-strong)" />
 
-        {/* tasks ring */}
-        <circle cx="124" cy="124" r={RING} fill="none" stroke="var(--line)" strokeWidth="5" />
-        <motion.circle
-          cx="124"
-          cy="124"
-          r={RING}
-          fill="none"
-          stroke="var(--ink)"
-          strokeWidth="5"
-          strokeLinecap="round"
-          transform="rotate(-90 124 124)"
-          strokeDasharray={circ}
-          initial={false}
-          animate={{ strokeDashoffset: circ * (1 - taskShare) }}
-          transition={{ type: "spring", stiffness: 50, damping: 16 }}
-        />
+        {/* the month's days, clockwise from the top */}
+        {dots.map((d, i) => {
+          const a = (i / dots.length) * Math.PI * 2 - Math.PI / 2;
+          const x = 124 + Math.cos(a) * RING;
+          const y = 124 + Math.sin(a) * RING;
+          const look = DOT[d.mark];
+          return (
+            <g key={d.day}>
+              {d.mark === "today" && <circle cx={x} cy={y} r={7} fill="none" stroke="var(--accent)" strokeWidth={1.5} />}
+              <motion.circle
+                cx={x}
+                cy={y}
+                r={look.r}
+                fill={look.fill}
+                initial={reduce ? false : { scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.3 + i * 0.018, type: "spring", stiffness: 420, damping: 22 }}
+                style={{ transformOrigin: `${x}px ${y}px` }}
+              />
+            </g>
+          );
+        })}
       </svg>
 
       {/* the numbers, legible over glass and liquid alike */}

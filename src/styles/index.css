@@ -94,6 +94,8 @@
   --tabbar-bottom: max(calc(var(--safe-bottom) - 12px), 12px);
   --tabbar-space: calc(var(--tabbar-h) + var(--tabbar-bottom));
   --kb: 0px;
+  /* room for the smart line floating above the tab bar (set by SmartDock) */
+  --dock: 0px;
   --side: 20px;
 }
 

@@ -1,0 +1,35 @@
+100 opérations
+5 jours d'affilée avec une tâche faite
+7 jours d'affilée sans dépassement
+7 entrées dans le journal
+{0} sur {1} récompenses
+{0}, {1}
+Votre parcours
+Sommet
+Plus de revenus que de dépenses sur un mois
+Enregistrez votre première opération
+Histoires des mois
+Fil de la journée
+Mois dans le vert
+Le mois autour de la sphère
+Récompenses
+Semaine dans la norme
+Première entrée
+Vide pour l'instant — notez la première chose
+À mi-chemin
+Planning
+Série de tâches
+Événements : {0}
+Cent entrées — une habitude
+La sphère et le fil de la journée sont toujours affichés, la ligne intelligente est au-dessus du menu. Le reste, à votre choix.
+Les points autour de la sphère sont les jours du mois. La norme est le montant journalier d'aujourd'hui.
+Un objectif à moitié atteint
+dans la norme
+jours d'affilée dans la norme
+jours d'affilée avec des tâches
+chargé
+mois dans le vert cette année
+faites glisser pour déplacer
+obtenu
+au-dessus de la norme
+libre

@@ -35,7 +35,7 @@ function describe(r: SmartResult, names: { cat: (id?: string) => string | undefi
  * One line for everything: type a spend, an income, a task or money for a
  * goal — the app works out which, shows it, and saves it on Enter.
  */
-export function SmartLine({ autoFocus, onDone, compact }: { autoFocus?: boolean; onDone?: () => void; compact?: boolean }) {
+export function SmartLine({ autoFocus, onDone, compact, docked }: { autoFocus?: boolean; onDone?: () => void; compact?: boolean; /** Floating above the tab bar: glass, preview on top */ docked?: boolean }) {
   const [text, setText] = useState("");
   const today = useToday();
   const categories = useData((s) => s.categories);
@@ -84,19 +84,44 @@ export function SmartLine({ autoFocus, onDone, compact }: { autoFocus?: boolean;
     }
     haptic("success");
     setText("");
+    if (docked) (document.activeElement as HTMLElement | null)?.blur();
     onDone?.();
   };
 
   const ready = label && !(result.kind === "task" && !result.task.title);
 
+  const preview = (
+    <AnimatePresence initial={false}>
+      {label && (
+        <motion.div
+          key="preview"
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.2 }}
+          className="overflow-hidden"
+        >
+          <div className={cn("flex items-center gap-2 px-2 text-footnote", docked ? "pb-2" : "pt-2.5")}>
+            <span className={cn("inline-flex shrink-0 items-center gap-1 rounded-full bg-[var(--chart-grid)] px-2 py-0.5 font-semibold", label.tone)}>
+              <label.icon size={13} />
+              {label.kind}
+            </span>
+            <span className="min-w-0 truncate text-ink-2">{label.text}</span>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+
   return (
     <div>
+      {docked && preview}
       <form
         onSubmit={(e) => {
           e.preventDefault();
           save();
         }}
-        className={cn("panel flex items-center gap-2 rounded-[20px] pl-4 pr-1.5", compact ? "h-12" : "h-14")}
+        className={cn("flex items-center gap-2 pl-4 pr-1.5", docked ? "glass h-[50px] rounded-[22px]" : "panel rounded-[20px]", !docked && (compact ? "h-12" : "h-14"))}
       >
         <Sparkles size={19} className="shrink-0 text-accent-ink" />
         <input
@@ -119,26 +144,7 @@ export function SmartLine({ autoFocus, onDone, compact }: { autoFocus?: boolean;
           <ArrowUp size={19} />
         </motion.button>
       </form>
-      <AnimatePresence initial={false}>
-        {label && (
-          <motion.div
-            key="preview"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden"
-          >
-            <div className="flex items-center gap-2 px-2 pt-2.5 text-footnote">
-              <span className={cn("inline-flex shrink-0 items-center gap-1 rounded-full bg-[var(--chart-grid)] px-2 py-0.5 font-semibold", label.tone)}>
-                <label.icon size={13} />
-                {label.kind}
-              </span>
-              <span className="min-w-0 truncate text-ink-2">{label.text}</span>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {!docked && preview}
     </div>
   );
 }

@@ -369,7 +369,7 @@ export function ComposerSheet(props: ComposerProps) {
                     </motion.span>
                   ) : from && amount > 0 ? (
                     <motion.span key="after" className="text-ink-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                      {kind === "income" ? tr("Станет") : tr("Останется")} <Money value={balanceAfter} currency={from.currency} className="text-ink-2" />{tr("на «")}{from.name}»
+                      {kind === "income" ? tr("Станет") : tr("Останется")} <Money value={balanceAfter} currency={from.currency} className="text-ink-2" />{" "}{tr("на «")}{from.name}»
                     </motion.span>
                   ) : note ? (
                     <motion.span key="note" className="text-ink-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
