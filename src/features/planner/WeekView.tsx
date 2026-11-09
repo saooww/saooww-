@@ -65,28 +65,39 @@ export function WeekView() {
         <IconButton icon={ChevronRight} label={tr("Следующая неделя")} variant="plain" onClick={() => setOffset((o) => o + 1)} />
       </div>
 
-      {/* load of each day */}
+      {/* the week as a heat map: the busier the day, the deeper its colour */}
       <div className="mt-3 grid grid-cols-7 gap-1.5 px-4">
         {days.map((d, i) => {
           const slot = byDay.get(d)!;
           const n = slot.open.length + slot.done.length;
           const isToday = d === today;
+          const heat = n ? 14 + 56 * (n / max) : 0;
+          const deep = heat > 45;
           return (
             <button
               key={d}
               type="button"
               onClick={() => jump(d)}
               aria-label={tr("{0}: {1} дел", capitalize(WEEKDAYS_LONG[i]), n)}
-              className={cn("flex flex-col items-center gap-1.5 rounded-[14px] pb-2 pt-2 transition-colors", isToday ? "tile" : "active:bg-surface-3")}
+              className="flex flex-col items-center gap-1 rounded-[14px] pb-2 pt-2 transition-colors active:opacity-80"
+              style={{
+                background: n ? `color-mix(in srgb, var(--accent) ${heat}%, var(--surface))` : "var(--surface)",
+                boxShadow: isToday ? "inset 0 0 0 1.5px var(--ink)" : "inset 0 0 0 0.5px var(--line)"
+              }}
             >
-              <span className={cn("text-caption font-medium", isToday ? "text-accent-ink" : "text-ink-3")}>{WEEKDAYS_SHORT[i]}</span>
-              <span className={cn("num text-headline", d < today ? "text-ink-3" : "text-ink")}>{parseDay(d).getDate()}</span>
-              <span className="flex h-7 w-2 flex-col justify-end overflow-hidden rounded-full" style={{ background: "var(--line)" }}>
-                <span className="w-full rounded-full transition-[height] duration-300" style={{ height: `${(n / max) * 100}%`, background: slot.open.length ? "var(--ink-2)" : "var(--positive)" }} />
-              </span>
+              <span className={cn("text-caption font-medium", deep ? "text-white/80" : "text-ink-3")}>{WEEKDAYS_SHORT[i]}</span>
+              <span className={cn("num text-headline", deep ? "text-white" : d < today ? "text-ink-3" : "text-ink")}>{parseDay(d).getDate()}</span>
+              <span className={cn("num text-[10.5px] font-semibold", deep ? "text-white/85" : "text-ink-3")}>{n || "·"}</span>
             </button>
           );
         })}
+      </div>
+      <div className="mt-2 flex items-center justify-end gap-1.5 px-5 text-[10.5px] text-ink-3">
+        {tr("свободно")}
+        {[0, 25, 45, 70].map((h) => (
+          <span key={h} className="h-2.5 w-2.5 rounded-[3px]" style={{ background: h ? `color-mix(in srgb, var(--accent) ${h}%, var(--surface))` : "var(--surface)", boxShadow: "inset 0 0 0 0.5px var(--line)" }} />
+        ))}
+        {tr("загружено")}
       </div>
 
       {/* past weeks and the one now ending can be looked back on */}

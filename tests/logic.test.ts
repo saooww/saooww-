@@ -25,6 +25,8 @@ import { CARD_MATERIALS, materialOf } from "../src/store/catalog";
 import { weekSummary, weekToReview } from "../src/lib/week";
 import { goalStatus } from "../src/lib/goals";
 import { parseSmart } from "../src/lib/smart";
+import { monthDots } from "../src/lib/monthRing";
+import { personalProgress } from "../src/lib/progress";
 import { goalInfo } from "../src/lib/finance";
 import { switchLanguage, type Lang } from "../src/i18n/i18n";
 
@@ -494,6 +496,27 @@ test("умная строка понимает все десять языков"
   } finally {
     switchLanguage("ru", false);
   }
+});
+
+test("кольцо дней: без трат, в норме, сверх нормы, сегодня и впереди", () => {
+  const e = (day: string, base: number) => ({ day, base, tx: { kind: "expense" } }) as unknown as import("../src/lib/finance").LedgerEntry;
+  const dots = monthDots([e("2026-11-02", 500_00), e("2026-11-03", 5_000_00), e("2026-11-09", 100_00)], "2026-11-09", 1_000_00);
+  assert.equal(dots.length, 30);
+  assert.equal(dots[0].mark, "free");
+  assert.equal(dots[1].mark, "ok");
+  assert.equal(dots[2].mark, "over");
+  assert.equal(dots[8].mark, "today");
+  assert.equal(dots[9].mark, "future");
+});
+
+test("ваш путь: серия дней в норме и награды", () => {
+  const e = (day: string, base: number, kind = "expense") => ({ day, base, tx: { kind } }) as unknown as import("../src/lib/finance").LedgerEntry;
+  const entries = [e("2026-10-05", 9_000_00, "income"), e("2026-10-06", 2_000_00), e("2026-11-05", 5_000_00), e("2026-11-06", 100_00), e("2026-11-08", 900_00)];
+  const p = personalProgress({ entries, transactions: [{} as never], tasks: [], notes: [], goalShares: [0.6], norm: 1_000_00, today: "2026-11-09" });
+  assert.equal(p.normStreak, 3); // 6, 7 (free) and 8 November
+  assert.equal(p.plusMonths, 1);
+  const done = new Set(p.achievements.filter((a) => a.done).map((a) => a.id));
+  assert.ok(done.has("first") && done.has("plusMonth") && done.has("halfGoal") && !done.has("goalDone") && !done.has("normWeek"));
 });
 
 test("цвета карт: прежние показываются ближайшим фирменным, новые — как есть", () => {

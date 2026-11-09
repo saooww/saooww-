@@ -13,6 +13,7 @@ import { EventRow, useEvents } from "../plans/Plans";
 import { moveTasks, useLingering } from "./actions";
 import { Heading, Invite, InviteButton } from "./bits";
 import { Enso } from "./Enso";
+import { Schedule } from "./Schedule";
 import { TaskList } from "./TaskRow";
 import { tr } from "../../i18n/i18n";
 
@@ -72,6 +73,8 @@ export function TodayView() {
           />
         </section>
       )}
+
+      <Schedule />
 
       {plan.overdue.length > 0 && (
         <section>

@@ -1,0 +1,35 @@
+100 Buchungen
+5 Tage in Folge mit erledigter Aufgabe
+7 Tage in Folge im Rahmen
+7 Tagebucheinträge
+{0} von {1} Auszeichnungen
+{0}, {1}
+Dein Weg
+Gipfel
+Mehr Einnahmen als Ausgaben in einem Monat
+Erste Buchung erfassen
+Monatsgeschichten
+Tagesleiste
+Monat im Plus
+Der Monat rund um die Kugel
+Auszeichnungen
+Woche im Rahmen
+Erster Eintrag
+Noch leer — erfasse das Erste
+Halbzeit
+Zeitplan
+Aufgabenserie
+Ereignisse: {0}
+Hundert Einträge — eine Gewohnheit
+Kugel und Tagesleiste sind immer sichtbar, die smarte Zeile liegt über dem Menü. Der Rest nach Wunsch.
+Die Punkte um die Kugel sind die Tage des Monats. Der Rahmen ist der heutige Tagesbetrag.
+Ein Ziel ist zur Hälfte gespart
+im Rahmen
+Tage in Folge im Rahmen
+Tage in Folge mit Aufgaben
+voll
+Monate im Plus dieses Jahr
+ziehen zum Verschieben
+erhalten
+über dem Rahmen
+frei

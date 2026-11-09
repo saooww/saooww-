@@ -19,6 +19,7 @@ import { ease } from "../../ui/motion";
 import { EmptyState, IconButton, ProgressBar, Segmented } from "../../ui/primitives";
 import { MoneySwitch } from "../../nav/MoneySwitch";
 import { SpendingCalendar } from "./SpendingCalendar";
+import { StoryRow } from "./StoryRow";
 import { tr } from "../../i18n/i18n";
 
 const PERIODS: Array<{ value: Period; label: string }> = [
@@ -108,6 +109,7 @@ export function AnalyticsScreen() {
 
   return (
     <Screen title={tr("Деньги")} large subheader={<MoneySwitch current="analytics" />}>
+      <StoryRow />
       <div className="px-4">
         <Segmented options={PERIODS} value={period} onChange={changePeriod} />
       </div>

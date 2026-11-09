@@ -7,6 +7,7 @@ import { pluralN } from "./lib/dates";
 import { autoBackup, useData } from "./store/store";
 import { nav, useUI, type Tab } from "./store/ui";
 import { StackView } from "./nav/StackView";
+import { SmartDock } from "./features/create/SmartDock";
 import { TabBar } from "./nav/TabBar";
 import { SheetHost } from "./sheets/SheetHost";
 import { Splash } from "./ui/Splash";
@@ -183,6 +184,7 @@ function Main({ formatKey }: { formatKey: string }) {
       <div className="app-canvas fixed inset-0 overflow-hidden" key={formatKey}>
         {TABS.map((t) => (visited.has(t) ? <TabLayer key={t} tab={t} active={t === tab} /> : null))}
       </div>
+      <SmartDock />
       <TabBar />
       <SheetHost />
       <MonthStoryLayer />

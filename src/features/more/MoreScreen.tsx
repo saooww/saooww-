@@ -11,6 +11,7 @@ import { nav } from "../../store/ui";
 import { Screen } from "../../nav/Screen";
 import { Avatar, Button, Group, IconButton, Row } from "../../ui/primitives";
 import { getLang, locale, tr } from "../../i18n/i18n";
+import { ProgressPanel } from "./ProgressPanel";
 
 export function MoreScreen() {
   const data = useAppData();
@@ -50,8 +51,10 @@ export function MoreScreen() {
         <Settings size={20} className="shrink-0 text-ink-3" />
       </button>
 
+      <ProgressPanel />
+
       {demo && (
-        <div className="mx-4 mt-4 rounded-lg border border-line-strong px-4 py-3.5">
+        <div className="mx-4 mt-5 rounded-lg border border-line-strong px-4 py-3.5">
           <div className="flex items-center gap-2 text-subhead font-semibold">
             <FlaskConical size={16} className="text-accent-ink" />{tr("Демонстрационные данные")}</div>
           <p className="mt-1 text-footnote text-ink-2">{tr("Всё уже работает — попробуйте. Когда будете готовы, начните с чистого листа.")}</p>

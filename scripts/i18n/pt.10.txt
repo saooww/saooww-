@@ -1,0 +1,35 @@
+100 operações
+5 dias seguidos com uma tarefa feita
+7 dias seguidos dentro da meta
+7 registros no diário
+{0} de {1} conquistas
+{0}, {1}
+Seu caminho
+Topo
+Mais receitas que despesas em um mês
+Registre sua primeira operação
+Histórias dos meses
+Linha do dia
+Mês no azul
+O mês em volta da esfera
+Conquistas
+Semana dentro da meta
+Primeiro registro
+Vazio por enquanto — registre o primeiro
+Meio caminho
+Agenda
+Sequência de tarefas
+Eventos: {0}
+Cem registros — um hábito
+A esfera e a linha do dia ficam sempre visíveis; a linha inteligente fica acima do menu. O resto, como preferir.
+Os pontos em volta da esfera são os dias do mês. A meta é o valor diário de hoje.
+Uma meta guardada pela metade
+dentro da meta
+dias seguidos dentro da meta
+dias seguidos com tarefas
+cheio
+meses no azul este ano
+arraste para mover
+conquistado
+acima da meta
+livre
