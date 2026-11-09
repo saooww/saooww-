@@ -1,0 +1,150 @@
+Leihen
+Ein
+Mit der Liste werden {0} gelöscht. Um sie zu behalten, archiviere die Liste.
+{0} im Eingang
+Um wie viel Uhr
+Schuldrückzahlung
+Schuldrückzahlung: {0}
+Zurückgezahlt
+Fortsetzen
+Mit Face ID anmelden
+Wellen
+Wiederherstellen
+Aus einer kopierten Sicherung wiederherstellen
+Diese Kopie wiederherstellen?
+So lief die Woche
+Uhrzeit
+Eine Uhrzeit kannst du angeben, sobald ein Tag gewählt ist.
+So
+Alle
+Alle · {0}
+Alle Daten gelöscht
+Alle Aufgaben
+Alle Aufgaben von heute sind erledigt
+Alle Karten, Bargeld und Ersparnisse an einem Ort
+Alle Kategorien
+Alle Konten
+Alle Konten in
+Alle Buchungen
+Alle passenden Buchungen
+Alle Buchungen, Konten, Ziele und Notizen werden gelöscht. Kategorien und Einstellungen bleiben. Vorher erstellen wir eine Sicherung.
+Alle Ausgaben
+Alle Ausgaben des Monats
+Alle regelmäßigen Abbuchungen
+Alle verknüpften Einträge werden gelöscht und die Kontostände neu berechnet.
+Alle Konten
+Alle Typen
+Alle Ziele
+Immer
+Gesamt
+Etwas eingefallen? Schreib es in eine Zeile. „Mama morgen um 18:00 anrufen“: Datum und Uhrzeit werden von selbst erkannt.
+Aus Text einfügen
+Kopie einfügen
+Füge hier den Text ein, den du zuvor mit „Als Text kopieren“ kopiert hast.
+Alles · {0}
+Alles im Rahmen
+Gesamter Zeitraum
+Alles Wichtige ist erledigt
+Alles läuft nach Plan
+Alles auf morgen
+Alles auf heute
+Alles sortiert
+Alles erledigt
+Alles erledigt. Durchatmen
+Alles funktioniert schon — probier es aus. Wenn du bereit bist, fang neu an.
+Alles, was unterwegs notiert wurde. Lege einen Tag fest — oder lass es liegen, wenn es nicht eilt.
+Alles Geplante ist erledigt.
+Di
+Eingang
+Der Eingang ist leer — der Kopf ist frei
+Gestern
+Du schuldest
+Du schuldest — {0}
+Du hast {0} gespart. Weiter so.
+Wähle bis zu drei Aufgaben. Wenn du nur die schaffst, war der Tag es wert.
+Kategorie wählen
+Wähle eine Kategorie für jeden Teil des Belegs
+Zielkonto wählen
+Wähle die Hauptkategorie auf dem Hauptbildschirm
+Wählen
+Daten wählen…
+Kartenfarbe wählen
+Verliehen
+Markiere den Text und kopiere ihn — zum Beispiel in eine Notiz oder einen Chat mit dir selbst.
+Die Balkenhöhe ist der Betrag der Differenz von Einnahmen und Ausgaben im Intervall
+Wochenenden
+Wo das Geld liegt
+Start
+Das Hauptziel und sein Fortschritt
+Wichtig
+Das Wichtigste des Tages
+Das Wichtigste heute
+Start
+Nicht mehr als drei Hauptaufgaben — so schafft man sie wirklich
+Jahr
+Der Kopf ist für Ideen, nicht zum Speichern
+Fertig
+Erledigt. Wieder — {0}
+Graphit
+Georgischer Lari
+Weiter
+Daten
+Die Daten werden auf den Stand vom {0} zurückgesetzt.
+Daten geladen
+Daten gelöscht
+Daten als Text kopiert — du kannst sie unter „Einstellungen → Daten“ einfügen.
+Daten bleiben auf deinem Gerät, Entsperren per Code oder Face ID
+Die Daten werden nur auf diesem Gerät gespeichert.
+Datum
+Datum und Uhrzeit
+Verleihen
+Noch keine Aufgaben für heute
+Keine Aufgaben
+Aufgaben
+Aufgaben {0} von {1}
+Aufgaben für heute
+Aufgaben mit Datum nach heute erscheinen hier.
+Aufgaben, Listen und Notizen: ein Tagesplan, damit nichts vergessen wird
+Aufgabe
+Aufgabe in „
+Aufgabe gespeichert
+Aufgabe für {0} {1}
+Aufgabe für heute
+Aufgabe gelöscht
+Demodaten geladen
+Demodaten
+Tag
+Tag abgeschlossen. Bis morgen
+Geld
+Geld zurück aufs Konto
+Geld und Aufgaben für {0}
+Geld und Aufgaben — ruhig und im Griff.
+Das Geld lief über das Konto
+Geld heute
+Dezimaltrennzeichen
+Verlauf im Zeitraum
+Verlauf der Ersparnisse
+VAE-Dirham
+Für jeden gibt es eine eigene Liste. Später kannst du Projekte hinzufügen: „Renovierung“, „Umzug“.
+Für Beträge in anderer Währung lege in den Einstellungen einen Kurs fest — sonst zählen sie nicht zum Gesamtsaldo.
+Tagebuch
+Tage ohne Ausgaben
+Bis
+Noch {0} Tage bis Monatsende
+Bis zu drei Aufgaben, ohne die der Tag nicht zählt
+Hinzufügen
+{0} hinzufügen
+Zum Kalender hinzufügen
+Zu Favoriten hinzufügen
+Währung hinzufügen
+Einnahme hinzufügen
+Konto hinzufügen
+Buchung hinzufügen
+Punkt hinzufügen
+Ausgabe hinzufügen
+Tag hinzufügen
+Belegfoto hinzufügen
+Teil hinzufügen
+Checkliste hinzufügen
+Hinzugefügt
+Zu Favoriten hinzugefügt

@@ -1,0 +1,150 @@
+Emprunter
+Activé
+{0} seront supprimées avec la liste. Pour les garder, archivez plutôt la liste.
+{0} dans la boîte de réception
+À quelle heure
+Remboursement de dette
+Remboursement : {0}
+Remboursé
+Reprendre
+Se connecter avec Face ID
+Vagues
+Restaurer
+Restaurer depuis une copie copiée
+Restaurer cette copie ?
+Voici comment s'est passée la semaine
+Heure
+Vous pouvez indiquer l'heure une fois le jour choisi.
+Dim
+Tout
+Tout · {0}
+Toutes les données effacées
+Toutes les tâches
+Toutes les tâches du jour sont faites
+Cartes, espèces et épargne au même endroit
+Toutes les catégories
+Tous les portefeuilles
+Tous les portefeuilles en
+Toutes les opérations
+Toutes les opérations trouvées
+Toutes les opérations, portefeuilles, objectifs et notes seront supprimés. Les catégories et réglages restent. Nous ferons d'abord une sauvegarde.
+Toutes les dépenses
+Toutes les dépenses du mois
+Tous les prélèvements réguliers
+Tous les enregistrements liés seront supprimés et les soldes recalculés.
+Tous les comptes
+Tous les types
+Tous les objectifs
+Toujours
+Total
+Une idée ? Notez-la en une ligne. « Appeler maman demain à 18:00 » : la date et l'heure sont comprises toutes seules.
+Coller depuis un texte
+Coller une copie
+Collez ici le texte copié avec « Copier en texte ».
+Tout · {0}
+Tout est dans les limites
+Toute la période
+Tout l'essentiel est fait
+Tout se passe comme prévu
+Tout à demain
+Tout à aujourd'hui
+Tout est trié
+Tout est fait
+Tout est fait. Vous pouvez souffler
+Tout fonctionne déjà — essayez. Quand vous serez prêt, repartez de zéro.
+Tout ce qui a été noté à la volée. Fixez un jour — ou gardez-le pour plus tard si rien ne presse.
+Tout ce qui était prévu est fait.
+Mar
+Boîte de réception
+Boîte vide — l'esprit libre
+Hier
+Vous devez
+Vous devez — {0}
+Vous avez épargné {0}. Continuez ainsi.
+Choisissez jusqu'à trois tâches. Si vous ne faites qu'elles, la journée n'aura pas été vaine.
+Choisissez une catégorie
+Choisissez une catégorie pour chaque partie du ticket
+Choisissez le portefeuille de destination
+Choisissez la catégorie principale sur l'écran principal
+Choisir
+Choisir les dates…
+Choisir la couleur de la carte
+Prêté
+Sélectionnez le texte et copiez-le — par exemple dans une note ou une discussion avec vous-même.
+La hauteur de la barre est l'écart absolu entre revenus et dépenses sur l'intervalle
+Week-ends
+Où est gardé l'argent
+Accueil
+L'objectif principal et sa progression
+L'essentiel
+L'essentiel du jour
+L'essentiel aujourd'hui
+Accueil
+Pas plus de trois tâches essentielles — ainsi on y arrive vraiment
+Année
+La tête sert aux idées, pas au stockage
+Terminé
+C'est fait. À nouveau — {0}
+Graphite
+Lari géorgien
+Suivant
+Données
+Les données reviendront à leur état du {0}.
+Données chargées
+Données effacées
+Données copiées en texte — vous pouvez les coller dans « Réglages → Données ».
+Les données restent sur votre appareil, accès par code ou Face ID
+Les données sont stockées sur cet appareil uniquement.
+Date
+Date et heure
+Prêter
+Pas encore de tâches pour aujourd'hui
+Aucune tâche
+Tâches
+Tâches {0} sur {1}
+Tâches du jour
+Les tâches datées après aujourd'hui apparaîtront ici.
+Tâches, listes et notes : un plan pour la journée afin de ne rien oublier
+Tâche
+Tâche dans «
+Tâche enregistrée
+Tâche pour {0} {1}
+Tâche pour aujourd'hui
+Tâche supprimée
+Données de démo chargées
+Données de démonstration
+Jour
+Journée bouclée. À demain
+Argent
+Argent rendu au portefeuille
+Argent et tâches pour {0}
+L'argent et les tâches — sereinement et sous contrôle.
+L'argent est passé par le portefeuille
+Argent aujourd'hui
+Séparateur décimal
+Évolution sur la période
+Évolution de l'épargne
+Dirham des EAU
+Chacune aura sa liste. Ensuite, vous pourrez ajouter des projets : « Travaux », « Déménagement ».
+Pour les montants dans une autre devise, définissez un taux dans les réglages — sinon ils ne comptent pas dans le solde total.
+Journal
+Jours sans dépense
+Jusqu'au
+{0} j avant la fin du mois
+Jusqu'à trois tâches sans lesquelles la journée ne compte pas
+Ajouter
+Ajouter {0}
+Ajouter au Calendrier
+Ajouter aux favoris
+Ajouter une devise
+Ajouter un revenu
+Ajouter un portefeuille
+Ajouter une opération
+Ajouter un élément
+Ajouter une dépense
+Ajouter un tag
+Ajouter une photo du ticket
+Ajouter une partie
+Ajouter une check-list
+Ajouté
+Ajouté aux favoris
