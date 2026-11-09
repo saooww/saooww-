@@ -1,0 +1,150 @@
+Top up
+Top up goal
+Try changing the search or filters.
+Try again in {0} s
+Last 30 days
+In recent months expenses exceed income by {0}
+Recent operations
+Last digits
+Last day of the month
+Last one — {0} days ago
+Last: {0}
+See an example
+Set your first goal
+Incoming
+Incoming this month
+Calculate
+Then — the rest of the main ones.
+Spent less than the week before
+Spent
+Almost used up · {0} left
+Hardly ever
+Appears above the categories — one tap and everything is filled in.
+Over by
+Over by {0}
+Previous week
+Previous month
+Previous period
+On launch, expense entry opens right away — amount, category, done. Close it to get to the home screen.
+At this pace the month will end at about
+At this pace — {0}
+Privacy
+Habits
+Link a list, task, goal, plan or debt
+Create a code
+App locked
+Example: {0} {1} · {2}
+Priority
+Post now
+Forecast to month end
+Progress will equal the selected wallet's balance — handy for a savings account.
+Day progress and upcoming tasks
+Progress equals the balance of wallet «{0}». A top-up is a transfer into it.
+Selling things
+Groceries
+Skip
+Skip once
+Overdue by {0}
+Overdue
+Forgive the rest and close
+Profile
+Interest & dividends
+Percentages — vs. the same days
+Other
+Last week
+Last month
+Fri
+Item
+Items
+Travel
+Work
+Once a day the app saves a copy of your data on this device (the last three). It protects against mistakes — to move to another device, use a copy in Files.
+Sort what you wrote down and pick up to three main tasks. Start with those.
+You'll sort it when planning the day
+Entertainment
+Split
+Split receipt
+Sections
+Sort tasks by areas of life
+The difference will be recorded as a balance adjustment — the operation history won't change.
+Sort
+Breakdown by category
+Exp.
+Expense
+Expense added
+Expense recorded
+Expenses
+Expenses for the period
+Spending is {0} higher than by this day last month
+Spending is {0} lower than by this day last month
+Expenses by category
+Expenses exceeded income (
+Regularly
+Regular payments
+Regular income
+Regular charges
+Regular payment
+The regular payment keeps running — only this record will be deleted.
+Regular payment deleted
+Rarely
+Mode
+Backup
+Backups & data
+Recommendation: 6 months of your usual spending ≈
+Decide when to do them
+Rhythm
+Month's rhythm
+Rose
+Russian ruble
+From
+From wallet
+From previous days
+Sakura
+Biggest expense
+Biggest expense —
+The fastest way to log spending is to open expense entry right away.
+Most productive day —
+Sat
+Reset
+Reset filters
+Collapse
+Over the norm
+Light
+Free
+Free by
+A free day. Add tasks when they come up.
+Custom
+Own balance
+Own colour
+Custom accent colour
+The linked operation will be deleted
+Link to…
+Links
+Phone & internet
+Done
+Done {0} of {1}
+Done {0} of {1}.
+Done today
+Done: {0}
+Make into tasks: {0}
+Make a task
+Today
+No tasks ticked today. Tomorrow, try starting with a plan.
+Over the norm today
+Today, {0} {1}
+Now in spending accounts
+Now: {0}, {1}.{2} Receipt photos aren't included in the copy.
+System
+How much one unit of the currency costs in {0}. Without a rate, amounts in this currency don't go into the total balance and analytics — we don't add up different currencies at random.
+How much arrives in the second account?
+Copied — {0} KB of text
+Copy as text
+Soon
+Adjust balance
+Hide on launch
+Hide on every launch
+Hidden ·
+Hidden categories aren't offered when entering, but stay in history and analytics.
+Hidden amounts are replaced with dots on cards, in net worth and goals. Tap the «eye» on a card to toggle.
+Hide
+Hide balance

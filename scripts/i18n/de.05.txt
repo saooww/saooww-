@@ -1,0 +1,150 @@
+Einzahlen
+Ins Ziel einzahlen
+Ändere die Suche oder die Filter.
+Versuche es in {0} s erneut
+Letzte 30 Tage
+In den letzten Monaten übersteigen die Ausgaben die Einnahmen um {0}
+Letzte Buchungen
+Letzte Ziffern
+Letzter Tag des Monats
+Die letzte — vor {0} Tagen
+Letzte: {0}
+Beispiel ansehen
+Setze dein erstes Ziel
+Eingang
+Eingänge diesen Monat
+Berechnen
+Dann — das restliche Wichtige.
+Weniger ausgegeben als in der Vorwoche
+Ausgegeben
+Fast aufgebraucht · noch {0}
+Kaum
+Erscheint über den Kategorien — ein Tippen und alles ist ausgefüllt.
+Überschritten um
+Überschritten um {0}
+Vorige Woche
+Voriger Monat
+Voriger Zeitraum
+Beim Öffnen erscheint sofort die Ausgabeneingabe — Betrag, Kategorie, fertig. Schließe sie, um zur Startseite zu gelangen.
+Bei diesem Tempo endet der Monat bei etwa
+Bei diesem Tempo — {0}
+Datenschutz
+Gewohnheiten
+Verknüpfe eine Liste, Aufgabe, ein Ziel, einen Plan oder eine Schuld
+Lege einen Code fest
+App gesperrt
+Beispiel: {0} {1} · {2}
+Priorität
+Jetzt ausführen
+Prognose bis Monatsende
+Der Fortschritt entspricht dem Saldo des gewählten Kontos — praktisch für ein Sparkonto.
+Tagesfortschritt und nächste Aufgaben
+Der Fortschritt entspricht dem Saldo des Kontos „{0}“. Einzahlen ist eine Überweisung darauf.
+Verkauf von Sachen
+Lebensmittel
+Überspringen
+Einmal überspringen
+Überfällig seit {0}
+Überfällig
+Rest erlassen und schließen
+Profil
+Zinsen & Dividenden
+Prozente — ggü. denselben Tagen
+Sonstiges
+Letzte Woche
+Letzter Monat
+Fr
+Punkt
+Punkte
+Reisen
+Arbeit
+Einmal am Tag speichert die App eine Kopie deiner Daten auf diesem Gerät (die letzten drei). Das schützt vor Fehlern — zum Umzug auf ein anderes Gerät nutze eine Kopie in Dateien.
+Sortiere das Notierte und wähle bis zu drei Hauptaufgaben. Fang mit ihnen an.
+Du sortierst es bei der Tagesplanung
+Unterhaltung
+Aufteilen
+Beleg aufteilen
+Bereiche
+Ordne Aufgaben nach Lebensbereichen
+Die Differenz wird als Saldokorrektur gebucht — der Buchungsverlauf ändert sich nicht.
+Sortieren
+Aufteilung nach Kategorien
+Ausg.
+Ausgabe
+Ausgabe hinzugefügt
+Ausgabe erfasst
+Ausgaben
+Ausgaben im Zeitraum
+Ausgaben liegen {0} über dem Stand im Vormonat
+Ausgaben liegen {0} unter dem Stand im Vormonat
+Ausgaben nach Kategorie
+Die Ausgaben überstiegen die Einnahmen (
+Regelmäßig
+Regelmäßige Zahlungen
+Regelmäßige Eingänge
+Regelmäßige Abbuchungen
+Regelmäßige Zahlung
+Die regelmäßige Zahlung läuft weiter — nur dieser Eintrag wird gelöscht.
+Regelmäßige Zahlung gelöscht
+Selten
+Modus
+Sicherung
+Sicherungen & Daten
+Empfehlung: 6 Monate deiner üblichen Ausgaben ≈
+Entscheide, wann du sie machst
+Rhythmus
+Rhythmus des Monats
+Rosé
+Russischer Rubel
+Ab
+Vom Konto
+Von früheren Tagen
+Sakura
+Größte Ausgabe
+Größte Ausgabe —
+Am schnellsten erfasst du Ausgaben, wenn sich die Ausgabeneingabe gleich öffnet.
+Produktivster Tag —
+Sa
+Zurücksetzen
+Filter zurücksetzen
+Einklappen
+Über der Norm
+Hell
+Frei
+Frei bis
+Ein freier Tag. Notiere Aufgaben, wenn sie kommen.
+Eigene
+Eigener Saldo
+Eigene Farbe
+Eigene Akzentfarbe
+Die verknüpfte Buchung wird gelöscht
+Verknüpfen mit…
+Verknüpfungen
+Handy & Internet
+Erledigt
+Erledigt {0} von {1}
+Erledigt {0} von {1}.
+Heute erledigt
+Erledigt: {0}
+Zu Aufgaben machen: {0}
+Zur Aufgabe machen
+Heute
+Heute keine Aufgaben abgehakt. Morgen versuche, mit einem Plan zu beginnen.
+Heute über der Norm
+Heute, {0} {1}
+Jetzt auf Ausgabenkonten
+Jetzt: {0}, {1}.{2} Belegfotos sind nicht in der Kopie enthalten.
+System
+Was eine Einheit der Währung in {0} kostet. Ohne Kurs fließen Beträge in dieser Währung weder in den Gesamtsaldo noch in die Analyse — wir addieren keine Währungen aufs Geratewohl.
+Wie viel kommt auf dem zweiten Konto an?
+Kopiert — {0} KB Text
+Als Text kopieren
+Bald
+Saldo korrigieren
+Beim Start verbergen
+Bei jedem Start verbergen
+Verborgen ·
+Verborgene Kategorien werden bei der Eingabe nicht angeboten, bleiben aber in Verlauf und Analyse.
+Verborgene Beträge werden auf Karten, beim Vermögen und bei Zielen durch Punkte ersetzt. Tippe auf das „Auge“ auf einer Karte zum Umschalten.
+Verbergen
+Saldo verbergen

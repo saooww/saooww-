@@ -1,0 +1,150 @@
+Aportar
+Aportar na meta
+Tente mudar a busca ou os filtros.
+Tente de novo em {0} s
+Últimos 30 dias
+Nos últimos meses as despesas superam as receitas em {0}
+Últimas operações
+Últimos dígitos
+Último dia do mês
+A última — há {0} dias
+Última: {0}
+Ver um exemplo
+Defina a primeira meta
+Entrada
+Entradas neste mês
+Calcular
+Depois — o resto do principal.
+Gastou menos que na semana anterior
+Gasto
+Quase esgotado · restam {0}
+Quase nunca
+Vai aparecer acima das categorias — um toque e está tudo preenchido.
+Estourado em
+Estourado em {0}
+Semana anterior
+Mês anterior
+Período anterior
+Ao abrir, aparece direto a entrada de despesa — valor, categoria, pronto. Feche para ir ao início.
+Neste ritmo, o mês vai fechar em cerca de
+Neste ritmo — {0}
+Privacidade
+Hábitos
+Vincule uma lista, tarefa, meta, plano ou dívida
+Crie um código
+App bloqueado
+Exemplo: {0} {1} · {2}
+Prioridade
+Executar agora
+Previsão até o fim do mês
+O progresso será igual ao saldo da carteira escolhida — prático para uma conta poupança.
+Progresso do dia e próximas tarefas
+O progresso é igual ao saldo da carteira «{0}». Aportar é transferir para ela.
+Venda de coisas
+Mercado
+Pular
+Pular uma vez
+Atrasada há {0}
+Atrasado
+Perdoar o resto e quitar
+Perfil
+Juros e dividendos
+Percentuais — vs. os mesmos dias
+Outros
+Semana passada
+Mês passado
+Sex
+Item
+Itens
+Viagens
+Trabalho
+Uma vez por dia o app salva uma cópia dos dados neste aparelho (as três últimas). Isso protege contra erros — para levar a outro aparelho, use uma cópia em Arquivos.
+Organize o que anotou e escolha até três tarefas principais. Comece por elas.
+Você organiza ao planejar o dia
+Lazer
+Dividir
+Dividir recibo
+Seções
+Organize as tarefas por áreas da vida
+A diferença será registrada como ajuste de saldo — o histórico de operações não muda.
+Organizar
+Distribuição por categoria
+Desp.
+Despesa
+Despesa adicionada
+Despesa registrada
+Despesas
+Despesas do período
+Gastos {0} acima do mesmo dia do mês passado
+Gastos {0} abaixo do mesmo dia do mês passado
+Despesas por categoria
+As despesas superaram as receitas (
+Regularmente
+Pagamentos recorrentes
+Entradas recorrentes
+Cobranças recorrentes
+Pagamento recorrente
+O pagamento recorrente continua — só este registro será apagado.
+Pagamento recorrente excluído
+Raramente
+Modo
+Backup
+Backups e dados
+Recomendação: 6 meses dos seus gastos habituais ≈
+Decida quando fazer
+Ritmo
+Ritmo do mês
+Rosa
+Rublo russo
+De
+Da carteira
+Dos dias anteriores
+Sakura
+Maior gasto
+Maior gasto —
+O jeito mais rápido de anotar gastos é abrir direto a entrada de despesa.
+Dia mais produtivo —
+Sáb
+Redefinir
+Limpar filtros
+Recolher
+Acima da norma
+Claro
+Livre
+Livre até
+Dia livre. Anote as tarefas quando surgirem.
+Própria
+Saldo próprio
+Cor própria
+Cor de destaque própria
+A operação vinculada será apagada
+Vincular a…
+Vínculos
+Celular e internet
+Feito
+Feito {0} de {1}
+Feito {0} de {1}.
+Feito hoje
+Feito: {0}
+Transformar em tarefas: {0}
+Transformar em tarefa
+Hoje
+Hoje sem tarefas marcadas. Amanhã, tente começar com um plano.
+Hoje acima da norma
+Hoje, {0} {1}
+Agora nas contas de gastos
+Agora: {0}, {1}.{2} As fotos de recibos não entram na cópia.
+Do sistema
+Quanto custa uma unidade da moeda em {0}. Sem cotação, valores nesta moeda não entram no saldo total nem nas análises — não somamos moedas diferentes no chute.
+Quanto chega na segunda conta?
+Copiado — {0} KB de texto
+Copiar como texto
+Em breve
+Ajustar saldo
+Ocultar ao abrir
+Ocultar a cada abertura
+Ocultas ·
+Categorias ocultas não aparecem ao registrar, mas continuam no histórico e nas análises.
+Valores ocultos viram pontos nos cartões, no patrimônio e nas metas. Toque no «olho» do cartão para alternar.
+Ocultar
+Ocultar saldo

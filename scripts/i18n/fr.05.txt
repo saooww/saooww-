@@ -1,0 +1,150 @@
+Alimenter
+Alimenter l'objectif
+Essayez de modifier la recherche ou les filtres.
+Réessayez dans {0} s
+30 derniers jours
+Ces derniers mois, les dépenses dépassent les revenus de {0}
+Dernières opérations
+Derniers chiffres
+Dernier jour du mois
+La dernière — il y a {0} j
+Dernière : {0}
+Voir un exemple
+Fixez votre premier objectif
+Rentrée
+Rentrées ce mois-ci
+Calculer
+Ensuite — le reste de l'essentiel.
+Moins dépensé que la semaine d'avant
+Dépensé
+Presque épuisé · reste {0}
+Presque jamais
+Apparaîtra au-dessus des catégories — un geste et tout est rempli.
+Dépassé de
+Dépassé de {0}
+Semaine précédente
+Mois précédent
+Période précédente
+À l'ouverture, la saisie de dépense apparaît directement — montant, catégorie, c'est fait. Fermez-la pour aller à l'accueil.
+À ce rythme, le mois finira vers
+À ce rythme — {0}
+Confidentialité
+Habitudes
+Liez une liste, tâche, objectif, plan ou dette
+Créez un code
+App verrouillée
+Exemple : {0} {1} · {2}
+Priorité
+Exécuter maintenant
+Prévision jusqu'à la fin du mois
+La progression sera égale au solde du portefeuille choisi — pratique pour un compte d'épargne.
+Progression du jour et tâches à venir
+La progression égale le solde du portefeuille « {0} ». Alimenter, c'est y virer de l'argent.
+Vente d'objets
+Courses
+Passer
+Passer une fois
+En retard de {0}
+En retard
+Remettre le reste et solder
+Profil
+Intérêts et dividendes
+Pourcentages — par rapport aux mêmes jours
+Divers
+Semaine dernière
+Mois dernier
+Ven
+Élément
+Éléments
+Voyages
+Travail
+Une fois par jour, l'app enregistre une copie de vos données sur cet appareil (les trois dernières). C'est une protection contre les erreurs — pour changer d'appareil, utilisez une copie dans Fichiers.
+Triez ce que vous avez noté et choisissez jusqu'à trois tâches essentielles. Commencez par elles.
+Vous la trierez en planifiant la journée
+Loisirs
+Répartir
+Répartir le ticket
+Sections
+Rangez les tâches par domaines de vie
+L'écart sera enregistré comme ajustement du solde — l'historique des opérations ne change pas.
+Trier
+Répartition par catégorie
+Dép.
+Dépense
+Dépense ajoutée
+Dépense enregistrée
+Dépenses
+Dépenses de la période
+Dépenses supérieures de {0} à la même date le mois dernier
+Dépenses inférieures de {0} à la même date le mois dernier
+Dépenses par catégorie
+Les dépenses ont dépassé les revenus (
+Régulièrement
+Paiements réguliers
+Revenus réguliers
+Prélèvements réguliers
+Paiement régulier
+Le paiement régulier continue — seule cette écriture sera supprimée.
+Paiement régulier supprimé
+Rarement
+Mode
+Sauvegarde
+Sauvegardes et données
+Recommandation : 6 mois de vos dépenses habituelles ≈
+Décidez quand les faire
+Rythme
+Rythme du mois
+Rose
+Rouble russe
+Du
+Depuis le portefeuille
+Des jours précédents
+Sakura
+La plus grosse dépense
+La plus grosse dépense —
+Le moyen le plus rapide de noter vos dépenses : ouvrir directement la saisie de dépense.
+Le jour le plus productif —
+Sam
+Réinitialiser
+Effacer les filtres
+Réduire
+Au-dessus de la norme
+Clair
+Libre
+Libre au
+Journée libre. Notez les tâches quand elles arrivent.
+Perso
+Solde propre
+Couleur perso
+Couleur d'accent perso
+L'opération liée sera supprimée
+Lier à…
+Liens
+Téléphone et internet
+Fait
+Fait {0} sur {1}
+Fait {0} sur {1}.
+Fait aujourd'hui
+Fait : {0}
+Transformer en tâches : {0}
+Transformer en tâche
+Aujourd'hui
+Aucune tâche cochée aujourd'hui. Demain, essayez de commencer par un plan.
+Au-dessus de la norme aujourd'hui
+Aujourd'hui, {0} {1}
+Actuellement sur les comptes courants
+Actuellement : {0}, {1}.{2} Les photos de tickets ne sont pas incluses dans la copie.
+Système
+Combien coûte une unité de la devise en {0}. Sans taux, les montants dans cette devise n'entrent ni dans le solde total ni dans l'analyse — nous n'additionnons pas des devises différentes au hasard.
+Combien arrive sur le second compte ?
+Copié — {0} Ko de texte
+Copier en texte
+Bientôt
+Ajuster le solde
+Masquer à l'ouverture
+Masquer à chaque ouverture
+Masquées ·
+Les catégories masquées ne sont pas proposées à la saisie, mais restent dans l'historique et l'analyse.
+Les montants masqués sont remplacés par des points sur les cartes, le patrimoine et les objectifs. Touchez l'« œil » sur une carte pour basculer.
+Masquer
+Masquer le solde
