@@ -66,6 +66,30 @@ export const Sail = memo(function Sail({ color }: { color: string }) {
   );
 });
 
+/** A metal contact chip and the contactless sign, as on a real card. */
+function CardChip({ light }: { light: boolean }) {
+  return (
+    <span className="flex items-center gap-1.5" aria-hidden="true">
+      <svg width="26" height="20" viewBox="0 0 26 20">
+        <defs>
+          <linearGradient id="chip-metal" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#f1e4c3" />
+            <stop offset="0.5" stopColor="#c9b07a" />
+            <stop offset="1" stopColor="#e9d7a8" />
+          </linearGradient>
+        </defs>
+        <rect x="0.5" y="0.5" width="25" height="19" rx="4.5" fill="url(#chip-metal)" stroke="rgba(0,0,0,0.25)" strokeWidth="0.6" />
+        <path d="M9 0.5v19M17 0.5v19M0.5 7h8.5M17 7h8.5M0.5 13h8.5M17 13h8.5M9 10h8" stroke="rgba(90,70,30,0.45)" strokeWidth="0.8" fill="none" />
+      </svg>
+      <svg width="12" height="16" viewBox="0 0 12 16" fill="none" stroke={light ? "rgba(0,0,0,0.55)" : "rgba(255,255,255,0.8)"} strokeWidth="1.4" strokeLinecap="round">
+        <path d="M2 5.5a4 4 0 0 1 0 5" />
+        <path d="M5 3.5a7 7 0 0 1 0 9" />
+        <path d="M8 1.5a10 10 0 0 1 0 13" />
+      </svg>
+    </span>
+  );
+}
+
 /** Fine flowing lines from the lower edge. */
 const Waves = memo(function Waves({ color }: { color: string }) {
   return (
@@ -154,7 +178,12 @@ export const WalletCard = memo(function WalletCard({
         <span className="text-[10.5px] font-semibold uppercase leading-none tracking-[0.16em]" style={{ color: material.inkMuted }}>
           {label}
         </span>
-        {!stacked && brand}
+        {!stacked && (
+          <span className="flex items-center gap-2.5">
+            <CardChip light={!!material.light} />
+            {brand}
+          </span>
+        )}
       </div>
       <div
         className="num-display mt-2.5 whitespace-nowrap leading-none"

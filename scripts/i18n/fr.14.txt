@@ -1,0 +1,12 @@
+{0} pour aujourd'hui
+Aucune tâche ce jour-là
+Dans la boîte
+Tous les comptes · {0}
+Principales
+Ajoutez votre premier compte
+Disponible sur les comptes
+Grasses
+Détails
+Salut, {0}
+Montants masqués
+Compte

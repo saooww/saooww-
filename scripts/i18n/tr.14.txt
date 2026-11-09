@@ -1,0 +1,12 @@
+Bugün için {0}
+Bu gün iş yok
+Gelen kutusunda
+Tüm hesaplar · {0}
+Ana
+İlk hesabını ekle
+Hesaplarda kullanılabilir
+Kalın
+Ayrıntılar
+Merhaba, {0}
+Tutarlar gizli
+Hesap

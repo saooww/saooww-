@@ -1,0 +1,12 @@
+{0} for today
+No tasks this day
+In the inbox
+All accounts · {0}
+Main
+Add your first account
+Available in accounts
+Bold
+Details
+Hi, {0}
+Amounts hidden
+Account

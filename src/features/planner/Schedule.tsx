@@ -71,14 +71,14 @@ export function Schedule() {
           </div>
         )}
         {timed.map((t) => (
-          <Block key={t.id} task={t} top={y(toMin(t.time!)) + 6} from={from} to={to} slot={cols.get(t.id)!} />
+          <Block key={t.id} task={t} top={y(toMin(t.time!)) + 6} from={from} to={to} slot={cols.get(t.id)!} now={!t.done && nowMin >= toMin(t.time!) && nowMin < toMin(t.time!) + 60} />
         ))}
       </div>
     </section>
   );
 }
 
-function Block({ task, top, from, to, slot }: { task: Task; top: number; from: number; to: number; slot: { col: number; of: number } }) {
+function Block({ task, top, from, to, slot, now }: { task: Task; top: number; from: number; to: number; slot: { col: number; of: number }; /** Happening now: filled with the accent */ now?: boolean }) {
   const dy = useMotionValue(0);
   const [dragging, setDragging] = useState(false);
   // a drag ends with a click event too; it must not open the task
@@ -121,13 +121,13 @@ function Block({ task, top, from, to, slot }: { task: Task; top: number; from: n
       whileDrag={{ scale: 1.03, zIndex: 20 }}
       className={cn(
         "absolute z-[5] flex touch-none flex-col justify-center overflow-hidden rounded-[12px] pl-3 pr-2 text-left",
-        task.done ? "bg-[var(--chart-grid)] opacity-60" : "bg-accent-soft",
+        task.done ? "bg-[var(--chart-grid)] opacity-60" : now ? "fill-accent text-[var(--accent-on)]" : "bg-accent-soft",
         dragging && "shadow-pop"
       )}
     >
-      <span className="absolute inset-y-1.5 left-1 w-[3px] rounded-full bg-accent" />
-      <span className={cn("truncate text-subhead font-semibold text-ink", task.done && "line-through")}>{task.title}</span>
-      <span className="text-caption tabular-nums text-ink-2">{preview ?? task.time}</span>
+      {!now && <span className="absolute inset-y-1.5 left-1 w-[3px] rounded-full bg-accent" />}
+      <span className={cn("truncate text-subhead font-semibold", now ? "text-white" : "text-ink", task.done && "line-through")}>{task.title}</span>
+      <span className={cn("text-caption tabular-nums", now ? "text-white/85" : "text-ink-2")}>{preview ?? task.time}</span>
     </motion.button>
   );
 }

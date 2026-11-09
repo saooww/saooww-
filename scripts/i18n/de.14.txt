@@ -1,0 +1,12 @@
+{0} für heute
+An diesem Tag keine Aufgaben
+Im Eingang
+Alle Konten · {0}
+Wichtig
+Füge dein erstes Konto hinzu
+Verfügbar auf den Konten
+Fett
+Details
+Hallo, {0}
+Beträge verborgen
+Konto

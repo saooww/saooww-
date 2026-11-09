@@ -1,0 +1,12 @@
+{0} para hoje
+Nenhuma tarefa neste dia
+Na caixa de entrada
+Todas as contas · {0}
+Principais
+Adicione sua primeira conta
+Disponível nas contas
+Negrito
+Detalhes
+Olá, {0}
+Valores ocultos
+Conta

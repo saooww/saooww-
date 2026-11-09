@@ -1,0 +1,12 @@
+{0} para hoy
+Este día no hay tareas
+En la bandeja
+Todas las cuentas · {0}
+Principales
+Añade tu primera cuenta
+Disponible en las cuentas
+Gruesas
+Detalles
+Hola, {0}
+Importes ocultos
+Cuenta
