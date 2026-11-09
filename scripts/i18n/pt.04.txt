@@ -1,0 +1,150 @@
+Norma
+É preciso outra carteira em
+É preciso uma carteira na moeda da meta
+Visão geral
+Atualizar agora
+Atualizando…
+Educação
+Obsidiana
+Orçamento geral
+Você costuma gastar aqui cerca de {0} por mês.
+Gastos habituais
+Gastos habituais até o fim do mês
+Normal
+Enorme
+Roupas
+Uma linha — e o app entende sozinho: gasto, receita, tarefa ou meta.
+Entradas previstas
+Oceano
+Operações
+Operações do mês
+As operações são registradas sozinhas no dia do pagamento quando você abre o app. A marca «raramente» é sua própria avaliação: o app não tem dados bancários de uso.
+Operações de hoje
+Operações, tarefas, notas, pessoas…
+Operação
+Operação do pagamento recorrente «{0}»
+Operação cancelada, plano restaurado
+Operação repetida
+Operação excluída
+Moeda principal
+Moeda principal — {0}. Defina cotações para as outras moedas.
+Moeda principal — {0}. As cotações do Banco Central serão recalculadas sozinhas.
+Carteira principal
+A carteira principal entra por padrão nas novas operações.
+Restam
+Restam {0}
+Falta guardar
+O restante
+Vai sobrar
+Restante
+Restante · {0}
+Restante — {0}
+Restante: {0}
+Guardar por mês
+Desafixar
+Abrir em
+Abrir tarefas
+Abrir tarefas de hoje
+Abrir a próxima semana
+Reabrir
+Abrir foto do recibo
+De
+Guardado
+Cancelar
+Desfazer
+Marque as contas de poupança com o tipo «Poupança»
+Marque o que fez, mova o resto, escreva algumas linhas no diário.
+Marque com sinceridade — o app vai sugerir do que dá para abrir mão.
+Marque o que você tem e quanto há agora. Dá para corrigir a qualquer momento.
+Férias
+Atrasada · precisa de {0}/mês
+Atrasada · neste ritmo até {0}
+Atrasada em relação ao prazo
+Cotações oficiais do Banco Central em {0}. Atualizam sozinhas uma vez por dia quando há internet.
+Visual
+Limpar
+Limpar todos os dados
+Algumas linhas sobre o dia
+Algumas linhas sobre hoje
+Vela
+Pausa
+Transferir
+Transferência
+Transferência para «{0}»
+Transferência feita
+Transferência de «{0}»
+Transferências
+Transferências entre suas carteiras, dívidas e metas não contam como receitas ou despesas.
+Reiniciar
+Movido para {0}
+Movido para amanhã
+Movido para hoje
+Arquivar
+Mover para amanhã
+Gasto acima
+Período
+Frequência
+Areia
+Pets
+Escreva como sempre: «Ligar para a mãe amanhã às 18:00», «relatório até sexta #trabalho !!». Data, hora, repetição e lista são reconhecidas sozinhas. Várias linhas — várias tarefas.
+Plano
+Plano do dia
+Plano do dia pronto
+Um plano não muda os saldos até você executá-lo. Precisa todo mês? Adicione um pagamento recorrente em «Assinaturas e pagamentos».
+Plano executado
+Plano pulado
+Plano salvo
+Plano excluído
+Planos
+Planos e calendário
+Ainda não houve pagamentos
+Pagamentos e planos
+Pagamento registrado
+Pagamento de dívida
+Mais
+Seg
+Até
+Em dias úteis
+Dentro do previsto
+Por data
+Para «
+Conforme o plano
+Ainda não há operações nesta carteira
+Repetição
+Repita o código
+Repetir hoje
+Repete
+Repetir
+Dívida quitada: {0}
+Presentes
+Fazer o balanço
+Assinaturas
+Assinaturas por mês
+Assinaturas e pagamentos
+Detalhes
+Preencher
+Depois
+Buscar
+Buscar nas notas
+Buscar por nome, valor, tag
+Ainda não há operações
+Ainda não há o que analisar
+Nada planejado ainda
+Nada feito ainda
+Vazio por enquanto
+Mostrar saldo
+Mostrar tudo · {0}
+Mostrar operações
+Mostrar na tela inicial
+Compras
+Compras
+Seis meses
+A exclusão completa apaga os dados do app, as fotos de recibos e as cópias deste aparelho. Não dá para desfazer.
+Meia-noite
+Metade · {0}
+Recebido
+Ficou abaixo de zero
+Vai para a caixa de entrada — você organiza ao planejar o dia
+Aporte
+Sem aportes há 3 meses
+Ainda não houve aportes

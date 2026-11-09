@@ -1,0 +1,150 @@
+Norm
+Du brauchst ein weiteres Konto in
+Du brauchst ein Konto in der Währung des Ziels
+Überblick
+Jetzt aktualisieren
+Wird aktualisiert…
+Bildung
+Obsidian
+Gesamtbudget
+Hier gibst du meist etwa {0} pro Monat aus.
+Übliche Ausgaben
+Übliche Ausgaben bis Monatsende
+Normal
+Riesig
+Kleidung
+Eine Zeile — und die App erkennt selbst: Ausgabe, Einnahme, Aufgabe oder Ziel.
+Erwartete Eingänge
+Ozean
+Buchungen
+Buchungen im Monat
+Buchungen werden am Zahlungstag automatisch erfasst, wenn du die App öffnest. Die Markierung „selten“ ist deine eigene Einschätzung: Die App hat keine Bankdaten zur Nutzung.
+Buchungen heute
+Buchungen, Aufgaben, Notizen, Personen…
+Buchung
+Buchung aus der regelmäßigen Zahlung „{0}“
+Buchung storniert, Plan wiederhergestellt
+Buchung wiederholt
+Buchung gelöscht
+Hauptwährung
+Hauptwährung — {0}. Lege Kurse für die anderen Währungen fest.
+Hauptwährung — {0}. Die Zentralbankkurse werden automatisch umgerechnet.
+Hauptkonto
+Das Hauptkonto wird bei neuen Buchungen standardmäßig eingesetzt.
+Übrig
+Noch {0}
+Noch zu sparen
+Der Rest
+Bleibt
+Rest
+Rest · {0}
+Rest — {0}
+Rest: {0}
+Monatlich zurücklegen
+Lösen
+Öffnen mit
+Aufgaben öffnen
+Heutige Aufgaben öffnen
+Nächste Woche öffnen
+Wieder öffnen
+Belegfoto öffnen
+Von
+Zurückgelegt
+Abbrechen
+Rückgängig
+Markiere Sparkonten mit dem Typ „Ersparnisse“
+Hake Erledigtes ab, verschiebe den Rest, schreib ein paar Zeilen ins Tagebuch.
+Sei ehrlich — die App schlägt vor, worauf du verzichten kannst.
+Gib an, was du hast und wie viel gerade darauf ist. Du kannst es jederzeit ändern.
+Urlaub
+Im Rückstand · nötig {0}/Monat
+Im Rückstand · bei diesem Tempo bis {0}
+Hinter der Frist
+Offizielle Zentralbankkurse zum {0}. Sie aktualisieren sich einmal täglich, wenn du online bist.
+Aussehen
+Leeren
+Alle Daten löschen
+Ein paar Zeilen über den Tag
+Ein paar Zeilen über heute
+Segel
+Pause
+Überweisen
+Überweisung
+Überweisung an „{0}“
+Überweisung ausgeführt
+Überweisung von „{0}“
+Überweisungen
+Überweisungen zwischen eigenen Konten, Schulden und Ziele zählen nicht als Einnahmen oder Ausgaben.
+Neu starten
+Verschoben auf {0}
+Auf morgen verschoben
+Auf heute verschoben
+Archivieren
+Auf morgen verschieben
+Überschreitung
+Zeitraum
+Häufigkeit
+Sand
+Haustiere
+Schreib wie gewohnt: „Mama morgen um 18:00 anrufen“, „Bericht bis Freitag #arbeit !!“. Datum, Uhrzeit, Wiederholung und Liste werden selbst erkannt. Mehrere Zeilen — mehrere Aufgaben.
+Plan
+Tagesplan
+Tagesplan fertig
+Ein Plan ändert keine Salden, bis du ihn ausführst. Jeden Monat nötig? Füge unter „Abos & Zahlungen“ eine regelmäßige Zahlung hinzu.
+Plan ausgeführt
+Plan übersprungen
+Plan gespeichert
+Plan gelöscht
+Pläne
+Pläne & Kalender
+Noch keine Zahlungen
+Zahlungen und Pläne
+Zahlung erfasst
+Schuldzahlung
+Plus
+Mo
+Bis
+An Werktagen
+Im Plan
+Nach Datum
+Für „
+Nach Plan
+Für dieses Konto gibt es noch keine Buchungen
+Wiederholung
+Code wiederholen
+Heute wiederholen
+Wiederholt sich
+Wiederholen
+Schuld getilgt: {0}
+Geschenke
+Bilanz ziehen
+Abos
+Abos pro Monat
+Abos & Zahlungen
+Details
+Einsetzen
+Später
+Suche
+Notizen durchsuchen
+Suche nach Name, Betrag, Tag
+Noch keine Buchungen
+Noch nichts zu analysieren
+Noch nichts geplant
+Noch nichts erledigt
+Noch leer
+Saldo anzeigen
+Alle anzeigen · {0}
+Buchungen anzeigen
+Auf dem Startbildschirm zeigen
+Einkäufe
+Käufe
+Halbes Jahr
+Die vollständige Löschung entfernt die App-Daten, Belegfotos und Kopien von diesem Gerät. Das lässt sich nicht rückgängig machen.
+Mitternacht
+Die Hälfte · {0}
+Erhalten
+Das Ergebnis ist kleiner als null
+Kommt in den Eingang — du sortierst es bei der Tagesplanung
+Einzahlung
+Seit 3 Monaten keine Einzahlungen
+Noch keine Einzahlungen

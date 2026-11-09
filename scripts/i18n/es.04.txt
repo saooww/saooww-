@@ -1,0 +1,150 @@
+Norma
+Hace falta otra cartera en
+Hace falta una cartera en la moneda de la meta
+Resumen
+Actualizar ahora
+Actualizando…
+Educación
+Obsidiana
+Presupuesto general
+Sueles gastar aquí unos {0} al mes.
+Gasto habitual
+Gasto habitual hasta fin de mes
+Normal
+Enorme
+Ropa
+Una línea y la app entiende sola: gasto, ingreso, tarea o meta.
+Ingresos previstos
+Océano
+Operaciones
+Operaciones del mes
+Las operaciones se registran solas el día del pago cuando abres la app. La marca «poco uso» es tu propia estimación: la app no tiene datos bancarios de uso.
+Operaciones de hoy
+Operaciones, tareas, notas, personas…
+Operación
+Operación del pago periódico «{0}»
+Operación anulada, plan restaurado
+Operación repetida
+Operación eliminada
+Moneda principal
+Moneda principal: {0}. Fija tipos para las demás monedas.
+Moneda principal: {0}. Los tipos del Banco Central se recalcularán solos.
+Cartera principal
+La cartera principal se pone por defecto en las operaciones nuevas.
+Quedan
+Quedan {0}
+Falta ahorrar
+El resto
+Quedará
+Resto
+Resto · {0}
+Resto — {0}
+Resto: {0}
+Ahorrar al mes
+Desfijar
+Abrir en
+Abrir tareas
+Abrir las tareas de hoy
+Abrir la semana que viene
+Reabrir
+Abrir foto del recibo
+Desde
+Apartado
+Cancelar
+Deshacer
+Marca las cuentas de ahorro con el tipo «Ahorros»
+Marca lo hecho, mueve lo demás, escribe un par de líneas en el diario.
+Márcalo con sinceridad: la app te sugerirá de qué prescindir.
+Marca lo que tienes y cuánto hay ahora. Puedes corregirlo cuando quieras.
+Vacaciones
+Atrasada · hacen falta {0}/mes
+Atrasada · a este ritmo para {0}
+Atrasada respecto al plazo
+Tipos oficiales del Banco Central para el {0}. Se actualizan solos una vez al día cuando hay internet.
+Apariencia
+Borrar
+Borrar todos los datos
+Un par de líneas sobre el día
+Un par de líneas sobre hoy
+Vela
+Pausa
+Transferir
+Transferencia
+Transferencia a «{0}»
+Transferencia hecha
+Transferencia desde «{0}»
+Transferencias
+Las transferencias entre tus carteras, las deudas y las metas no cuentan como ingresos ni gastos.
+Reiniciar
+Movido al {0}
+Movido a mañana
+Movido a hoy
+Archivar
+Mover a mañana
+Sobregasto
+Periodo
+Frecuencia
+Arena
+Mascotas
+Escribe como siempre: «Llamar a mamá mañana a las 18:00», «informe para el viernes #trabajo !!». La fecha, la hora, la repetición y la lista se reconocen solas. Varias líneas, varias tareas.
+Plan
+Plan del día
+Plan del día listo
+Un plan no cambia los saldos hasta que lo ejecutas. ¿Lo necesitas cada mes? Añade un pago periódico en «Suscripciones y pagos».
+Plan ejecutado
+Plan omitido
+Plan guardado
+Plan eliminado
+Planes
+Planes y calendario
+Aún no hubo pagos
+Pagos y planes
+Pago anotado
+Pago de la deuda
+Más
+Lun
+Por
+Entre semana
+Según lo previsto
+Por fechas
+Para «
+Según el plan
+Esta cartera aún no tiene operaciones
+Repetir
+Repite el código
+Repetir hoy
+Se repite
+Repetir
+Deuda saldada: {0}
+Regalos
+Hacer balance
+Suscripciones
+Suscripciones al mes
+Suscripciones y pagos
+Detalles
+Poner
+Más tarde
+Buscar
+Buscar en notas
+Buscar por nombre, importe, etiqueta
+Aún no hay operaciones
+Aún no hay nada que analizar
+Aún no hay nada planificado
+Aún no hay nada hecho
+Vacío por ahora
+Mostrar saldo
+Mostrar todo · {0}
+Mostrar operaciones
+Mostrar en la pantalla principal
+Compras
+Compras
+Medio año
+El borrado completo elimina los datos de la app, las fotos de recibos y las copias de este dispositivo. No se puede deshacer.
+Medianoche
+La mitad · {0}
+Recibido
+Ha salido menor que cero
+Irá a la bandeja de entrada: lo ordenarás al planificar el día
+Aportación
+Sin aportaciones en 3 meses
+Aún no hubo aportaciones

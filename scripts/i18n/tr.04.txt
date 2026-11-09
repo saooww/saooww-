@@ -1,0 +1,150 @@
+Norm
+Şu para biriminde bir cüzdan daha gerekli:
+Hedefin para biriminde bir cüzdan gerekli
+Genel bakış
+Şimdi güncelle
+Güncelleniyor…
+Eğitim
+Obsidyen
+Genel bütçe
+Burada genellikle ayda {0} civarı harcıyorsunuz.
+Olağan harcama
+Ay sonuna kadar olağan harcama
+Normal
+Kocaman
+Giyim
+Tek satır — uygulama harcama mı, gelir mi, görev mi, hedef mi kendisi anlar.
+Beklenen gelirler
+Okyanus
+İşlemler
+Ayın işlemleri
+İşlemler, uygulamayı açtığınızda ödeme gününde otomatik kaydedilir. «Nadiren» işareti kendi tahmininizdir: uygulamanın kullanım hakkında banka verisi yoktur.
+Bugünün işlemleri
+İşlemler, görevler, notlar, kişiler…
+İşlem
+«{0}» düzenli ödemesinden işlem
+İşlem iptal edildi, plan geri yüklendi
+İşlem tekrarlandı
+İşlem silindi
+Ana para birimi
+Ana para birimi — {0}. Diğer para birimleri için kur belirleyin.
+Ana para birimi — {0}. Merkez Bankası kurları kendiliğinden hesaplanır.
+Ana cüzdan
+Ana cüzdan yeni işlemlere varsayılan olarak girer.
+Kalan
+{0} kaldı
+Biriktirilecek
+Geri kalan
+Kalacak
+Kalan
+Kalan · {0}
+Kalan — {0}
+Kalan: {0}
+Aylık biriktir
+Sabitlemeyi kaldır
+Açılışta
+Görevleri aç
+Bugünün görevlerini aç
+Gelecek haftayı aç
+Yeniden aç
+Fiş fotoğrafını aç
+Nereden
+Ayrıldı
+İptal
+Geri al
+Birikim hesaplarını «Birikim» türüyle işaretleyin
+Yapılanları işaretleyin, kalanı taşıyın, günlüğe birkaç satır yazın.
+Dürüstçe işaretleyin — uygulama nelerden vazgeçebileceğinizi önerir.
+Neyiniz olduğunu ve şu an ne kadar olduğunu işaretleyin. İstediğiniz zaman düzeltebilirsiniz.
+Tatil
+Geride · ayda {0} gerekli
+Geride · bu hızla {0}
+Süreden geride
+{0} tarihli resmi Merkez Bankası kurları. İnternet olduğunda günde bir kez güncellenir.
+Görünüm
+Temizle
+Tüm verileri temizle
+Gün hakkında birkaç satır
+Bugün hakkında birkaç satır
+Yelken
+Duraklat
+Aktar
+Transfer
+«{0}» cüzdanına transfer
+Transfer yapıldı
+«{0}» cüzdanından transfer
+Transferler
+Kendi cüzdanlarınız arasındaki transferler, borçlar ve hedefler gelir veya gider sayılmaz.
+Yeniden başlat
+{0} tarihine taşındı
+Yarına taşındı
+Bugüne taşındı
+Arşivle
+Yarına taşı
+Aşım
+Dönem
+Sıklık
+Kum
+Evcil hayvanlar
+Her zamanki gibi yazın: «Yarın 18:00'de annemi ara», «cumaya kadar rapor #iş !!». Tarih, saat, tekrar ve liste kendiliğinden tanınır. Birkaç satır — birkaç görev.
+Plan
+Günlük plan
+Günlük plan hazır
+Plan, siz gerçekleştirene kadar bakiyeleri değiştirmez. Her ay mı gerekiyor? «Abonelikler ve ödemeler» bölümüne düzenli ödeme ekleyin.
+Plan gerçekleşti
+Plan atlandı
+Plan kaydedildi
+Plan silindi
+Planlar
+Planlar ve takvim
+Henüz ödeme yok
+Ödemeler ve planlar
+Ödeme kaydedildi
+Borç ödemesi
+Artı
+Pzt
+Kadar
+Hafta içi
+Plana uygun
+Tarihe göre
+«
+Plana göre
+Bu cüzdanda henüz işlem yok
+Tekrar
+Kodu tekrarlayın
+Bugün tekrarla
+Tekrarlanıyor
+Tekrarla
+Borç ödendi: {0}
+Hediyeler
+Günü özetle
+Abonelikler
+Aylık abonelikler
+Abonelikler ve ödemeler
+Ayrıntılar
+Doldur
+Sonra
+Ara
+Notlarda ara
+Ada, tutara, etikete göre ara
+Henüz işlem yok
+Henüz analiz edilecek bir şey yok
+Henüz planlanan bir şey yok
+Henüz yapılan bir şey yok
+Şimdilik boş
+Bakiyeyi göster
+Tümünü göster · {0}
+İşlemleri göster
+Ana ekranda göster
+Alışveriş
+Alım
+Altı ay
+Tam silme, uygulama verilerini, fiş fotoğraflarını ve bu cihazdaki kopyaları siler. Geri alınamaz.
+Gece yarısı
+Yarısı · {0}
+Alınan
+Sıfırın altında çıktı
+Gelen kutusuna gider — günü planlarken düzenlersiniz
+Yatırma
+3 aydır yatırma yok
+Henüz yatırma yok

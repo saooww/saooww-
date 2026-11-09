@@ -1,0 +1,150 @@
+Norm
+You need another wallet in
+You need a wallet in the goal's currency
+Overview
+Update now
+Updating…
+Education
+Obsidian
+Overall budget
+You usually spend about {0} a month here.
+Usual spending
+Usual spending until month end
+Normal
+Huge
+Clothes
+One line — and the app works out whether it's a spend, income, task or goal.
+Expected income
+Ocean
+Operations
+Operations this month
+Operations are recorded automatically on the payment day when you open the app. The «rarely» mark is your own estimate: the app has no bank data on usage.
+Today's operations
+Operations, tasks, notes, people…
+Operation
+Operation from the regular payment «{0}»
+Operation cancelled, plan restored
+Operation repeated
+Operation deleted
+Main currency
+Main currency — {0}. Set rates for the other currencies.
+Main currency — {0}. Central Bank rates will recalculate on their own.
+Main wallet
+The main wallet is filled in for new operations by default.
+Left
+{0} left
+Left to save
+The rest
+Will remain
+Remainder
+Remainder · {0}
+Remainder — {0}
+Remainder: {0}
+Save per month
+Unpin
+Open on
+Open tasks
+Open today's tasks
+Open next week
+Reopen
+Open receipt photo
+From
+Set aside
+Cancel
+Undo
+Mark savings accounts with the «Savings» type
+Tick what's done, move the rest, write a couple of lines in the diary.
+Mark honestly — the app will suggest what you can drop.
+Mark what you have and how much is there now. You can change it anytime.
+Holiday
+Behind · needs {0}/mo
+Behind · at this pace by {0}
+Behind schedule
+Official Central Bank rates for {0}. They update once a day when you're online.
+Appearance
+Clear
+Clear all data
+A couple of lines about the day
+A couple of lines about today
+Sail
+Pause
+Transfer
+Transfer
+Transfer to «{0}»
+Transfer done
+Transfer from «{0}»
+Transfers
+Transfers between your own wallets, debts and goals don't count as income or expenses.
+Restart
+Moved to {0}
+Moved to tomorrow
+Moved to today
+Archive
+Move to tomorrow
+Overspend
+Period
+Frequency
+Sand
+Pets
+Write as usual: «Call mom tomorrow at 18:00», «report by Friday #work !!». Date, time, repeat and list are recognised on their own. Several lines — several tasks.
+Plan
+Day plan
+Day plan ready
+A plan doesn't change balances until you post it. Need it every month? Add a regular payment in «Subscriptions & payments».
+Plan posted
+Plan skipped
+Plan saved
+Plan deleted
+Plans
+Plans & calendar
+No payments yet
+Payments and plans
+Payment recorded
+Debt payment
+Plus
+Mon
+By
+On weekdays
+On schedule
+By date
+For «
+As planned
+No operations for this wallet yet
+Repeat
+Repeat the code
+Repeat today
+Repeats
+Repeat
+Debt repaid: {0}
+Gifts
+Review the day
+Subscriptions
+Subscriptions per month
+Subscriptions & payments
+Details
+Fill in
+Later
+Search
+Search notes
+Search by name, amount, tag
+No operations yet
+Nothing to analyse yet
+Nothing planned yet
+Nothing done yet
+Empty for now
+Show balance
+Show all · {0}
+Show operations
+Show on the home screen
+Shopping
+Purchases
+Six months
+Full deletion erases the app's data, receipt photos and backups from this device. This can't be undone.
+Midnight
+Half · {0}
+Received
+It came out below zero
+Goes to the Inbox — you'll sort it when planning the day
+Top-up
+No top-ups for 3 months
+No top-ups yet
