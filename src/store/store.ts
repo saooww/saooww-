@@ -31,6 +31,7 @@ import {
   type Transaction,
   type Wallet
 } from "./types";
+import { tr } from "../i18n/i18n";
 
 export const STORAGE_KEY = "kapital-v2";
 
@@ -178,14 +179,14 @@ const useDataStore = create<DataState>()(
           amount: Math.abs(delta),
           flow: delta > 0 ? "in" : "out",
           walletId: id,
-          note: "Корректировка баланса",
+          note: tr("Корректировка баланса"),
           date: nowISO()
         });
       },
 
       deleteWallet(id) {
         set((s) => {
-          const name = s.wallets.find((w) => w.id === id)?.name ?? "кошелёк";
+          const name = s.wallets.find((w) => w.id === id)?.name ?? tr("кошелёк");
           const transactions: Transaction[] = [];
           for (const t of s.transactions) {
             const touches = t.walletId === id || t.toWalletId === id;
@@ -196,9 +197,9 @@ const useDataStore = create<DataState>()(
             if (t.kind === "transfer") {
               // Keep the other side's balance intact.
               if (t.walletId === id && t.toWalletId && t.toWalletId !== id) {
-                transactions.push({ id: t.id, kind: "adjustment", flow: "in", amount: t.toAmount ?? t.amount, walletId: t.toWalletId, note: `Перевод из «${name}»`, tags: t.tags, date: t.date, createdAt: t.createdAt });
+                transactions.push({ id: t.id, kind: "adjustment", flow: "in", amount: t.toAmount ?? t.amount, walletId: t.toWalletId, note: tr("Перевод из «{0}»", name), tags: t.tags, date: t.date, createdAt: t.createdAt });
               } else if (t.toWalletId === id && t.walletId && t.walletId !== id) {
-                transactions.push({ id: t.id, kind: "adjustment", flow: "out", amount: t.amount, walletId: t.walletId, note: `Перевод в «${name}»`, tags: t.tags, date: t.date, createdAt: t.createdAt });
+                transactions.push({ id: t.id, kind: "adjustment", flow: "out", amount: t.amount, walletId: t.walletId, note: tr("Перевод в «{0}»", name), tags: t.tags, date: t.date, createdAt: t.createdAt });
               }
               continue;
             }
@@ -690,7 +691,7 @@ export function parseImport(text: string): AppData {
     // Maybe a file from the first version of the app
     const migrated = migrateFromV1(text);
     if (migrated) return migrated;
-    throw new Error("Файл не похож на резервную копию Ardessa");
+    throw new Error(tr("Файл не похож на резервную копию Ardessa"));
   }
   const base = createEmptyData();
   const out = { ...base } as Record<string, unknown>;

@@ -4,7 +4,7 @@ import { Plus } from "../../ui/glyphs";
 import { haptic } from "../../lib/haptics";
 import { cn } from "../../lib/cn";
 import type { Minor } from "../../lib/money";
-import { materialOf, TOTAL_MATERIAL, walletKindInfo, type CardMaterial } from "../../store/catalog";
+import { materialFor, TOTAL_MATERIAL, walletKindInfo, type CardMaterial } from "../../store/catalog";
 import { useBalances, useTotalBalance } from "../../store/hooks";
 import { useData } from "../../store/store";
 import { activeWallets } from "../../lib/finance";
@@ -17,6 +17,7 @@ import { pluralN } from "../../lib/dates";
 import type { ID } from "../../store/types";
 import { Layers } from "../../ui/glyphs";
 import { INTRO_SHIFT } from "../../ui/intro";
+import { tr } from "../../i18n/i18n";
 
 const GAP = 14;
 
@@ -48,14 +49,14 @@ export function useCardModels(): CardModel[] {
       cards.push({
         key: "total",
         walletId: null,
-        title: "Все счета",
-        label: "Всего",
+        title: tr("Все счета"),
+        label: tr("Всего"),
         subtitle: pluralN(counted, ["счёт", "счёта", "счетов"]),
         icon: Layers,
         amount: total.total,
         currency: base,
         material: TOTAL_MATERIAL,
-        footnote: total.missing.length ? `без ${total.missing.join(", ")} — нет курса` : undefined
+        footnote: total.missing.length ? tr("без {0} — нет курса", total.missing.join(", ")) : undefined
       });
     }
     for (const w of list) {
@@ -68,7 +69,7 @@ export function useCardModels(): CardModel[] {
         ident: w.ident,
         amount: balances[w.id] ?? 0,
         currency: w.currency,
-        material: materialOf(w.style),
+        material: materialFor(w),
         badge: w.currency !== base ? w.currency : undefined
       });
     }
@@ -134,7 +135,7 @@ export function WalletCarousel({ onOpen, onAdd, intro = false }: { onOpen: (card
         >
           <span className="flex flex-col items-center gap-2">
             <Plus size={24} />
-            <span className="text-callout font-medium">Добавить кошелёк</span>
+            <span className="text-callout font-medium">{tr("Добавить кошелёк")}</span>
           </span>
         </button>
       </div>
@@ -147,8 +148,8 @@ export function WalletCarousel({ onOpen, onAdd, intro = false }: { onOpen: (card
         ref={wrap}
         className="relative mx-5"
         role="region"
-        aria-roledescription="карусель"
-        aria-label="Кошельки"
+        aria-roledescription={tr("карусель")}
+        aria-label={tr("Кошельки")}
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === "ArrowRight") goTo(safeIndex + 1);
@@ -156,9 +157,6 @@ export function WalletCarousel({ onOpen, onAdd, intro = false }: { onOpen: (card
         }}
         style={{ aspectRatio: String(CARD_RATIO) }}
       >
-        {/* ambient light cast by the card in front */}
-        {width > 0 &&
-          cards.map((c, i) => (Math.abs(i - safeIndex) <= 1 ? <AmbientGlow key={c.key} color={c.material.glow} i={i} x={x} step={step} intro={intro} /> : null))}
 
         {width > 0 && (
           <motion.div
@@ -292,21 +290,6 @@ function CarouselItem({
           intro={intro}
         />
       </motion.div>
-    </motion.div>
-  );
-}
-
-function AmbientGlow({ color, i, x, step, intro }: { color: string; i: number; x: MotionValue<number>; step: number; intro: boolean }) {
-  const opacity = useTransform(x, (v) => Math.max(0, 1 - Math.abs(v + i * step) / step));
-  return (
-    <motion.div aria-hidden="true" className="pointer-events-none absolute -inset-x-12 -bottom-24 -top-16" style={{ opacity, willChange: "opacity" }}>
-      <motion.div
-        className="absolute inset-0"
-        style={{ background: `radial-gradient(50% 46% at 50% 54%, ${color}, transparent 100%)` }}
-        initial={intro ? { opacity: 0 } : false}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 + INTRO_SHIFT, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-      />
     </motion.div>
   );
 }

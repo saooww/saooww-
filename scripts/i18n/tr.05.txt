@@ -1,0 +1,150 @@
+Para yatır
+Hedefe para yatır
+Aramayı veya filtreleri değiştirmeyi deneyin.
+{0} sn sonra tekrar deneyin
+Son 30 gün
+Son aylarda giderler gelirleri {0} aşıyor
+Son işlemler
+Son rakamlar
+Ayın son günü
+Sonuncusu — {0} gün önce
+Son: {0}
+Örneğe bak
+İlk hedefinizi koyun
+Gelen
+Bu ay gelenler
+Hesapla
+Sonra — diğer önemliler.
+Bir önceki haftadan az harcandı
+Harcanan
+Neredeyse bitti · {0} kaldı
+Neredeyse hiç
+Kategorilerin üstünde görünür — tek dokunuşla her şey dolar.
+Aşıldı:
+{0} aşıldı
+Önceki hafta
+Önceki ay
+Önceki dönem
+Açılışta doğrudan harcama girişi görünür — tutar, kategori, tamam. Ana sayfaya gitmek için kapatın.
+Bu hızla ay sonunda yaklaşık
+Bu hızla — {0}
+Gizlilik
+Alışkanlıklar
+Liste, görev, hedef, plan veya borç bağlayın
+Bir kod belirleyin
+Uygulama kilitli
+Örnek: {0} {1} · {2}
+Öncelik
+Şimdi gerçekleştir
+Ay sonu tahmini
+İlerleme, seçilen cüzdanın bakiyesine eşit olur — birikim hesabı için kullanışlı.
+Günün ilerlemesi ve yaklaşan görevler
+İlerleme «{0}» cüzdanının bakiyesine eşittir. Para yatırmak, ona transferdir.
+Eşya satışı
+Market
+Atla
+Bir kez atla
+{0} gecikti
+Gecikmiş
+Kalanı bağışla ve kapat
+Profil
+Faiz ve temettüler
+Yüzdeler — aynı günlere göre
+Diğer
+Geçen hafta
+Geçen ay
+Cum
+Madde
+Maddeler
+Seyahat
+İş
+Uygulama günde bir kez verilerin bir kopyasını bu cihaza kaydeder (son üç tanesi). Hatalara karşı korur — başka cihaza taşımak için Dosyalar'daki kopyayı kullanın.
+Yazdıklarınızı düzenleyin ve en fazla üç önemli görev seçin. Onlarla başlayın.
+Günü planlarken düzenlersiniz
+Eğlence
+Böl
+Fişi böl
+Bölümler
+Görevleri yaşam alanlarına ayırın
+Fark, bakiye düzeltmesi olarak kaydedilir — işlem geçmişi değişmez.
+Düzenle
+Kategorilere göre dağılım
+Gid.
+Gider
+Gider eklendi
+Gider kaydedildi
+Giderler
+Dönem giderleri
+Harcamalar geçen ayın bu gününe göre {0} fazla
+Harcamalar geçen ayın bu gününe göre {0} az
+Kategorilere göre giderler
+Giderler gelirleri aştı (
+Düzenli
+Düzenli ödemeler
+Düzenli gelirler
+Düzenli kesintiler
+Düzenli ödeme
+Düzenli ödeme sürer — yalnızca bu kayıt silinir.
+Düzenli ödeme silindi
+Nadiren
+Mod
+Yedek
+Yedekler ve veriler
+Öneri: olağan harcamanızın 6 ayı ≈
+Ne zaman yapacağınıza karar verin
+Ritim
+Ayın ritmi
+Gül
+Rus rublesi
+Başlangıç
+Cüzdandan
+Önceki günlerden
+Sakura
+En büyük harcama
+En büyük harcama —
+Harcama kaydetmenin en hızlı yolu, harcama girişini doğrudan açmaktır.
+En verimli gün —
+Cmt
+Sıfırla
+Filtreleri sıfırla
+Daralt
+Normun üstünde
+Açık
+Serbest
+Serbest:
+Boş bir gün. Görevler çıkınca yazın.
+Özel
+Kendi bakiyesi
+Kendi rengi
+Özel vurgu rengi
+Bağlı işlem silinecek
+Bağla…
+Bağlantılar
+Telefon ve internet
+Yapıldı
+{1} içinden {0} yapıldı
+{1} içinden {0} yapıldı.
+Bugün yapılanlar
+Yapıldı: {0}
+Göreve dönüştür: {0}
+Göreve dönüştür
+Bugün
+Bugün işaretlenen görev yok. Yarın bir planla başlamayı deneyin.
+Bugün normun üstünde
+Bugün, {0} {1}
+Şu an harcama hesaplarında
+Şu an: {0}, {1}.{2} Fiş fotoğrafları kopyaya dahil değildir.
+Sistem
+Para biriminin bir birimi {0} cinsinden ne kadar. Kur olmadan bu para birimindeki tutarlar toplam bakiyeye ve analize girmez — farklı para birimlerini rastgele toplamayız.
+İkinci hesaba ne kadar geçecek?
+Kopyalandı — {0} KB metin
+Metin olarak kopyala
+Yakında
+Bakiyeyi düzelt
+Açılışta gizle
+Her açılışta gizle
+Gizli ·
+Gizli kategoriler girişte önerilmez ama geçmişte ve analizde kalır.
+Gizli tutarlar kartlarda, varlıkta ve hedeflerde noktalarla değiştirilir. Değiştirmek için karttaki «göz»e dokunun.
+Gizle
+Bakiyeyi gizle

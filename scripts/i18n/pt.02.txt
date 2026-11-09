@@ -1,0 +1,150 @@
+Adicionado ao plano
+Adicione um cartão, dinheiro ou uma conta poupança.
+Adicione algumas receitas e despesas — os gráficos se montam sozinhos.
+Adicione seus saldos — vou calcular um valor por dia
+Adicione assinaturas, celular, empréstimo ou salário — eles serão registrados sozinhos e entrarão nas previsões.
+Bom dia
+Boa noite
+Boa noite
+Boa tarde
+Dívida
+Dívida concedida: {0}
+Dívida quitada
+Dívida registrada
+Dívida recebida: {0}
+Dívida salva
+Dívida excluída
+Dívidas
+Sem dívidas
+Dólar americano
+Casa
+Casa e contas
+Rec.
+Receita
+Receita adicionada
+Receita registrada
+Receitas
+Receitas do período
+Receitas e despesas por mês
+As receitas e despesas desta carteira serão apagadas. As transferências para outras carteiras ficam como ajustes, para que os saldos delas não mudem. Se precisar do histórico, arquive a carteira.
+Outro
+Euro
+Cópia diária
+Se a categoria tiver operações, ela será ocultada da escolha e o histórico mantido.
+Se não der para salvar o arquivo
+Se você apagar o app ou limpar o Safari, os dados vão junto. Uma cópia em Arquivos (iCloud Drive) ou no seu e-mail é um seguro confiável. O app vai lembrar uma vez por semana.
+Tem nota
+Tem prazo
+Tem foto do recibo
+Nunca ainda
+Mais hoje
+Aguardando execução
+Feito na semana
+Esqueceu o código?
+Encerrar o dia
+Amanhã
+Veja seus orçamentos — lá dá para ver onde apertar.
+Título
+Carregando…
+Carregar
+Carregar dados de demonstração
+Carregar dados de demonstração?
+Defina um limite mensal para uma categoria — por exemplo, «Mercado — 30.000». Avisaremos quando estiver perto.
+Fixar
+Quitada
+Quitada {0}
+Quitadas · {0}
+Ainda não há dívidas quitadas
+Fechar
+Quitar sem pagamento
+Substituir
+Substituir os dados {0}?
+Nota
+Nota excluída
+Nota: detalhes, links, endereço
+Notas
+Ocupado
+Registrado {0}
+Registrar
+Registrar devolução
+Anotar tarefa
+Registrar dívida
+Registrar pagamento
+Registrar agora
+Registre receitas e despesas — todo o histórico com busca e filtros aparecerá aqui.
+Anote na hora
+Anote para quem emprestou e de quem pegou emprestado — o app vai lembrar dos prazos.
+Anote para não guardar na cabeça
+Registrar automaticamente
+Será salvo como
+Será salvo como operação e mudará o saldo
+Planejado
+Planejar
+Abertura
+Salário
+Para que serve esta lista, qual resultado se espera
+Creditado
+Creditar
+Creditar na carteira
+Proteção
+Proteção contra limpeza automática
+O histórico aparecerá aqui
+Ainda não há nada aqui
+Suas operações aparecerão aqui. Comece pelos botões acima.
+Está vazio aqui
+Saúde
+Primeiros passos
+Ícone
+Ouro
+Ideias, listas de compras, combinados, planos de viagem. Itens do checklist viram tarefas com um toque.
+De um backup do Ardessa ou do Kapital
+Do tema
+Da meta «{0}»
+Favoritos
+Variação do patrimônio
+Alterações salvas
+Editar
+Editar operação
+Editar lista
+Editar meta
+Elegantes
+Importar arquivo
+Nome
+Nome (opcional)
+Nome, visual, dados
+Investimentos
+Índigo
+Intervalo
+Histórico
+Histórico do saldo
+Histórico de pagamentos
+Saldo
+Saldo: receitas menos despesas
+O resumo de {0} está pronto
+Resumo do dia
+Resumo do mês
+Resumo do mês, backup, dicas
+Resumo da semana
+O resumo da semana está pronto
+Resumo:
+Resumo: {0}
+Total
+Busque por nome, comentário, tag, pessoa ou valor
+Para esta semana
+Cada linha vira uma tarefa separada.
+Toda semana
+A cada {0} {1}
+Todo ano
+Todo dia
+Todo mês
+Tenge cazaque
+Como da última vez:
+Como cuidar das tarefas
+Como devemos te chamar
+Como te chamar e em que moeda contar.
+Com que frequência você usa
+O calendário do celular vai lembrar da tarefa mesmo com o app fechado. 
+Calendário de gastos
+Patrimônio
+Patrimônio em 90 dias
+Cartão

@@ -9,7 +9,10 @@ export type ID = string;
 
 export type WalletKind = "card" | "cash" | "savings" | "bank" | "investment" | "other";
 /** Blocks of the home screen that can be hidden. */
-export type HomeBlock = "safe" | "today" | "feed" | "recent" | "goal";
+export type HomeBlock = "cards" | "today" | "feed" | "recent" | "goal";
+
+/** Line-work on a wallet card */
+export type CardPattern = "sail" | "waves" | "dots" | "none";
 
 /** Current card colours, then retired ones still found in older data (shown as their nearest current colour). */
 export type CardStyle = "ardessa" | "obsidian" | "graphite" | "titanium" | "bordeaux" | "ivory" | "ember" | "midnight" | "forest" | "plum" | "sand";
@@ -20,6 +23,10 @@ export interface Wallet {
   kind: WalletKind;
   currency: string;
   style: CardStyle;
+  /** «Свой цвет»: any colour for the card, #rrggbb (overrides style) */
+  customColor?: string;
+  /** Line-work on the card */
+  pattern?: CardPattern;
   /** Short visible identifier, e.g. last four digits */
   ident?: string;
   /** Balance before the first recorded operation */
@@ -104,6 +111,10 @@ export interface Goal {
   /** Linked mode: progress follows this wallet's balance */
   walletId?: ID;
   primary?: boolean;
+  /** The goal's own colour, #rrggbb */
+  color?: string;
+  /** How progress is drawn: a ring or a jar filling up */
+  look?: "ring" | "jar";
   archived?: boolean;
   createdAt: LocalISO;
 }
@@ -279,7 +290,12 @@ export interface Settings {
   ratesFetchedAt?: LocalISO;
   /** What opens when the app starts */
   launchAction: "home" | "expense";
-  accent: "ardessa" | "vermilion" | "indigo" | "sakura" | "gold";
+  /** «theme» — the colour the chosen theme brings; «custom» — customAccent */
+  accent: "ardessa" | "vermilion" | "indigo" | "sakura" | "gold" | "theme" | "custom";
+  /** Any accent colour, #rrggbb */
+  customAccent?: string;
+  /** Theme: a whole palette (src/ui/palettes.ts) */
+  palette?: string;
   textSize: "m" | "l" | "xl";
   /** Month (YYYY-MM) whose summary story was already shown */
   storySeen?: string;

@@ -10,6 +10,8 @@ import { ComposerSheet } from "../features/transactions/Composer";
 import { PinSheet } from "../features/lock/PinSheet";
 // typed into right after a tap — must be there at once, like the composer
 import { QuickAddSheet } from "../features/planner/QuickAdd";
+// the «+» in the tab bar, typed into at once
+import { CreateSheet } from "../features/create/CreateSheet";
 
 /*
  * What the first screen needs — home, the composer, the lock — loads with
@@ -39,6 +41,7 @@ const loaders = {
   rituals: () => import("../features/planner/Rituals"),
   intro: () => import("../features/planner/Intro"),
   week: () => import("../features/planner/WeekReview"),
+  day: () => import("../features/home/DaySheet"),
   settings: () => import("../features/settings/Settings"),
   search: () => import("../features/search/SearchSheet")
 };
@@ -90,6 +93,7 @@ const PlanDaySheet = named(L.rituals, "PlanDaySheet");
 const ReviewDaySheet = named(L.rituals, "ReviewDaySheet");
 const PlannerIntroSheet = named(L.intro, "PlannerIntroSheet");
 const WeekReviewSheet = named(L.week, "WeekReviewSheet");
+const DaySheet = named(L.day, "DaySheet");
 const SettingsScreen = named(L.settings, "SettingsScreen");
 const CategoriesScreen = named(L.settings, "CategoriesScreen");
 const CurrenciesScreen = named(L.settings, "CurrenciesScreen");
@@ -155,5 +159,7 @@ registerSheets({
   backupText: BackupTextSheet,
   pin: PinSheet,
   homeLayout: HomeLayoutSheet,
+  create: CreateSheet,
+  day: DaySheet,
   weekReview: WeekReviewSheet
 });

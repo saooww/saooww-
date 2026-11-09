@@ -9,6 +9,7 @@ import { confirmDelete } from "../store/undo";
 import { NamedIcon } from "../ui/icons";
 import { Button, Group, Segmented, inputCls } from "../ui/primitives";
 import { Sheet, SheetAction, useSheet } from "../ui/Sheet";
+import { tr } from "../i18n/i18n";
 
 export function CategorySheet({ kind: initialKind = "expense", editId, onCreated }: { kind?: "income" | "expense"; editId?: ID; onCreated?: (id: ID) => void }) {
   const { close } = useSheet();
@@ -34,9 +35,9 @@ export function CategorySheet({ kind: initialKind = "expense", editId, onCreated
 
   return (
     <Sheet
-      title={existing ? "Категория" : "Новая категория"}
-      left={<SheetAction onClick={close}>Отмена</SheetAction>}
-      right={<SheetAction strong disabled={!name.trim()} onClick={save}>Готово</SheetAction>}
+      title={existing ? tr("Категория") : tr("Новая категория")}
+      left={<SheetAction onClick={close}>{tr("Отмена")}</SheetAction>}
+      right={<SheetAction strong disabled={!name.trim()} onClick={save}>{tr("Готово")}</SheetAction>}
     >
       <div className="flex flex-col gap-5 pt-1">
         <div className="flex flex-col items-center gap-3 px-4">
@@ -46,15 +47,15 @@ export function CategorySheet({ kind: initialKind = "expense", editId, onCreated
         </div>
         {!existing && (
           <div className="px-4">
-            <Segmented value={kind} onChange={setKind} options={[{ value: "expense", label: "Расход" }, { value: "income", label: "Доход" }]} />
+            <Segmented value={kind} onChange={setKind} options={[{ value: "expense", label: tr("Расход") }, { value: "income", label: tr("Доход") }]} />
           </div>
         )}
         <Group>
           <div className="px-4 py-3.5">
-            <input autoFocus={!existing} value={name} onChange={(e) => setName(e.target.value)} placeholder="Название" maxLength={40} enterKeyHint="done" onKeyDown={(e) => e.key === "Enter" && save()} className={cn(inputCls, "text-headline")} />
+            <input autoFocus={!existing} value={name} onChange={(e) => setName(e.target.value)} placeholder={tr("Название")} maxLength={40} enterKeyHint="done" onKeyDown={(e) => e.key === "Enter" && save()} className={cn(inputCls, "text-headline")} />
           </div>
         </Group>
-        <Group header="Значок">
+        <Group header={tr("Значок")}>
           <div className="grid grid-cols-7 gap-1 p-2">
             {CATEGORY_ICON_CHOICES.map((ic) => (
               <button
@@ -70,13 +71,13 @@ export function CategorySheet({ kind: initialKind = "expense", editId, onCreated
             ))}
           </div>
         </Group>
-        <Group header="Цвет на графиках">
+        <Group header={tr("Цвет на графиках")}>
           <div className="flex flex-wrap gap-2.5 p-3.5">
             {CHART_COLORS.map((c) => (
               <button
                 key={c}
                 type="button"
-                aria-label={`Цвет ${c}`}
+                aria-label={tr("Цвет {0}", c)}
                 aria-pressed={color === c}
                 onClick={() => setColor(c)}
                 className="h-8 w-8 rounded-full"
@@ -92,18 +93,16 @@ export function CategorySheet({ kind: initialKind = "expense", editId, onCreated
               block
               onClick={() =>
                 confirmDelete({
-                  title: `Удалить «${existing.name}»?`,
-                  message: "Если по категории есть операции, она будет скрыта из выбора, а история сохранится.",
+                  title: tr("Удалить «{0}»?", existing.name),
+                  message: tr("Если по категории есть операции, она будет скрыта из выбора, а история сохранится."),
                   onConfirm: () => {
                     const r = useData.getState().removeCategory(existing.id);
-                    nav.toast(r === "archived" ? "Категория скрыта, история сохранена" : "Категория удалена");
+                    nav.toast(r === "archived" ? tr("Категория скрыта, история сохранена") : tr("Категория удалена"));
                     close();
                   }
                 })
               }
-            >
-              Удалить категорию
-            </Button>
+            >{tr("Удалить категорию")}</Button>
           </div>
         )}
       </div>

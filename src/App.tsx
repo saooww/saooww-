@@ -10,11 +10,13 @@ import { StackView } from "./nav/StackView";
 import { TabBar } from "./nav/TabBar";
 import { SheetHost } from "./sheets/SheetHost";
 import { Splash } from "./ui/Splash";
+import { ALL_THEME_VARS, accentVars, paletteOf, paletteVars } from "./ui/palettes";
 import { Toasts } from "./ui/Toasts";
 import { LockLayer } from "./features/lock/LockScreen";
 import { Onboarding } from "./features/onboarding/Onboarding";
 import { refreshRatesIfStale } from "./lib/rates";
 import { MonthStoryLayer } from "./features/story/MonthStory";
+import { tr } from "./i18n/i18n";
 
 const TABS: Tab[] = ["home", "planner", "wallets", "transactions", "analytics", "more"];
 
@@ -43,16 +45,24 @@ export function App() {
 
   /* theme, typefaces, accent, text size */
   useEffect(() => {
-    const t = resolveTheme(settings.theme);
+    const pal = paletteOf(settings.palette);
+    const t = pal.mode ?? resolveTheme(settings.theme);
     setRootAttr("data-theme", t);
-    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", t === "light" ? "#F3F1EC" : "#070708");
-  }, [settings.theme, systemTick]);
+    // a theme's surfaces and an accent of its own or the person's choosing, as CSS variables
+    const accent = settings.accent === "custom" && settings.customAccent ? settings.customAccent : settings.accent === "theme" ? pal.accent : undefined;
+    const vars = { ...paletteVars(pal), ...(accent ? accentVars(accent, t) : {}) };
+    for (const el of [document.documentElement, document.body]) {
+      for (const k of ALL_THEME_VARS) el.style.removeProperty(k);
+      for (const [k, v] of Object.entries(vars)) el.style.setProperty(k, v);
+    }
+    setRootAttr("data-accent", accent ? "custom" : settings.accent === "theme" ? "ardessa" : settings.accent);
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", pal.bg ?? (t === "light" ? "#F3F1EC" : "#070708"));
+  }, [settings.theme, settings.palette, settings.accent, settings.customAccent, systemTick]);
 
   useEffect(() => {
     setRootAttr("data-num", settings.numberFont);
-    setRootAttr("data-accent", settings.accent);
     setRootAttr("data-text", settings.textSize);
-  }, [settings.numberFont, settings.accent, settings.textSize]);
+  }, [settings.numberFont, settings.textSize]);
 
   useEffect(() => {
     if (settings.theme !== "system") return;
@@ -148,7 +158,7 @@ function Main({ formatKey }: { formatKey: string }) {
   useEffect(() => {
     const created = useData.getState().processRecurring(today);
     if (created.length) {
-      nav.toast(`Записано ${pluralN(created.length, ["регулярная операция", "регулярные операции", "регулярных операций"])}`, { tone: "positive" });
+      nav.toast(tr("Записано {0}", pluralN(created.length, ["регулярная операция", "регулярные операции", "регулярных операций"])), { tone: "positive" });
     }
   }, [today]);
 

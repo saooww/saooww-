@@ -1,0 +1,150 @@
+Tarjetas de cuentas
+Categorías
+Categoría
+Categoría oculta, historial conservado
+Categoría eliminada
+Categoría de la parte
+Cafés y restaurantes
+Trimestre
+Piso
+Piso, coche, vacaciones o un colchón: calcularemos cuánto ahorrar al mes.
+Piso, vacaciones, colchón
+Cashback
+Bermellón
+Yuan chino
+Teclado de importe
+Cuándo
+Un código de 4 dígitos al abrir la app. En iPhone puedes entrar con Face ID.
+Código cambiado
+El código se guarda solo en este dispositivo y no se puede recuperar. Puedes borrar los datos de la app y empezar de nuevo, y luego cargar una copia si la guardaste.
+Código
+Código activado
+Código desactivado
+Los códigos no coinciden; otra vez
+Anillo
+Comentario
+Comentario: {0}
+A quién
+Céntimos
+Copia
+Copia fuera del móvil
+Copia restaurada
+Copia guardada
+Copia guardada.
+Lo esencial: cuánto salió, adónde y cuánto lograste ahorrar.
+Ajuste
+Ajuste de saldo
+Toca un día
+Toca un mes para ver detalles
+Carteras
+Cartera
+Cartera archivada
+Cartera restaurada
+La cartera y su dinero no cambian.
+Cartera creada
+Cartera guardada
+Cartera eliminada
+Belleza
+Compras grandes y previsión
+Grande
+Quién debe a quién y cuánto
+Adónde
+Dónde añadir tareas
+Adónde fue el dinero y cuánto lograste ahorrar
+Adónde fue más
+Los tipos del Banco Central se cargarán cuando haya internet.
+Tipos del Banco Central automáticos
+Tipos de cambio
+Los tipos se fijan a mano.
+Tipos actualizados
+Bosque
+Límite
+Límite mensual
+Límites por categoría
+Personal
+Menos
+Mes
+Menos
+Se puede tomar de otros días
+Aún disponible
+Puedes gastar hoy
+Hoy
+Moca
+Mono
+En
+El fin de semana
+En la pantalla principal
+En pausa
+{0} para hoy. Lo principal puedes elegirlo después.
+Nada más para hoy
+Ya hay {0} para la próxima semana
+En cuentas
+Para qué ahorramos
+Observaciones
+Atrás
+Nombre
+Nombre de la lista
+Cuentas de ahorro e inversión, dinero en metas: en {0}
+Cuentas de ahorro frente al gasto medio de 3 meses ({0} al mes). La reserva recomendada es de 3–6 meses.
+Tus ahorros cubren {0} {1} de gasto habitual{2}
+Ahorros
+Los {0} ahorrados volverán a las carteras de las que salieron.
+Ahorrado para
+Efectivo
+Escribe, por ejemplo «{0}»
+Recordar en 3 días
+Por ejemplo, «Reforma de la cocina»
+Por ejemplo, Tarjeta
+Por ejemplo, música
+Por ejemplo, prima
+Por ejemplo, reforma
+Personalizar inicio
+Ajustes
+Ajustes y perfil
+Una semana intensa
+El inicio del periodo debe ser anterior al final.
+Saldo inicial
+Empezar
+Empezar el día
+Empezar de nuevo
+¿Empezar de cero?
+Empezar con mis datos
+Empieza por «
+No elegida
+No repetir
+No se pudo abrir el Calendario
+No se pudo copiar.
+No se pudieron guardar los cambios: queda poco espacio. Guarda una copia en Archivos.
+No se pudo guardar el archivo; prueba a copiarlo.
+No se pudo guardar el archivo: copia la copia como texto
+No se pudo guardar la foto
+No funcionó; prueba en «Ajustes → Datos»
+No se pudieron cargar los tipos: revisa la conexión
+No se pudo leer el archivo
+Sin indicar
+No dio tiempo
+No dio tiempo, pasa. Decide cuándo hacerlas, o déjalas ir.
+Código incorrecto · intentos restantes: {0}
+Semana
+Opcional
+No
+No hay carteras
+No hay pagos periódicos
+No hubo nada
+Nada planificado
+No se encontró nada
+Nueva
+Nueva nota
+Nueva nota para la tarea
+Nueva categoría
+Nueva operación
+Nueva suscripción
+Nueva meta
+Nueva tarea
+Nuevo
+Nuevo presupuesto
+Nueva deuda
+Nueva cartera
+Un mes nuevo, una nueva oportunidad.
+Nuevo gasto
+Nueva lista

@@ -5,6 +5,7 @@ import { debtInfo, rateOf, totalWallets, type LedgerEntry } from "./finance";
 import { formatMoney, formatPercent, type Minor } from "./money";
 import { monthForecast, monthlyTotals, scheduledBetween } from "./analytics";
 import { monthlyEquivalent } from "./recurrence";
+import { tr } from "../i18n/i18n";
 
 export interface Insight {
   id: string;
@@ -66,16 +67,16 @@ export function homeInsight(data: AppData, entries: LedgerEntry[], today: DayKey
     .sort((a, b) => b.progress - a.progress);
   const b = budgets[0];
   if (b) {
-    const name = b.categoryId ? cats.get(b.categoryId)?.name ?? "Категория" : "Общий бюджет";
+    const name = b.categoryId ? cats.get(b.categoryId)?.name ?? tr("Категория") : tr("Общий бюджет");
     if (b.level === "over") {
-      return { id: `budget-${b.id}`, icon: "TriangleAlert", tone: "negative", text: `${name}: бюджет превышен на ${formatMoney(-b.remaining)}`, action: { tab: "more", route: "budgets" } };
+      return { id: `budget-${b.id}`, icon: "TriangleAlert", tone: "negative", text: tr("{0}: бюджет превышен на {1}", name, formatMoney(-b.remaining)), action: { tab: "more", route: "budgets" } };
     }
     if (daysLeft >= 2) {
       return {
         id: `budget-${b.id}`,
         icon: "Gauge",
         tone: "warning",
-        text: `${name}: осталось ${formatMoney(b.remaining)} на ${pluralN(daysLeft, ["день", "дня", "дней"])}`,
+        text: tr("{0}: осталось {1} на {2}", name, formatMoney(b.remaining), pluralN(daysLeft, ["день", "дня", "дней"])),
         action: { tab: "more", route: "budgets" }
       };
     }
@@ -86,12 +87,12 @@ export function homeInsight(data: AppData, entries: LedgerEntry[], today: DayKey
     if (d.direction !== "i_owe") continue;
     const info = debtInfo(d, data.transactions, today);
     if (info.status === "closed" || info.daysToDue === null || info.daysToDue > 3) continue;
-    const when = info.daysToDue < 0 ? `${pluralN(-info.daysToDue, ["день", "дня", "дней"])} как истёк` : formatRelative(d.dueDate!);
+    const when = info.daysToDue < 0 ? tr("{0} как истёк", pluralN(-info.daysToDue, ["день", "дня", "дней"])) : formatRelative(d.dueDate!);
     return {
       id: `debt-${d.id}`,
       icon: "HandCoins",
       tone: info.daysToDue < 0 ? "negative" : "warning",
-      text: `${capitalizeFirst(when)} срок возврата долга: ${d.counterparty}, ${formatMoney(info.remaining, { currency: d.currency })}`,
+      text: tr("{0} срок возврата долга: {1}, {2}", capitalizeFirst(when), d.counterparty, formatMoney(info.remaining, { currency: d.currency })),
       action: { tab: "more", route: "debt", params: { id: d.id } }
     };
   }
@@ -101,7 +102,7 @@ export function homeInsight(data: AppData, entries: LedgerEntry[], today: DayKey
   if (soon.length) {
     const first = soon[0];
     const when = formatRelative(first.date);
-    const more = soon.length > 1 ? ` и ещё ${soon.length - 1}` : "";
+    const more = soon.length > 1 ? tr(" и ещё {0}", soon.length - 1) : "";
     return { id: `soon-${first.date}-${first.title}`, icon: "CalendarClock", tone: "neutral", text: `${capitalizeFirst(when)} — ${first.title}, ${formatMoney(first.amount)}${more}`, action: { tab: "more", route: "plans" } };
   }
 
@@ -111,10 +112,10 @@ export function homeInsight(data: AppData, entries: LedgerEntry[], today: DayKey
   if (dom >= 7 && fc.lastMonthToDate > 0) {
     const delta = fc.spent / fc.lastMonthToDate - 1;
     if (delta <= -0.1) {
-      return { id: "pace", icon: "TrendingDown", tone: "positive", text: `Расходы на ${formatPercent(-delta)} ниже, чем к этому дню прошлого месяца`, action: { tab: "analytics" } };
+      return { id: "pace", icon: "TrendingDown", tone: "positive", text: tr("Расходы на {0} ниже, чем к этому дню прошлого месяца", formatPercent(-delta)), action: { tab: "analytics" } };
     }
     if (delta >= 0.15) {
-      return { id: "pace", icon: "TrendingUp", tone: "warning", text: `Расходы на ${formatPercent(delta)} выше, чем к этому дню прошлого месяца`, action: { tab: "analytics" } };
+      return { id: "pace", icon: "TrendingUp", tone: "warning", text: tr("Расходы на {0} выше, чем к этому дню прошлого месяца", formatPercent(delta)), action: { tab: "analytics" } };
     }
   }
   return null;
@@ -145,7 +146,7 @@ export function analyticsTips(data: AppData, entries: LedgerEntry[], balances: R
       id: "cushion",
       icon: "LifeBuoy",
       tone: m >= 6 ? "positive" : m >= 3 ? "neutral" : "warning",
-      text: `Накоплений хватит на ${String(months1).replace(".", ",")} ${plural(Math.floor(months1), ["месяц", "месяца", "месяцев"])} обычных расходов${m < 3 ? ". Рекомендуемый минимум — 3" : m < 6 ? ". Хорошая цель — 6 месяцев" : ""}`,
+      text: tr("Накоплений хватит на {0} {1} обычных расходов{2}", String(months1).replace(".", ","), plural(Math.floor(months1), ["месяц", "месяца", "месяцев"]), m < 3 ? ". Рекомендуемый минимум — 3" : m < 6 ? ". Хорошая цель — 6 месяцев" : ""),
       action: { tab: "wallets" }
     });
   }
@@ -159,8 +160,8 @@ export function analyticsTips(data: AppData, entries: LedgerEntry[], balances: R
       tone: rate >= 0.2 ? "positive" : rate >= 0 ? "neutral" : "negative",
       text:
         rate >= 0
-          ? `В среднем вы сохраняете ${formatPercent(rate)} дохода${rate < 0.1 ? " — меньше рекомендуемых 10–20%" : ""}`
-          : `Последние месяцы расходы превышают доходы на ${formatPercent(-rate)}`
+          ? tr("В среднем вы сохраняете {0} дохода{1}", formatPercent(rate), rate < 0.1 ? " — меньше рекомендуемых 10–20%" : "")
+          : tr("Последние месяцы расходы превышают доходы на {0}", formatPercent(-rate))
     });
   }
 
@@ -172,7 +173,7 @@ export function analyticsTips(data: AppData, entries: LedgerEntry[], balances: R
       id: "subs",
       icon: "Repeat",
       tone: "warning",
-      text: `${unused.length === 1 ? `«${unused[0].title}»` : `${unused.length} подписки`} почти не используются — это ${formatMoney(yearly)} в год`,
+      text: tr("{0} почти не используются — это {1} в год", unused.length === 1 ? `«${unused[0].title}»` : `${unused.length} подписки`, formatMoney(yearly)),
       action: { tab: "more", route: "subscriptions" }
     });
   }

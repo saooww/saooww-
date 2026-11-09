@@ -12,7 +12,9 @@ import { Screen } from "../../nav/Screen";
 import { Money } from "../../ui/Money";
 import { Button, Chip, EmptyState, IconButton } from "../../ui/primitives";
 import { TxRow, usePresentCtx } from "./TxRow";
+import { MoneySwitch } from "../../nav/MoneySwitch";
 import { useToday } from "../../store/hooks";
+import { tr } from "../../i18n/i18n";
 
 const PAGE = 80;
 
@@ -33,9 +35,9 @@ export function periodBounds(f: TxFilter, today: string): { from?: string; to?: 
   }
 }
 
-const PERIOD_LABEL: Record<TxFilter["period"], string> = { all: "Всё время", month: "Этот месяц", prev: "Прошлый месяц", "30d": "30 дней", custom: "Период" };
-const KIND_LABEL: Record<TxFilter["kind"], string> = { all: "Все типы", expense: "Расходы", income: "Доходы", transfer: "Переводы" };
-const SORT_LABEL: Record<TxFilter["sort"], string> = { "date-desc": "Сначала новые", "date-asc": "Сначала старые", "amount-desc": "Сначала крупные", "amount-asc": "Сначала мелкие" };
+const PERIOD_LABEL: Record<TxFilter["period"], string> = { all: tr("Всё время"), month: tr("Этот месяц"), prev: tr("Прошлый месяц"), "30d": tr("30 дней"), custom: tr("Период") };
+const KIND_LABEL: Record<TxFilter["kind"], string> = { all: tr("Все типы"), expense: tr("Расходы"), income: tr("Доходы"), transfer: tr("Переводы") };
+const SORT_LABEL: Record<TxFilter["sort"], string> = { "date-desc": tr("Сначала новые"), "date-asc": tr("Сначала старые"), "amount-desc": tr("Сначала крупные"), "amount-asc": tr("Сначала мелкие") };
 
 export function TransactionsScreen() {
   const filter = useUI((s) => s.txFilter);
@@ -125,18 +127,18 @@ export function TransactionsScreen() {
   const cat = filter.categoryId ? categories.find((c) => c.id === filter.categoryId) : undefined;
   const wal = filter.walletId ? wallets.find((w) => w.id === filter.walletId) : undefined;
 
-  const remove = (t: Transaction) => undoable("Операция удалена", () => useData.getState().deleteTransaction(t.id));
+  const remove = (t: Transaction) => undoable(tr("Операция удалена"), () => useData.getState().deleteTransaction(t.id));
 
   const pickPeriod = () =>
     nav.sheet("picker", {
-      title: "Период",
+      title: tr("Период"),
       value: filter.period,
       options: [
-        { value: "all", label: "Всё время" },
-        { value: "month", label: "Этот месяц" },
-        { value: "prev", label: "Прошлый месяц" },
-        { value: "30d", label: "Последние 30 дней" },
-        { value: "custom", label: "Выбрать даты…", sub: filter.period === "custom" && filter.from && filter.to ? `${formatDate(filter.from)} – ${formatDate(filter.to)}` : undefined }
+        { value: "all", label: tr("Всё время") },
+        { value: "month", label: tr("Этот месяц") },
+        { value: "prev", label: tr("Прошлый месяц") },
+        { value: "30d", label: tr("Последние 30 дней") },
+        { value: "custom", label: tr("Выбрать даты…"), sub: filter.period === "custom" && filter.from && filter.to ? `${formatDate(filter.from)} – ${formatDate(filter.to)}` : undefined }
       ],
       onSelect: (v: string) => {
         if (v === "custom") nav.sheet("range", { from: filter.from ?? startOfMonth(today), to: filter.to ?? today, onApply: (from: string, to: string) => setFilter({ period: "custom", from, to }) });
@@ -146,10 +148,11 @@ export function TransactionsScreen() {
 
   return (
     <Screen
-      title="Операции"
+      title={tr("Деньги")}
       large
+      subheader={<MoneySwitch current="transactions" />}
       scrollRef={scrollRef}
-      actions={<IconButton icon={Plus} label="Новая операция" onClick={() => nav.sheet("composer", { kind: "expense" })} />}
+      actions={<IconButton icon={Plus} label={tr("Новая операция")} onClick={() => nav.sheet("composer", { kind: "expense" })} />}
     >
       <div className="px-4">
         <label className="flex h-10 items-center gap-2 rounded-sm tile px-3">
@@ -157,12 +160,12 @@ export function TransactionsScreen() {
           <input
             value={filter.query}
             onChange={(e) => setFilter({ query: e.target.value })}
-            placeholder="Поиск по названию, сумме, тегу"
+            placeholder={tr("Поиск по названию, сумме, тегу")}
             enterKeyHint="search"
             className="h-full min-w-0 flex-1 bg-transparent text-body outline-none placeholder:text-ink-3"
           />
           {filter.query && (
-            <button type="button" aria-label="Очистить" onClick={() => setFilter({ query: "" })} className="grid h-6 w-6 place-items-center rounded-full bg-ink-4 text-ink-inverse">
+            <button type="button" aria-label={tr("Очистить")} onClick={() => setFilter({ query: "" })} className="grid h-6 w-6 place-items-center rounded-full bg-ink-4 text-ink-inverse">
               <X size={13} strokeWidth={3} />
             </button>
           )}
@@ -178,7 +181,7 @@ export function TransactionsScreen() {
           selected={filter.kind !== "all"}
           onClick={() =>
             nav.sheet("picker", {
-              title: "Тип операций",
+              title: tr("Тип операций"),
               value: filter.kind,
               options: (["all", "expense", "income", "transfer"] as const).map((k) => ({ value: k, label: KIND_LABEL[k] })),
               onSelect: (v: string) => setFilter({ kind: v as TxFilter["kind"] })
@@ -192,38 +195,38 @@ export function TransactionsScreen() {
           selected={!!cat}
           onClick={() =>
             nav.sheet("picker", {
-              title: "Категория",
+              title: tr("Категория"),
               value: filter.categoryId ?? "",
               options: [
-                { value: "", label: "Все категории" },
-                ...categories.filter((c) => !c.archived || c.id === filter.categoryId).map((c) => ({ value: c.id, label: c.name, iconName: c.icon, sub: c.kind === "income" ? "Доход" : undefined }))
+                { value: "", label: tr("Все категории") },
+                ...categories.filter((c) => !c.archived || c.id === filter.categoryId).map((c) => ({ value: c.id, label: c.name, iconName: c.icon, sub: c.kind === "income" ? tr("Доход") : undefined }))
               ],
               onSelect: (v: string) => setFilter({ categoryId: v || undefined })
             })
           }
         >
-          {cat?.name ?? "Категория"}
+          {cat?.name ?? tr("Категория")}
         </Chip>
         <Chip
           icon={WalletIcon}
           selected={!!wal}
           onClick={() =>
             nav.sheet("picker", {
-              title: "Кошелёк",
+              title: tr("Кошелёк"),
               value: filter.walletId ?? "",
-              options: [{ value: "", label: "Все кошельки" }, ...wallets.map((w) => ({ value: w.id, label: w.name, sub: w.archived ? "В архиве" : undefined }))],
+              options: [{ value: "", label: tr("Все кошельки") }, ...wallets.map((w) => ({ value: w.id, label: w.name, sub: w.archived ? tr("В архиве") : undefined }))],
               onSelect: (v: string) => setFilter({ walletId: v || undefined })
             })
           }
         >
-          {wal?.name ?? "Кошелёк"}
+          {wal?.name ?? tr("Кошелёк")}
         </Chip>
         <Chip
           icon={ArrowUpDown}
           selected={filter.sort !== "date-desc"}
           onClick={() =>
             nav.sheet("picker", {
-              title: "Сортировка",
+              title: tr("Сортировка"),
               value: filter.sort,
               options: (Object.keys(SORT_LABEL) as TxFilter["sort"][]).map((k) => ({ value: k, label: SORT_LABEL[k] })),
               onSelect: (v: string) => setFilter({ sort: v as TxFilter["sort"] })
@@ -247,20 +250,18 @@ export function TransactionsScreen() {
       {transactions.length === 0 ? (
         <EmptyState
           icon={ReceiptText}
-          title="Пока нет операций"
-          text="Записывайте доходы и расходы — здесь появится вся история с поиском и фильтрами."
-          action={<Button size="md" icon={Plus} onClick={() => nav.sheet("composer", { kind: "expense" })}>Добавить операцию</Button>}
+          title={tr("Пока нет операций")}
+          text={tr("Записывайте доходы и расходы — здесь появится вся история с поиском и фильтрами.")}
+          action={<Button size="md" icon={Plus} onClick={() => nav.sheet("composer", { kind: "expense" })}>{tr("Добавить операцию")}</Button>}
         />
       ) : filtered.length === 0 ? (
         <EmptyState
           icon={SearchX}
-          title="Ничего не найдено"
-          text="Попробуйте изменить запрос или фильтры."
+          title={tr("Ничего не найдено")}
+          text={tr("Попробуйте изменить запрос или фильтры.")}
           action={
             active || filter.query ? (
-              <Button size="md" variant="secondary" onClick={() => setFilter(DEFAULT_FILTER, true)}>
-                Сбросить фильтры
-              </Button>
+              <Button size="md" variant="secondary" onClick={() => setFilter(DEFAULT_FILTER, true)}>{tr("Сбросить фильтры")}</Button>
             ) : undefined
           }
         />
@@ -282,7 +283,7 @@ export function TransactionsScreen() {
             </section>
           ))}
           <div ref={sentinel} className="h-px" />
-          {limit < filtered.length && <div className="py-6 text-center text-footnote text-ink-3">Загружаем…</div>}
+          {limit < filtered.length && <div className="py-6 text-center text-footnote text-ink-3">{tr("Загружаем…")}</div>}
         </div>
       )}
     </Screen>

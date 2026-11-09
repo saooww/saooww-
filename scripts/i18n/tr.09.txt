@@ -1,0 +1,135 @@
+%50 — zorunlu giderler: ev, telefon, market, ulaşım.\n%30 — yaşam: kafeler, eğlence, alışveriş.\n%20 — gelecek: acil durum fonu, tatil, araba.\n\nParayı ay sonunda değil, maaş gününde ayırıyorum.
+Benzinlik
+Avans
+Lizbon uçak biletleri
+Tokyo uçak biletleri
+Alex
+Tahliller
+Andrey
+Andrey bir kısmını ödedi
+Eczane
+Berber
+İş yemeği
+Konser biletleri
+Biletler — iki kişi için yaklaşık 96 000 ₽.\nKonaklama — 12 gece, ~180 000 ₽.\nJR Pass — 45 000 ₽.\nYemek ve ulaşım — 90 000 ₽.\nYedek — 40 000 ₽.
+Bowling
+Erken almak daha ucuz
+Yatırım hesabı
+Kağıt havlu
+Yazdan beri spor salonuna gitmiyorum — iptal et ya da dondur
+Döviz hesabı
+Olga'ya borcu öde
+Kitapları kütüphaneye iade et
+İlkbaharda, iki kişi, 12 gün
+Vitaminler
+Organik market
+Kyoto'da otel seç
+Tesisatçı çağır
+Nereden tasarruf edilebilir
+Cumartesi doğum günü. Fikirler: kulaklık, kitapçı hediye kartı
+Temettüler
+Açılış sayfası tasarımı
+Ev için
+Dmitri
+Dmitri ödedi
+Ev interneti
+Market teslimatı
+Kargoyu al
+Kahvaltı
+Vergi iadesi için belge iste
+Oğlumu yüzmeye yazdır
+Dişçiden randevu al
+Yurt dışı müşteri
+10 dakika egzersiz
+Yatırım hesabı
+Gelirimi nasıl bölüyorum
+Çeyreklik prim
+Kira ve faturalar
+Aylık nakit iade
+Sinema
+Kitaplar
+Danışmanlık
+Konser
+Kedi maması
+Kahve
+Al-götür kahve — ayda ~6 000 ₽. Termos bardak al.\nSabah taksi yerine metro.\nSpor salonunu kullanmıyorum — dondur.
+Spor ayakkabı
+Koridora ampul al
+Anna'ya hediye al
+Ceket
+Diş tedavisi ve spor — yılda 150 000 ₽'ye kadar gider.\nGerekli: ödeme belgesi, klinik ruhsatı, sözleşme.
+Pazar yeri
+Mobil hat
+Süt ve yumurta
+Müze
+Araba tamiri için
+Birikim hesabı
+Emlak vergisi
+Vergi iadesi
+Yeni araba
+Öğle yemeği
+Bulut depolama
+Özgeçmişi güncelle
+Meyve ve sebze
+Haftalık sebze
+Olga
+Dizi-film platformu
+Online kurs
+Faturaları öde
+Ana kart
+Otel, 4 gece
+Acil durum fonu için
+Tatil için 25 000 ₽ ayır
+Japonya tatili
+Otopark
+Fırın
+Sayaç değerlerini bildir
+Süpermarket
+Gelecek ayın bütçesini gözden geçir
+Arkadaşa hediye
+Anneme hediye
+Vergi beyannamesini ver
+Müşteri için sunum hazırla
+Mutfak musluğu damlıyor
+Japonya gezisi
+Annemi ara
+Hafta sonu alışverişi
+Metro kartı yükleme
+Yatırım hesabına para yatır
+Python kursu izle
+Abonelikleri kontrol et
+Pasaportun süresini kontrol et
+Bir iş arkadaşıyla prova yap
+Bisiklet satışı
+Stüdyo için proje
+Birikim hesabı faizi
+E-postaları düzenle
+Tadilat
+Pazar
+Raporu erken teslim ettim — sabah tek bir ana iş seçip dağılmamak işe yaradı.\n\nYarın önemli: müşteri sunumu ve dişçi randevusu.
+Aylık raporu teslim et
+10 slayt hazırla
+Nakit çekme
+Çeyrek rakamlarını topla
+Ekip görüşmesi
+Günlük rota planla
+Araç sigortası
+Suşi
+Araç bakımı
+Ofise taksi
+Eve taksi
+Tiyatro
+Ev eşyaları
+Akşam yemeği
+Spor salonu
+Temizlik malzemeleri
+Çiçekler
+Elektronik
+Müzik aboneliği
+Japonya: bütçe
+bütçe
+ev
++{0}
+vergiler
+tatil
+tasarruf

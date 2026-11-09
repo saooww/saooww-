@@ -1,0 +1,150 @@
+Borrow
+On
+{0} will be deleted together with the list. To keep them, archive the list instead.
+{0} in the inbox
+At what time
+Debt repayment
+Debt repayment: {0}
+Returned
+Resume
+Sign in with Face ID
+Waves
+Restore
+Restore from a copied backup
+Restore this copy?
+Here's how the week went
+Time
+You can set a time once a day is chosen.
+Sun
+All
+All · {0}
+All data erased
+All tasks
+All of today's tasks are done
+All cards, cash and savings in one place
+All categories
+All wallets
+All wallets in
+All operations
+All matching operations
+All operations, wallets, goals and notes will be deleted. Categories and settings stay. We'll make a backup first.
+All expenses
+All expenses this month
+All regular payments
+All linked records will be deleted and wallet balances recalculated.
+All accounts
+All types
+All goals
+Always
+Total
+Remembered something? Write it in one line. «Call mom tomorrow at 18:00»: the date and time are understood on their own.
+Paste from text
+Paste a copy
+Paste here the text you copied earlier with «Copy as text».
+All · {0}
+Everything within limits
+All time
+All the important things are done
+Everything is on track
+All to tomorrow
+All to today
+All sorted
+All done
+All done. You can breathe out
+Everything already works — try it. When you're ready, start from a clean slate.
+Everything jotted down on the go. Set a day — or leave it for later if it isn't urgent.
+Everything you planned is done.
+Tue
+Inbox
+Inbox is empty — your head is clear
+Yesterday
+You owe
+You owe — {0}
+You saved {0}. Keep it up.
+Pick up to three tasks. If those are all you manage, the day was worth it.
+Choose a category
+Choose a category for each part of the receipt
+Choose the destination wallet
+Choose the main category on the main screen
+Choose
+Choose dates…
+Choose card colour
+Lent
+Select the text and copy it — for example, into a note or a chat with yourself.
+Bar height is the absolute difference between income and expenses for the interval
+Weekends
+Where the money is kept
+Home
+The main goal and its progress
+Main
+Main things of the day
+Main things today
+Home
+No more than three main tasks — that way you can actually do them
+Year
+Your head is for ideas, not for storage
+Done
+Done. Again — {0}
+Graphite
+Georgian lari
+Next
+Data
+Data will return to how it was on {0}.
+Data loaded
+Data cleared
+Data copied as text — you can paste it in «Settings → Data».
+Data stays on your device, unlock with a code or Face ID
+Data is stored on this device only.
+Date
+Date and time
+Lend
+No tasks for today yet
+No tasks
+Tasks
+Tasks {0} of {1}
+Tasks for today
+Tasks dated after today will appear here.
+Tasks, lists and notes: a plan for the day so nothing is forgotten
+Task
+Task in «
+Task saved
+Task for {0} {1}
+Task for today
+Task deleted
+Demo data loaded
+Demo data
+Day
+Day closed. See you tomorrow
+Money
+Money returned to the wallet
+Money and tasks for {0}
+Money and tasks — calm and under control.
+Money passed through the wallet
+Money today
+Decimal separator
+Trend over the period
+Savings trend
+UAE dirham
+Each gets its own list. Later you can add projects: «Renovation», «Moving».
+For amounts in another currency, set a rate in settings — otherwise they won't count in the total balance.
+Diary
+Days without spending
+Until
+{0} days to month end
+Up to three tasks without which the day doesn't count
+Add
+Add {0}
+Add to Calendar
+Add to favourites
+Add currency
+Add income
+Add wallet
+Add operation
+Add item
+Add expense
+Add tag
+Add receipt photo
+Add part
+Add checklist
+Added
+Added to favourites

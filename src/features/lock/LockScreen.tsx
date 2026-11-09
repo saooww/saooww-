@@ -8,6 +8,7 @@ import { LogoMark } from "../../ui/Brand";
 import { ease } from "../../ui/motion";
 import { biometricAvailable, hashPin, verifyBiometric } from "./lock";
 import { PinPad } from "./PinPad";
+import { tr } from "../../i18n/i18n";
 
 const MAX_TRIES = 5;
 const COOLDOWN_S = 30;
@@ -99,18 +100,18 @@ function LockScreen() {
       exit={{ opacity: 0, scale: 1.04, transition: { duration: 0.32, ease: ease.out } }}
       role="dialog"
       aria-modal="true"
-      aria-label="Приложение заблокировано"
+      aria-label={tr("Приложение заблокировано")}
     >
       <LogoMark size={46} />
       <div className="mt-10">
         <PinPad
-          title={cooling ? "Слишком много попыток" : "Введите код"}
-          subtitle={cooling ? `Попробуйте через ${left} с` : tries > 0 ? `Неверный код · осталось попыток: ${MAX_TRIES - tries}` : undefined}
+          title={cooling ? tr("Слишком много попыток") : tr("Введите код")}
+          subtitle={cooling ? tr("Попробуйте через {0} с", left) : tries > 0 ? tr("Неверный код · осталось попыток: {0}", MAX_TRIES - tries) : undefined}
           disabled={cooling}
           onComplete={check}
           extra={
             bio ? (
-              <button type="button" aria-label="Войти с Face ID" onClick={tryBiometric} className="grid h-[76px] w-[76px] place-items-center rounded-full text-ink active:opacity-60">
+              <button type="button" aria-label={tr("Войти с Face ID")} onClick={tryBiometric} className="grid h-[76px] w-[76px] place-items-center rounded-full text-ink active:opacity-60">
                 <ScanFace size={32} strokeWidth={1.5} />
               </button>
             ) : null
@@ -119,21 +120,13 @@ function LockScreen() {
       </div>
       <div className="mt-auto px-8 text-center">
         {!forgot ? (
-          <button type="button" onClick={() => setForgot(true)} className="h-11 text-callout text-ink-2 active:opacity-60">
-            Забыли код?
-          </button>
+          <button type="button" onClick={() => setForgot(true)} className="h-11 text-callout text-ink-2 active:opacity-60">{tr("Забыли код?")}</button>
         ) : (
           <div className="panel rounded-lg p-4">
-            <p className="text-footnote text-ink-2">
-              Код хранится только на этом устройстве, восстановить его нельзя. Можно стереть данные приложения и начать заново — а затем загрузить копию, если вы её сохраняли.
-            </p>
+            <p className="text-footnote text-ink-2">{tr("Код хранится только на этом устройстве, восстановить его нельзя. Можно стереть данные приложения и начать заново — а затем загрузить копию, если вы её сохраняли.")}</p>
             <div className="mt-3 flex gap-2">
-              <button type="button" onClick={() => setForgot(false)} className="tile h-11 flex-1 rounded-[14px] text-callout font-semibold text-ink">
-                Отмена
-              </button>
-              <button type="button" onClick={reset} className="h-11 flex-1 rounded-[14px] bg-negative-soft text-callout font-semibold text-negative">
-                Стереть данные
-              </button>
+              <button type="button" onClick={() => setForgot(false)} className="tile h-11 flex-1 rounded-[14px] text-callout font-semibold text-ink">{tr("Отмена")}</button>
+              <button type="button" onClick={reset} className="h-11 flex-1 rounded-[14px] bg-negative-soft text-callout font-semibold text-negative">{tr("Стереть данные")}</button>
             </div>
           </div>
         )}

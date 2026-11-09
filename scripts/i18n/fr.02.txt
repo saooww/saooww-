@@ -1,0 +1,150 @@
+Ajouté au plan
+Ajoutez une carte, des espèces ou un compte d'épargne.
+Ajoutez quelques revenus et dépenses — les graphiques se construiront tout seuls.
+Ajoutez vos soldes — je calculerai un montant par jour
+Ajoutez abonnements, téléphone, crédit ou salaire — ils s'enregistreront seuls et entreront dans les prévisions.
+Bonjour
+Bonne nuit
+Bonsoir
+Bon après-midi
+Dette
+Dette accordée : {0}
+Dette soldée
+Dette enregistrée
+Dette reçue : {0}
+Dette enregistrée
+Dette supprimée
+Dettes
+Aucune dette
+Dollar américain
+Maison
+Logement et charges
+Rev.
+Revenu
+Revenu ajouté
+Revenu enregistré
+Revenus
+Revenus de la période
+Revenus et dépenses par mois
+Les revenus et dépenses de ce portefeuille seront supprimés. Les virements vers d'autres portefeuilles resteront comme ajustements pour que leurs soldes ne changent pas. Pour garder l'historique, archivez le portefeuille.
+Autre
+Euro
+Copie quotidienne
+Si la catégorie a des opérations, elle sera masquée des choix et l'historique conservé.
+Si l'enregistrement du fichier échoue
+Si vous supprimez l'app ou videz Safari, les données disparaissent avec. Une copie dans Fichiers (iCloud Drive) ou dans vos e-mails est une assurance fiable. L'app vous le rappellera une fois par semaine.
+A une note
+A une échéance
+A une photo de ticket
+Jamais encore
+Aussi aujourd'hui
+En attente d'exécution
+Fait cette semaine
+Code oublié ?
+Clôturer la journée
+Demain
+Regardez vos budgets — on y voit où se resserrer.
+Titre
+Chargement…
+Charger
+Charger les données de démo
+Charger les données de démo ?
+Fixez une limite mensuelle pour une catégorie — par exemple « Courses — 30 000 ». Nous vous préviendrons quand elle approche.
+Épingler
+Soldée
+Soldée {0}
+Soldées · {0}
+Pas encore de dettes soldées
+Fermer
+Solder sans paiement
+Remplacer
+Remplacer les données {0} ?
+Note
+Note supprimée
+Note : détails, liens, adresse
+Notes
+Occupé
+Enregistré {0}
+Enregistrer
+Enregistrer le remboursement
+Noter une tâche
+Enregistrer une dette
+Enregistrer un paiement
+Enregistrer maintenant
+Notez revenus et dépenses — tout l'historique avec recherche et filtres apparaîtra ici.
+Notez tout de suite
+Notez à qui vous avez prêté et à qui vous avez emprunté — l'app vous rappellera les échéances.
+Notez pour ne pas garder en tête
+Enregistrer automatiquement
+Sera enregistré comme
+Sera enregistré comme opération et modifiera le solde
+Planifié
+Planifier
+Lancement
+Salaire
+Pourquoi cette liste, quel résultat est attendu
+Crédité
+Créditer
+Créditer le portefeuille
+Protection
+Protection contre l'effacement automatique
+L'historique apparaîtra ici
+Rien ici pour l'instant
+Vos opérations apparaîtront ici. Commencez avec les boutons ci-dessus.
+C'est vide ici
+Santé
+Premiers pas
+Icône
+Or
+Idées, listes de courses, arrangements, plans de voyage. Les éléments de check-list deviennent des tâches en un geste.
+Depuis une sauvegarde Ardessa ou Kapital
+Du thème
+De l'objectif « {0} »
+Favoris
+Évolution du patrimoine
+Modifications enregistrées
+Modifier
+Modifier l'opération
+Modifier la liste
+Modifier l'objectif
+Élégants
+Importer un fichier
+Nom
+Nom (facultatif)
+Nom, apparence, données
+Investissements
+Indigo
+Intervalle
+Historique
+Historique du solde
+Historique des paiements
+Solde
+Solde : revenus moins dépenses
+Le bilan de {0} est prêt
+Bilan du jour
+Bilan du mois
+Bilan du mois, sauvegarde, conseils
+Bilan de la semaine
+Le bilan de la semaine est prêt
+Bilan :
+Bilan : {0}
+Total
+Cherchez par nom, commentaire, tag, personne ou montant
+À cette semaine
+Chaque ligne deviendra une tâche distincte.
+Chaque semaine
+Tous les {0} {1}
+Chaque année
+Chaque jour
+Chaque mois
+Tenge kazakh
+Comme la dernière fois :
+Comment gérer ses tâches
+Comment vous appeler
+Comment vous appeler et dans quelle devise compter.
+À quelle fréquence vous l'utilisez
+Le calendrier du téléphone vous rappellera la tâche même si l'app est fermée. 
+Calendrier des dépenses
+Patrimoine
+Patrimoine sur 90 jours
+Carte

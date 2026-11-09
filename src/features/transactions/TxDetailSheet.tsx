@@ -13,6 +13,7 @@ import { Group, IconChip, Row } from "../../ui/primitives";
 import { Sheet, useSheet } from "../../ui/Sheet";
 import { usePresentCtx } from "./TxRow";
 import { PhotoStrip } from "./Photos";
+import { tr } from "../../i18n/i18n";
 
 export function TxDetailSheet({ id }: { id: ID }) {
   const { close } = useSheet();
@@ -26,8 +27,8 @@ export function TxDetailSheet({ id }: { id: ID }) {
 
   if (!tx) {
     return (
-      <Sheet ariaLabel="Операция">
-        <div className="px-6 py-10 text-center text-callout text-ink-2">Операция удалена</div>
+      <Sheet ariaLabel={tr("Операция")}>
+        <div className="px-6 py-10 text-center text-callout text-ink-2">{tr("Операция удалена")}</div>
       </Sheet>
     );
   }
@@ -46,7 +47,7 @@ export function TxDetailSheet({ id }: { id: ID }) {
 
   const repeatNow = () => {
     haptic("success");
-    undoable("Операция повторена", () =>
+    undoable(tr("Операция повторена"), () =>
       useData.getState().addTransaction({ kind: tx.kind, amount: tx.amount, walletId: tx.walletId, toWalletId: tx.toWalletId, toAmount: tx.toAmount, categoryId: tx.categoryId, note: tx.note, tags: tx.tags, date: nowISO() })
     );
     close();
@@ -54,16 +55,16 @@ export function TxDetailSheet({ id }: { id: ID }) {
 
   const remove = () =>
     confirmDelete({
-      title: "Удалить операцию?",
-      message: tx.recurringId ? "Регулярный платёж продолжит работать — удалится только эта запись." : "Балансы и аналитика пересчитаются автоматически.",
+      title: tr("Удалить операцию?"),
+      message: tx.recurringId ? tr("Регулярный платёж продолжит работать — удалится только эта запись.") : tr("Балансы и аналитика пересчитаются автоматически."),
       onConfirm: () => {
-        undoable("Операция удалена", () => useData.getState().deleteTransaction(tx.id));
+        undoable(tr("Операция удалена"), () => useData.getState().deleteTransaction(tx.id));
         close();
       }
     });
 
   return (
-    <Sheet ariaLabel="Операция">
+    <Sheet ariaLabel={tr("Операция")}>
       <div className="flex flex-col items-center px-6 pb-6 pt-2 text-center">
         <IconChip name={v.icon} color={v.color} size={60} />
         <div className="mt-3 text-callout text-ink-2">{KIND_LABEL[tx.kind]}</div>
@@ -80,21 +81,21 @@ export function TxDetailSheet({ id }: { id: ID }) {
 
       <div className="flex flex-col gap-4">
         <Group>
-          {isFlow && <Row title="Категория" value={cat?.name ?? "Без категории"} />}
+          {isFlow && <Row title={tr("Категория")} value={cat?.name ?? tr("Без категории")} />}
           {tx.kind === "transfer" ? (
             <>
-              <Row title="Откуда" value={w?.name ?? "—"} />
-              <Row title="Куда" value={to?.name ?? "—"} />
-              {tx.toAmount !== undefined && to && <Row title="Зачислено" value={<Money value={tx.toAmount} currency={to.currency} />} />}
+              <Row title={tr("Откуда")} value={w?.name ?? "—"} />
+              <Row title={tr("Куда")} value={to?.name ?? "—"} />
+              {tx.toAmount !== undefined && to && <Row title={tr("Зачислено")} value={<Money value={tx.toAmount} currency={to.currency} />} />}
             </>
           ) : (
-            <Row title="Кошелёк" value={w?.name ?? "Без движения по счёту"} />
+            <Row title={tr("Кошелёк")} value={w?.name ?? tr("Без движения по счёту")} />
           )}
-          <Row title="Дата" value={`${formatDayHeading(dayOf(tx.date))}${timeOf(tx.date) ? `, ${timeOf(tx.date)}` : ""}`} />
-          {tx.tags.length > 0 && <Row title="Теги" value={tx.tags.map((t) => `#${t}`).join(" ")} />}
+          <Row title={tr("Дата")} value={`${formatDayHeading(dayOf(tx.date))}${timeOf(tx.date) ? `, ${timeOf(tx.date)}` : ""}`} />
+          {tx.tags.length > 0 && <Row title={tr("Теги")} value={tx.tags.map((t) => `#${t}`).join(" ")} />}
           {recurring && (
             <Row
-              title="Повтор"
+              title={tr("Повтор")}
               value={freqLabel(recurring.freq, recurring.interval)}
               chevron
               onClick={() => {
@@ -103,60 +104,60 @@ export function TxDetailSheet({ id }: { id: ID }) {
               }}
             />
           )}
-          {plan && <Row title="По плану" value={plan.title} />}
+          {plan && <Row title={tr("По плану")} value={plan.title} />}
         </Group>
 
         {tx.photos && tx.photos.length > 0 && (
-          <Group header="Фото чека">
+          <Group header={tr("Фото чека")}>
             <PhotoStrip ids={tx.photos} />
           </Group>
         )}
 
         {parts.length > 1 && (
-          <Group header="Весь чек" footer={`Чек разделён на ${pluralN(parts.length, ["часть", "части", "частей"])} — каждая учитывается в своей категории и бюджете.`}>
+          <Group header={tr("Весь чек")} footer={tr("Чек разделён на {0} — каждая учитывается в своей категории и бюджете.", pluralN(parts.length, ["часть", "части", "частей"]))}>
             {parts.map((p) => {
               const c = p.categoryId ? ctx.categories.get(p.categoryId) : undefined;
               return (
                 <Row
                   key={p.id}
                   leading={<IconChip name={c?.icon ?? "CircleDashed"} color={c?.color} size={32} />}
-                  title={c?.name ?? "Без категории"}
+                  title={c?.name ?? tr("Без категории")}
                   value={<Money value={p.amount} currency={w?.currency} className={p.id === tx.id ? "font-semibold text-ink" : undefined} />}
                   onClick={p.id === tx.id ? undefined : () => nav.sheet("tx", { id: p.id })}
                 />
               );
             })}
-            <Row title="Итого" value={<Money value={parts.reduce((s, p) => s + p.amount, 0)} currency={w?.currency} className="font-semibold text-ink" />} />
+            <Row title={tr("Итого")} value={<Money value={parts.reduce((s, p) => s + p.amount, 0)} currency={w?.currency} className="font-semibold text-ink" />} />
           </Group>
         )}
 
         <Group>
-          {(isFlow || tx.kind === "transfer" || tx.kind === "adjustment") && <Row icon={Pencil} title="Изменить" onClick={edit} />}
-          {(isFlow || tx.kind === "transfer") && <Row icon={Copy} title="Повторить сегодня" onClick={repeatNow} />}
+          {(isFlow || tx.kind === "transfer" || tx.kind === "adjustment") && <Row icon={Pencil} title={tr("Изменить")} onClick={edit} />}
+          {(isFlow || tx.kind === "transfer") && <Row icon={Copy} title={tr("Повторить сегодня")} onClick={repeatNow} />}
           {isFlow && !alreadyFav && (
             <Row
               icon={Star}
-              title="В избранное"
+              title={tr("В избранное")}
               onClick={() => {
-                useData.getState().addFavorite({ kind: tx.kind as "income" | "expense", title: tx.note || cat?.name || "Избранное", amount: tx.amount, walletId: tx.walletId, categoryId: tx.categoryId, note: tx.note });
+                useData.getState().addFavorite({ kind: tx.kind as "income" | "expense", title: tx.note || cat?.name || tr("Избранное"), amount: tx.amount, walletId: tx.walletId, categoryId: tx.categoryId, note: tx.note });
                 haptic("success");
-                nav.toast("Добавлено в избранное", { tone: "positive" });
+                nav.toast(tr("Добавлено в избранное"), { tone: "positive" });
               }}
             />
           )}
-          <Row icon={Trash2} iconTone="negative" title={parts.length > 1 ? "Удалить эту часть" : "Удалить"} destructive onClick={remove} />
+          <Row icon={Trash2} iconTone="negative" title={parts.length > 1 ? tr("Удалить эту часть") : tr("Удалить")} destructive onClick={remove} />
           {parts.length > 1 && (
             <Row
               icon={Trash2}
               iconTone="negative"
-              title="Удалить весь чек"
+              title={tr("Удалить весь чек")}
               destructive
               onClick={() =>
                 confirmDelete({
-                  title: "Удалить весь чек?",
-                  message: `Удалятся все ${parts.length} части. Балансы и аналитика пересчитаются.`,
+                  title: tr("Удалить весь чек?"),
+                  message: tr("Удалятся все {0} части. Балансы и аналитика пересчитаются.", parts.length),
                   onConfirm: () => {
-                    undoable("Чек удалён", () => parts.forEach((p) => useData.getState().deleteTransaction(p.id)));
+                    undoable(tr("Чек удалён"), () => parts.forEach((p) => useData.getState().deleteTransaction(p.id)));
                     close();
                   }
                 })

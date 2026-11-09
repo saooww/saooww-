@@ -4,80 +4,15 @@ import { CalendarCheck, ChevronRight, Share, Sparkles, X, type LucideIcon } from
 import { addDays, addMonths, diffDays, parseDay, startOfMonth } from "../../lib/dates";
 import { isEmbedded, saveBackupFile } from "../../lib/backupFile";
 import { haptic } from "../../lib/haptics";
-import { safeToSpend } from "../../lib/safeToSpend";
 import { homeInsight } from "../../lib/insights";
 import { weekToReview } from "../../lib/week";
 import { useWeekSummary } from "../planner/WeekReview";
 import { hasStory, monthKey, monthSummary } from "../../lib/story";
-import { useAppData, useBalances, useCategoryMap, useLedger, useToday } from "../../store/hooks";
+import { useAppData, useCategoryMap, useLedger, useToday } from "../../store/hooks";
 import { useData } from "../../store/store";
 import { nav } from "../../store/ui";
-import { AnimatedMoney, Money } from "../../ui/Money";
-import { spring } from "../../ui/motion";
-import { IconChip, ProgressBar, SectionHeader } from "../../ui/primitives";
-
-/** «Можно потратить сегодня» — one honest number for the day. */
-export function SafeToSpendCard() {
-  const data = useAppData();
-  const balances = useBalances();
-  const { entries } = useLedger();
-  const today = useToday();
-  const base = data.settings.baseCurrency;
-  const s = useMemo(() => safeToSpend(data, balances, entries, today), [data, balances, entries, today]);
-  if (!s) return null;
-  // Nothing to count from yet (fresh start, no balances, no spending): a calm hint, not a red alarm.
-  const nothingYet = s.allowance <= 0 && s.spentToday === 0 && s.obligations === 0 && Object.values(balances).every((v) => v <= 0);
-  if (nothingYet) {
-    return (
-      <motion.button type="button" whileTap={{ scale: 0.985 }} transition={spring.press} onClick={() => nav.tab("wallets")} className="panel mx-5 mt-3 flex w-[calc(100%-40px)] items-center gap-3 rounded-[20px] px-4 py-3.5 text-left">
-        <IconChip name="WalletCards" size={34} />
-        <span className="min-w-0 flex-1">
-          <span className="block text-subhead font-semibold text-ink">Можно потратить сегодня</span>
-          <span className="block text-footnote text-ink-2">Укажите остатки на счетах — посчитаем сумму на каждый день</span>
-        </span>
-        <ChevronRight size={16} className="shrink-0 text-ink-3" />
-      </motion.button>
-    );
-  }
-
-  const tight = s.allowance <= 0;
-  const over = !tight && s.today < 0;
-  const progress = s.allowance > 0 ? Math.min(1, s.spentToday / s.allowance) : 1;
-  const label = tight ? "До конца месяца впритык" : over ? "Сегодня сверх нормы" : "Можно потратить сегодня";
-
-  return (
-    <motion.button
-      type="button"
-      whileTap={{ scale: 0.985 }}
-      transition={spring.press}
-      onClick={() => nav.push("plans")}
-      className="panel mx-5 mt-3 block w-[calc(100%-40px)] rounded-[20px] px-4 pb-3.5 pt-3.5 text-left"
-      aria-label={`${label}: ${Math.abs(s.today) / 100} ${base}`}
-    >
-      <div className="flex items-center justify-between">
-        <span className="section-label">{label}</span>
-        <ChevronRight size={16} className="text-ink-3" />
-      </div>
-      <div className="mt-2 flex items-end justify-between gap-3">
-        <AnimatedMoney value={tight ? 0 : Math.abs(s.today)} currency={base} variant="hero" privacy tone={over ? "negative" : "default"} className="text-[32px] leading-none" />
-        <span className="pb-0.5 text-right text-footnote text-ink-2">
-          {s.daysLeft === 1 ? "последний день месяца" : `${s.daysLeft} ${s.daysLeft % 10 === 1 && s.daysLeft !== 11 ? "день" : [2, 3, 4].includes(s.daysLeft % 10) && ![12, 13, 14].includes(s.daysLeft) ? "дня" : "дней"} до конца месяца`}
-        </span>
-      </div>
-      <ProgressBar value={progress} tone={over || tight ? "negative" : progress > 0.85 ? "warning" : "ink"} className="mt-3" height={5} />
-      <div className="mt-2 flex justify-between gap-2 text-caption text-ink-3">
-        <span>
-          потрачено <Money value={s.spentToday} currency={base} privacy className="text-ink-2" />
-        </span>
-        <span>
-          {tight ? "платежи до конца месяца " : "норма на день "}
-          <Money value={tight ? s.obligations : s.allowance} currency={base} privacy className="text-ink-2" />
-          {s.basis === "budget" && !tight ? " · по бюджету" : ""}
-        </span>
-      </div>
-    </motion.button>
-  );
-}
+import { IconChip, SectionHeader } from "../../ui/primitives";
+import { tr } from "../../i18n/i18n";
 
 type FeedItem = {
   id: string;
@@ -134,8 +69,8 @@ export function HomeFeed() {
       id: "story",
       icon: Sparkles,
       tone: "accent",
-      title: `Итоги ${story.nameGen} готовы`,
-      subtitle: "Куда ушли деньги и что получилось сберечь",
+      title: tr("Итоги {0} готовы", story.nameGen),
+      subtitle: tr("Куда ушли деньги и что получилось сберечь"),
       onOpen: () => {
         haptic();
         update({ storySeen: monthKey(prevMonth) });
@@ -149,8 +84,8 @@ export function HomeFeed() {
       id: "week",
       icon: CalendarCheck,
       tone: "accent",
-      title: "Итоги недели готовы",
-      subtitle: `Деньги и дела за ${week.label}`,
+      title: tr("Итоги недели готовы"),
+      subtitle: tr("Деньги и дела за {0}", week.label),
       onOpen: () => {
         haptic();
         nav.sheet("weekReview", { from: week.from });
@@ -163,20 +98,20 @@ export function HomeFeed() {
       id: "backup",
       icon: Share,
       tone: "accent",
-      title: "Сохраните копию данных",
-      subtitle: settings.lastExternalBackup ? `Последняя — ${diffDays(today, settings.lastExternalBackup.slice(0, 10))} дн. назад` : "В Файлы или iCloud — на случай потери телефона",
+      title: tr("Сохраните копию данных"),
+      subtitle: settings.lastExternalBackup ? tr("Последняя — {0} дн. назад", diffDays(today, settings.lastExternalBackup.slice(0, 10))) : tr("В Файлы или iCloud — на случай потери телефона"),
       action: {
-        label: "Сохранить",
+        label: tr("Сохранить"),
         run: async () => {
           const r = await saveBackupFile();
           if (r === "shared" || r === "downloaded") {
             haptic("success");
-            nav.toast("Копия сохранена", { tone: "positive" });
-          } else if (r === "failed") nav.toast("Не получилось — попробуйте в «Настройки → Данные»", { tone: "warning" });
+            nav.toast(tr("Копия сохранена"), { tone: "positive" });
+          } else if (r === "failed") nav.toast(tr("Не получилось — попробуйте в «Настройки → Данные»"), { tone: "warning" });
         }
       },
       onDismiss: () => update({ backupSnoozeUntil: addDays(today, 3) }),
-      dismissLabel: "Напомнить через 3 дня"
+      dismissLabel: tr("Напомнить через 3 дня")
     });
   }
   // a hint hidden with × stays hidden for today; the same situation can come back tomorrow
@@ -195,7 +130,7 @@ export function HomeFeed() {
           }
         : undefined,
       onDismiss: () => update({ dismissedHints: [...dismissed.filter((k) => k.startsWith(today)), hintKey].slice(-8) }),
-      dismissLabel: "Скрыть на сегодня"
+      dismissLabel: tr("Скрыть на сегодня")
     });
   }
 
@@ -203,7 +138,7 @@ export function HomeFeed() {
     <AnimatePresence initial={false}>
       {items.length > 0 && (
         <motion.div key="feed" className="mt-8" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3 }}>
-          <SectionHeader title="Важное" />
+          <SectionHeader title={tr("Важное")} />
           <div className="panel mx-4 overflow-hidden rounded-lg">
             <AnimatePresence initial={false}>
               {items.map((it, i) => (
@@ -246,7 +181,7 @@ function FeedRow({ item }: { item: FeedItem }) {
           {item.action.label}
         </button>
       )}
-      <button type="button" aria-label={item.dismissLabel ?? "Скрыть"} onClick={item.onDismiss} className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-ink-3 active:bg-surface-press">
+      <button type="button" aria-label={item.dismissLabel ?? tr("Скрыть")} onClick={item.onDismiss} className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-ink-3 active:bg-surface-press">
         <X size={16} />
       </button>
     </div>

@@ -1,0 +1,153 @@
+Pendências dos dias anteriores
+Um bom mês.
+Armazenamento
+Ficam só neste aparelho e não entram no backup.
+Cor
+Cor {0}
+Cor de destaque
+Cor nos gráficos
+Cor da meta
+Metas
+Meta
+Meta alcançada
+Meta abastecida
+Meta criada
+Meta salva
+Meta excluída
+Teclado numérico
+Números
+As partes do recibo passam do total
+Com frequência
+Parte do recibo
+Mais frequente — «
+Recibo de
+Recibo dividido em {0} — cada uma conta na sua categoria e orçamento.
+Recibo excluído
+Checklist
+Em {0}
+Pela carteira
+Números
+Patrimônio líquido
+Qui
+O que precisa ser feito?
+O que deu certo? O que atrapalhou? O que importa amanhã?
+Algo deu errado
+Para definir a cotação à mão, desative as cotações do Banco Central
+Passo {0} de {1}
+Largas
+Fonte dos valores
+Esta semana
+Estas três categorias —
+Isso é
+Esta tarefa foi excluída.
+É uma assinatura
+Este mês
+Eu
+ago
+abr
+sem {0} — sem cotação
+sem data
+sem nenhum gasto
+sem prazo
+sem gastos
+mais
+estava em {0}
+em
+em «{0}»
+por ano
+por ano.
+por dia
+por mês
+por semana
+em média
+devem a você {0}
+devem a você
+dom
+de todos os gastos do mês.
+tudo feito
+ter
+você deve {0}
+você deve
+você quase não usa. Cancelar economizaria
+escolha uma categoria
+escolha uma carteira
+{0} de {1} escolhidos
+dez
+dia
+dias
+dias
+até {0}
+∅
+mais
+em 90 dias
+planejado
+salário 120.000
+e
+de
+de «{0}»
+de texto
+de arquivo
+saldo
+jul
+jun
+carrossel
+café 300
+carteira
+mar
+mai
+menos
+mi
+para «
+por dia
+nada para hoje
+não escolhidas
+não definido
+não definidas
+não uso
+sem aportes
+nov
+out
+da categoria principal
+restam {0}
+da renda em
+guardar 5000 para as férias
+estão atrasadas
+está atrasada
+seg
+pela cotação atual
+ligar para a mãe amanhã às 18
+nada ainda
+gasto
+executado
+pulado
+atrasado há {0} dias
+do ano passado
+do trimestre passado
+do mês passado
+na semana passada
+da semana passada
+no ano passado
+no trimestre passado
+no mês passado
+sex
+vazio
+raramente
+desde o início do período
+sáb
+hoje
+set
+próximo — {0}
+qua
+táxi 450 ontem
+gastos
+gasto
+gastos
+mil
+já vinculado
+fev
+х
+qui
+jan
+ — sem cotação de câmbio →
+≈ {0} por dia até o fim do mês
+≈ {0} por mês

@@ -1,0 +1,150 @@
+Added to plan
+Add a card, cash or a savings account.
+Add a few incomes and expenses — the charts will build themselves.
+Add your balances — I'll work out an amount per day
+Add subscriptions, phone, loan or salary — they'll be recorded on their own and go into forecasts.
+Good morning
+Good night
+Good evening
+Good afternoon
+Debt
+Debt given: {0}
+Debt closed
+Debt recorded
+Debt received: {0}
+Debt saved
+Debt deleted
+Debts
+No debts
+US dollar
+Home
+Home & utilities
+Inc.
+Income
+Income added
+Income recorded
+Income
+Income for the period
+Income and expenses by month
+This wallet's income and expenses will be deleted. Transfers to other wallets will remain as adjustments so their balances don't change. If you need the history, archive the wallet.
+Other
+Euro
+Daily copy
+If the category has operations, it will be hidden from choices and the history kept.
+If saving a file doesn't work
+If you delete the app or clear Safari, the data goes with it. A copy in Files (iCloud Drive) or in your email is a reliable safeguard. The app will remind you once a week.
+Has a note
+Has a deadline
+Has a receipt photo
+Never yet
+Also today
+Waiting to be posted
+Done this week
+Forgot the code?
+Finish the day
+Tomorrow
+Look at your budgets — they show where you can tighten up.
+Title
+Loading…
+Load
+Load demo data
+Load demo data?
+Set a monthly limit for a category — for example, «Groceries — 30,000». We'll let you know when it's close.
+Pin
+Closed
+Closed {0}
+Closed · {0}
+No closed debts yet
+Close
+Close without payment
+Replace
+Replace data {0}?
+Note
+Note deleted
+Note: details, links, address
+Notes
+Busy
+Recorded {0}
+Record
+Record repayment
+Add a task
+Record a debt
+Record payment
+Record now
+Record income and expenses — the whole history with search and filters will appear here.
+Write it down right away
+Record who you lent to and who you borrowed from — the app will remind you of the dates.
+Write things down so you don't keep them in your head
+Record automatically
+Will be saved as
+Will be saved as an operation and change the balance
+Planned
+Plan
+Launch
+Salary
+Why this list, what result is needed
+Credited
+Credit
+Credit to wallet
+Security
+Protection from auto-clearing
+History will appear here
+Nothing here yet
+Your operations will appear here. Start with the buttons above.
+It's empty here
+Health
+Getting started
+Icon
+Gold
+Ideas, shopping lists, arrangements, trip plans. Checklist items turn into tasks with one tap.
+From an Ardessa or Kapital backup
+From theme
+From goal «{0}»
+Favourites
+Change in net worth
+Changes saved
+Edit
+Edit operation
+Edit list
+Edit goal
+Elegant
+Import from file
+Name
+Name (optional)
+Name, look, data
+Investments
+Indigo
+Interval
+History
+Balance history
+Payment history
+Net
+Net: income minus expenses
+{0} review is ready
+Day review
+Month in review
+Month review, data backup, tips
+Week in review
+Your week in review is ready
+Review:
+Review: {0}
+Total
+Search by name, comment, tag, person or amount
+To this week
+Each line becomes a separate task.
+Every week
+Every {0} {1}
+Every year
+Every day
+Every month
+Kazakhstani tenge
+Like last time:
+How to manage tasks
+What should we call you
+What to call you and which currency to count in.
+How often you use it
+Your phone's calendar will remind you of the task even if the app is closed. 
+Spending calendar
+Net worth
+Net worth over 90 days
+Card

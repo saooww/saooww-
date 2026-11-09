@@ -4,19 +4,19 @@ import { Plus, Search } from "../../ui/glyphs";
 import { useData } from "../../store/store";
 import { nav, useUI, type PlannerView } from "../../store/ui";
 import { Screen, useRoute } from "../../nav/Screen";
-import { spring } from "../../ui/motion";
 import { IconButton, Segmented } from "../../ui/primitives";
 import { NotesView, createNote } from "../notes/Notes";
 import { ListsView } from "./ListsView";
 import { TodayView } from "./TodayView";
 import { WeekView } from "./WeekView";
 import { useToday } from "../../store/hooks";
+import { tr } from "../../i18n/i18n";
 
 const VIEWS: Array<{ value: PlannerView; label: string }> = [
-  { value: "today", label: "Сегодня" },
-  { value: "week", label: "Неделя" },
-  { value: "lists", label: "Списки" },
-  { value: "notes", label: "Заметки" }
+  { value: "today", label: tr("Сегодня") },
+  { value: "week", label: tr("Неделя") },
+  { value: "lists", label: tr("Списки") },
+  { value: "notes", label: tr("Заметки") }
 ];
 
 /** «Дела»: today, the week, lists and notes — everything that is not money. */
@@ -33,7 +33,12 @@ export function PlannerScreen() {
   return (
     <div className="absolute inset-0">
       <IntroOnFirstVisit />
-      <Screen title="Дела" large actions={<IconButton icon={Search} label="Поиск" onClick={() => nav.sheet("search")} />}>
+      <Screen title={tr("Дела")} large actions={
+          <>
+            <IconButton icon={Search} label={tr("Поиск")} onClick={() => nav.sheet("search")} />
+            <IconButton icon={Plus} label={view === "notes" ? tr("Новая заметка") : tr("Новое дело")} onClick={add} />
+          </>
+        }>
         <div className="px-4 pb-5">
           <Segmented value={view} onChange={setView} options={VIEWS} />
         </div>
@@ -43,17 +48,6 @@ export function PlannerScreen() {
           </motion.div>
         </AnimatePresence>
       </Screen>
-      <motion.button
-        type="button"
-        aria-label={view === "notes" ? "Новая заметка" : "Новое дело"}
-        onClick={add}
-        whileTap={{ scale: 0.9 }}
-        transition={spring.press}
-        className="fill-accent absolute right-5 z-30 grid h-[58px] w-[58px] place-items-center rounded-[20px] text-[var(--accent-on)]"
-        style={{ bottom: "calc(var(--tabbar-space) + 14px)" }}
-      >
-        <Plus size={26} strokeWidth={2.4} />
-      </motion.button>
     </div>
   );
 }

@@ -13,6 +13,7 @@ import { nav } from "../../store/ui";
 import { spring } from "../../ui/motion";
 import { Button } from "../../ui/primitives";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
+import { tr } from "../../i18n/i18n";
 
 export interface QuickAddProps {
   /** Day the new tasks go to unless the text says otherwise */
@@ -136,7 +137,7 @@ export function QuickAddSheet({ due: ctxDue, projectId: ctxProject, focus }: Qui
     if (d.due) parts.push(dueLabel(d.due, today) + (d.time ? `, ${d.time}` : ""));
     const p = d.projectId ? live.find((x) => x.id === d.projectId) : undefined;
     if (p) parts.push(p.name);
-    if (!parts.length) parts.push("Входящие");
+    if (!parts.length) parts.push(tr("Входящие"));
     return parts.join(", ");
   };
 
@@ -163,9 +164,9 @@ export function QuickAddSheet({ due: ctxDue, projectId: ctxProject, focus }: Qui
 
   const pickList = () =>
     nav.sheet("picker", {
-      title: "Список",
+      title: tr("Список"),
       value: preview.projectId ?? "",
-      options: [{ value: "", label: "Входящие", sub: "Без списка — разберёте потом" }, ...live.map((p) => ({ value: p.id, label: p.name, iconName: p.icon }))],
+      options: [{ value: "", label: tr("Входящие"), sub: tr("Без списка — разберёте потом") }, ...live.map((p) => ({ value: p.id, label: p.name, iconName: p.icon }))],
       onSelect: (v: string) => {
         strip("project");
         setManual((m) => ({ ...m, projectId: v || null }));
@@ -187,18 +188,18 @@ export function QuickAddSheet({ due: ctxDue, projectId: ctxProject, focus }: Qui
   if (preview.time) chips.push({ kind: "time", icon: Clock, label: preview.time, onTap: pickDate });
   if (preview.repeat !== "none") chips.push({ kind: "repeat", icon: Repeat, label: REPEAT_LABEL[preview.repeat] });
   if (project) chips.push({ kind: "project", icon: Hash, label: project.name, color: project.color, onTap: pickList });
-  if (preview.priority) chips.push({ kind: "priority", icon: Flag, label: preview.priority === 2 ? "Срочно" : "Важно" });
+  if (preview.priority) chips.push({ kind: "priority", icon: Flag, label: preview.priority === 2 ? tr("Срочно") : tr("Важно") });
 
   const multi = drafts.length > 1;
 
   return (
     <Sheet
-      title="Новое дело"
-      left={added.length ? undefined : <SheetAction onClick={close}>Отмена</SheetAction>}
-      right={added.length ? <SheetAction strong onClick={close}>Готово</SheetAction> : undefined}
+      title={tr("Новое дело")}
+      left={added.length ? undefined : <SheetAction onClick={close}>{tr("Отмена")}</SheetAction>}
+      right={added.length ? <SheetAction strong onClick={close}>{tr("Готово")}</SheetAction> : undefined}
       footer={
         <Button block disabled={!drafts.length} onClick={submit}>
-          {multi ? `Добавить ${pluralN(drafts.length, ["дело", "дела", "дел"])}` : "Добавить"}
+          {multi ? tr("Добавить {0}", pluralN(drafts.length, ["дело", "дела", "дел"])) : tr("Добавить")}
         </Button>
       }
     >
@@ -219,14 +220,13 @@ export function QuickAddSheet({ due: ctxDue, projectId: ctxProject, focus }: Qui
                 submit();
               }
             }}
-            placeholder="Что нужно сделать?"
+            placeholder={tr("Что нужно сделать?")}
             enterKeyHint="send"
-            aria-label="Новое дело"
+            aria-label={tr("Новое дело")}
             className="block w-full resize-none bg-transparent text-headline leading-[24px] text-ink outline-none placeholder:text-ink-3"
           />
           {single && single.title && single.title.toLowerCase() !== text.trim().toLowerCase() && (
-            <div className="mt-1.5 truncate text-footnote text-ink-3">
-              Запишется как <span className="text-ink-2">«{single.title}»</span>
+            <div className="mt-1.5 truncate text-footnote text-ink-3">{tr("Запишется как")}{" "}<span className="text-ink-2">«{single.title}»</span>
             </div>
           )}
           <motion.div layout className="mt-3 flex flex-wrap gap-1.5">
@@ -245,40 +245,36 @@ export function QuickAddSheet({ due: ctxDue, projectId: ctxProject, focus }: Qui
                     {c.color ? <span className="h-2 w-2 rounded-full" style={{ background: c.color }} /> : <c.icon size={14} strokeWidth={2.2} />}
                     {c.label}
                   </button>
-                  <button type="button" aria-label={`Убрать: ${c.label}`} onClick={() => drop(c.kind)} className="grid h-8 w-8 place-items-center rounded-full opacity-70">
+                  <button type="button" aria-label={tr("Убрать: {0}", c.label)} onClick={() => drop(c.kind)} className="grid h-8 w-8 place-items-center rounded-full opacity-70">
                     <X size={13} strokeWidth={2.6} />
                   </button>
                 </motion.span>
               ))}
               {!preview.due && (
                 <motion.span key="add-today" layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  <AddChip onClick={() => setManual((m) => ({ ...m, due: today }))}>Сегодня</AddChip>
+                  <AddChip onClick={() => setManual((m) => ({ ...m, due: today }))}>{tr("Сегодня")}</AddChip>
                 </motion.span>
               )}
               {!preview.due && (
                 <motion.span key="add-tomorrow" layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  <AddChip onClick={() => setManual((m) => ({ ...m, due: addDays(today, 1) }))}>Завтра</AddChip>
+                  <AddChip onClick={() => setManual((m) => ({ ...m, due: addDays(today, 1) }))}>{tr("Завтра")}</AddChip>
                 </motion.span>
               )}
               {!preview.time && (
                 <motion.span key="add-date" layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                   <AddChip icon={CalendarDays} onClick={pickDate}>
-                    {preview.due ? "Время" : "Дата"}
+                    {preview.due ? tr("Время") : tr("Дата")}
                   </AddChip>
                 </motion.span>
               )}
               {!project && live.length > 0 && (
                 <motion.span key="add-list" layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  <AddChip icon={Hash} onClick={pickList}>
-                    Список
-                  </AddChip>
+                  <AddChip icon={Hash} onClick={pickList}>{tr("Список")}</AddChip>
                 </motion.span>
               )}
               {!preview.priority && (
                 <motion.span key="add-prio" layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  <AddChip icon={Flag} onClick={() => setManual((m) => ({ ...m, priority: 1 }))}>
-                    Важно
-                  </AddChip>
+                  <AddChip icon={Flag} onClick={() => setManual((m) => ({ ...m, priority: 1 }))}>{tr("Важно")}</AddChip>
                 </motion.span>
               )}
             </AnimatePresence>
@@ -286,20 +282,17 @@ export function QuickAddSheet({ due: ctxDue, projectId: ctxProject, focus }: Qui
         </div>
 
         {!text && !added.length && (
-          <p className="px-1 pt-3 text-footnote text-ink-3">
-            Пишите как обычно: «Позвонить маме завтра в 18:00», «отчёт к пятнице #работа !!». Дата, время, повтор и список распознаются сами. Несколько строк — несколько дел.
-          </p>
+          <p className="px-1 pt-3 text-footnote text-ink-3">{tr("Пишите как обычно: «Позвонить маме завтра в 18:00», «отчёт к пятнице #работа !!». Дата, время, повтор и список распознаются сами. Несколько строк — несколько дел.")}</p>
         )}
-        {multi && <p className="px-1 pt-3 text-footnote text-ink-2">Каждая строка станет отдельным делом.</p>}
+        {multi && <p className="px-1 pt-3 text-footnote text-ink-2">{tr("Каждая строка станет отдельным делом.")}</p>}
         {!preview.due && !project && text.trim() && !multi && (
           <p className="flex items-center gap-1.5 px-1 pt-3 text-footnote text-ink-3">
-            <Inbox size={13} /> Попадёт во «Входящие» — разберёте при планировании дня
-          </p>
+            <Inbox size={13} />{tr("Попадёт во «Входящие» — разберёте при планировании дня")}</p>
         )}
 
         {added.length > 0 && (
           <div className="mt-5">
-            <div className="px-1 pb-2 text-footnote font-medium text-ink-2">Добавлено</div>
+            <div className="px-1 pb-2 text-footnote font-medium text-ink-2">{tr("Добавлено")}</div>
             <div className="overflow-hidden panel rounded-lg [&>*+*]:hairline-t">
               <AnimatePresence initial={false}>
                 {added.map((a) => (

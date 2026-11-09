@@ -5,6 +5,7 @@ import { hadStoredData, onStorageFailure, requestPersistence } from "./storage";
 import { useData } from "./store";
 import type { Settings } from "./types";
 import { nav, useUI } from "./ui";
+import { tr } from "../i18n/i18n";
 
 /** Small mirror of visual settings, read synchronously by index.html before first paint. */
 export const PREFS_KEY = "kapital-prefs";
@@ -45,8 +46,10 @@ export function startBoot() {
       else onboarding = true;
     }
     // The app became Ardessa: the old default accent takes the brand red once.
+    // Not during the welcome flow: saving anything then would make a restart
+    // (a language switch, a closed tab) skip the welcome with empty data.
     const before = useData.getState().settings;
-    if (!before.ardessa) useData.getState().updateSettings({ ardessa: true, accent: before.accent === "vermilion" ? "ardessa" : before.accent });
+    if (!onboarding && !before.ardessa) useData.getState().updateSettings({ ardessa: true, accent: before.accent === "vermilion" ? "ardessa" : before.accent });
 
     const s = useData.getState().settings;
     useUI.setState({ booted: true, onboarding, locked: !onboarding && s.lockEnabled && !!s.lockPinHash });
@@ -73,9 +76,9 @@ export function startBoot() {
   onStorageFailure(() => {
     if (Date.now() - lastWarning < 60_000) return;
     lastWarning = Date.now();
-    nav.toast("Не получилось сохранить изменения — на устройстве мало места. Сохраните копию в Файлы.", {
+    nav.toast(tr("Не получилось сохранить изменения — на устройстве мало места. Сохраните копию в Файлы."), {
       tone: "warning",
-      action: { label: "Копия", run: () => void import("../lib/backupFile").then((m) => m.saveBackupFile()) }
+      action: { label: tr("Копия"), run: () => void import("../lib/backupFile").then((m) => m.saveBackupFile()) }
     });
   });
 }

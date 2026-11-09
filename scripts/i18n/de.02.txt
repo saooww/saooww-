@@ -1,0 +1,150 @@
+Zum Plan hinzugefügt
+Füge eine Karte, Bargeld oder ein Sparkonto hinzu.
+Füge ein paar Einnahmen und Ausgaben hinzu — die Diagramme entstehen von selbst.
+Gib deine Kontostände an — ich berechne einen Betrag pro Tag
+Füge Abos, Handyvertrag, Kredit oder Gehalt hinzu — sie werden selbst gebucht und fließen in Prognosen ein.
+Guten Morgen
+Gute Nacht
+Guten Abend
+Guten Tag
+Schuld
+Schuld vergeben: {0}
+Schuld beglichen
+Schuld erfasst
+Schuld erhalten: {0}
+Schuld gespeichert
+Schuld gelöscht
+Schulden
+Keine Schulden
+US-Dollar
+Zuhause
+Wohnen & Nebenkosten
+Einn.
+Einnahme
+Einnahme hinzugefügt
+Einnahme erfasst
+Einnahmen
+Einnahmen im Zeitraum
+Einnahmen und Ausgaben nach Monaten
+Die Einnahmen und Ausgaben dieses Kontos werden gelöscht. Überweisungen auf andere Konten bleiben als Korrekturen, damit deren Salden gleich bleiben. Wenn du den Verlauf brauchst, archiviere das Konto.
+Sonstiges
+Euro
+Tägliche Kopie
+Hat die Kategorie Buchungen, wird sie in der Auswahl ausgeblendet und der Verlauf bleibt erhalten.
+Wenn das Speichern der Datei nicht klappt
+Wenn du die App löschst oder Safari leerst, verschwinden die Daten mit. Eine Kopie in Dateien (iCloud Drive) oder in deiner Mail ist eine sichere Absicherung. Die App erinnert dich einmal pro Woche.
+Mit Notiz
+Mit Frist
+Mit Belegfoto
+Noch nie
+Auch heute
+Warten auf Ausführung
+Diese Woche erledigt
+Code vergessen?
+Tag abschließen
+Morgen
+Schau in deine Budgets — dort siehst du, wo du sparen kannst.
+Titel
+Wird geladen…
+Laden
+Demodaten laden
+Demodaten laden?
+Lege ein monatliches Limit für eine Kategorie fest — zum Beispiel „Lebensmittel — 30.000“. Wir sagen Bescheid, wenn es knapp wird.
+Anheften
+Beglichen
+Beglichen {0}
+Beglichen · {0}
+Noch keine beglichenen Schulden
+Schließen
+Ohne Zahlung schließen
+Ersetzen
+Daten {0} ersetzen?
+Notiz
+Notiz gelöscht
+Notiz: Details, Links, Adresse
+Notizen
+Belegt
+Erfasst {0}
+Erfassen
+Rückzahlung erfassen
+Aufgabe notieren
+Schuld erfassen
+Zahlung erfassen
+Jetzt erfassen
+Erfasse Einnahmen und Ausgaben — hier erscheint der ganze Verlauf mit Suche und Filtern.
+Gleich aufschreiben
+Notiere, wem du etwas geliehen hast und von wem du dir etwas geliehen hast — die App erinnert an Fristen.
+Aufschreiben, statt es im Kopf zu behalten
+Automatisch buchen
+Wird gespeichert als
+Wird als Buchung gespeichert und ändert den Saldo
+Geplant
+Planen
+Start
+Gehalt
+Wozu diese Liste, welches Ergebnis gebraucht wird
+Gutgeschrieben
+Gutschreiben
+Aufs Konto gutschreiben
+Schutz
+Schutz vor automatischem Löschen
+Hier erscheint der Verlauf
+Hier ist noch nichts
+Hier erscheinen deine Buchungen. Starte mit den Knöpfen oben.
+Hier ist es leer
+Gesundheit
+Kennenlernen
+Symbol
+Gold
+Ideen, Einkaufslisten, Absprachen, Reisepläne. Punkte der Checkliste werden mit einem Tippen zu Aufgaben.
+Aus einer Ardessa- oder Kapital-Sicherung
+Aus dem Theme
+Aus dem Ziel „{0}“
+Favoriten
+Veränderung des Vermögens
+Änderungen gespeichert
+Bearbeiten
+Buchung bearbeiten
+Liste bearbeiten
+Ziel bearbeiten
+Elegant
+Aus Datei importieren
+Name
+Name (optional)
+Name, Aussehen, Daten
+Geldanlagen
+Indigo
+Intervall
+Verlauf
+Saldoverlauf
+Zahlungsverlauf
+Saldo
+Saldo: Einnahmen minus Ausgaben
+Rückblick {0} ist fertig
+Tagesrückblick
+Monatsrückblick
+Monatsrückblick, Datensicherung, Tipps
+Wochenrückblick
+Dein Wochenrückblick ist fertig
+Rückblick:
+Rückblick: {0}
+Summe
+Suche nach Name, Kommentar, Tag, Person oder Betrag
+Zu dieser Woche
+Jede Zeile wird zu einer eigenen Aufgabe.
+Jede Woche
+Alle {0} {1}
+Jedes Jahr
+Jeden Tag
+Jeden Monat
+Kasachischer Tenge
+Wie letztes Mal:
+Wie man Aufgaben führt
+Wie sollen wir dich nennen
+Wie wir dich nennen und in welcher Währung wir rechnen.
+Wie oft du es nutzt
+Der Kalender deines Handys erinnert dich an die Aufgabe, auch wenn die App geschlossen ist. 
+Ausgabenkalender
+Vermögen
+Vermögen über 90 Tage
+Karte

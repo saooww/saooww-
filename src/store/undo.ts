@@ -1,6 +1,7 @@
 import { haptic } from "../lib/haptics";
 import { pickData, useData } from "./store";
 import { nav } from "./ui";
+import { tr } from "../i18n/i18n";
 
 /**
  * Runs a change and offers to take it back. The snapshot is just the
@@ -11,7 +12,7 @@ export function undoable(message: string, change: () => void) {
   change();
   nav.toast(message, {
     action: {
-      label: "Отменить",
+      label: tr("Отменить"),
       run: () => {
         haptic();
         useData.getState().replaceAll(snapshot);
@@ -21,5 +22,5 @@ export function undoable(message: string, change: () => void) {
 }
 
 export function confirmDelete(opts: { title: string; message?: string; confirmLabel?: string; onConfirm: () => void }) {
-  nav.sheet("confirm", { title: opts.title, message: opts.message, confirmLabel: opts.confirmLabel ?? "Удалить", destructive: true, onConfirm: opts.onConfirm });
+  nav.sheet("confirm", { title: opts.title, message: opts.message, confirmLabel: opts.confirmLabel ?? tr("Удалить"), destructive: true, onConfirm: opts.onConfirm });
 }

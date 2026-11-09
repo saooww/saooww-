@@ -10,6 +10,7 @@ import type { ID, Transaction } from "../../store/types";
 import { Money } from "../../ui/Money";
 import { spring } from "../../ui/motion";
 import { IconChip } from "../../ui/primitives";
+import { tr } from "../../i18n/i18n";
 
 export function usePresentCtx(): PresentCtx {
   const wallets = useWalletMap();
@@ -60,8 +61,8 @@ export const TxRow = memo(function TxRow({
       <div className="min-w-0 flex-1 text-left">
         <div className="flex min-w-0 items-center gap-1.5">
           <span className="truncate text-body text-ink">{v.title}</span>
-          {(tx.photos?.length ?? 0) > 0 && <Camera size={13} strokeWidth={2} className="shrink-0 text-ink-3" aria-label="Есть фото чека" />}
-          {tx.splitId && <Split size={13} strokeWidth={2} className="shrink-0 text-ink-3" aria-label="Часть чека" />}
+          {(tx.photos?.length ?? 0) > 0 && <Camera size={13} strokeWidth={2} className="shrink-0 text-ink-3" aria-label={tr("Есть фото чека")} />}
+          {tx.splitId && <Split size={13} strokeWidth={2} className="shrink-0 text-ink-3" aria-label={tr("Часть чека")} />}
         </div>
         {v.subtitle && <div className="mt-0.5 truncate text-footnote text-ink-2">{v.subtitle}</div>}
       </div>
@@ -84,7 +85,7 @@ export const TxRow = memo(function TxRow({
     <div className="relative overflow-hidden">
       <motion.button
         type="button"
-        aria-label="Удалить операцию"
+        aria-label={tr("Удалить операцию")}
         style={{ opacity: actionOpacity }}
         onClick={() => {
           haptic("warning");
@@ -94,7 +95,7 @@ export const TxRow = memo(function TxRow({
         className="absolute inset-y-0 right-0 flex w-[84px] flex-col items-center justify-center gap-1 bg-negative text-white"
       >
         <Trash2 size={18} />
-        <span className="text-caption font-semibold">Удалить</span>
+        <span className="text-caption font-semibold">{tr("Удалить")}</span>
       </motion.button>
       <motion.div
         className="relative"

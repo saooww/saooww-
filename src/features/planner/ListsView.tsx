@@ -12,6 +12,7 @@ import { nav, useUI } from "../../store/ui";
 import { spring } from "../../ui/motion";
 import { Button, Group, IconChip, Row } from "../../ui/primitives";
 import { Heading } from "./bits";
+import { tr } from "../../i18n/i18n";
 
 export function ListsView() {
   const tasks = useData((s) => s.tasks);
@@ -37,14 +38,14 @@ export function ListsView() {
   return (
     <div className="flex flex-col gap-6">
       <div className="grid grid-cols-2 gap-2.5 px-4">
-        <Tile icon={Inbox} tone="accent" label="Входящие" count={counts.inbox} onClick={() => nav.push("taskList", { kind: "inbox" })} />
-        <Tile icon={Sun} tone="warning" label="Сегодня" count={counts.today} onClick={() => useUI.getState().setPlannerView("today")} />
-        <Tile icon={CalendarRange} tone="positive" label="Скоро" count={counts.upcoming} onClick={() => nav.push("taskList", { kind: "upcoming" })} />
-        <Tile icon={Layers} label="Все дела" count={counts.all} onClick={() => nav.push("taskList", { kind: "all" })} />
+        <Tile icon={Inbox} tone="accent" label={tr("Входящие")} count={counts.inbox} onClick={() => nav.push("taskList", { kind: "inbox" })} />
+        <Tile icon={Sun} tone="warning" label={tr("Сегодня")} count={counts.today} onClick={() => useUI.getState().setPlannerView("today")} />
+        <Tile icon={CalendarRange} tone="positive" label={tr("Скоро")} count={counts.upcoming} onClick={() => nav.push("taskList", { kind: "upcoming" })} />
+        <Tile icon={Layers} label={tr("Все дела")} count={counts.all} onClick={() => nav.push("taskList", { kind: "all" })} />
       </div>
 
       <section>
-        <Heading title="Списки" action={{ label: "Новый", onClick: () => nav.sheet("project", {}) }} />
+        <Heading title={tr("Списки")} action={{ label: tr("Новый"), onClick: () => nav.sheet("project", {}) }} />
         {live.length ? (
           <Group>
             {live.map((p) => (
@@ -57,7 +58,7 @@ export function ListsView() {
         {archived.length > 0 && (
           <div className="mt-3">
             <button type="button" onClick={() => setShowArchived((v) => !v)} className="flex items-center gap-1.5 px-5 pb-2 text-footnote font-medium text-ink-2">
-              <Archive size={14} /> В архиве: {archived.length}
+              <Archive size={14} />{tr("В архиве:")}{" "}{archived.length}
             </button>
             {showArchived && (
               <Group>
@@ -71,7 +72,7 @@ export function ListsView() {
       </section>
 
       <Group>
-        <Row icon={CheckCheck} iconTone="positive" title="Сделано" subtitle={counts.doneWeek ? `${pluralN(counts.doneWeek, ["дело", "дела", "дел"])} за 7 дней` : "Здесь будет история"} chevron onClick={() => nav.push("taskList", { kind: "done" })} />
+        <Row icon={CheckCheck} iconTone="positive" title={tr("Сделано")} subtitle={counts.doneWeek ? tr("{0} за 7 дней", pluralN(counts.doneWeek, ["дело", "дела", "дел"])) : tr("Здесь будет история")} chevron onClick={() => nav.push("taskList", { kind: "done" })} />
       </Group>
 
       <WeekStats />
@@ -96,9 +97,9 @@ function ProjectRow({ project }: { project: Project }) {
   const today = useToday();
   const st = projectStats(project, tasks, today);
   const sub = [
-    st.open ? pluralN(st.open, ["дело", "дела", "дел"]) : st.done ? "всё сделано" : "пусто",
+    st.open ? pluralN(st.open, ["дело", "дела", "дел"]) : st.done ? tr("всё сделано") : tr("пусто"),
     st.overdue ? `${st.overdue} ${plural(st.overdue, ["просрочено", "просрочены", "просрочено"])}` : "",
-    project.deadline ? `до ${formatDate(project.deadline)}` : ""
+    project.deadline ? tr("до {0}", formatDate(project.deadline)) : ""
   ]
     .filter(Boolean)
     .join(", ");
@@ -120,11 +121,11 @@ function ProjectRow({ project }: { project: Project }) {
 
 /** First lists in one tap: areas of life. */
 export function AreaStarter({ onDone }: { onDone?: () => void }) {
-  const [picked, setPicked] = useState<Set<string>>(new Set(["Личное", "Работа", "Дом", "Здоровье"]));
+  const [picked, setPicked] = useState<Set<string>>(new Set([tr("Личное"), tr("Работа"), tr("Дом"), tr("Здоровье")]));
   return (
     <div className="mx-4 panel rounded-lg p-4">
-      <div className="text-callout font-semibold">Разложите дела по сферам жизни</div>
-      <p className="mt-1 text-footnote text-ink-2">Так видно, где всё под контролем, а где копятся хвосты. Списки можно переименовать и добавить свои.</p>
+      <div className="text-callout font-semibold">{tr("Разложите дела по сферам жизни")}</div>
+      <p className="mt-1 text-footnote text-ink-2">{tr("Так видно, где всё под контролем, а где копятся хвосты. Списки можно переименовать и добавить свои.")}</p>
       <div className="mt-3 flex flex-wrap gap-2">
         {AREA_PRESETS.map((a) => {
           const on = picked.has(a.name);
@@ -159,8 +160,7 @@ export function AreaStarter({ onDone }: { onDone?: () => void }) {
           createAreas([...picked]);
           onDone?.();
         }}
-      >
-        Создать {pluralN(picked.size, ["список", "списка", "списков"])}
+      >{tr("Создать")}{" "}{pluralN(picked.size, ["список", "списка", "списков"])}
       </Button>
     </div>
   );
@@ -183,7 +183,7 @@ function WeekStats() {
   if (!total) return null;
   return (
     <section>
-      <Heading title="Ритм" aside={streak > 1 ? `${pluralN(streak, ["день", "дня", "дней"])} подряд` : undefined} />
+      <Heading title={tr("Ритм")} aside={streak > 1 ? tr("{0} подряд", pluralN(streak, ["день", "дня", "дней"])) : undefined} />
       <div className="mx-4 panel rounded-lg p-4">
         <div className="flex h-24 items-end gap-2">
           {days.map((d) => (
@@ -200,7 +200,7 @@ function WeekStats() {
             </div>
           ))}
         </div>
-        <p className="mt-3 text-footnote text-ink-2">За неделю сделано {pluralN(total, ["дело", "дела", "дел"])}.</p>
+        <p className="mt-3 text-footnote text-ink-2">{tr("За неделю сделано")}{" "}{pluralN(total, ["дело", "дела", "дел"])}.</p>
       </div>
     </section>
   );

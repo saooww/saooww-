@@ -1,6 +1,7 @@
 import { haptic } from "../lib/haptics";
 import { Sheet, useSheet } from "../ui/Sheet";
 import { Button } from "../ui/primitives";
+import { tr } from "../i18n/i18n";
 
 export interface ConfirmProps {
   title: string;
@@ -12,7 +13,7 @@ export interface ConfirmProps {
 }
 
 /** Action-sheet style confirmation for anything that can't be taken back lightly. */
-export function ConfirmSheet({ title, message, confirmLabel, cancelLabel = "Отмена", destructive = true, onConfirm }: ConfirmProps) {
+export function ConfirmSheet({ title, message, confirmLabel, cancelLabel = tr("Отмена"), destructive = true, onConfirm }: ConfirmProps) {
   const { close } = useSheet();
   return (
     <Sheet ariaLabel={title}>

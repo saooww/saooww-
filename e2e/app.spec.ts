@@ -31,6 +31,21 @@ async function safeToSpend(page: Page): Promise<number> {
   return prev.startsWith("Сегодня сверх нормы") ? -value : value;
 }
 
+/** «+» in the tab bar, then one of the tiles of «Создать». */
+async function createNew(page: Page, what: "Расход" | "Доход" | "Перевод" | "Дело" | "Заметка" | "Цель") {
+  await page.getByRole("button", { name: "Создать" }).click();
+  await page.getByRole("dialog", { name: "Создать" }).getByRole("button", { name: what, exact: true }).click();
+  await expect(page.getByRole("dialog", { name: "Создать" })).toHaveCount(0);
+  // the next sheet is up and listening before anything is typed
+  if (what === "Расход" || what === "Доход" || what === "Перевод") await expect(page.getByRole("dialog", { name: "Новая операция" })).toBeVisible();
+}
+
+/** «Деньги» in the tab bar, then one of its three views. */
+async function openMoney(page: Page, view: "Счета" | "Операции" | "Аналитика") {
+  await page.getByRole("tab", { name: "Деньги" }).click();
+  await page.locator('.app-canvas > [aria-hidden="false"]').getByRole("tab", { name: view }).click();
+}
+
 const carousel = (page: Page) => page.locator('[aria-roledescription="карусель"]');
 
 const CBR = /cbr-xml-daily\.ru/;
@@ -60,7 +75,7 @@ test("первый запуск: знакомство, счета и сохра�
 test("расход уменьшает «можно потратить сегодня» ровно на свою сумму", async ({ page }) => {
   await startDemo(page);
   const before = await safeToSpend(page);
-  await page.getByRole("button", { name: "Расход", exact: true }).click();
+  await createNew(page, "Расход");
   await page.keyboard.type("1000");
   await page.getByRole("dialog").locator('button[aria-pressed="false"]', { hasText: /^Продукты$/ }).click();
   await page.getByRole("button", { name: "Добавить расход" }).click();
@@ -71,7 +86,7 @@ test("расход уменьшает «можно потратить сегод
 test("перевод между своими кошельками не меняет общий баланс", async ({ page }) => {
   await startDemo(page);
   await expect(carousel(page)).toContainText("2 480 000");
-  await page.getByRole("button", { name: "Перевод", exact: true }).click();
+  await createNew(page, "Перевод");
   await page.keyboard.type("5000");
   await page.getByRole("button", { name: "Перевести" }).click();
   await expect(page.getByText("Перевод выполнен")).toBeVisible();
@@ -80,7 +95,7 @@ test("перевод между своими кошельками не меня�
 
 test("чек делится на категории", async ({ page }) => {
   await startDemo(page);
-  await page.getByRole("button", { name: "Расход", exact: true }).click();
+  await createNew(page, "Расход");
   await page.keyboard.type("3450");
   await page.getByRole("dialog").locator('button[aria-pressed="false"]', { hasText: /^Продукты$/ }).click();
   await page.getByRole("button", { name: "Разделить" }).click();
@@ -91,7 +106,7 @@ test("чек делится на категории", async ({ page }) => {
   await page.getByRole("button", { name: "Готово" }).click();
   await page.getByRole("button", { name: "Добавить расход" }).click();
 
-  await page.getByRole("tab", { name: "Операции" }).click();
+  await openMoney(page, "Операции");
   const today = page.locator("section").filter({ hasText: "Сегодня" }).first();
   await expect(today).toContainText("3 000");
   await expect(today).toContainText("450");
@@ -99,7 +114,7 @@ test("чек делится на категории", async ({ page }) => {
 
 test("код-пароль закрывает приложение после перезапуска", async ({ page }) => {
   await startDemo(page);
-  await page.getByRole("tab", { name: "Ещё" }).click();
+  await page.getByRole("tab", { name: "Профиль" }).click();
   await page.getByText("Настройки", { exact: true }).click();
   await page.getByRole("switch", { name: "Код-пароль" }).click();
   await page.keyboard.type("1234");
@@ -120,7 +135,7 @@ test("код-пароль закрывает приложение после п�
 
 test("итоги месяца открываются из аналитики", async ({ page }) => {
   await startDemo(page);
-  await page.getByRole("tab", { name: "Аналитика" }).click();
+  await openMoney(page, "Аналитика");
   await page.getByRole("button", { name: "Предыдущий период" }).click();
   await page.getByRole("button", { name: /^Итоги:/ }).click();
   const story = page.getByRole("dialog", { name: /^Итоги:/ });
@@ -132,7 +147,7 @@ test("итоги месяца открываются из аналитики", a
 
 test("фото чека сохраняется вместе с операцией", async ({ page }) => {
   await startDemo(page);
-  await page.getByRole("button", { name: "Расход", exact: true }).click();
+  await createNew(page, "Расход");
   await page.keyboard.type("777");
   await page.getByRole("dialog").locator('button[aria-pressed="false"]', { hasText: /^Продукты$/ }).click();
   await page.getByRole("button", { name: "Фото чека" }).click();
@@ -143,7 +158,7 @@ test("фото чека сохраняется вместе с операцие�
   await page.getByRole("button", { name: "Назад" }).click();
   await page.getByRole("button", { name: "Добавить расход" }).click();
 
-  await page.getByRole("tab", { name: "Операции" }).click();
+  await openMoney(page, "Операции");
   await page.getByRole("button", { name: /Продукты/ }).filter({ has: page.getByLabel("Есть фото чека") }).first().click();
   const sheet = page.getByRole("dialog", { name: "Операция" });
   await expect(sheet).toContainText("Фото чека");
@@ -160,7 +175,7 @@ test("курсы ЦБ подтягиваются и пересчитывают �
   await startDemo(page);
   // Demo: 2 480 000 ₽ with the dollar at 95; 2 400 $ at 100 adds 12 000 ₽.
   await expect(carousel(page)).toContainText("2 492 000");
-  await page.getByRole("tab", { name: "Ещё" }).click();
+  await page.getByRole("tab", { name: "Профиль" }).click();
   await page.getByText("Настройки", { exact: true }).click();
   await page.getByText("Курсы валют", { exact: true }).click();
   await expect(page.getByText(/Официальные курсы ЦБ РФ на/)).toBeVisible();
@@ -241,7 +256,7 @@ test("пункты заметки превращаются в дела", async (
 
 test("калькулятор в сумме: 1200 + 350 записывается как 1 550", async ({ page }) => {
   await startDemo(page);
-  await page.getByRole("button", { name: "Расход", exact: true }).click();
+  await createNew(page, "Расход");
   await page.keyboard.type("1200+350");
   const sheet = page.getByRole("dialog", { name: "Новая операция" });
   await expect(sheet).toContainText("1 200 + 350 =");
@@ -249,7 +264,7 @@ test("калькулятор в сумме: 1200 + 350 записывается 
   await expect(sheet.getByRole("button", { name: /Добавить расход/ })).toContainText("1 550");
   await sheet.getByRole("button", { name: /Добавить расход/ }).click();
   await expect(page.getByText("Расход добавлен")).toBeVisible();
-  await page.getByRole("tab", { name: "Операции" }).click();
+  await openMoney(page, "Операции");
   await expect(page.locator("section").filter({ hasText: "Сегодня" }).first()).toContainText("1 550");
 });
 
@@ -272,17 +287,17 @@ test("скрытый экран догоняет изменения, сдела�
   await startDemo(page);
   // the tab on view is the one layer not hidden from assistive tech
   const onView = page.locator('.app-canvas > [aria-hidden="false"]');
-  await page.getByRole("tab", { name: "Операции" }).click();
+  await openMoney(page, "Операции");
   await expect(onView).toContainText("Всё время");
   await expect(onView).not.toContainText("4 321");
   // the list stays alive but out of sight while a new expense is added on the home tab
   await page.getByRole("tab", { name: "Главная" }).click();
-  await page.getByRole("button", { name: "Расход", exact: true }).click();
+  await createNew(page, "Расход");
   await page.keyboard.type("4321");
   await page.getByRole("dialog").locator('button[aria-pressed="false"]', { hasText: /^Продукты$/ }).click();
   await page.getByRole("button", { name: /Добавить расход/ }).click();
   await expect(page.getByText("Расход добавлен")).toBeVisible();
-  await page.getByRole("tab", { name: "Операции" }).click();
+  await openMoney(page, "Операции");
   await expect(onView).toContainText("4 321");
 });
 
@@ -303,8 +318,7 @@ test("скрытый блок главной остаётся скрытым п�
 
 test("двойное нажатие открывает одно окно, а не два", async ({ page }) => {
   await startDemo(page);
-  const expense = page.getByRole("button", { name: "Расход", exact: true });
-  await expense.dblclick();
+  await page.getByRole("button", { name: "Создать" }).dblclick();
   await expect(page.getByRole("dialog")).toHaveCount(1);
 });
 
@@ -330,15 +344,35 @@ test.describe("маленький экран", () => {
           })
           .map((b) => b.textContent)
       );
-    await page.getByRole("tab", { name: "Ещё" }).click();
+    await page.getByRole("tab", { name: "Профиль" }).click();
     await onView.getByText("Настройки", { exact: true }).click();
     await onView.getByRole("tab", { name: "Огромный" }).click();
     await expect(page.locator("html")).toHaveAttribute("data-text", "xl");
     await expect.poll(cutLabels).toEqual([]);
-    await page.getByRole("tab", { name: "Аналитика" }).click();
+    await openMoney(page, "Аналитика");
     await expect.poll(cutLabels).toEqual([]);
     await onView.getByRole("tab", { name: "Тренды" }).click();
     await expect(onView.getByRole("tab", { name: "Накопления" })).toBeVisible();
     await expect.poll(cutLabels).toEqual([]);
   });
+});
+
+test("язык: выбор на первом экране переводит приложение и запоминается", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Язык" }).click();
+  await page.getByRole("radiogroup", { name: "Язык" }).getByRole("radio", { name: "English" }).click();
+  // the app restarts in English, with dollars offered first
+  await expect(page.getByRole("button", { name: "Start" })).toBeVisible();
+  await page.getByRole("button", { name: "Start" }).click();
+  await expect(page.getByRole("button", { name: "USD", exact: false }).first()).toHaveAttribute("aria-pressed", "true");
+  await page.reload();
+  await expect(page.getByRole("button", { name: "See an example" })).toBeVisible();
+  await page.getByRole("button", { name: "See an example" }).click();
+  await expect(page.getByRole("tab", { name: "Money" })).toBeVisible();
+  // and back to Russian from the settings
+  await page.getByRole("tab", { name: "Profile" }).click();
+  await page.locator('.app-canvas > [aria-hidden="false"]').getByRole("button", { name: /^Settings|Alex/ }).first().click();
+  await page.getByRole("button", { name: /Language/ }).click();
+  await page.getByRole("dialog").getByRole("button", { name: /Русский/ }).click();
+  await expect(page.getByRole("tab", { name: "Деньги" })).toBeVisible();
 });

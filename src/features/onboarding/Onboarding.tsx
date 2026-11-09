@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Banknote, Check, ChevronLeft, CircleCheckBig, CreditCard, PiggyBank, ShieldCheck, Target, WalletCards, type LucideIcon } from "../../ui/glyphs";
+import { Banknote, Check, ChevronLeft, CircleCheckBig, CreditCard, Globe, PiggyBank, ShieldCheck, Target, WalletCards, type LucideIcon } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { nowISO } from "../../lib/dates";
 import { haptic } from "../../lib/haptics";
@@ -12,6 +12,7 @@ import type { CardStyle, Wallet, WalletKind } from "../../store/types";
 import { FullLogo } from "../../ui/Brand";
 import { ease } from "../../ui/motion";
 import { Button, IconButton, inputCls } from "../../ui/primitives";
+import { LANGS, getLang, langInfo, switchLanguage, tr } from "../../i18n/i18n";
 
 type Step = 0 | 1 | 2;
 
@@ -25,24 +26,30 @@ interface Preset {
 }
 
 const PRESETS: Preset[] = [
-  { kind: "card", name: "Карта", icon: CreditCard, style: "ardessa", on: true, amount: "" },
-  { kind: "cash", name: "Наличные", icon: Banknote, style: "graphite", on: true, amount: "" },
-  { kind: "savings", name: "Накопления", icon: PiggyBank, style: "titanium", on: false, amount: "" }
+  { kind: "card", name: tr("Карта"), icon: CreditCard, style: "ardessa", on: true, amount: "" },
+  { kind: "cash", name: tr("Наличные"), icon: Banknote, style: "graphite", on: true, amount: "" },
+  { kind: "savings", name: tr("Накопления"), icon: PiggyBank, style: "titanium", on: false, amount: "" }
 ];
 
 const FEATURES: Array<{ icon: LucideIcon; text: string }> = [
-  { icon: WalletCards, text: "Все карты, наличные и накопления в одном месте" },
-  { icon: Target, text: "Бюджеты, цели и планы — и сколько можно потратить сегодня" },
-  { icon: CircleCheckBig, text: "Дела, списки и заметки: план на день, чтобы ничего не забыть" },
-  { icon: ShieldCheck, text: "Данные только на вашем устройстве, вход по коду или Face ID" }
+  { icon: WalletCards, text: tr("Все карты, наличные и накопления в одном месте") },
+  { icon: Target, text: tr("Бюджеты, цели и планы — и сколько можно потратить сегодня") },
+  { icon: CircleCheckBig, text: tr("Дела, списки и заметки: план на день, чтобы ничего не забыть") },
+  { icon: ShieldCheck, text: tr("Данные только на вашем устройстве, вход по коду или Face ID") }
 ];
 
-/** First launch: a short welcome, name and currency, starting balances. */
+/** The language's own currency first, then the common ones. */
+const START_CURRENCIES = [...new Set([langInfo().currency, "USD", "EUR", "RUB", "CNY", "GBP", "TRY", "KZT"])]
+  .slice(0, 6)
+  .map((code) => CURRENCIES.find((c) => c.code === code)!);
+
+/** First launch: language and a short welcome, name and currency, starting balances. */
 export function Onboarding() {
   const [step, setStep] = useState<Step>(0);
   const [dir, setDir] = useState(1);
   const [name, setName] = useState("");
-  const [currency, setCurrency] = useState("RUB");
+  const [currency, setCurrency] = useState(langInfo().currency);
+  const [langOpen, setLangOpen] = useState(false);
   const [wallets, setWallets] = useState(PRESETS);
 
   const go = (s: Step) => {
@@ -69,7 +76,7 @@ export function Onboarding() {
     completeOnboarding({
       ...base,
       wallets: list,
-      settings: { ...defaultSettings(), name: name.trim(), baseCurrency: currency, rates: currency === "RUB" ? defaultSettings().rates : {}, defaultWalletId: list[0].id },
+      settings: { ...defaultSettings(), name: name.trim(), baseCurrency: currency, numberFormat: langInfo().numbers, rates: currency === "RUB" ? defaultSettings().rates : {}, defaultWalletId: list[0].id },
       meta: { demo: false, createdAt: now }
     });
   };
@@ -82,14 +89,64 @@ export function Onboarding() {
   return (
     <div className="app-canvas fixed inset-0 z-[110] flex flex-col" style={{ paddingTop: "calc(var(--safe-top) + 12px)", paddingBottom: "calc(var(--safe-bottom) + 16px)" }}>
       <div className="flex h-11 items-center justify-between px-4">
-        <div className="w-9">{step > 0 && <IconButton icon={ChevronLeft} label="Назад" iconSize={22} onClick={() => go((step - 1) as Step)} />}</div>
+        <div className="flex flex-1">{step > 0 && <IconButton icon={ChevronLeft} label={tr("Назад")} iconSize={22} onClick={() => go((step - 1) as Step)} />}</div>
         <div className="flex gap-1.5" aria-hidden="true">
           {[0, 1, 2].map((i) => (
             <motion.span key={i} className={cn("h-[5px] rounded-full", i === step ? "bg-ink" : "bg-ink-4")} animate={{ width: i === step ? 20 : 5 }} />
           ))}
         </div>
-        <div className="w-9" />
+        <div className="flex flex-1 justify-end">
+          {step === 0 && (
+            <button
+              type="button"
+              aria-label={tr("Язык")}
+              aria-expanded={langOpen}
+              onClick={() => {
+                haptic();
+                setLangOpen((v) => !v);
+              }}
+              className="tile flex h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 text-footnote font-semibold text-ink"
+            >
+              <Globe size={16} />
+              {langInfo().name}
+            </button>
+          )}
+        </div>
       </div>
+
+      <AnimatePresence>
+        {langOpen && (
+          <motion.div
+            role="radiogroup"
+            aria-label={tr("Язык")}
+            className="panel absolute inset-x-4 z-10 grid grid-cols-2 gap-1 rounded-[20px] p-2"
+            style={{ top: "calc(var(--safe-top) + 64px)" }}
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.22, ease: ease.out }}
+          >
+            {LANGS.map((l) => (
+              <button
+                key={l.id}
+                type="button"
+                role="radio"
+                aria-checked={l.id === getLang()}
+                lang={l.id}
+                onClick={() => {
+                  haptic();
+                  if (l.id === getLang()) setLangOpen(false);
+                  else switchLanguage(l.id);
+                }}
+                className={cn("flex h-12 items-center justify-between rounded-[14px] px-3.5 text-left text-callout", l.id === getLang() ? "bg-ink text-ink-inverse" : "text-ink active:bg-surface-press")}
+              >
+                {l.name}
+                {l.id === getLang() && <Check size={16} strokeWidth={2.6} />}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="relative min-h-0 flex-1 overflow-hidden">
         <AnimatePresence initial={false} custom={dir} mode="popLayout">
@@ -107,7 +164,7 @@ export function Onboarding() {
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: ease.out }}>
                   <FullLogo layout="row" size={27} />
                 </motion.div>
-                <p className="mt-7 text-body text-ink-2">Деньги и дела — спокойно и под контролем.</p>
+                <p className="mt-7 text-body text-ink-2">{tr("Деньги и дела — спокойно и под контролем.")}</p>
                 <div className="mt-10 flex flex-col gap-5">
                   {FEATURES.map((f, i) => (
                     <motion.div key={f.text} className="flex items-start gap-3.5" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 + i * 0.08, duration: 0.5, ease: ease.out }}>
@@ -123,14 +180,14 @@ export function Onboarding() {
 
             {step === 1 && (
               <div className="pt-6">
-                <h1 className="text-title-1 font-display text-ink">Знакомство</h1>
-                <p className="mt-2 text-callout text-ink-2">Как к вам обращаться и в какой валюте считать.</p>
+                <h1 className="text-title-1 font-display text-ink">{tr("Знакомство")}</h1>
+                <p className="mt-2 text-callout text-ink-2">{tr("Как к вам обращаться и в какой валюте считать.")}</p>
                 <label className="panel mt-7 flex h-14 items-center rounded-[16px] px-4">
-                  <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Имя (необязательно)" maxLength={30} enterKeyHint="next" className={cn(inputCls, "text-headline")} />
+                  <input value={name} onChange={(e) => setName(e.target.value)} placeholder={tr("Имя (необязательно)")} maxLength={30} enterKeyHint="next" className={cn(inputCls, "text-headline")} />
                 </label>
-                <div className="section-label mt-8 px-1">Основная валюта</div>
+                <div className="section-label mt-8 px-1">{tr("Основная валюта")}</div>
                 <div className="mt-3 grid grid-cols-3 gap-2">
-                  {CURRENCIES.slice(0, 6).map((c) => (
+                  {START_CURRENCIES.map((c) => (
                     <button
                       key={c.code}
                       type="button"
@@ -151,8 +208,8 @@ export function Onboarding() {
 
             {step === 2 && (
               <div className="pt-6">
-                <h1 className="text-title-1 font-display text-ink">Ваши счета</h1>
-                <p className="mt-2 text-callout text-ink-2">Отметьте, что у вас есть, и сколько там сейчас. Поправить можно в любой момент.</p>
+                <h1 className="text-title-1 font-display text-ink">{tr("Ваши счета")}</h1>
+                <p className="mt-2 text-callout text-ink-2">{tr("Отметьте, что у вас есть, и сколько там сейчас. Поправить можно в любой момент.")}</p>
                 <div className="mt-7 flex flex-col gap-2.5">
                   {wallets.map((w, i) => (
                     <div key={w.kind} className={cn("panel flex items-center gap-3 rounded-[18px] px-3.5 py-3 transition-opacity", !w.on && "opacity-60")}>
@@ -180,7 +237,7 @@ export function Onboarding() {
                           value={w.amount}
                           disabled={!w.on}
                           placeholder="0"
-                          aria-label={`Остаток: ${w.name}`}
+                          aria-label={tr("Остаток: {0}", w.name)}
                           onChange={(e) => {
                             const v = e.target.value.replace(/[^\d.,]/g, "");
                             setWallets((list) => list.map((x, j) => (j === i ? { ...x, amount: v } : x)));
@@ -201,23 +258,15 @@ export function Onboarding() {
       <div className="flex flex-col gap-2 px-6 pt-3">
         {step === 0 && (
           <>
-            <Button block onClick={() => go(1)}>
-              Начать
-            </Button>
-            <Button block variant="ghost" onClick={demo}>
-              Посмотреть на примере
-            </Button>
+            <Button block onClick={() => go(1)}>{tr("Начать")}</Button>
+            <Button block variant="ghost" onClick={demo}>{tr("Посмотреть на примере")}</Button>
           </>
         )}
         {step === 1 && (
-          <Button block onClick={() => go(2)}>
-            Дальше
-          </Button>
+          <Button block onClick={() => go(2)}>{tr("Дальше")}</Button>
         )}
         {step === 2 && (
-          <Button block onClick={finish} disabled={!wallets.some((w) => w.on)}>
-            Готово
-          </Button>
+          <Button block onClick={finish} disabled={!wallets.some((w) => w.on)}>{tr("Готово")}</Button>
         )}
       </div>
     </div>

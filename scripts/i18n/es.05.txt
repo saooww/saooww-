@@ -1,0 +1,150 @@
+Aportar
+Aportar a la meta
+Prueba a cambiar la búsqueda o los filtros.
+Inténtalo dentro de {0} s
+Últimos 30 días
+En los últimos meses los gastos superan a los ingresos en {0}
+Últimas operaciones
+Últimos dígitos
+Último día del mes
+La última, hace {0} días
+Última: {0}
+Ver un ejemplo
+Ponte la primera meta
+Ingreso
+Ingresos este mes
+Calcular
+Después, lo demás importante.
+Gastaste menos que la semana anterior
+Gastado
+Casi agotado · quedan {0}
+Casi nunca
+Aparecerá encima de las categorías: un toque y todo relleno.
+Superado en
+Superado en {0}
+Semana anterior
+Mes anterior
+Periodo anterior
+Al abrir aparece directamente la entrada de gasto: importe, categoría, listo. Ciérrala para ir al inicio.
+A este ritmo, el mes acabará en unos
+A este ritmo: {0}
+Privacidad
+Hábitos
+Vincula una lista, tarea, meta, plan o deuda
+Crea un código
+App bloqueada
+Ejemplo: {0} {1} · {2}
+Prioridad
+Ejecutar ahora
+Previsión hasta fin de mes
+El progreso será igual al saldo de la cartera elegida: práctico para una cuenta de ahorro.
+Progreso del día y próximas tareas
+El progreso es igual al saldo de la cartera «{0}». Aportar es transferir a ella.
+Venta de cosas
+Supermercado
+Omitir
+Omitir una vez
+Vencida hace {0}
+Vencido
+Perdonar el resto y cerrar
+Perfil
+Intereses y dividendos
+Porcentajes: frente a los mismos días
+Otros
+Semana pasada
+Mes pasado
+Vie
+Elemento
+Elementos
+Viajes
+Trabajo
+Una vez al día la app guarda una copia de los datos en este dispositivo (las tres últimas). Protege de errores; para pasar a otro dispositivo, usa una copia en Archivos.
+Ordena lo anotado y elige hasta tres tareas principales. Empieza por ellas.
+Lo ordenarás al planificar el día
+Ocio
+Dividir
+Dividir el recibo
+Secciones
+Organiza las tareas por áreas de tu vida
+La diferencia se anotará como ajuste de saldo; el historial de operaciones no cambia.
+Ordenar
+Reparto por categorías
+Gast.
+Gasto
+Gasto añadido
+Gasto anotado
+Gastos
+Gastos del periodo
+Gastas {0} más que a estas alturas del mes pasado
+Gastas {0} menos que a estas alturas del mes pasado
+Gastos por categoría
+Los gastos superaron a los ingresos (
+Con regularidad
+Pagos periódicos
+Ingresos periódicos
+Cargos periódicos
+Pago periódico
+El pago periódico seguirá funcionando; solo se borra este registro.
+Pago periódico eliminado
+Poco
+Modo
+Copia de seguridad
+Copias y datos
+Recomendación: 6 meses de tu gasto habitual ≈
+Decide cuándo hacerlas
+Ritmo
+Ritmo del mes
+Rosa
+Rublo ruso
+Desde
+Desde la cartera
+De días anteriores
+Sakura
+El mayor gasto
+El mayor gasto:
+La forma más rápida de anotar gastos es abrir directamente la entrada de gasto.
+El día más productivo:
+Sáb
+Restablecer
+Quitar filtros
+Contraer
+Por encima de la norma
+Claro
+Libre
+Libre para el
+Un día libre. Anota las tareas cuando surjan.
+Propio
+Saldo propio
+Color propio
+Color de acento propio
+Se borrará la operación vinculada
+Vincular con…
+Vínculos
+Teléfono e internet
+Hecho
+Hecho {0} de {1}
+Hecho {0} de {1}.
+Hecho hoy
+Hecho: {0}
+Convertir en tareas: {0}
+Convertir en tarea
+Hoy
+Hoy sin tareas marcadas. Mañana prueba a empezar con un plan.
+Hoy por encima de la norma
+Hoy, {0} {1}
+Ahora en cuentas de gasto
+Ahora: {0}, {1}.{2} Las fotos de recibos no entran en la copia.
+Del sistema
+Cuánto cuesta una unidad de la moneda en {0}. Sin tipo, los importes en esta moneda no entran en el saldo total ni en el análisis: no sumamos monedas distintas a ojo.
+¿Cuánto llega a la segunda cuenta?
+Copiado: {0} KB de texto
+Copiar como texto
+Próximamente
+Ajustar saldo
+Ocultar al abrir
+Ocultar cada vez que se abre
+Ocultas ·
+Las categorías ocultas no se ofrecen al anotar, pero siguen en el historial y el análisis.
+Los importes ocultos se sustituyen por puntos en tarjetas, patrimonio y metas. Toca el «ojo» de la tarjeta para cambiarlo.
+Ocultar
+Ocultar saldo

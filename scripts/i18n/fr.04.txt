@@ -1,0 +1,150 @@
+Norme
+Il faut un autre portefeuille en
+Il faut un portefeuille dans la devise de l'objectif
+Vue d'ensemble
+Mettre à jour
+Mise à jour…
+Éducation
+Obsidienne
+Budget global
+Vous dépensez ici environ {0} par mois.
+Dépenses habituelles
+Dépenses habituelles jusqu'à la fin du mois
+Normal
+Énorme
+Vêtements
+Une ligne — et l'app comprend seule : dépense, revenu, tâche ou objectif.
+Rentrées attendues
+Océan
+Opérations
+Opérations du mois
+Les opérations s'enregistrent seules le jour du paiement quand vous ouvrez l'app. La mention « rarement » est votre propre estimation : l'app n'a aucune donnée bancaire d'utilisation.
+Opérations du jour
+Opérations, tâches, notes, personnes…
+Opération
+Opération issue du paiement régulier « {0} »
+Opération annulée, plan rétabli
+Opération répétée
+Opération supprimée
+Devise principale
+Devise principale — {0}. Définissez des taux pour les autres devises.
+Devise principale — {0}. Les taux de la Banque centrale se recalculeront seuls.
+Portefeuille principal
+Le portefeuille principal est proposé par défaut pour les nouvelles opérations.
+Reste
+Reste {0}
+Reste à épargner
+Le reste
+Restera
+Reste
+Reste · {0}
+Reste — {0}
+Reste : {0}
+Épargner par mois
+Désépingler
+Ouvrir sur
+Ouvrir les tâches
+Ouvrir les tâches du jour
+Ouvrir la semaine prochaine
+Rouvrir
+Ouvrir la photo du ticket
+Depuis
+Mis de côté
+Annuler
+Annuler
+Marquez les comptes d'épargne avec le type « Épargne »
+Cochez ce qui est fait, reportez le reste, écrivez quelques lignes dans le journal.
+Soyez honnête — l'app vous suggérera ce que vous pouvez arrêter.
+Indiquez ce que vous avez et combien il y a maintenant. Vous pourrez corriger à tout moment.
+Vacances
+En retard · il faut {0}/mois
+En retard · à ce rythme pour {0}
+En retard sur l'échéance
+Taux officiels de la Banque centrale au {0}. Ils se mettent à jour une fois par jour quand vous êtes en ligne.
+Apparence
+Effacer
+Effacer toutes les données
+Quelques lignes sur la journée
+Quelques lignes sur aujourd'hui
+Voile
+Pause
+Transférer
+Virement
+Virement vers « {0} »
+Virement effectué
+Virement depuis « {0} »
+Virements
+Les virements entre vos portefeuilles, les dettes et les objectifs ne comptent pas comme revenus ni dépenses.
+Redémarrer
+Reporté au {0}
+Reporté à demain
+Reporté à aujourd'hui
+Archiver
+Reporter à demain
+Dépassement
+Période
+Fréquence
+Sable
+Animaux
+Écrivez comme d'habitude : « Appeler maman demain à 18:00 », « rapport pour vendredi #travail !! ». La date, l'heure, la répétition et la liste sont reconnues toutes seules. Plusieurs lignes — plusieurs tâches.
+Plan
+Plan du jour
+Plan du jour prêt
+Un plan ne change pas les soldes tant que vous ne l'exécutez pas. Besoin chaque mois ? Ajoutez un paiement régulier dans « Abonnements et paiements ».
+Plan exécuté
+Plan sauté
+Plan enregistré
+Plan supprimé
+Plans
+Plans et calendrier
+Aucun paiement pour l'instant
+Paiements et plans
+Paiement enregistré
+Paiement de dette
+Plus
+Lun
+Par
+En semaine
+Comme prévu
+Par date
+Pour «
+Comme prévu
+Aucune opération pour ce portefeuille
+Répétition
+Répétez le code
+Répéter aujourd'hui
+Se répète
+Répéter
+Dette remboursée : {0}
+Cadeaux
+Faire le bilan
+Abonnements
+Abonnements par mois
+Abonnements et paiements
+Détails
+Remplir
+Plus tard
+Recherche
+Rechercher dans les notes
+Rechercher par nom, montant, tag
+Pas encore d'opérations
+Rien à analyser pour l'instant
+Rien de prévu pour l'instant
+Rien de fait pour l'instant
+Vide pour l'instant
+Afficher le solde
+Tout afficher · {0}
+Afficher les opérations
+Afficher sur l'écran d'accueil
+Achats
+Achats
+Six mois
+La suppression complète efface les données de l'app, les photos de tickets et les copies de cet appareil. C'est irréversible.
+Minuit
+La moitié · {0}
+Reçu
+Le résultat est négatif
+Ira dans la boîte de réception — vous la trierez en planifiant la journée
+Versement
+Aucun versement depuis 3 mois
+Aucun versement pour l'instant

@@ -1,5 +1,6 @@
 import type { Task } from "../store/types";
 import { addDays, type DayKey } from "./dates";
+import { tr } from "../i18n/i18n";
 
 /**
  * A task as a calendar event with a reminder. The phone's Calendar then
@@ -58,7 +59,7 @@ export function taskToICS(task: Task, opts: { listName?: string; remindBefore?: 
   const details = [
     task.note,
     task.subtasks?.length ? task.subtasks.map((s) => `${s.done ? "✓" : "○"} ${s.title}`).join("\n") : undefined,
-    opts.listName ? `Список: ${opts.listName}` : undefined
+    opts.listName ? tr("Список: {0}", opts.listName) : undefined
   ].filter(Boolean);
   if (details.length) lines.push(`DESCRIPTION:${esc(details.join("\n\n"))}`);
   lines.push("BEGIN:VALARM", "ACTION:DISPLAY", `DESCRIPTION:${esc(task.title)}`);

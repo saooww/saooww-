@@ -17,6 +17,7 @@ import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
 import { deleteTask, toggleFocus } from "./actions";
 import { QuickAddSheet } from "./QuickAdd";
 import { TaskCheck } from "./TaskRow";
+import { tr } from "../../i18n/i18n";
 
 function useAutosize(ref: React.RefObject<HTMLTextAreaElement>, value: string, min = 24) {
   useEffect(() => {
@@ -38,12 +39,10 @@ export function TaskSheet({ editId, due, projectId }: { editId?: ID; due?: DayKe
 function GoneSheet() {
   const { close } = useSheet();
   return (
-    <Sheet title="Дело">
-      <div className="px-6 py-8 text-center text-callout text-ink-2">Это дело удалено.</div>
+    <Sheet title={tr("Дело")}>
+      <div className="px-6 py-8 text-center text-callout text-ink-2">{tr("Это дело удалено.")}</div>
       <div className="px-4">
-        <Button variant="secondary" block onClick={close}>
-          Закрыть
-        </Button>
+        <Button variant="secondary" block onClick={close}>{tr("Закрыть")}</Button>
       </div>
     </Sheet>
   );
@@ -76,7 +75,7 @@ function TaskDetails({ task }: { task: Task }) {
 
   const pickRepeat = () =>
     nav.sheet("picker", {
-      title: "Повтор",
+      title: tr("Повтор"),
       value: task.repeat,
       options: (["none", "day", "weekdays", "week", "month", "year"] as TaskRepeat[]).map((r) => ({ value: r, label: REPEAT_LABEL[r] })),
       onSelect: (v: string) => update({ repeat: v as TaskRepeat, due: v !== "none" && !task.due ? today : task.due })
@@ -84,9 +83,9 @@ function TaskDetails({ task }: { task: Task }) {
 
   const pickList = () =>
     nav.sheet("picker", {
-      title: "Список",
+      title: tr("Список"),
       value: task.projectId ?? "",
-      options: [{ value: "", label: "Входящие", sub: "Без списка" }, ...projects.filter((p) => !p.archived || p.id === task.projectId).map((p) => ({ value: p.id, label: p.name, iconName: p.icon }))],
+      options: [{ value: "", label: tr("Входящие"), sub: tr("Без списка") }, ...projects.filter((p) => !p.archived || p.id === task.projectId).map((p) => ({ value: p.id, label: p.name, iconName: p.icon }))],
       onSelect: (v: string) => update({ projectId: v || undefined })
     });
 
@@ -97,7 +96,7 @@ function TaskDetails({ task }: { task: Task }) {
   };
 
   return (
-    <Sheet ariaLabel="Дело" left={<span />} right={<SheetAction strong onClick={close}>Готово</SheetAction>} title="Дело">
+    <Sheet ariaLabel={tr("Дело")} left={<span />} right={<SheetAction strong onClick={close}>{tr("Готово")}</SheetAction>} title={tr("Дело")}>
       <div className="flex flex-col gap-5 pt-1">
         <div className="mx-4 panel rounded-lg px-4 py-3.5">
           <div className="flex items-start gap-3">
@@ -114,7 +113,7 @@ function TaskDetails({ task }: { task: Task }) {
                 if (v.trim()) update({ title: v.trim() });
               }}
               onBlur={() => !title.trim() && setTitle(task.title)}
-              aria-label="Название"
+              aria-label={tr("Название")}
               className={cn("min-w-0 flex-1 resize-none bg-transparent text-title-3 font-semibold outline-none", task.done && "text-ink-2 line-through decoration-ink-3")}
             />
           </div>
@@ -123,15 +122,15 @@ function TaskDetails({ task }: { task: Task }) {
             rows={1}
             value={task.note ?? ""}
             onChange={(e) => update({ note: e.target.value || undefined })}
-            placeholder="Заметка: детали, ссылки, адрес"
+            placeholder={tr("Заметка: детали, ссылки, адрес")}
             className="mt-2 w-full resize-none bg-transparent pl-[38px] text-callout leading-[22px] text-ink-2 outline-none placeholder:text-ink-3"
           />
         </div>
 
         <Checklist items={subs} onChange={(subtasks) => update({ subtasks })} />
 
-        <Group header="Когда">
-          <Row icon={CalendarDays} iconTone={task.due && task.due < today && !task.done ? "negative" : undefined} title="Дата" value={task.due ? `${dueLabel(task.due, today)}${task.time ? `, ${task.time}` : ""}` : "Без даты"} chevron onClick={pickDate} />
+        <Group header={tr("Когда")}>
+          <Row icon={CalendarDays} iconTone={task.due && task.due < today && !task.done ? "negative" : undefined} title={tr("Дата")} value={task.due ? `${dueLabel(task.due, today)}${task.time ? `, ${task.time}` : ""}` : tr("Без даты")} chevron onClick={pickDate} />
           <div className="scroll-x flex gap-2 px-4 py-3">
             {(["today", "tomorrow", "weekend", "nextweek"] as QuickDate[]).map((k) => {
               const d = quickDate(k, today);
@@ -142,35 +141,35 @@ function TaskDetails({ task }: { task: Task }) {
               );
             })}
           </div>
-          <Row icon={Repeat} title="Повтор" value={task.repeat === "none" ? "Нет" : REPEAT_LABEL[task.repeat]} chevron onClick={pickRepeat} />
+          <Row icon={Repeat} title={tr("Повтор")} value={task.repeat === "none" ? tr("Нет") : REPEAT_LABEL[task.repeat]} chevron onClick={pickRepeat} />
         </Group>
 
         <Group>
-          <Row leading={project ? <IconChip name={project.icon} color={project.color} size={30} /> : <IconChip icon={Hash} size={30} />} title="Список" value={project?.name ?? "Входящие"} chevron onClick={pickList} />
+          <Row leading={project ? <IconChip name={project.icon} color={project.color} size={30} /> : <IconChip icon={Hash} size={30} />} title={tr("Список")} value={project?.name ?? tr("Входящие")} chevron onClick={pickList} />
           <div className="px-4 py-3">
-            <div className="pb-2 text-footnote text-ink-2">Приоритет</div>
+            <div className="pb-2 text-footnote text-ink-2">{tr("Приоритет")}</div>
             <Segmented
               value={String(task.priority) as "0" | "1" | "2"}
               onChange={(v) => update({ priority: Number(v) as 0 | 1 | 2 })}
               options={[
-                { value: "0", label: "Обычный" },
-                { value: "1", label: "Важно" },
-                { value: "2", label: "Срочно" }
+                { value: "0", label: tr("Обычный") },
+                { value: "1", label: tr("Важно") },
+                { value: "2", label: tr("Срочно") }
               ]}
             />
           </div>
           {!task.done && (
-            <FormRow label={<span className="flex items-center gap-3"><IconChip icon={Stamp} tone="accent" size={30} />Главное на сегодня</span>}>
-              <Toggle checked={task.focus === today} disabled={task.focus !== today && focusCount >= 3} onChange={() => toggleFocus(task, today)} label="Главное на сегодня" />
+            <FormRow label={<span className="flex items-center gap-3"><IconChip icon={Stamp} tone="accent" size={30} />{tr("Главное на сегодня")}</span>}>
+              <Toggle checked={task.focus === today} disabled={task.focus !== today && focusCount >= 3} onChange={() => toggleFocus(task, today)} label={tr("Главное на сегодня")} />
             </FormRow>
           )}
         </Group>
 
-        <Group header="Заметки">
+        <Group header={tr("Заметки")}>
           {linked.map((n) => (
-            <Row key={n.id} icon={NotebookPen} title={n.title || "Без названия"} subtitle={n.body.slice(0, 80) || undefined} chevron onClick={() => { close(); window.setTimeout(() => nav.push("note", { id: n.id }), 120); }} />
+            <Row key={n.id} icon={NotebookPen} title={n.title || tr("Без названия")} subtitle={n.body.slice(0, 80) || undefined} chevron onClick={() => { close(); window.setTimeout(() => nav.push("note", { id: n.id }), 120); }} />
           ))}
-          <Row icon={Plus} title="Новая заметка к делу" onClick={newNote} />
+          <Row icon={Plus} title={tr("Новая заметка к делу")} onClick={newNote} />
         </Group>
 
         <div className="flex flex-col gap-2 px-4">
@@ -181,11 +180,9 @@ function TaskDetails({ task }: { task: Task }) {
               icon={CalendarPlus}
               onClick={() => {
                 const ok = openInCalendar(task, project?.name);
-                if (!ok) nav.toast("Не получилось открыть Календарь", { tone: "warning" });
+                if (!ok) nav.toast(tr("Не получилось открыть Календарь"), { tone: "warning" });
               }}
-            >
-              Добавить в Календарь
-            </Button>
+            >{tr("Добавить в Календарь")}</Button>
           )}
           <Button
             variant="danger"
@@ -195,13 +192,10 @@ function TaskDetails({ task }: { task: Task }) {
               close();
               deleteTask(task);
             }}
-          >
-            Удалить дело
-          </Button>
+          >{tr("Удалить дело")}</Button>
           <p className="px-4 pt-1 text-center text-footnote text-ink-3">
-            {task.due ? "Календарь телефона сам напомнит о деле, даже если приложение закрыто. " : ""}
-            Создано {formatDate(dayOf(task.createdAt))}
-            {task.done && task.doneAt ? `, сделано ${formatDateTime(task.doneAt)}` : ""}
+            {task.due ? tr("Календарь телефона сам напомнит о деле, даже если приложение закрыто. ") : ""}{tr("Создано")}{" "}{formatDate(dayOf(task.createdAt))}
+            {task.done && task.doneAt ? tr(", сделано {0}", formatDateTime(task.doneAt)) : ""}
           </p>
         </div>
       </div>
@@ -213,7 +207,7 @@ function TaskDetails({ task }: { task: Task }) {
 /*  Checklist — used by tasks and notes                                */
 /* ------------------------------------------------------------------ */
 
-export function Checklist({ items, onChange, header = "Пункты", placeholder = "Добавить пункт" }: { items: Subtask[]; onChange: (items: Subtask[]) => void; header?: string; placeholder?: string }) {
+export function Checklist({ items, onChange, header = tr("Пункты"), placeholder = tr("Добавить пункт") }: { items: Subtask[]; onChange: (items: Subtask[]) => void; header?: string; placeholder?: string }) {
   const [draft, setDraft] = useState("");
   const add = () => {
     const t = draft.trim();
@@ -227,7 +221,7 @@ export function Checklist({ items, onChange, header = "Пункты", placeholde
     <section className="mx-4">
       <div className="flex items-baseline justify-between px-1 pb-2.5">
         <span className="section-label">{header}</span>
-        {items.length > 0 && <span className="num text-footnote text-ink-3">{done} из {items.length}</span>}
+        {items.length > 0 && <span className="num text-footnote text-ink-3">{done}{tr("из")}{" "}{items.length}</span>}
       </div>
       <div className="panel overflow-hidden rounded-lg [&>*+*]:hairline-t">
         <AnimatePresence initial={false}>
@@ -255,10 +249,10 @@ export function Checklist({ items, onChange, header = "Пункты", placeholde
                 value={it.title}
                 onChange={(e) => onChange(items.map((x) => (x.id === it.id ? { ...x, title: e.target.value } : x)))}
                 onBlur={(e) => !e.target.value.trim() && onChange(items.filter((x) => x.id !== it.id))}
-                aria-label="Пункт"
+                aria-label={tr("Пункт")}
                 className={cn("min-w-0 flex-1 bg-transparent py-2.5 text-body outline-none", it.done && "text-ink-3 line-through decoration-ink-3")}
               />
-              <button type="button" aria-label={`Удалить пункт: ${it.title}`} onClick={() => onChange(items.filter((x) => x.id !== it.id))} className="grid h-8 w-8 place-items-center rounded-full text-ink-3 active:bg-surface-3">
+              <button type="button" aria-label={tr("Удалить пункт: {0}", it.title)} onClick={() => onChange(items.filter((x) => x.id !== it.id))} className="grid h-8 w-8 place-items-center rounded-full text-ink-3 active:bg-surface-3">
                 <X size={15} />
               </button>
             </motion.div>

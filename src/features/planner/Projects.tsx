@@ -19,6 +19,7 @@ import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
 import { useOpenFilter } from "./actions";
 import { Heading, Invite, InviteButton } from "./bits";
 import { TaskList } from "./TaskRow";
+import { tr } from "../../i18n/i18n";
 
 /* ------------------------------------------------------------------ */
 /*  One list                                                           */
@@ -45,8 +46,8 @@ export function ProjectScreen({ id }: { id: ID }) {
 
   if (!project) {
     return (
-      <Screen title="Список">
-        <EmptyState icon={Inbox} title="Список удалён" />
+      <Screen title={tr("Список")}>
+        <EmptyState icon={Inbox} title={tr("Список удалён")} />
       </Screen>
     );
   }
@@ -56,15 +57,15 @@ export function ProjectScreen({ id }: { id: ID }) {
   const total = st.open + st.done;
 
   return (
-    <Screen title={project.name} ownTitle actions={<IconButton icon={Pencil} label="Изменить список" onClick={() => nav.sheet("project", { editId: id })} />}>
+    <Screen title={project.name} ownTitle actions={<IconButton icon={Pencil} label={tr("Изменить список")} onClick={() => nav.sheet("project", { editId: id })} />}>
       <div className="px-5 pb-5">
         <IconChip name={project.icon} color={project.color} size={52} />
         <h1 className="mt-3 text-title-1 font-display">{project.name}</h1>
         {project.note && <p className="mt-1 text-callout text-ink-2">{project.note}</p>}
         <div className="mt-2 text-footnote text-ink-2">
-          {total ? `Сделано ${st.done} из ${total}` : "Пока пусто"}
-          {project.deadline ? `, срок — ${formatDate(project.deadline, { long: true })}` : ""}
-          {project.archived ? ". В архиве" : ""}
+          {total ? tr("Сделано {0} из {1}", st.done, total) : tr("Пока пусто")}
+          {project.deadline ? tr(", срок — {0}", formatDate(project.deadline, { long: true })) : ""}
+          {project.archived ? tr(". В архиве") : ""}
         </div>
         {total > 0 && (
           <div className="mt-3 h-[5px] w-full overflow-hidden rounded-full" style={{ background: "var(--line)" }}>
@@ -80,34 +81,32 @@ export function ProjectScreen({ id }: { id: ID }) {
             onClick={() => nav.sheet("quickAdd", { projectId: id })}
             className="flex h-12 w-full items-center gap-3 rounded-lg border border-dashed border-line-strong px-4 text-left text-body text-ink-2 active:bg-surface-3"
           >
-            <Plus size={18} className="text-ink-3" />
-            Дело в «{project.name}»
+            <Plus size={18} className="text-ink-3" />{tr("Дело в «")}{project.name}»
           </button>
         </div>
 
         {groups.overdue.length > 0 && (
           <section>
-            <Heading title="Просрочено" tone="negative" aside={groups.overdue.length} />
+            <Heading title={tr("Просрочено")} tone="negative" aside={groups.overdue.length} />
             <TaskList tasks={groups.overdue} showList={false} />
           </section>
         )}
         {groups.dated.length > 0 && (
           <section>
-            <Heading title="По датам" aside={groups.dated.length} />
+            <Heading title={tr("По датам")} aside={groups.dated.length} />
             <TaskList tasks={groups.dated} showList={false} />
           </section>
         )}
         {groups.someday.length > 0 && (
           <section>
-            <Heading title="Без даты" aside={groups.someday.length} />
+            <Heading title={tr("Без даты")} aside={groups.someday.length} />
             <TaskList tasks={groups.someday} showList={false} />
           </section>
         )}
 
         {groups.done.length > 0 && (
           <section>
-            <button type="button" onClick={() => setShowDone((v) => !v)} aria-expanded={showDone} className="flex items-center gap-1.5 px-5 pb-2.5 text-subhead font-medium text-ink-2">
-              Сделано <span className="num text-ink-3">{groups.done.length}</span>
+            <button type="button" onClick={() => setShowDone((v) => !v)} aria-expanded={showDone} className="flex items-center gap-1.5 px-5 pb-2.5 text-subhead font-medium text-ink-2">{tr("Сделано")}{" "}<span className="num text-ink-3">{groups.done.length}</span>
               <ChevronDown size={15} className={cn("transition-transform duration-200", showDone && "rotate-180")} />
             </button>
             <AnimatePresence initial={false}>
@@ -121,14 +120,14 @@ export function ProjectScreen({ id }: { id: ID }) {
         )}
 
         <section>
-          <Heading title="Заметки" aside={linked.length || undefined} />
+          <Heading title={tr("Заметки")} aside={linked.length || undefined} />
           <Group>
             {linked.map((n) => (
-              <Row key={n.id} icon={NotebookPen} title={n.title || "Без названия"} subtitle={n.body.slice(0, 80) || undefined} chevron onClick={() => nav.push("note", { id: n.id })} />
+              <Row key={n.id} icon={NotebookPen} title={n.title || tr("Без названия")} subtitle={n.body.slice(0, 80) || undefined} chevron onClick={() => nav.push("note", { id: n.id })} />
             ))}
             <Row
               icon={Plus}
-              title="Новая заметка"
+              title={tr("Новая заметка")}
               onClick={() => {
                 const nid = useData.getState().addNote({ links: [{ type: "project", id }] });
                 nav.push("note", { id: nid, isNew: true });
@@ -174,7 +173,7 @@ export function ProjectSheet({ editId }: { editId?: ID }) {
   };
 
   return (
-    <Sheet title={existing ? "Список" : "Новый список"} left={<SheetAction onClick={close}>Отмена</SheetAction>} right={<SheetAction strong disabled={!valid} onClick={save}>Готово</SheetAction>}>
+    <Sheet title={existing ? tr("Список") : tr("Новый список")} left={<SheetAction onClick={close}>{tr("Отмена")}</SheetAction>} right={<SheetAction strong disabled={!valid} onClick={save}>{tr("Готово")}</SheetAction>}>
       <div className="flex flex-col gap-5 pt-1">
         <div className="flex flex-col items-center gap-3 px-4">
           <motion.span key={icon + color} initial={{ scale: 0.85 }} animate={{ scale: 1 }} transition={spring.snappy}>
@@ -185,20 +184,20 @@ export function ProjectSheet({ editId }: { editId?: ID }) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && save()}
-            placeholder="Например, «Ремонт кухни»"
+            placeholder={tr("Например, «Ремонт кухни»")}
             maxLength={40}
-            aria-label="Название списка"
+            aria-label={tr("Название списка")}
             className={cn(inputCls, "panel h-12 rounded-lg px-4 text-center text-headline font-semibold")}
           />
         </div>
 
-        <Group header="Цвет">
+        <Group header={tr("Цвет")}>
           <div className="grid grid-cols-6 gap-3 p-4">
             {CHART_COLORS.map((c) => (
               <button
                 key={c}
                 type="button"
-                aria-label={`Цвет ${c}`}
+                aria-label={tr("Цвет {0}", c)}
                 aria-pressed={color === c}
                 onClick={() => {
                   haptic();
@@ -211,7 +210,7 @@ export function ProjectSheet({ editId }: { editId?: ID }) {
           </div>
         </Group>
 
-        <Group header="Значок">
+        <Group header={tr("Значок")}>
           <div className="grid grid-cols-6 gap-2 p-3">
             {PROJECT_ICONS.map((n) => (
               <button
@@ -232,17 +231,17 @@ export function ProjectSheet({ editId }: { editId?: ID }) {
           </div>
         </Group>
 
-        <Group footer="Срок подходит проектам с результатом: «Переезд», «Подготовка к экзамену».">
-          <FormRow label="Срок">
-            <Toggle checked={hasDeadline} onChange={setHasDeadline} label="Срок" />
+        <Group footer={tr("Срок подходит проектам с результатом: «Переезд», «Подготовка к экзамену».")}>
+          <FormRow label={tr("Срок")}>
+            <Toggle checked={hasDeadline} onChange={setHasDeadline} label={tr("Срок")} />
           </FormRow>
           {hasDeadline && (
-            <FormRow label="До">
+            <FormRow label={tr("До")}>
               <input type="date" value={deadline} onChange={(e) => e.target.value && setDeadline(e.target.value)} className={cn(inputCls, "text-right")} />
             </FormRow>
           )}
           <div className="px-4 py-3">
-            <textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="Зачем этот список, какой результат нужен" rows={2} className={cn(inputCls, "resize-none")} />
+            <textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder={tr("Зачем этот список, какой результат нужен")} rows={2} className={cn(inputCls, "resize-none")} />
           </div>
         </Group>
 
@@ -254,11 +253,11 @@ export function ProjectSheet({ editId }: { editId?: ID }) {
               icon={existing.archived ? ArchiveRestore : Archive}
               onClick={() => {
                 useData.getState().updateProject(existing.id, { archived: !existing.archived });
-                nav.toast(existing.archived ? "Список возвращён" : "Список в архиве", { tone: "positive" });
+                nav.toast(existing.archived ? tr("Список возвращён") : tr("Список в архиве"), { tone: "positive" });
                 close();
               }}
             >
-              {existing.archived ? "Вернуть из архива" : "Убрать в архив"}
+              {existing.archived ? tr("Вернуть из архива") : tr("Убрать в архив")}
             </Button>
             <Button
               variant="danger"
@@ -266,19 +265,17 @@ export function ProjectSheet({ editId }: { editId?: ID }) {
               icon={Trash2}
               onClick={() =>
                 confirmDelete({
-                  title: `Удалить «${existing.name}»?`,
-                  message: taskCount ? `Вместе со списком удалятся ${pluralN(taskCount, ["дело", "дела", "дел"])}. Чтобы сохранить их, уберите список в архив.` : undefined,
-                  confirmLabel: "Удалить список",
+                  title: tr("Удалить «{0}»?", existing.name),
+                  message: taskCount ? tr("Вместе со списком удалятся {0}. Чтобы сохранить их, уберите список в архив.", pluralN(taskCount, ["дело", "дела", "дел"])) : undefined,
+                  confirmLabel: tr("Удалить список"),
                   onConfirm: () => {
                     close();
                     useUI.getState().popToRoot();
-                    window.setTimeout(() => undoable("Список удалён", () => useData.getState().deleteProject(existing.id)), 380);
+                    window.setTimeout(() => undoable(tr("Список удалён"), () => useData.getState().deleteProject(existing.id)), 380);
                   }
                 })
               }
-            >
-              Удалить список
-            </Button>
+            >{tr("Удалить список")}</Button>
           </div>
         )}
       </div>
@@ -292,7 +289,7 @@ export function ProjectSheet({ editId }: { editId?: ID }) {
 
 type ListKind = "inbox" | "upcoming" | "all" | "done";
 
-const TITLES: Record<ListKind, string> = { inbox: "Входящие", upcoming: "Скоро", all: "Все дела", done: "Сделано" };
+const TITLES: Record<ListKind, string> = { inbox: tr("Входящие"), upcoming: tr("Скоро"), all: tr("Все дела"), done: tr("Сделано") };
 
 export function TaskListScreen({ kind }: { kind: ListKind }) {
   const tasks = useData((s) => s.tasks);
@@ -316,12 +313,12 @@ export function TaskListScreen({ kind }: { kind: ListKind }) {
         else later.push(t);
       }
       for (const [d, list] of byDay) out.push({ key: d, title: formatDayHeading(d), tasks: list });
-      if (later.length) out.push({ key: "later", title: "Позже", tasks: later });
+      if (later.length) out.push({ key: "later", title: tr("Позже"), tasks: later });
       return out;
     }
     if (kind === "all") {
       const open = tasks.filter(isOpen);
-      const out = [{ key: "none", title: "Без списка", tasks: open.filter((t) => !t.projectId).sort(compareByDue) }];
+      const out = [{ key: "none", title: tr("Без списка"), tasks: open.filter((t) => !t.projectId).sort(compareByDue) }];
       for (const p of projects.filter((x) => !x.archived)) out.push({ key: p.id, title: p.name, tasks: open.filter((t) => t.projectId === p.id).sort(compareByDue) });
       return out.filter((s) => s.tasks.length);
     }
@@ -331,7 +328,7 @@ export function TaskListScreen({ kind }: { kind: ListKind }) {
     for (const t of done) byDay.set(dayOf(t.doneAt!), [...(byDay.get(dayOf(t.doneAt!)) ?? []), t]);
     return [...byDay].map(([d, list]) => {
       const dd = parseDay(d);
-      const title = d === today ? "Сегодня" : d === addDays(today, -1) ? "Вчера" : `${capitalize(WEEKDAYS_LONG[weekdayIndex(d)])}, ${dd.getDate()} ${MONTHS_GEN[dd.getMonth()]}`;
+      const title = d === today ? tr("Сегодня") : d === addDays(today, -1) ? tr("Вчера") : `${capitalize(WEEKDAYS_LONG[weekdayIndex(d)])}, ${dd.getDate()} ${MONTHS_GEN[dd.getMonth()]}`;
       return { key: d, title, tasks: list };
     });
   }, [kind, tasks, projects, today, isOpen]);
@@ -339,22 +336,20 @@ export function TaskListScreen({ kind }: { kind: ListKind }) {
   const count = sections.reduce((a, s) => a + s.tasks.length, 0);
 
   return (
-    <Screen title={TITLES[kind]} large actions={kind !== "done" ? <IconButton icon={Plus} label="Новое дело" onClick={() => nav.sheet("quickAdd", {})} /> : undefined}>
+    <Screen title={TITLES[kind]} large actions={kind !== "done" ? <IconButton icon={Plus} label={tr("Новое дело")} onClick={() => nav.sheet("quickAdd", {})} /> : undefined}>
       {kind === "inbox" && (
         <div className="mx-4 mb-5 rounded-lg border border-line px-4 py-3.5">
-          <p className="text-subhead text-ink-2">Сюда попадает всё, что записано на бегу, без даты и списка. Раз в день решайте, когда за это взяться — так ничего не потеряется.</p>
+          <p className="text-subhead text-ink-2">{tr("Сюда попадает всё, что записано на бегу, без даты и списка. Раз в день решайте, когда за это взяться — так ничего не потеряется.")}</p>
           {count > 0 && (
-            <Button size="sm" variant="tinted" icon={Sunrise} className="mt-3" onClick={() => nav.sheet("planDay", { start: "inbox" })}>
-              Разобрать
-            </Button>
+            <Button size="sm" variant="tinted" icon={Sunrise} className="mt-3" onClick={() => nav.sheet("planDay", { start: "inbox" })}>{tr("Разобрать")}</Button>
           )}
         </div>
       )}
       {count === 0 ? (
         kind === "inbox" ? (
-          <Invite text="Входящие пусты — голова свободна" action={<InviteButton onClick={() => nav.sheet("quickAdd", {})}>Записать</InviteButton>} />
+          <Invite text={tr("Входящие пусты — голова свободна")} action={<InviteButton onClick={() => nav.sheet("quickAdd", {})}>{tr("Записать")}</InviteButton>} />
         ) : (
-          <EmptyState icon={kind === "done" ? CheckCheck : Inbox} title={kind === "done" ? "Пока ничего не сделано" : "Здесь пусто"} text={kind === "upcoming" ? "Дела с датой после сегодняшнего дня появятся здесь." : undefined} />
+          <EmptyState icon={kind === "done" ? CheckCheck : Inbox} title={kind === "done" ? tr("Пока ничего не сделано") : tr("Здесь пусто")} text={kind === "upcoming" ? tr("Дела с датой после сегодняшнего дня появятся здесь.") : undefined} />
         )
       ) : (
         <div className="flex flex-col gap-6">

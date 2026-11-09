@@ -1,0 +1,150 @@
+Für heute ausblenden
+Beträge verbergen
+Nächste Woche
+Nächste Woche
+Nächste Woche ist noch leer
+Die nächsten Buchungen werden automatisch erfasst. Du verwaltest sie unter „Abos & Zahlungen“.
+Nächster Monat
+Nächster Zeitraum
+Nächste Zahlung: {0} übersprungen
+Nächstes Mal
+Pflaume
+Zu viele Versuche
+Code ändern
+Füge zuerst ein Konto hinzu
+Größte zuerst
+Kleinste zuerst
+Neueste zuerst
+Älteste zuerst
+Abhebung
+Abheben
+Erstellt
+Erstellen
+Budget erstellen
+Sortierung
+Speichere eine Kopie deiner Daten
+Wird im Tagebuch gespeichert — du findest es unter „Notizen“.
+Speichern
+Kopie in Dateien speichern
+Kopie der Daten speichern
+Jetzt Kopie speichern
+Keine gespeicherten Daten gefunden.
+Abbuchung
+Abbuchungen diesen Monat
+Abbuchen
+Vom Konto abbuchen
+Listen
+Liste
+Liste archiviert
+Liste wiederhergestellt
+Liste gelöscht
+Liste: {0}
+Tag planen
+Sport
+Mi
+Sofort
+Durchschnittlicher Bon
+Frist
+Rückgabedatum
+Eine Frist passt zu Projekten mit Ergebnis: „Umzug“, „Prüfungsvorbereitung“.
+Heute fällig
+Frist des Ziels „{0}“
+Dringend
+Wird
+Löschen
+Löschen (halten zum Leeren)
+Alles löschen
+Alles endgültig löschen?
+Alles vom Gerät löschen
+Daten löschen
+Pfeile — Veränderung ggü.
+Streng
+Betrag
+Der Betrag kommt aufs Konto — das ist keine Einnahme, sondern Geld, das zurückgezahlt werden muss.
+Betrag verborgen
+Der Betrag geht vom Konto ab — das ist keine Ausgabe, sondern Geld, das zu dir zurückkommt.
+Zielbetrag
+Betrag des Teils {0}
+Betrag: {0} {1}
+Tageskugel
+Tageskugel und smarte Zeile sind immer zu sehen. Der Rest nach Wunsch.
+Lebensbereiche
+Konten
+Konten, Ziele und Schulden in {0}
+Hier landet alles, was unterwegs ohne Datum und Liste notiert wurde. Entscheide einmal am Tag, wann du dich darum kümmerst — so geht nichts verloren.
+So siehst du, was im Griff ist und wo sich Liegengebliebenes sammelt. Listen kannst du umbenennen und eigene hinzufügen.
+Taxi
+Haptisches Feedback
+Darin: {0} und {1}. Die aktuellen Daten werden ersetzt — vorher sichern wir sie.
+Tags
+Tags: {0}
+Text
+Text der Notiz
+Der Text sieht nicht wie eine Sicherung aus
+Die aktuellen Daten werden durch das Beispiel ersetzt. Vorher erstellen wir eine Sicherung.
+Aktueller Saldo
+Aktueller Code
+Theme
+App-Theme
+Tempo über 3 Monate
+Themes, eigene Farbe, Zahlenschrift
+Typ
+Buchungstyp
+Buchungstyp
+Titan
+Eine ruhige Woche
+Nur zur Übersicht: Kontostände ändern sich nicht.
+Punkte
+Verkehr
+Trends
+Die letzten drei Einträge
+Drei Gewohnheiten, und Aufgaben gehen nicht mehr verloren.
+Türkische Lira
+Dunkel
+Bei wem
+Das Ziel bekommt einen eigenen Saldo: Du überweist Geld von beliebigen Konten hinein.
+Das Ziel hat einen eigenen Saldo: Einzahlungen holen Geld vom Konto, Abhebungen bringen es zurück.
+Archivieren
+Vom Startbildschirm entfernen
+Verknüpfung entfernen
+Tag {0} entfernen
+Foto entfernen
+Teil entfernen
+Entfernen: {0}
+Löschen
+„{0}“ löschen?
+Budget löschen
+Ganzen Beleg löschen
+Ganzen Beleg löschen?
+Aufgabe löschen
+Schuld löschen
+Schuld löschen?
+Kategorie löschen
+Konto löschen
+Buchung löschen
+Buchung löschen?
+Plan löschen
+Punkt löschen: {0}
+Liste löschen
+Ziel löschen
+Diesen Teil löschen
+Löschen: {0}
+Alle {0} Teile werden gelöscht. Salden und Analyse werden neu berechnet.
+Bereits erfasste Buchungen bleiben im Verlauf.
+Bereits ausgegeben
+Smarte Zeile: Ausgabe, Einnahme, Aufgabe oder Ziel
+Multiplizieren
+Morgens — Plan
+Berücksichtigt dein übliches Ausgabentempo der letzten 60 Tage, regelmäßige Zahlungen und Pläne für den Rest des Monats.
+Im Gesamtsaldo berücksichtigen
+Lernen
+Die Datei sieht nicht wie eine Ardessa-Sicherung aus
+Sicherungsdatei gespeichert
+Notgroschen
+Finanzen
+Formate
+Foto
+Belegfoto
+Freelance
+Pfund Sterling
+Reicht für {0} Mon. normales Leben

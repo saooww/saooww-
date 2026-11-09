@@ -6,6 +6,7 @@ import type { LedgerEntry } from "../../lib/finance";
 import { haptic } from "../../lib/haptics";
 import { formatMoney } from "../../lib/money";
 import type { Category, ID } from "../../store/types";
+import { tr } from "../../i18n/i18n";
 
 /**
  * A month of spending at a glance: each day a square, deeper ink for
@@ -34,7 +35,7 @@ export function SpendingCalendar({ entries, from, to, today, categories, currenc
     ? [...(byDay.cats.get(sel) ?? new Map()).entries()]
         .sort((a, b) => b[1] - a[1])
         .slice(0, 2)
-        .map(([id]) => categories.get(id)?.name ?? "Без категории")
+        .map(([id]) => categories.get(id)?.name ?? tr("Без категории"))
     : [];
 
   return (
@@ -57,7 +58,7 @@ export function SpendingCalendar({ entries, from, to, today, categories, currenc
             <motion.button
               key={d}
               type="button"
-              aria-label={`${formatDayHeading(d)}: ${v ? formatMoney(v, { currency }) : "без трат"}`}
+              aria-label={`${formatDayHeading(d)}: ${v ? formatMoney(v, { currency }) : tr("без трат")}`}
               aria-pressed={sel === d}
               disabled={future}
               onClick={() => {
@@ -84,19 +85,15 @@ export function SpendingCalendar({ entries, from, to, today, categories, currenc
           {sel ? (
             <>
               <div className="font-medium text-ink">{formatDayHeading(sel)}</div>
-              <div className="truncate text-ink-2">{selSum ? `${formatMoney(selSum, { currency })} · ${selCats.join(", ")}` : "Без трат"}</div>
+              <div className="truncate text-ink-2">{selSum ? `${formatMoney(selSum, { currency })} · ${selCats.join(", ")}` : tr("Без трат")}</div>
             </>
           ) : (
-            <span className="text-ink-3">Коснитесь дня</span>
+            <span className="text-ink-3">{tr("Коснитесь дня")}</span>
           )}
         </div>
-        <div className="flex shrink-0 items-center gap-1 text-[10.5px] text-ink-3" aria-hidden="true">
-          меньше
-          {[0.2, 0.45, 0.7, 1].map((k) => (
+        <div className="flex shrink-0 items-center gap-1 text-[10.5px] text-ink-3" aria-hidden="true">{tr("меньше")}{[0.2, 0.45, 0.7, 1].map((k) => (
             <span key={k} className="h-2.5 w-2.5 rounded-[3px]" style={{ background: `color-mix(in srgb, var(--ink) ${Math.round(10 + 80 * k)}%, transparent)` }} />
-          ))}
-          больше
-        </div>
+          ))}{tr("больше")}</div>
       </div>
     </div>
   );

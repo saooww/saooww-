@@ -1,5 +1,5 @@
 // In-memory localStorage so the persisted store works under Node.
-const mem = new Map<string, string>();
+const mem = new Map<string, string>([["ardessa-lang", "ru"]]);
 (globalThis as unknown as { localStorage: Storage }).localStorage = {
   get length() {
     return mem.size;

@@ -1,0 +1,150 @@
+Borç al
+Açık
+Listeyle birlikte {0} silinecek. Korumak için listeyi arşivleyin.
+Gelen kutusunda {0}
+Saat kaçta
+Borç ödemesi
+Borç ödemesi: {0}
+Geri ödendi
+Devam ettir
+Face ID ile giriş
+Dalgalar
+Geri yükle
+Kopyalanmış yedekten geri yükle
+Bu kopya geri yüklensin mi?
+Hafta böyle geçti
+Saat
+Gün seçildiğinde saat belirleyebilirsiniz.
+Paz
+Tümü
+Tümü · {0}
+Tüm veriler silindi
+Tüm görevler
+Bugünün tüm görevleri tamam
+Tüm kartlar, nakit ve birikimler tek yerde
+Tüm kategoriler
+Tüm cüzdanlar
+Tüm cüzdanlar:
+Tüm işlemler
+Aramaya uyan tüm işlemler
+Tüm işlemler, cüzdanlar, hedefler ve notlar silinecek. Kategoriler ve ayarlar kalır. Önce yedek alacağız.
+Tüm harcamalar
+Ayın tüm harcamaları
+Tüm düzenli ödemeler
+Bağlı tüm kayıtlar silinecek ve cüzdan bakiyeleri yeniden hesaplanacak.
+Tüm hesaplar
+Tüm türler
+Tüm hedefler
+Her zaman
+Toplam
+Aklınıza bir şey mi geldi? Tek satırda yazın. «Yarın 18:00'de annemi ara»: tarih ve saat kendiliğinden anlaşılır.
+Metinden yapıştır
+Kopyayı yapıştır
+Daha önce «Metin olarak kopyala» ile kopyaladığınız metni buraya yapıştırın.
+Tümü · {0}
+Her şey limitler içinde
+Tüm zamanlar
+Tüm önemli işler yapıldı
+Her şey planlandığı gibi
+Hepsi yarına
+Hepsi bugüne
+Hepsi düzenlendi
+Hepsi tamam
+Hepsi tamam. Derin bir nefes alabilirsiniz
+Her şey zaten çalışıyor — deneyin. Hazır olduğunuzda sıfırdan başlayın.
+Aceleyle not edilenler. Bir gün belirleyin — acil değilse sonraya bırakın.
+Planlanan her şey yapıldı.
+Sal
+Gelen kutusu
+Gelen kutusu boş — kafanız rahat
+Dün
+Borcunuz
+Borcunuz — {0}
+{0} biriktirdiniz. Böyle devam.
+En fazla üç görev seçin. Yalnızca onları yapsanız bile gün boşa geçmemiş olur.
+Kategori seçin
+Fişin her bölümü için kategori seçin
+Hedef cüzdanı seçin
+Ana ekranda ana kategoriyi seçin
+Seç
+Tarih seç…
+Kart rengini seç
+Verilen
+Metni seçip kopyalayın — örneğin bir nota veya kendinize mesaja.
+Sütun yüksekliği, aralıktaki gelir ve gider farkının mutlak değeridir
+Hafta sonları
+Paranın tutulduğu yer
+Ana sayfa
+Ana hedef ve ilerlemesi
+Önemli
+Günün önemlileri
+Bugünün önemlileri
+Ana sayfa
+En fazla üç önemli görev — böylece gerçekten yetişir
+Yıl
+Kafa fikirler içindir, depolamak için değil
+Bitti
+Tamam. Yeniden — {0}
+Grafit
+Gürcü larisi
+İleri
+Veriler
+Veriler {0} tarihindeki haline dönecek.
+Veriler yüklendi
+Veriler temizlendi
+Veriler metin olarak kopyalandı — «Ayarlar → Veriler» bölümüne yapıştırabilirsiniz.
+Veriler cihazınızda kalır, kod veya Face ID ile giriş
+Veriler yalnızca bu cihazda saklanır.
+Tarih
+Tarih ve saat
+Borç ver
+Bugün için henüz görev yok
+Görev yok
+Görevler
+Görevler {0} / {1}
+Bugünün görevleri
+Bugünden sonraki tarihli görevler burada görünür.
+Görevler, listeler ve notlar: hiçbir şeyi unutmamak için günlük plan
+Görev
+Görev «
+Görev kaydedildi
+{0} {1} için görev
+Bugün için görev
+Görev silindi
+Demo verileri yüklendi
+Demo verileri
+Gün
+Gün kapandı. Yarın görüşürüz
+Para
+Para cüzdana iade edildi
+{0} haftasının parası ve görevleri
+Para ve görevler — sakin ve kontrol altında.
+Para cüzdandan geçti
+Bugün para
+Ondalık ayırıcı
+Dönem içindeki değişim
+Birikimlerin değişimi
+BAE dirhemi
+Her biri kendi listesini alır. Sonra projeler ekleyebilirsiniz: «Tadilat», «Taşınma».
+Başka para birimindeki tutarlar için ayarlarda kur belirleyin — aksi halde toplam bakiyeye girmezler.
+Günlük
+Harcamasız günler
+Kadar
+Ay sonuna {0} gün
+Onlarsız günün sayılmadığı en fazla üç görev
+Ekle
+{0} ekle
+Takvime ekle
+Favorilere ekle
+Para birimi ekle
+Gelir ekle
+Cüzdan ekle
+İşlem ekle
+Madde ekle
+Harcama ekle
+Etiket ekle
+Fiş fotoğrafı ekle
+Parça ekle
+Kontrol listesi ekle
+Eklendi
+Favorilere eklendi

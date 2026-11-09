@@ -6,6 +6,7 @@ import { useData } from "../../store/store";
 import type { ID, Task } from "../../store/types";
 import { nav } from "../../store/ui";
 import { undoable } from "../../store/undo";
+import { tr } from "../../i18n/i18n";
 
 /* ------------------------------------------------------------------ */
 /*  Just-ticked tasks stay in place for a moment                       */
@@ -57,9 +58,9 @@ export function toggleDone(task: Task) {
   const plan = dayPlan(after, today);
   const wasForToday = task.due === today || task.focus === today;
   if (wasForToday && plan.total > 1 && plan.completed === plan.total) {
-    nav.toast("Все дела на сегодня сделаны", { tone: "positive" });
+    nav.toast(tr("Все дела на сегодня сделаны"), { tone: "positive" });
   } else if (next?.due) {
-    nav.toast(`Готово. Снова — ${dueLabel(next.due, today).toLowerCase()}`, { tone: "positive" });
+    nav.toast(tr("Готово. Снова — {0}", dueLabel(next.due, today).toLowerCase()), { tone: "positive" });
   }
 }
 
@@ -74,12 +75,12 @@ export function moveToTomorrow(task: Task) {
   const today = todayKey();
   const base = task.due && task.due > today ? task.due : today;
   const due = addDays(base, 1);
-  moveTasks([task.id], due, `Перенесено на ${dueLabel(due, today).toLowerCase()}`);
+  moveTasks([task.id], due, tr("Перенесено на {0}", dueLabel(due, today).toLowerCase()));
 }
 
 export function deleteTask(task: Task) {
   haptic("warning");
-  undoable("Дело удалено", () => useData.getState().deleteTask(task.id));
+  undoable(tr("Дело удалено"), () => useData.getState().deleteTask(task.id));
 }
 
 export const MAX_FOCUS = 3;
@@ -95,7 +96,7 @@ export function toggleFocus(task: Task, today: DayKey = todayKey()): boolean {
   const count = st.tasks.filter((t) => t.focus === today && !t.done).length;
   if (count >= MAX_FOCUS) {
     haptic("warning");
-    nav.toast("Главных дел не больше трёх — так их реально успеть", { tone: "warning" });
+    nav.toast(tr("Главных дел не больше трёх — так их реально успеть"), { tone: "warning" });
     return false;
   }
   haptic("success");

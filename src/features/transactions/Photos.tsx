@@ -6,6 +6,7 @@ import { haptic } from "../../lib/haptics";
 import { photoUrl, photosSupported, savePhoto } from "../../store/photos";
 import { nav } from "../../store/ui";
 import { ease } from "../../ui/motion";
+import { tr } from "../../i18n/i18n";
 
 function usePhotoUrl(id: string): string | null {
   const [url, setUrl] = useState<string | null>(null);
@@ -23,11 +24,11 @@ export function PhotoThumb({ id, size = 64, onOpen, onRemove }: { id: string; si
   const url = usePhotoUrl(id);
   return (
     <div className="relative shrink-0" style={{ width: size, height: size }}>
-      <button type="button" aria-label="Открыть фото чека" onClick={onOpen} className="tile block h-full w-full overflow-hidden rounded-[14px]">
+      <button type="button" aria-label={tr("Открыть фото чека")} onClick={onOpen} className="tile block h-full w-full overflow-hidden rounded-[14px]">
         {url && <img src={url} alt="" className="h-full w-full object-cover" draggable={false} />}
       </button>
       {onRemove && (
-        <button type="button" aria-label="Убрать фото" onClick={onRemove} className="absolute -right-1.5 -top-1.5 grid h-6 w-6 place-items-center rounded-full bg-ink text-ink-inverse shadow-pop">
+        <button type="button" aria-label={tr("Убрать фото")} onClick={onRemove} className="absolute -right-1.5 -top-1.5 grid h-6 w-6 place-items-center rounded-full bg-ink text-ink-inverse shadow-pop">
           <X size={13} strokeWidth={2.6} />
         </button>
       )}
@@ -36,7 +37,7 @@ export function PhotoThumb({ id, size = 64, onOpen, onRemove }: { id: string; si
 }
 
 /** A file input styled as a tile: on iPhone it offers the camera or the photo library. */
-export function AddPhotoButton({ onAdded, size = 64, label = "Фото" }: { onAdded: (id: string) => void; size?: number; label?: string }) {
+export function AddPhotoButton({ onAdded, size = 64, label = tr("Фото") }: { onAdded: (id: string) => void; size?: number; label?: string }) {
   const input = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   if (!photosSupported()) return null;
@@ -47,7 +48,7 @@ export function AddPhotoButton({ onAdded, size = 64, label = "Фото" }: { onA
         onClick={() => input.current?.click()}
         className="tile flex shrink-0 flex-col items-center justify-center gap-1 rounded-[14px] text-ink-2"
         style={{ width: size, height: size }}
-        aria-label="Добавить фото чека"
+        aria-label={tr("Добавить фото чека")}
       >
         <Camera size={20} strokeWidth={1.8} />
         <span className="text-[11px] font-medium">{busy ? "…" : label}</span>
@@ -66,7 +67,7 @@ export function AddPhotoButton({ onAdded, size = 64, label = "Фото" }: { onA
             onAdded(await savePhoto(f));
             haptic("success");
           } catch {
-            nav.toast("Не получилось сохранить фото", { tone: "warning" });
+            nav.toast(tr("Не получилось сохранить фото"), { tone: "warning" });
           } finally {
             setBusy(false);
           }
@@ -101,17 +102,17 @@ export function PhotoViewer({ ids, index, onClose }: { ids: string[]; index: num
       dragElastic={0.5}
       onDragEnd={(_, info) => Math.abs(info.offset.y) > 100 && onClose()}
       role="dialog"
-      aria-label="Фото чека"
+      aria-label={tr("Фото чека")}
     >
       <div className="flex items-center justify-between px-4" style={{ paddingTop: "calc(var(--safe-top) + 8px)" }}>
-        <span className="text-footnote text-white/60">{ids.length > 1 ? `${i + 1} из ${ids.length}` : ""}</span>
-        <button type="button" aria-label="Закрыть" onClick={onClose} className="grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white">
+        <span className="text-footnote text-white/60">{ids.length > 1 ? tr("{0} из {1}", i + 1, ids.length) : ""}</span>
+        <button type="button" aria-label={tr("Закрыть")} onClick={onClose} className="grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white">
           <X size={20} />
         </button>
       </div>
       <div className="flex min-h-0 flex-1 items-center justify-center p-4" onClick={() => ids.length > 1 && setI((n) => (n + 1) % ids.length)}>
         <AnimatePresence mode="wait">
-          {url && <motion.img key={ids[i]} src={url} alt="Фото чека" className="max-h-full max-w-full rounded-[12px] object-contain" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} draggable={false} />}
+          {url && <motion.img key={ids[i]} src={url} alt={tr("Фото чека")} className="max-h-full max-w-full rounded-[12px] object-contain" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} draggable={false} />}
         </AnimatePresence>
       </div>
     </motion.div>,

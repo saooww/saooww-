@@ -1,0 +1,153 @@
+Liegengebliebenes von früheren Tagen
+Ein guter Monat.
+Speicher
+Nur auf diesem Gerät gespeichert und nicht Teil der Sicherung.
+Farbe
+Farbe {0}
+Akzentfarbe
+Farbe in Diagrammen
+Farbe des Ziels
+Ziele
+Ziel
+Ziel erreicht
+Ziel aufgestockt
+Ziel erstellt
+Ziel gespeichert
+Ziel gelöscht
+Zifferntastatur
+Ziffern
+Die Teile des Belegs übersteigen seine Summe
+Oft
+Teil des Belegs
+Am häufigsten — „
+Beleg über
+Beleg in {0} aufgeteilt — jeder zählt in seiner Kategorie und seinem Budget.
+Beleg gelöscht
+Checkliste
+In {0}
+Über das Konto
+Zahlen
+Nettovermögen
+Do
+Was ist zu tun?
+Was lief gut? Was hat gestört? Was ist morgen wichtig?
+Etwas ist schiefgelaufen
+Um einen Kurs manuell festzulegen, schalte die Zentralbankkurse aus
+Schritt {0} von {1}
+Breit
+Schrift für Beträge
+Diese Woche
+Diese drei Kategorien —
+Das sind
+Diese Aufgabe wurde gelöscht.
+Das ist ein Abo
+Dieser Monat
+Ich
+Aug.
+Apr.
+ohne {0} — kein Kurs
+ohne Datum
+ohne eine einzige Ausgabe
+ohne Frist
+ohne Ausgaben
+mehr
+lag bei {0}
+in
+in „{0}“
+pro Jahr
+pro Jahr.
+pro Tag
+pro Monat
+pro Woche
+im Schnitt
+man schuldet dir {0}
+man schuldet dir
+So
+aller Ausgaben des Monats.
+alles erledigt
+Di
+du schuldest {0}
+du schuldest
+nutzt du kaum. Kündigen spart
+Kategorie wählen
+Konto wählen
+{0} von {1} gewählt
+Dez.
+Tag
+Tage
+Tage
+bis {0}
+∅
+noch
+über 90 Tage
+geplant
+Gehalt 120.000
+und
+von
+aus „{0}“
+aus Text
+aus Datei
+Saldo
+Juli
+Juni
+Karussell
+Kaffee 300
+Konto
+März
+Mai
+weniger
+Mio.
+an „
+pro Tag
+heute nichts
+nicht gewählt
+nicht festgelegt
+nicht festgelegt
+nutze ich nicht
+keine Einzahlungen
+Nov.
+Okt.
+der Hauptkategorie
+noch {0}
+des Einkommens im
+5000 für Urlaub zurücklegen
+liegen zurück
+liegt zurück
+Mo
+zum aktuellen Kurs
+Mama morgen um 18 Uhr anrufen
+noch nichts
+ausgegeben
+ausgeführt
+übersprungen
+seit {0} Tagen überfällig
+des Vorjahres
+des Vorquartals
+des Vormonats
+letzte Woche
+der Vorwoche
+im Vorjahr
+im Vorquartal
+im Vormonat
+Fr
+leer
+selten
+seit Beginn des Zeitraums
+Sa
+heute
+Sep.
+nächste — {0}
+Mi
+Taxi 450 gestern
+Ausgaben
+Ausgabe
+Ausgaben
+Tsd.
+bereits verknüpft
+Feb.
+х
+Do
+Jan.
+ — kein Wechselkurs →
+≈ {0} pro Tag bis Monatsende
+≈ {0} pro Monat

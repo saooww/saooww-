@@ -8,18 +8,19 @@ import { Button } from "../../ui/primitives";
 import { Sheet, useSheet } from "../../ui/Sheet";
 import { createAreas } from "./ListsView";
 import { Enso } from "./Enso";
+import { tr } from "../../i18n/i18n";
 
 const HABITS = [
-  { title: "Записывайте сразу", text: "Вспомнили — запишите одной строкой. «Позвонить маме завтра в 18:00»: дата и время поймутся сами." },
-  { title: "Утром — план", text: "Разберите записанное и выберите до трёх главных дел. С них и начинайте." },
-  { title: "Вечером — итоги", text: "Отметьте сделанное, перенесите остальное, запишите пару строк в дневник." }
+  { title: tr("Записывайте сразу"), text: tr("Вспомнили — запишите одной строкой. «Позвонить маме завтра в 18:00»: дата и время поймутся сами.") },
+  { title: tr("Утром — план"), text: tr("Разберите записанное и выберите до трёх главных дел. С них и начинайте.") },
+  { title: tr("Вечером — итоги"), text: tr("Отметьте сделанное, перенесите остальное, запишите пару строк в дневник.") }
 ];
 
 /** Shown once, the first time «Дела» is opened: the method in three habits and the first lists. */
 export function PlannerIntroSheet() {
   const { close } = useSheet();
   const hasProjects = useData((s) => s.projects.length > 0);
-  const [picked, setPicked] = useState<Set<string>>(new Set(["Личное", "Работа", "Дом", "Здоровье"]));
+  const [picked, setPicked] = useState<Set<string>>(new Set([tr("Личное"), tr("Работа"), tr("Дом"), tr("Здоровье")]));
   const [drawn, setDrawn] = useState(0);
   useEffect(() => {
     const t = window.setTimeout(() => setDrawn(1), 250);
@@ -31,7 +32,7 @@ export function PlannerIntroSheet() {
   return (
     <Sheet
       tall
-      ariaLabel="Как вести дела"
+      ariaLabel={tr("Как вести дела")}
       onClose={seen}
       footer={
         <Button
@@ -42,15 +43,13 @@ export function PlannerIntroSheet() {
             haptic("success");
             close();
           }}
-        >
-          Начать
-        </Button>
+        >{tr("Начать")}</Button>
       }
     >
       <div className="flex flex-col items-center px-6 pt-1 text-center">
         <Enso value={drawn} complete={drawn === 1} size={108} />
-        <h2 className="mt-4 text-title-2 font-semibold text-balance">Голова — для идей, а не для хранения</h2>
-        <p className="mt-1.5 max-w-[310px] text-callout text-ink-2">Три привычки, и дела перестанут теряться.</p>
+        <h2 className="mt-4 text-title-2 font-semibold text-balance">{tr("Голова — для идей, а не для хранения")}</h2>
+        <p className="mt-1.5 max-w-[310px] text-callout text-ink-2">{tr("Три привычки, и дела перестанут теряться.")}</p>
       </div>
 
       <ol className="mt-6 flex flex-col gap-4 px-6">
@@ -69,8 +68,8 @@ export function PlannerIntroSheet() {
 
       {!hasProjects && (
         <div className="mt-7 px-6">
-          <div className="text-headline font-semibold">Сферы жизни</div>
-          <p className="mt-0.5 text-subhead text-ink-2">Для каждой появится свой список. Потом можно добавить проекты: «Ремонт», «Переезд».</p>
+          <div className="text-headline font-semibold">{tr("Сферы жизни")}</div>
+          <p className="mt-0.5 text-subhead text-ink-2">{tr("Для каждой появится свой список. Потом можно добавить проекты: «Ремонт», «Переезд».")}</p>
           <div className="mt-3 flex flex-wrap gap-2">
             {AREA_PRESETS.map((a) => {
               const on = picked.has(a.name);

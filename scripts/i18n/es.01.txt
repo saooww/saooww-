@@ -1,0 +1,150 @@
+Pedir prestado
+Activado
+Junto con la lista se borrarán {0}. Para conservarlas, archiva la lista.
+{0} en la bandeja
+A qué hora
+Devolución de deuda
+Devolución de deuda: {0}
+Devuelto
+Reanudar
+Entrar con Face ID
+Ondas
+Restaurar
+Restaurar desde una copia copiada
+¿Restaurar esta copia?
+Así fue la semana
+Hora
+Puedes poner hora cuando hayas elegido un día.
+Dom
+Todo
+Todo · {0}
+Todos los datos borrados
+Todas las tareas
+Todas las tareas de hoy están hechas
+Todas las tarjetas, efectivo y ahorros en un solo lugar
+Todas las categorías
+Todas las carteras
+Todas las carteras en
+Todas las operaciones
+Todas las operaciones de la búsqueda
+Se borrarán todas las operaciones, carteras, metas y notas. Las categorías y ajustes se quedan. Antes haremos una copia de seguridad.
+Todos los gastos
+Todos los gastos del mes
+Todos los cargos periódicos
+Se borrarán todos los registros vinculados y se recalcularán los saldos.
+Todas las cuentas
+Todos los tipos
+Todas las metas
+Siempre
+Total
+¿Te acordaste de algo? Escríbelo en una línea. «Llamar a mamá mañana a las 18:00»: la fecha y la hora se entienden solas.
+Pegar desde texto
+Pegar copia
+Pega aquí el texto que copiaste antes con «Copiar como texto».
+Todo · {0}
+Todo dentro de los límites
+Todo el tiempo
+Todo lo importante está hecho
+Todo va según el plan
+Todo para mañana
+Todo para hoy
+Todo ordenado
+Todo hecho
+Todo hecho. Puedes respirar
+Todo funciona ya: pruébalo. Cuando estés listo, empieza de cero.
+Todo lo anotado sobre la marcha. Ponle un día, o déjalo para después si no corre prisa.
+Todo lo planeado está hecho.
+Mar
+Bandeja de entrada
+La bandeja está vacía: tienes la cabeza libre
+Ayer
+Debes
+Debes — {0}
+Ahorraste {0}. Sigue así.
+Elige hasta tres tareas. Si solo haces esas, el día valió la pena.
+Elige una categoría
+Elige una categoría para cada parte del recibo
+Elige la cartera de destino
+Elige la categoría principal en la pantalla principal
+Elegir
+Elegir fechas…
+Elegir color de la tarjeta
+Prestado
+Selecciona el texto y cópialo, por ejemplo en una nota o en un chat contigo mismo.
+La altura de la barra es la diferencia absoluta entre ingresos y gastos del intervalo
+Fines de semana
+Dónde se guarda el dinero
+Inicio
+La meta principal y su progreso
+Lo principal
+Lo principal del día
+Lo principal de hoy
+Inicio
+No más de tres tareas principales: así de verdad se hacen
+Año
+La cabeza es para ideas, no para guardar cosas
+Listo
+Listo. De nuevo — {0}
+Grafito
+Lari georgiano
+Siguiente
+Datos
+Los datos volverán a como estaban el {0}.
+Datos cargados
+Datos borrados
+Datos copiados como texto: puedes pegarlos en «Ajustes → Datos».
+Los datos quedan en tu dispositivo, entrada con código o Face ID
+Los datos se guardan solo en este dispositivo.
+Fecha
+Fecha y hora
+Prestar
+Aún no hay tareas para hoy
+Sin tareas
+Tareas
+Tareas {0} de {1}
+Tareas de hoy
+Aquí aparecerán las tareas con fecha posterior a hoy.
+Tareas, listas y notas: un plan del día para no olvidar nada
+Tarea
+Tarea en «
+Tarea guardada
+Tarea para {0} {1}
+Tarea para hoy
+Tarea eliminada
+Datos de demostración cargados
+Datos de demostración
+Día
+Día cerrado. Hasta mañana
+Dinero
+Dinero devuelto a la cartera
+Dinero y tareas de {0}
+Dinero y tareas, con calma y bajo control.
+El dinero pasó por la cartera
+Dinero hoy
+Separador decimal
+Evolución del periodo
+Evolución del ahorro
+Dírham de los EAU
+Cada una tendrá su lista. Luego puedes añadir proyectos: «Reforma», «Mudanza».
+Para importes en otra moneda, fija un tipo de cambio en ajustes; si no, no entrarán en el saldo total.
+Diario
+Días sin gastos
+Hasta
+{0} días hasta fin de mes
+Hasta tres tareas sin las que el día no cuenta
+Añadir
+Añadir {0}
+Añadir al Calendario
+Añadir a favoritos
+Añadir moneda
+Añadir ingreso
+Añadir cartera
+Añadir operación
+Añadir elemento
+Añadir gasto
+Añadir etiqueta
+Añadir foto del recibo
+Añadir parte
+Añadir lista de control
+Añadido
+Añadido a favoritos

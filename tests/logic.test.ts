@@ -24,7 +24,9 @@ import { STORAGE_KEY } from "../src/store/store";
 import { CARD_MATERIALS, materialOf } from "../src/store/catalog";
 import { weekSummary, weekToReview } from "../src/lib/week";
 import { goalStatus } from "../src/lib/goals";
+import { parseSmart } from "../src/lib/smart";
 import { goalInfo } from "../src/lib/finance";
+import { switchLanguage, type Lang } from "../src/i18n/i18n";
 
 let passed = 0;
 function test(name: string, fn: () => void) {
@@ -443,6 +445,55 @@ test("статус цели: в графике, отстаёт, стоит, до
   assert.equal(goalStatus(goal, info, 0, today).kind, "stalled");
   assert.equal(goalStatus(goal, goalInfo(goal, 1_200_000, today), 0, today).kind, "done");
   assert.equal(goalStatus({ ...goal, deadline: undefined }, info, 100_000, today).kind, "open");
+});
+
+test("умная строка: трата, доход, цель и дело из одной фразы", () => {
+  const d = createDemoData();
+  const ctx = { today: "2026-11-08", categories: d.categories, goals: d.goals, projects: d.projects, history: d.transactions };
+  const coffee = parseSmart("кофе 300", ctx);
+  assert.ok(coffee.kind === "expense" && coffee.amount === 30_000 && coffee.categoryId === "c-cafe");
+  const salary = parseSmart("зарплата 120 000", ctx);
+  assert.ok(salary.kind === "income" && salary.amount === 12_000_000 && salary.categoryId === "i-salary");
+  const gas = parseSmart("бензин 2,5к вчера", ctx);
+  assert.ok(gas.kind === "expense" && gas.amount === 250_000 && gas.day === "2026-11-07" && gas.title === "Бензин");
+  const goal = parseSmart("отложить 5000 на отпуск", ctx);
+  assert.ok(goal.kind === "goal" && goal.amount === 500_000);
+  const task = parseSmart("позвонить маме завтра в 18", ctx);
+  assert.ok(task.kind === "task" && task.task.title === "Позвонить маме" && task.task.due === "2026-11-09" && task.task.time === "18:00");
+  assert.equal(parseSmart("купить хлеб", ctx).kind, "task");
+  assert.equal(parseSmart("   ", ctx).kind, "empty");
+});
+
+test("умная строка понимает все десять языков", () => {
+  const d = createDemoData();
+  const goalNamed = (name: string) => [{ ...d.goals[0], id: "g-x", name }];
+  const cases: Array<{ lang: Lang; goal: string; salary: string; save: string; taxi: string; call: string; title: string; time: string }> = [
+    { lang: "en", goal: "Holiday in Japan", salary: "salary 120,000", save: "save 5000 for holiday", taxi: "taxi 450 yesterday", call: "call mom tomorrow at 6pm", title: "Call mom", time: "18:00" },
+    { lang: "es", goal: "Vacaciones en Japón", salary: "sueldo 120 000", save: "ahorrar 5000 para vacaciones", taxi: "taxi 450 ayer", call: "llamar a mamá mañana a las 18", title: "Llamar a mamá", time: "18:00" },
+    { lang: "fr", goal: "Vacances au Japon", salary: "salaire 120 000", save: "mettre 5000 de côté pour les vacances", taxi: "taxi 450 hier", call: "appeler maman demain à 18 h", title: "Appeler maman", time: "18:00" },
+    { lang: "de", goal: "Urlaub in Japan", salary: "Gehalt 120.000", save: "5000 für Urlaub zurücklegen", taxi: "Taxi 450 gestern", call: "Mama morgen um 18 Uhr anrufen", title: "Mama anrufen", time: "18:00" },
+    { lang: "pt", goal: "Férias no Japão", salary: "salário 120.000", save: "guardar 5000 para as férias", taxi: "táxi 450 ontem", call: "ligar para a mãe amanhã às 18", title: "Ligar para a mãe", time: "18:00" },
+    { lang: "tr", goal: "Japonya tatili", salary: "maaş 120.000", save: "tatil için 5000 biriktir", taxi: "taksi 450 dün", call: "yarın 18'de annemi ara", title: "Annemi ara", time: "18:00" },
+    { lang: "zh", goal: "日本度假", salary: "工资 120000", save: "为度假存 5000", taxi: "昨天打车 450", call: "明天下午6点给妈妈打电话", title: "给妈妈打电话", time: "18:00" },
+    { lang: "ja", goal: "日本旅行", salary: "給料 120000", save: "旅行のために5000貯める", taxi: "タクシー 450 昨日", call: "明日18時に母に電話", title: "母に電話", time: "18:00" },
+    { lang: "hi", goal: "जापान में छुट्टी", salary: "वेतन 120000", save: "छुट्टी के लिए 5000 बचाएँ", taxi: "टैक्सी 450 कल", call: "कल शाम 6 बजे माँ को फ़ोन करना", title: "माँ को फ़ोन करना", time: "18:00" }
+  ];
+  try {
+    for (const c of cases) {
+      switchLanguage(c.lang, false);
+      const ctx = { today: "2026-11-08", categories: d.categories, goals: goalNamed(c.goal), projects: [], history: [] };
+      const salary = parseSmart(c.salary, ctx);
+      assert.ok(salary.kind === "income" && salary.amount === 12_000_000, `${c.lang}: ${c.salary} → ${JSON.stringify(salary)}`);
+      const save = parseSmart(c.save, ctx);
+      assert.ok(save.kind === "goal" && save.amount === 500_000 && save.goalId === "g-x", `${c.lang}: ${c.save} → ${JSON.stringify(save)}`);
+      const taxi = parseSmart(c.taxi, ctx);
+      assert.ok(taxi.kind === "expense" && taxi.amount === 45_000 && taxi.day === "2026-11-07", `${c.lang}: ${c.taxi} → ${JSON.stringify(taxi)}`);
+      const call = parseSmart(c.call, ctx);
+      assert.ok(call.kind === "task" && call.task.due === "2026-11-09" && call.task.time === c.time && call.task.title === c.title, `${c.lang}: ${c.call} → ${JSON.stringify(call)}`);
+    }
+  } finally {
+    switchLanguage("ru", false);
+  }
 });
 
 test("цвета карт: прежние показываются ближайшим фирменным, новые — как есть", () => {

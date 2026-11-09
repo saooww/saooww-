@@ -17,6 +17,7 @@ import { Screen } from "../../nav/Screen";
 import { Money } from "../../ui/Money";
 import { Button, FormRow, Group, IconButton, IconChip, Row, Segmented, inputCls } from "../../ui/primitives";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
+import { tr } from "../../i18n/i18n";
 
 type EventKind = "plan" | "recurring" | "debt" | "task" | "goal";
 
@@ -66,12 +67,12 @@ export function useEvents(from: DayKey, to: DayKey): CalEvent[] {
       if (!d.dueDate || d.dueDate < from || d.dueDate > to) continue;
       const info = debtInfo(d, data.transactions, today);
       if (info.status === "closed") continue;
-      out.push({ key: `d-${d.id}`, kind: "debt", date: d.dueDate, title: d.direction === "i_owe" ? `Вернуть долг: ${d.counterparty}` : `Возврат долга: ${d.counterparty}`, amount: info.remaining, currency: d.currency, direction: d.direction === "i_owe" ? "out" : "in", overdue: info.status === "overdue", onOpen: () => nav.push("debt", { id: d.id }) });
+      out.push({ key: `d-${d.id}`, kind: "debt", date: d.dueDate, title: d.direction === "i_owe" ? tr("Вернуть долг: {0}", d.counterparty) : tr("Возврат долга: {0}", d.counterparty), amount: info.remaining, currency: d.currency, direction: d.direction === "i_owe" ? "out" : "in", overdue: info.status === "overdue", onOpen: () => nav.push("debt", { id: d.id }) });
     }
     // Tasks live in «Дела»; this calendar is about money.
     for (const g of data.goals) {
       if (!g.deadline || g.deadline < from || g.deadline > to || g.archived) continue;
-      out.push({ key: `g-${g.id}`, kind: "goal", date: g.deadline, title: `Срок цели «${g.name}»`, onOpen: () => nav.push("goal", { id: g.id }) });
+      out.push({ key: `g-${g.id}`, kind: "goal", date: g.deadline, title: tr("Срок цели «{0}»", g.name), onOpen: () => nav.push("goal", { id: g.id }) });
     }
     return out.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
   }, [data, from, to, today]);
@@ -110,25 +111,25 @@ export function PlansScreen() {
   };
 
   return (
-    <Screen title="Планы" large actions={<IconButton icon={Plus} label="Запланировать" onClick={() => nav.sheet("plan", { date: selected >= today ? selected : today })} />}>
+    <Screen title={tr("Планы")} large actions={<IconButton icon={Plus} label={tr("Запланировать")} onClick={() => nav.sheet("plan", { date: selected >= today ? selected : today })} />}>
       {/* Free cash forecast */}
       <section className="px-4">
         <div className="panel rounded-xl p-4">
-          <div className="text-footnote font-medium text-ink-2">Свободно к {formatDate(cash.until)}</div>
+          <div className="text-footnote font-medium text-ink-2">{tr("Свободно к")}{" "}{formatDate(cash.until)}</div>
           <Money value={cash.free} currency={base} variant="hero" privacy tone={cash.free < 0 ? "negative" : "default"} className="mt-0.5 block text-[30px] font-semibold tracking-[-0.03em]" />
           <div className="mt-3 flex flex-col gap-1.5 text-subhead">
-            <Line label="Сейчас на счетах для трат" value={cash.available} currency={base} />
-            <Line label="Ожидаемые поступления" value={cash.income} currency={base} sign="+" />
-            <Line label="Платежи и планы" value={-cash.obligations} currency={base} />
-            <Line label="Обычные траты до конца месяца" value={-cash.everyday} currency={base} />
+            <Line label={tr("Сейчас на счетах для трат")} value={cash.available} currency={base} />
+            <Line label={tr("Ожидаемые поступления")} value={cash.income} currency={base} sign="+" />
+            <Line label={tr("Платежи и планы")} value={-cash.obligations} currency={base} />
+            <Line label={tr("Обычные траты до конца месяца")} value={-cash.everyday} currency={base} />
           </div>
-          <p className="mt-3 text-caption text-ink-3">Без накопительных и инвестиционных счетов. Обычные траты — ваш средний темп за 60 дней.</p>
+          <p className="mt-3 text-caption text-ink-3">{tr("Без накопительных и инвестиционных счетов. Обычные траты — ваш средний темп за 60 дней.")}</p>
         </div>
       </section>
 
       {overdue.length > 0 && (
         <section className="mt-5">
-          <h2 className="section-label px-5 pb-2.5 !text-warning">Ждут проведения</h2>
+          <h2 className="section-label px-5 pb-2.5 !text-warning">{tr("Ждут проведения")}</h2>
           <Group>
             {overdue.map((e) => (
               <EventRow key={e.key} e={e} />
@@ -141,12 +142,12 @@ export function PlansScreen() {
       <section className="mt-5 px-4">
         <div className="panel rounded-xl p-3">
           <div className="flex items-center justify-between px-1">
-            <IconButton icon={ChevronLeft} label="Предыдущий месяц" variant="plain" onClick={() => go(-1)} />
+            <IconButton icon={ChevronLeft} label={tr("Предыдущий месяц")} variant="plain" onClick={() => go(-1)} />
             <div className="text-headline font-semibold">{monthTitle(month)}</div>
-            <IconButton icon={ChevronRight} label="Следующий месяц" variant="plain" onClick={() => go(1)} />
+            <IconButton icon={ChevronRight} label={tr("Следующий месяц")} variant="plain" onClick={() => go(1)} />
           </div>
           <div className="mt-1 grid grid-cols-7 text-center text-caption font-medium text-ink-3">
-            {["пн", "вт", "ср", "чт", "пт", "сб", "вс"].map((d) => (
+            {[tr("пн"), tr("вт"), tr("ср"), tr("чт"), tr("пт"), tr("сб"), tr("вс")].map((d) => (
               <div key={d} className="py-1">
                 {d}
               </div>
@@ -178,7 +179,7 @@ export function PlansScreen() {
                       haptic();
                       setSelected(d);
                     }}
-                    aria-label={`${formatDayHeading(d)}${ev.length ? `, событий: ${ev.length}` : ""}`}
+                    aria-label={`${formatDayHeading(d)}${ev.length ? tr(", событий: {0}", ev.length) : ""}`}
                     className="flex h-11 flex-col items-center justify-center gap-[3px]"
                   >
                     <span
@@ -206,11 +207,9 @@ export function PlansScreen() {
         <h2 className="section-label px-5 pb-2.5">{formatDayHeading(selected)}</h2>
         {selectedEvents.length === 0 ? (
           <div className="mx-4 flex items-center justify-between rounded-lg border border-dashed border-line-strong px-4 py-3.5">
-            <span className="text-subhead text-ink-2">Ничего не запланировано</span>
+            <span className="text-subhead text-ink-2">{tr("Ничего не запланировано")}</span>
             {selected >= today && (
-              <button type="button" className="text-subhead font-semibold text-accent-ink" onClick={() => nav.sheet("plan", { date: selected })}>
-                Запланировать
-              </button>
+              <button type="button" className="text-subhead font-semibold text-accent-ink" onClick={() => nav.sheet("plan", { date: selected })}>{tr("Запланировать")}</button>
             )}
           </div>
         ) : (
@@ -224,8 +223,8 @@ export function PlansScreen() {
 
       {upcoming.length > 0 && (
         <section className="mt-6">
-          <h2 className="section-label px-5 pb-2.5">Ближайшие 30 дней</h2>
-          <Group footer={`В этом месяце ещё ожидается: поступлений ${formatShort(monthPlan.income, base)}, списаний ${formatShort(monthPlan.expense, base)}.`}>
+          <h2 className="section-label px-5 pb-2.5">{tr("Ближайшие 30 дней")}</h2>
+          <Group footer={tr("В этом месяце ещё ожидается: поступлений {0}, списаний {1}.", formatShort(monthPlan.income, base), formatShort(monthPlan.expense, base))}>
             {upcoming.map((e) => (
               <EventRow key={e.key} e={e} />
             ))}
@@ -251,12 +250,12 @@ function Line({ label, value, currency, sign }: { label: string; value: number; 
 
 export function EventRow({ e, hideDate }: { e: CalEvent; hideDate?: boolean }) {
   const Icon = EVENT_ICON[e.kind];
-  const label = { plan: "План", recurring: "Регулярно", debt: "Долг", task: "Дело", goal: "Цель" }[e.kind];
+  const label = { plan: tr("План"), recurring: tr("Регулярно"), debt: tr("Долг"), task: tr("Дело"), goal: tr("Цель") }[e.kind];
   return (
     <Row
       leading={<IconChip icon={e.done ? Check : Icon} size={34} tone={e.overdue ? "warning" : e.done ? "positive" : undefined} />}
       title={<span className={e.done ? "text-ink-2 line-through decoration-ink-3" : undefined}>{e.title}</span>}
-      subtitle={`${label}${hideDate ? "" : ` · ${capitalize(e.date === todayKey() ? "сегодня" : formatRelative(e.date))}`}${e.overdue ? " · просрочено" : ""}`}
+      subtitle={`${label}${hideDate ? "" : ` · ${capitalize(e.date === todayKey() ? tr("сегодня") : formatRelative(e.date))}`}${e.overdue ? tr(" · просрочено") : ""}`}
       value={e.amount !== undefined ? <Money value={e.direction === "out" ? -e.amount : e.amount} currency={e.currency} sign={e.direction ? "always" : "never"} tone={e.direction === "in" ? "positive" : "default"} /> : undefined}
       onClick={e.onOpen}
     />
@@ -291,48 +290,48 @@ export function PlanSheet({ editId, date: d0 }: { editId?: ID; date?: DayKey }) 
     if (existing) st.updatePlan(existing.id, fields);
     else st.addPlan(fields);
     haptic("success");
-    nav.toast(existing ? "План сохранён" : "Добавлено в план", { tone: "positive" });
+    nav.toast(existing ? tr("План сохранён") : tr("Добавлено в план"), { tone: "positive" });
     close();
   };
 
   return (
-    <Sheet title={existing ? "План" : "Запланировать"} left={<SheetAction onClick={close}>Отмена</SheetAction>} right={<SheetAction strong disabled={!valid} onClick={save}>Готово</SheetAction>}>
+    <Sheet title={existing ? tr("План") : tr("Запланировать")} left={<SheetAction onClick={close}>{tr("Отмена")}</SheetAction>} right={<SheetAction strong disabled={!valid} onClick={save}>{tr("Готово")}</SheetAction>}>
       <div className="flex flex-col gap-5 pt-1">
         <div className="px-4">
-          <Segmented value={kind} onChange={(v) => { setKind(v); setCategoryId(""); }} options={[{ value: "expense", label: "Расход" }, { value: "income", label: "Поступление" }]} />
+          <Segmented value={kind} onChange={(v) => { setKind(v); setCategoryId(""); }} options={[{ value: "expense", label: tr("Расход") }, { value: "income", label: tr("Поступление") }]} />
         </div>
         <Group>
-          <FormRow label="Название">
-            <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={kind === "expense" ? "Например, ремонт" : "Например, премия"} maxLength={60} className={cn(inputCls, "text-right")} />
+          <FormRow label={tr("Название")}>
+            <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={kind === "expense" ? tr("Например, ремонт") : tr("Например, премия")} maxLength={60} className={cn(inputCls, "text-right")} />
           </FormRow>
-          <FormRow label="Сумма">
+          <FormRow label={tr("Сумма")}>
             <input inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value.replace(/[^\d.,]/g, ""))} placeholder="0" className={cn(inputCls, "text-right tnum")} />
           </FormRow>
-          <FormRow label="Дата">
+          <FormRow label={tr("Дата")}>
             <input type="date" value={date} onChange={(e) => e.target.value && setDate(e.target.value)} className={cn(inputCls, "text-right")} />
           </FormRow>
         </Group>
         <Group>
-          <FormRow label="Кошелёк">
+          <FormRow label={tr("Кошелёк")}>
             <select value={walletId} onChange={(e) => setWalletId(e.target.value)} className={cn(inputCls, "appearance-none text-right")} dir="rtl">
               {live.map((w) => (
                 <option key={w.id} value={w.id}>{w.name}</option>
               ))}
             </select>
           </FormRow>
-          <FormRow label="Категория">
+          <FormRow label={tr("Категория")}>
             <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className={cn(inputCls, "appearance-none text-right")} dir="rtl">
-              <option value="">Не выбрана</option>
+              <option value="">{tr("Не выбрана")}</option>
               {categories.filter((c) => c.kind === kind && !c.archived).map((c) => (
                 <option key={c.id} value={c.id}>{c.name}</option>
               ))}
             </select>
           </FormRow>
           <div className="px-4 py-3">
-            <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Комментарий" maxLength={120} className={inputCls} />
+            <input value={note} onChange={(e) => setNote(e.target.value)} placeholder={tr("Комментарий")} maxLength={120} className={inputCls} />
           </div>
         </Group>
-        <p className="px-8 text-footnote text-ink-3">План не меняет балансы, пока вы его не проведёте. Нужен повтор каждый месяц? Добавьте регулярный платёж в «Подписках и платежах».</p>
+        <p className="px-8 text-footnote text-ink-3">{tr("План не меняет балансы, пока вы его не проведёте. Нужен повтор каждый месяц? Добавьте регулярный платёж в «Подписках и платежах».")}</p>
       </div>
     </Sheet>
   );
@@ -353,7 +352,7 @@ export function PlanActionsSheet({ id }: { id: ID }) {
         <div className="mt-3 text-headline font-semibold">{plan.title}</div>
         <Money value={plan.kind === "income" ? plan.amount : -plan.amount} sign="always" currency={wallet?.currency} tone={plan.kind === "income" ? "positive" : "default"} variant="hero" className="mt-1 text-[30px] font-semibold" />
         <div className="mt-1 text-footnote text-ink-2">
-          {formatDayHeading(plan.date)} · {plan.status === "done" ? "проведено" : plan.status === "skipped" ? "пропущено" : late ? `просрочено на ${diffDays(today, plan.date)} дн.` : "запланировано"}
+          {formatDayHeading(plan.date)} · {plan.status === "done" ? tr("проведено") : plan.status === "skipped" ? tr("пропущено") : late ? tr("просрочено на {0} дн.", diffDays(today, plan.date)) : tr("запланировано")}
           {wallet ? ` · ${wallet.name}` : ""}
         </div>
         {plan.note && <p className="mt-2 text-subhead text-ink-2">{plan.note}</p>}
@@ -363,10 +362,10 @@ export function PlanActionsSheet({ id }: { id: ID }) {
           <Row
             icon={Check}
             iconTone="positive"
-            title="Провести сейчас"
-            subtitle="Запишется как операция и изменит баланс"
+            title={tr("Провести сейчас")}
+            subtitle={tr("Запишется как операция и изменит баланс")}
             onClick={() => {
-              undoable("План проведён", () => useData.getState().completePlan(plan.id));
+              undoable(tr("План проведён"), () => useData.getState().completePlan(plan.id));
               haptic("success");
               close();
             }}
@@ -375,17 +374,17 @@ export function PlanActionsSheet({ id }: { id: ID }) {
         {plan.status === "done" && (
           <Row
             icon={Undo2}
-            title="Вернуть в план"
-            subtitle="Связанная операция будет удалена"
+            title={tr("Вернуть в план")}
+            subtitle={tr("Связанная операция будет удалена")}
             onClick={() => {
-              undoable("Операция отменена, план восстановлен", () => useData.getState().setPlanStatus(plan.id, "planned"));
+              undoable(tr("Операция отменена, план восстановлен"), () => useData.getState().setPlanStatus(plan.id, "planned"));
               close();
             }}
           />
         )}
         <Row
           icon={Pencil}
-          title="Изменить"
+          title={tr("Изменить")}
           onClick={() => {
             close();
             nav.sheet("plan", { editId: plan.id });
@@ -394,9 +393,9 @@ export function PlanActionsSheet({ id }: { id: ID }) {
         {plan.status === "planned" && (
           <Row
             icon={SkipForward}
-            title="Пропустить"
+            title={tr("Пропустить")}
             onClick={() => {
-              undoable("План пропущен", () => useData.getState().setPlanStatus(plan.id, "skipped"));
+              undoable(tr("План пропущен"), () => useData.getState().setPlanStatus(plan.id, "skipped"));
               close();
             }}
           />
@@ -405,17 +404,15 @@ export function PlanActionsSheet({ id }: { id: ID }) {
           icon={Trash2}
           iconTone="negative"
           destructive
-          title="Удалить план"
+          title={tr("Удалить план")}
           onClick={() => {
-            undoable("План удалён", () => useData.getState().deletePlan(plan.id));
+            undoable(tr("План удалён"), () => useData.getState().deletePlan(plan.id));
             close();
           }}
         />
       </Group>
       <div className="px-4 pt-3">
-        <Button variant="secondary" block onClick={close}>
-          Закрыть
-        </Button>
+        <Button variant="secondary" block onClick={close}>{tr("Закрыть")}</Button>
       </div>
     </Sheet>
   );

@@ -1,0 +1,153 @@
+Loose ends from previous days
+A good month.
+Storage
+Stored on this device only and not included in the backup.
+Colour
+Colour {0}
+Accent colour
+Colour on charts
+Goal colour
+Goals
+Goal
+Goal reached
+Goal topped up
+Goal created
+Goal saved
+Goal deleted
+Number keypad
+Numbers
+The receipt parts exceed its total
+Often
+Receipt part
+Most often — «
+Receipt for
+Receipt split into {0} — each counts in its own category and budget.
+Receipt deleted
+Checklist
+In {0}
+Via wallet
+Numbers
+Net worth
+Thu
+What needs to be done?
+What went well? What got in the way? What matters tomorrow?
+Something went wrong
+To set a rate manually, turn off Central Bank rates
+Step {0} of {1}
+Wide
+Amount font
+This week
+These three categories —
+This is
+This task was deleted.
+It's a subscription
+This month
+Me
+Aug
+Apr
+without {0} — no rate
+no date
+without a single expense
+no deadline
+no spending
+more
+was on {0}
+in
+in «{0}»
+a year
+a year.
+a day
+a month
+a week
+on average
+you're owed {0}
+owed to you
+Sun
+of all spending this month.
+all done
+Tue
+you owe {0}
+you owe
+you hardly use. Cancelling would save
+choose a category
+choose a wallet
+{0} of {1} selected
+Dec
+day
+days
+days
+by {0}
+∅
+more
+over 90 days
+planned
+salary 120,000
+and
+of
+from «{0}»
+from text
+from file
+net
+Jul
+Jun
+carousel
+coffee 300
+wallet
+Mar
+May
+less
+M
+to «
+per day
+nothing for today
+not picked
+not set
+not set
+I don't use it
+no top-ups
+Nov
+Oct
+of the main category
+{0} left
+of income in
+save 5000 for holiday
+are behind
+is behind
+Mon
+at the current rate
+call mom tomorrow at 6pm
+nothing yet
+spent
+posted
+skipped
+overdue by {0} days
+last year
+last quarter
+last month
+last week
+last week
+last year
+last quarter
+last month
+Fri
+empty
+rarely
+since the start of the period
+Sat
+today
+Sep
+next — {0}
+Wed
+taxi 450 yesterday
+expenses
+expense
+expenses
+K
+already linked
+Feb
+х
+Thu
+Jan
+ — no exchange rate →
+≈ {0} a day until month end
+≈ {0} a month

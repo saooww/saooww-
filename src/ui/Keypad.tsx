@@ -5,6 +5,7 @@ import { haptic } from "../lib/haptics";
 import { getMoneyFormat } from "../lib/money";
 import { cn } from "../lib/cn";
 import { spring } from "./motion";
+import { tr } from "../i18n/i18n";
 
 export type KeypadKey = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "," | "back" | "clear";
 
@@ -30,7 +31,7 @@ const KEYS: KeypadKey[] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ",", "0"
 type OpKey = "+" | "-" | "×" | "=";
 const KEYS_WITH_OPS: Array<KeypadKey | OpKey> = ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "×", ",", "0", "back", "="];
 const OP_LABEL: Record<OpKey, string> = { "+": "+", "-": "−", "×": "×", "=": "=" };
-const OP_ARIA: Record<OpKey, string> = { "+": "Плюс", "-": "Минус", "×": "Умножить", "=": "Посчитать" };
+const OP_ARIA: Record<OpKey, string> = { "+": tr("Плюс"), "-": tr("Минус"), "×": tr("Умножить"), "=": tr("Посчитать") };
 const isOpKey = (k: string): k is OpKey => k === "+" || k === "-" || k === "×" || k === "=";
 
 /**
@@ -58,14 +59,14 @@ export function Keypad<K extends string = KeypadKey>({ onKey, compact, ops, acti
   };
 
   return (
-    <div className={cn("grid gap-x-2 gap-y-1 px-3", ops ? "grid-cols-[1fr_1fr_1fr_0.72fr]" : "grid-cols-3")} role="group" aria-label="Клавиатура суммы">
+    <div className={cn("grid gap-x-2 gap-y-1 px-3", ops ? "grid-cols-[1fr_1fr_1fr_0.72fr]" : "grid-cols-3")} role="group" aria-label={tr("Клавиатура суммы")}>
       {keys.map((k) => {
         const op = isOpKey(k);
         return (
           <motion.button
             key={k}
             type="button"
-            aria-label={k === "back" ? "Стереть (удерживайте, чтобы очистить)" : k === "," ? "Десятичный разделитель" : op ? OP_ARIA[k] : k}
+            aria-label={k === "back" ? tr("Стереть (удерживайте, чтобы очистить)") : k === "," ? tr("Десятичный разделитель") : op ? OP_ARIA[k] : k}
             whileTap={{ scale: 0.92, backgroundColor: "var(--key-press)" }}
             transition={spring.press}
             onPointerDown={k === "back" ? startHold : undefined}

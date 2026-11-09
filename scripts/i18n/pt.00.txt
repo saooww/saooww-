@@ -1,0 +1,150 @@
+ {0} seguidos com tarefas feitas.
+· {0} por mês
+· atrasado
+ nos mesmos dias
+ e mais {0}
+% vs. semana passada
+). Sem problema — o importante é ver isso.
+, no total
+, tarefas: {0}
+, feito {0}
+, eventos: {0}
+, prazo {0}
+, do que em
+, do que no mês passado
+ para mover dinheiro para a meta.
+. Arquivado
+. Não precisa de cotações.
+. Diga quanto foi para outras categorias — o resto fica em
+1 min
+15 min
+21 out
+30 dias
+30D
+4 dígitos para entrar no app
+5 min
+90D
+: defina a cotação →
+O Ardessa guarda todos os dados só neste aparelho. Só sai a consulta das cotações do Banco Central, sem seus dados. Para levar os dados a outro aparelho, salve uma cópia em Arquivos e carregue lá.
+Ardessa — backup
+O Face ID não conectou — tente de novo
+há {0} {1}
+{0} · {1}% em média
+{0} KB
+{0} MB
+{0} sem gastos de {1}
+{0} perto do limite
+{0} por mês
+{0} em 7 dias
+{0} de {1}
+{0} desde o vencimento
+{0} assinaturas
+{0} seguidos
+{0} quase não são usadas — são {1} por ano
+{0} estourado{1}
+{0} vence a devolução da dívida: {1}, {2}
+{0} — devem a você
+{0}% feito
+{0}: {1} tarefas
+{0}: orçamento estourado em {1}
+{0}: restam {1} para {2}
+· dentro do limite
+· em média
+· a norma é recalculada toda manhã
+· restam
+· cerca de
+» não há nada
+Auto
+Backups automáticos
+Carro
+Transferências automáticas
+Ativas · {0}
+Destaque
+Análises
+Animações
+Dram armênio
+Arquivo ·
+Saldo
+O saldo de cada carteira, deslizando
+Saldo oculto
+Saldos e análises serão recalculados automaticamente.
+Pote
+Cartão bancário
+Conta bancária
+Sem data
+Sem movimento na conta
+Sem categoria
+Sem código, quem pegar seu celular desbloqueado não verá seus saldos. Os dados em si não são criptografados no aparelho.
+Sem carteira
+Sem limite neste mês
+Sem nome
+Sem contas de poupança e investimento. O gasto habitual é seu ritmo médio de 60 dias.
+Sem lista
+Sem lista — organize depois
+Sem prazo
+Sem gastos
+Nenhum dia sem gastos
+Sem padrão
+Não contado
+Branca
+Rublo bielorrusso
+Próximos 30 dias
+Bloquear
+Mais
+Você gasta mais às
+Mais que o restante ({0})
+Mais do que o guardado
+Bordô
+O navegador pode apagar os dados se faltar espaço. Instale o app na tela inicial e salve uma cópia em Arquivos.
+Dados, ajustes, fotos de recibos e backups automáticos serão apagados. Se precisar, salve antes uma cópia em Arquivos.
+Mais rápido que o plano · ~{0} no fim do mês
+Orçamento
+Orçamento excluído
+Ainda não há orçamentos
+Orçamentos
+Orçamentos, metas e planos — e quanto você pode gastar hoje
+No Ardessa desde {0}
+Em Arquivos ou iCloud — caso perca o celular
+Arquivado
+Arquivado:
+No prazo
+No prazo · até {0}
+No diário: {0}
+O diário está vazio — algumas linhas à noite ajudam
+Aos favoritos
+Para a carteira
+Por mês · {0}
+Média por dia
+Em média você guarda {0} da renda{1}
+Na meta
+Para a meta
+Para a meta «{0}»
+Em metas
+Ainda esperado este mês: entradas {0}, saídas {1}.
+Sem despesas neste período
+Importante
+Importante
+Moeda
+A moeda não pode ser alterada enquanto a carteira tiver operações.
+Devem a você
+Seu
+Seu dia
+Seu perfil
+Seu nome
+Seus dados estão seguros. Reinicie o app — e se o erro se repetir, salve antes uma cópia.
+Suas contas
+Digitado {0} de {1}
+Digite o código
+Digite um valor
+Devolver
+Devolver à carteira
+Voltar ao plano
+Devolver até
+Pagar dívida: {0}
+Tirar do arquivo
+Devolver: {0}
+Vai devolver: {0}
+Versão
+A marca vertical mostra quanto do mês já passou. Se a barra passar dela, você gasta mais rápido que o planejado.
+Recibo inteiro
+À noite — balanço

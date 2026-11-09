@@ -1,6 +1,7 @@
 import type { Frequency, Recurring } from "../store/types";
 import type { Minor } from "./money";
 import { addDays, addMonths, parseDay, plural, type DayKey } from "./dates";
+import { tr } from "../i18n/i18n";
 
 export function nextAfter(date: DayKey, freq: Frequency, interval: number, anchorDay?: number): DayKey {
   const n = Math.max(1, interval);
@@ -45,7 +46,7 @@ export function monthlyEquivalent(r: Pick<Recurring, "amount" | "freq" | "interv
 
 export function freqLabel(freq: Frequency, interval = 1): string {
   if (interval <= 1) {
-    return { day: "Каждый день", week: "Каждую неделю", month: "Каждый месяц", year: "Каждый год" }[freq];
+    return { day: tr("Каждый день"), week: tr("Каждую неделю"), month: tr("Каждый месяц"), year: tr("Каждый год") }[freq];
   }
   const forms: Record<Frequency, [string, string, string]> = {
     day: ["день", "дня", "дней"],
@@ -53,11 +54,11 @@ export function freqLabel(freq: Frequency, interval = 1): string {
     month: ["месяц", "месяца", "месяцев"],
     year: ["год", "года", "лет"]
   };
-  return `Каждые ${interval} ${plural(interval, forms[freq])}`;
+  return tr("Каждые {0} {1}", interval, plural(interval, forms[freq]));
 }
 
 export function freqShort(freq: Frequency, interval = 1): string {
-  if (interval <= 1) return { day: "в день", week: "в неделю", month: "в месяц", year: "в год" }[freq];
+  if (interval <= 1) return { day: tr("в день"), week: tr("в неделю"), month: tr("в месяц"), year: tr("в год") }[freq];
   return freqLabel(freq, interval).toLowerCase();
 }
 

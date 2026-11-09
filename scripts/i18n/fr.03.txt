@@ -1,0 +1,150 @@
+Cartes des comptes
+Catégories
+Catégorie
+Catégorie masquée, historique conservé
+Catégorie supprimée
+Catégorie de la partie
+Cafés et restaurants
+Trimestre
+Appartement
+Appartement, voiture, vacances ou matelas de sécurité — nous calculerons combien épargner par mois.
+Appartement, vacances, matelas
+Cashback
+Vermillon
+Yuan chinois
+Pavé de montant
+Quand
+Un code à 4 chiffres à l'ouverture de l'app. Sur iPhone, vous pouvez vous connecter avec Face ID.
+Code modifié
+Le code est stocké sur cet appareil uniquement et ne peut pas être récupéré. Vous pouvez effacer les données de l'app et recommencer — puis charger une sauvegarde si vous en avez une.
+Code d'accès
+Code d'accès activé
+Code d'accès désactivé
+Les codes ne correspondent pas — recommencez
+Anneau
+Commentaire
+Commentaire : {0}
+À qui
+Centimes
+Copie
+Copie hors du téléphone
+Copie restaurée
+Copie enregistrée
+Copie enregistrée.
+L'essentiel : combien est parti, où, et ce que vous avez réussi à épargner.
+Ajustement
+Ajustement du solde
+Touchez un jour
+Touchez un mois pour voir les détails
+Portefeuilles
+Portefeuille
+Portefeuille archivé
+Portefeuille restauré
+Le portefeuille et son argent restent inchangés.
+Portefeuille créé
+Portefeuille enregistré
+Portefeuille supprimé
+Beauté
+Gros achats et prévisions
+Grand
+Qui doit quoi à qui
+Vers
+Où ajouter les tâches
+Où est parti l'argent et ce que vous avez épargné
+Où est parti le plus
+Les taux de la Banque centrale se chargeront dès que vous serez en ligne.
+Taux de la Banque centrale automatiques
+Taux de change
+Les taux sont saisis à la main.
+Taux mis à jour
+Forêt
+Limite
+Limite mensuelle
+Limites par catégorie
+Personnel
+Moins
+Mois
+Moins
+Peut être pris sur d'autres jours
+Encore possible
+Dépensable aujourd'hui
+Aujourd'hui
+Moka
+Mono
+Le
+Le week-end
+Sur l'écran d'accueil
+En pause
+{0} pour aujourd'hui. Vous choisirez l'essentiel plus tard.
+Plus rien pour aujourd'hui
+Déjà {0} pour la semaine prochaine
+Sur les comptes
+Pour quoi on épargne
+Observations
+Retour
+Nom
+Nom de la liste
+Comptes d'épargne et d'investissement, argent des objectifs — en {0}
+Comptes d'épargne face aux dépenses moyennes sur 3 mois ({0} par mois). La réserve conseillée est de 3 à 6 mois.
+L'épargne couvrira {0} {1} de dépenses habituelles{2}
+Épargne
+Les {0} épargnés retourneront dans les portefeuilles d'où ils venaient.
+Épargné pour
+Espèces
+Écrivez, par exemple « {0} »
+Me rappeler dans 3 jours
+Par exemple, « Rénover la cuisine »
+Par exemple, Carte
+Par exemple, musique
+Par exemple, prime
+Par exemple, travaux
+Personnaliser l'accueil
+Réglages
+Réglages et profil
+Une semaine chargée
+Le début de la période doit précéder la fin.
+Solde initial
+Commencer
+Commencer la journée
+Recommencer
+Repartir de zéro ?
+Commencer avec mes données
+Commencez par «
+Non choisie
+Ne pas répéter
+Impossible d'ouvrir le Calendrier
+Impossible de copier.
+Impossible d'enregistrer les modifications — l'appareil manque d'espace. Enregistrez une copie dans Fichiers.
+Impossible d'enregistrer le fichier — essayez de copier.
+Impossible d'enregistrer le fichier — copiez la sauvegarde en texte
+Impossible d'enregistrer la photo
+Échec — essayez dans « Réglages → Données »
+Impossible de charger les taux — vérifiez la connexion
+Impossible de lire le fichier
+Non indiqué
+Pas eu le temps
+Pas eu le temps — ça arrive. Décidez quand les faire, ou laissez-les.
+Code erroné · essais restants : {0}
+Semaine
+Facultatif
+Non
+Aucun portefeuille
+Aucun paiement régulier
+Rien ne s'est passé
+Rien de prévu
+Rien trouvé
+Nouvelle
+Nouvelle note
+Nouvelle note pour la tâche
+Nouvelle catégorie
+Nouvelle opération
+Nouvel abonnement
+Nouvel objectif
+Nouvelle tâche
+Nouveau
+Nouveau budget
+Nouvelle dette
+Nouveau portefeuille
+Nouveau mois, nouvelle chance.
+Nouvelle dépense
+Nouvelle liste

@@ -15,6 +15,7 @@ import { EmptyState, IconButton, Button, IconChip } from "../../ui/primitives";
 import { TagInput } from "../../ui/TagInput";
 import { Sheet, useSheet } from "../../ui/Sheet";
 import { Checklist } from "../planner/TaskSheet";
+import { tr } from "../../i18n/i18n";
 
 function stamp(iso: string) {
   const d = dayOf(iso);
@@ -63,9 +64,9 @@ export function NotesView() {
       <div className="px-4">
         <label className="flex h-10 items-center gap-2 rounded-sm tile px-3">
           <Search size={17} className="text-ink-3" />
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Поиск по заметкам" className="h-full min-w-0 flex-1 bg-transparent text-body outline-none placeholder:text-ink-3" />
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={tr("Поиск по заметкам")} className="h-full min-w-0 flex-1 bg-transparent text-body outline-none placeholder:text-ink-3" />
           {q && (
-            <button type="button" aria-label="Очистить" onClick={() => setQ("")} className="grid h-6 w-6 place-items-center rounded-full bg-ink-4 text-ink-inverse">
+            <button type="button" aria-label={tr("Очистить")} onClick={() => setQ("")} className="grid h-6 w-6 place-items-center rounded-full bg-ink-4 text-ink-inverse">
               <X size={13} strokeWidth={3} />
             </button>
           )}
@@ -81,20 +82,16 @@ export function NotesView() {
       >
         <IconChip icon={BookOpen} tone="accent" size={36} />
         <span className="min-w-0 flex-1">
-          <span className="block text-callout font-semibold">Дневник</span>
-          <span className="block truncate text-footnote text-ink-2">{todayEntry?.body ? todayEntry.body.split("\n")[0] : "Пара строк о сегодняшнем дне"}</span>
+          <span className="block text-callout font-semibold">{tr("Дневник")}</span>
+          <span className="block truncate text-footnote text-ink-2">{todayEntry?.body ? todayEntry.body.split("\n")[0] : tr("Пара строк о сегодняшнем дне")}</span>
         </span>
       </motion.button>
 
       {(tags.length > 0 || hasJournal) && (
         <div className="scroll-x mt-3 flex gap-2 px-4">
-          <FilterChip on={filter.kind === "all"} onClick={() => setFilter({ kind: "all" })}>
-            Все
-          </FilterChip>
+          <FilterChip on={filter.kind === "all"} onClick={() => setFilter({ kind: "all" })}>{tr("Все")}</FilterChip>
           {hasJournal && (
-            <FilterChip on={filter.kind === "journal"} onClick={() => setFilter({ kind: "journal" })}>
-              Дневник
-            </FilterChip>
+            <FilterChip on={filter.kind === "journal"} onClick={() => setFilter({ kind: "journal" })}>{tr("Дневник")}</FilterChip>
           )}
           {tags.map((t) => (
             <FilterChip key={t} on={filter.kind === "tag" && filter.tag === t} onClick={() => setFilter(filter.kind === "tag" && filter.tag === t ? { kind: "all" } : { kind: "tag", tag: t })}>
@@ -107,16 +104,14 @@ export function NotesView() {
       {notes.length === 0 ? (
         <EmptyState
           icon={NotebookPen}
-          title="Записывайте, чтобы не держать в голове"
-          text="Идеи, списки покупок, договорённости, планы на поездку. Пункты чек-листа превращаются в дела одной кнопкой."
+          title={tr("Записывайте, чтобы не держать в голове")}
+          text={tr("Идеи, списки покупок, договорённости, планы на поездку. Пункты чек-листа превращаются в дела одной кнопкой.")}
           action={
-            <Button size="md" icon={Plus} onClick={() => createNote()}>
-              Новая заметка
-            </Button>
+            <Button size="md" icon={Plus} onClick={() => createNote()}>{tr("Новая заметка")}</Button>
           }
         />
       ) : filtered.length === 0 ? (
-        <EmptyState icon={Search} title="Ничего не найдено" />
+        <EmptyState icon={Search} title={tr("Ничего не найдено")} />
       ) : (
         <div className="mt-4 columns-2 gap-2.5 px-4">
           {filtered.map((n, i) => (
@@ -151,11 +146,10 @@ function NoteCard({ note: n, index }: { note: Note; index: number }) {
     >
       {n.journal && (
         <div className="mb-1 flex items-center gap-1.5 text-caption font-medium text-accent-ink">
-          <BookOpen size={12} strokeWidth={2.2} /> Дневник
-        </div>
+          <BookOpen size={12} strokeWidth={2.2} />{tr("Дневник")}</div>
       )}
       <div className="flex items-start gap-1.5">
-        <span className="line-clamp-2 min-w-0 flex-1 text-callout font-semibold text-ink">{n.journal ? journalTitle(n.journal) : n.title || "Без названия"}</span>
+        <span className="line-clamp-2 min-w-0 flex-1 text-callout font-semibold text-ink">{n.journal ? journalTitle(n.journal) : n.title || tr("Без названия")}</span>
         {n.pinned && <Pin size={13} className="mt-0.5 shrink-0 fill-current text-accent-ink" />}
       </div>
       {n.body && <p className="mt-1 line-clamp-6 whitespace-pre-line text-footnote text-ink-2">{n.body}</p>}
@@ -167,7 +161,7 @@ function NoteCard({ note: n, index }: { note: Note; index: number }) {
               <span className={cn("truncate", c.done ? "text-ink-3 line-through" : "text-ink-2")}>{c.title}</span>
             </div>
           ))}
-          {list.length > 4 && <div className="text-caption text-ink-3">и ещё {list.length - 4}</div>}
+          {list.length > 4 && <div className="text-caption text-ink-3">{tr("и ещё")}{" "}{list.length - 4}</div>}
         </div>
       )}
       <div className="mt-2.5 flex items-center gap-2 text-caption text-ink-3">
@@ -191,7 +185,7 @@ function NoteCard({ note: n, index }: { note: Note; index: number }) {
 /** Kept for the «Ещё» stack and old links. */
 export function NotesScreen() {
   return (
-    <Screen title="Заметки" large actions={<IconButton icon={Plus} label="Новая заметка" onClick={() => createNote()} />}>
+    <Screen title={tr("Заметки")} large actions={<IconButton icon={Plus} label={tr("Новая заметка")} onClick={() => createNote()} />}>
       <NotesView />
     </Screen>
   );
@@ -216,7 +210,7 @@ function useLinkLabel() {
   };
 }
 
-const LINK_KIND: Record<LinkType, string> = { project: "Список", task: "Дело", goal: "Цель", plan: "План", debt: "Долг" };
+const LINK_KIND: Record<LinkType, string> = { project: tr("Список"), task: tr("Дело"), goal: tr("Цель"), plan: tr("План"), debt: tr("Долг") };
 
 export function NoteEditor({ id, isNew }: { id: ID; isNew?: boolean }) {
   const note = useData((s) => s.notes.find((n) => n.id === id));
@@ -244,8 +238,8 @@ export function NoteEditor({ id, isNew }: { id: ID; isNew?: boolean }) {
 
   if (!note) {
     return (
-      <Screen title="Заметка">
-        <EmptyState icon={NotebookPen} title="Заметка удалена" />
+      <Screen title={tr("Заметка")}>
+        <EmptyState icon={NotebookPen} title={tr("Заметка удалена")} />
       </Screen>
     );
   }
@@ -264,9 +258,9 @@ export function NoteEditor({ id, isNew }: { id: ID; isNew?: boolean }) {
   const toTasks = () => {
     const linkedProject = note.links.find((l) => l.type === "project")?.id;
     nav.sheet("picker", {
-      title: "Куда добавить дела",
+      title: tr("Куда добавить дела"),
       value: linkedProject ?? "",
-      options: [{ value: "", label: "Входящие", sub: "Разберёте при планировании дня" }, ...projects.filter((p) => !p.archived).map((p) => ({ value: p.id, label: p.name, iconName: p.icon }))],
+      options: [{ value: "", label: tr("Входящие"), sub: tr("Разберёте при планировании дня") }, ...projects.filter((p) => !p.archived).map((p) => ({ value: p.id, label: p.name, iconName: p.icon }))],
       onSelect: (v: string) => {
         const st = useData.getState();
         const ids = openItems.map((c) => st.addTask({ title: c.title.trim(), priority: 0, repeat: "none", projectId: v || undefined }));
@@ -287,13 +281,13 @@ export function NoteEditor({ id, isNew }: { id: ID; isNew?: boolean }) {
       title=""
       actions={
         <>
-          <IconButton icon={note.pinned ? PinOff : Pin} label={note.pinned ? "Открепить" : "Закрепить"} onClick={() => { haptic(); update({ pinned: !note.pinned }); }} />
+          <IconButton icon={note.pinned ? PinOff : Pin} label={note.pinned ? tr("Открепить") : tr("Закрепить")} onClick={() => { haptic(); update({ pinned: !note.pinned }); }} />
           <IconButton
             icon={Trash2}
-            label="Удалить"
+            label={tr("Удалить")}
             onClick={() => {
               nav.pop();
-              setTimeout(() => undoable("Заметка удалена", () => useData.getState().deleteNote(id)), 380);
+              setTimeout(() => undoable(tr("Заметка удалена"), () => useData.getState().deleteNote(id)), 380);
             }}
           />
         </>
@@ -303,9 +297,8 @@ export function NoteEditor({ id, isNew }: { id: ID; isNew?: boolean }) {
         {note.journal ? (
           <>
             <div className="flex items-center gap-1.5 text-footnote font-medium text-accent-ink">
-              <BookOpen size={14} /> Дневник
-            </div>
-            <h1 className="mt-1 text-title-2 font-semibold">{formatDayHeading(note.journal) === "Сегодня" ? `Сегодня, ${parseDay(note.journal).getDate()} ${MONTHS_GEN[parseDay(note.journal).getMonth()]}` : journalTitle(note.journal)}</h1>
+              <BookOpen size={14} />{tr("Дневник")}</div>
+            <h1 className="mt-1 text-title-2 font-semibold">{formatDayHeading(note.journal) === tr("Сегодня") ? tr("Сегодня, {0} {1}", parseDay(note.journal).getDate(), MONTHS_GEN[parseDay(note.journal).getMonth()]) : journalTitle(note.journal)}</h1>
           </>
         ) : (
           <>
@@ -316,7 +309,7 @@ export function NoteEditor({ id, isNew }: { id: ID; isNew?: boolean }) {
               autoFocus={isNew}
               value={note.title}
               onChange={(e) => update({ title: e.target.value })}
-              placeholder="Заголовок"
+              placeholder={tr("Заголовок")}
               className="mt-1 w-full bg-transparent text-title-2 font-semibold outline-none placeholder:text-ink-4"
             />
           </>
@@ -326,7 +319,7 @@ export function NoteEditor({ id, isNew }: { id: ID; isNew?: boolean }) {
           autoFocus={isNew && !!note.journal}
           value={note.body}
           onChange={(e) => update({ body: e.target.value })}
-          placeholder={note.journal ? "Что получилось? Что мешало? Что важно завтра?" : "Текст заметки"}
+          placeholder={note.journal ? tr("Что получилось? Что мешало? Что важно завтра?") : tr("Текст заметки")}
           className="mt-3 w-full resize-none bg-transparent text-body leading-[24px] outline-none placeholder:text-ink-4"
         />
       </div>
@@ -334,36 +327,32 @@ export function NoteEditor({ id, isNew }: { id: ID; isNew?: boolean }) {
       <div className="mt-2 flex flex-col gap-5">
         {note.checklist ? (
           <div>
-            <Checklist header="Чек-лист" items={note.checklist} onChange={(checklist) => update({ checklist })} />
+            <Checklist header={tr("Чек-лист")} items={note.checklist} onChange={(checklist) => update({ checklist })} />
             {openItems.length > 0 && (
               <div className="px-4 pt-2">
                 <Button size="sm" variant="tinted" icon={ListPlus} onClick={toTasks}>
-                  {openItems.length === 1 ? "Сделать делом" : `Сделать делами: ${openItems.length}`}
+                  {openItems.length === 1 ? tr("Сделать делом") : tr("Сделать делами: {0}", openItems.length)}
                 </Button>
               </div>
             )}
           </div>
         ) : (
           <div className="px-4">
-            <Button size="sm" variant="secondary" icon={ListChecks} onClick={() => update({ checklist: [] })}>
-              Добавить чек-лист
-            </Button>
+            <Button size="sm" variant="secondary" icon={ListChecks} onClick={() => update({ checklist: [] })}>{tr("Добавить чек-лист")}</Button>
           </div>
         )}
 
         <section className="mx-4 panel rounded-lg px-4 py-3">
-          <div className="pb-2 text-footnote font-medium text-ink-2">Теги</div>
+          <div className="pb-2 text-footnote font-medium text-ink-2">{tr("Теги")}</div>
           <TagInput value={note.tags} onChange={(tags) => update({ tags })} suggestions={allTags} />
         </section>
         <section className="mx-4 panel rounded-lg">
           <div className="flex items-center justify-between px-4 pb-1 pt-3">
-            <span className="text-footnote font-medium text-ink-2">Связи</span>
-            <button type="button" onClick={() => nav.sheet("linkPicker", { noteId: id })} className="text-subhead font-semibold text-accent-ink">
-              Добавить
-            </button>
+            <span className="text-footnote font-medium text-ink-2">{tr("Связи")}</span>
+            <button type="button" onClick={() => nav.sheet("linkPicker", { noteId: id })} className="text-subhead font-semibold text-accent-ink">{tr("Добавить")}</button>
           </div>
           {note.links.length === 0 ? (
-            <div className="px-4 pb-3 text-subhead text-ink-3">Привяжите список, дело, цель, план или долг</div>
+            <div className="px-4 pb-3 text-subhead text-ink-3">{tr("Привяжите список, дело, цель, план или долг")}</div>
           ) : (
             note.links.map((l) => {
               const name = label(l);
@@ -374,7 +363,7 @@ export function NoteEditor({ id, isNew }: { id: ID; isNew?: boolean }) {
                     <div className="text-caption text-ink-3">{LINK_KIND[l.type]}</div>
                     <div className="truncate text-body">{name}</div>
                   </button>
-                  <button type="button" aria-label="Убрать связь" onClick={() => update({ links: note.links.filter((x) => !(x.type === l.type && x.id === l.id)) })} className="grid h-8 w-8 place-items-center rounded-full text-ink-3 active:bg-surface-3">
+                  <button type="button" aria-label={tr("Убрать связь")} onClick={() => update({ links: note.links.filter((x) => !(x.type === l.type && x.id === l.id)) })} className="grid h-8 w-8 place-items-center rounded-full text-ink-3 active:bg-surface-3">
                     <X size={16} />
                   </button>
                 </div>
@@ -410,7 +399,7 @@ export function LinkPickerSheet({ noteId }: { noteId: ID }) {
   const has = (id: ID) => note.links.some((l) => l.type === type && l.id === id);
 
   return (
-    <Sheet title="Связать с…">
+    <Sheet title={tr("Связать с…")}>
       <div className="scroll-x flex gap-2 px-4 pb-3">
         {(["project", "task", "goal", "plan", "debt"] as LinkType[]).map((t) => (
           <button key={t} type="button" onClick={() => setType(t)} className={cn("h-8 shrink-0 rounded-full px-3.5 text-subhead font-medium", type === t ? "bg-ink text-ink-inverse" : "tile")}>
@@ -419,7 +408,7 @@ export function LinkPickerSheet({ noteId }: { noteId: ID }) {
         ))}
       </div>
       {items.length === 0 ? (
-        <div className="px-6 py-8 text-center text-callout text-ink-2">Здесь пока пусто</div>
+        <div className="px-6 py-8 text-center text-callout text-ink-2">{tr("Здесь пока пусто")}</div>
       ) : (
         <div className="mx-4 overflow-hidden panel rounded-lg [&>*+*]:hairline-t">
           {items.map((it) => (
@@ -437,7 +426,7 @@ export function LinkPickerSheet({ noteId }: { noteId: ID }) {
               className="flex min-h-[50px] w-full items-center px-4 text-left text-body disabled:text-ink-3"
             >
               <span className="truncate">{it.title}</span>
-              {has(it.id) && <span className="ml-auto text-footnote">уже связано</span>}
+              {has(it.id) && <span className="ml-auto text-footnote">{tr("уже связано")}</span>}
             </motion.button>
           ))}
         </div>

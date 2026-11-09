@@ -49,6 +49,12 @@
    "bold"
   ]
  },
+ "ArrowUp": {
+  "ph": "ArrowUp",
+  "weights": [
+   "bold"
+  ]
+ },
  "ArrowUpDown": {
   "ph": "ArrowsDownUp",
   "weights": [
@@ -357,6 +363,12 @@
   "ph": "Gift",
   "weights": [
    "duotone"
+  ]
+ },
+ "Globe": {
+  "ph": "Globe",
+  "weights": [
+   "bold"
   ]
  },
  "GraduationCap": {

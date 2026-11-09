@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { X } from "./glyphs";
+import { tr } from "../i18n/i18n";
 
 /** Free-form tags: type and press Enter (or a comma); tap a suggestion to add it. */
-export function TagInput({ value, onChange, suggestions = [], placeholder = "Добавить тег" }: { value: string[]; onChange: (tags: string[]) => void; suggestions?: string[]; placeholder?: string }) {
+export function TagInput({ value, onChange, suggestions = [], placeholder = tr("Добавить тег") }: { value: string[]; onChange: (tags: string[]) => void; suggestions?: string[]; placeholder?: string }) {
   const [draft, setDraft] = useState("");
   const add = (raw: string) => {
     const t = raw.trim().replace(/^#/, "").toLowerCase();
@@ -16,7 +17,7 @@ export function TagInput({ value, onChange, suggestions = [], placeholder = "Д�
         {value.map((t) => (
           <span key={t} className="inline-flex h-8 items-center gap-1 rounded-full tile pl-3 pr-1.5 text-subhead">
             #{t}
-            <button type="button" aria-label={`Убрать тег ${t}`} onClick={() => onChange(value.filter((x) => x !== t))} className="grid h-6 w-6 place-items-center rounded-full text-ink-2 active:bg-surface-press">
+            <button type="button" aria-label={tr("Убрать тег {0}", t)} onClick={() => onChange(value.filter((x) => x !== t))} className="grid h-6 w-6 place-items-center rounded-full text-ink-2 active:bg-surface-press">
               <X size={13} strokeWidth={2.4} />
             </button>
           </span>

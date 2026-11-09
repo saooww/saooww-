@@ -25,6 +25,7 @@ import { NamedIcon } from "../../ui/icons";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
 import { TagInput } from "../../ui/TagInput";
 import { AmountDisplay } from "./AmountDisplay";
+import { tr } from "../../i18n/i18n";
 
 type FlowKind = "expense" | "income" | "transfer";
 type View = "main" | "from" | "to" | "categories" | "details" | "split";
@@ -50,18 +51,13 @@ const KIND_ORDER: FlowKind[] = ["expense", "income", "transfer"];
 
 /** Each kind has its own colour: the switch, the light behind the amount and the button follow it. */
 const KIND_META: Record<FlowKind, { label: string; icon: LucideIcon; fill: string; on: string; shadow?: string }> = {
-  expense: { label: "Расход", icon: ArrowUpRight, fill: "fill-accent", on: "text-[var(--accent-on)]" },
-  income: { label: "Доход", icon: ArrowDownLeft, fill: "fill-positive", on: "text-[var(--positive-on)]", shadow: "inset 0 1px 0 rgba(255,255,255,0.22), 0 10px 24px -10px color-mix(in srgb, var(--positive) 70%, transparent)" },
-  transfer: { label: "Перевод", icon: ArrowLeftRight, fill: "bg-ink", on: "text-ink-inverse" }
+  expense: { label: tr("Расход"), icon: ArrowUpRight, fill: "fill-accent", on: "text-[var(--accent-on)]" },
+  income: { label: tr("Доход"), icon: ArrowDownLeft, fill: "fill-positive", on: "text-[var(--positive-on)]", shadow: "inset 0 1px 0 rgba(255,255,255,0.22), 0 10px 24px -10px color-mix(in srgb, var(--positive) 70%, transparent)" },
+  transfer: { label: tr("Перевод"), icon: ArrowLeftRight, fill: "bg-ink", on: "text-ink-inverse" }
 };
 
-const KIND_GLOW: Record<"expense" | "income" | "transfer", string> = {
-  expense: "color-mix(in srgb, var(--accent) 26%, transparent)",
-  income: "color-mix(in srgb, var(--positive) 24%, transparent)",
-  transfer: "color-mix(in srgb, var(--ink) 9%, transparent)"
-};
 
-const SAVE_LABEL: Record<FlowKind, string> = { expense: "Добавить расход", income: "Добавить доход", transfer: "Перевести" };
+const SAVE_LABEL: Record<FlowKind, string> = { expense: tr("Добавить расход"), income: tr("Добавить доход"), transfer: tr("Перевести") };
 
 export function ComposerSheet(props: ComposerProps) {
   const { close, depth } = useSheet();
@@ -142,7 +138,7 @@ export function ComposerSheet(props: ComposerProps) {
       else if (e.key === "," || e.key === ".") pressRef.current(",");
       else if (e.key === "Backspace") pressRef.current("back");
       else if (e.key === "+" || e.key === "-") pressRef.current(e.key);
-      else if (e.key === "*" || e.key === "x" || e.key === "х") pressRef.current("×");
+      else if (e.key === "*" || e.key === "x" || e.key === tr("х")) pressRef.current("×");
       else if (e.key === "=") pressRef.current("=");
       else if (e.key === "Enter") saveRef.current();
       else return;
@@ -160,11 +156,11 @@ export function ComposerSheet(props: ComposerProps) {
   const save = () => {
     if (!amount) {
       shake(amountCtl);
-      setHint(negative ? "Получилось меньше нуля" : "Введите сумму");
+      setHint(negative ? tr("Получилось меньше нуля") : tr("Введите сумму"));
       return;
     }
     if (!walletId || !from) {
-      nav.toast("Сначала добавьте кошелёк", { tone: "warning" });
+      nav.toast(tr("Сначала добавьте кошелёк"), { tone: "warning" });
       return;
     }
     const splitParts = kind === "expense" && !editing ? parts.filter((p) => parseAmount(p.buf) > 0) : [];
@@ -172,24 +168,24 @@ export function ComposerSheet(props: ComposerProps) {
     if (splitParts.length) {
       if (splitParts.some((p) => !p.categoryId)) {
         setView("split");
-        nav.toast("Выберите категорию для каждой части чека", { tone: "warning" });
+        nav.toast(tr("Выберите категорию для каждой части чека"), { tone: "warning" });
         return;
       }
       if (remainder < 0) {
         setView("split");
-        nav.toast("Части чека больше его суммы", { tone: "warning" });
+        nav.toast(tr("Части чека больше его суммы"), { tone: "warning" });
         return;
       }
     }
     if (kind !== "transfer" && !lockedKind && !categoryId && !(splitParts.length && remainder === 0)) {
       shake(catCtl);
-      setHint("Выберите категорию");
+      setHint(tr("Выберите категорию"));
       return;
     }
     let toAmount: Minor | undefined;
     if (kind === "transfer" && !lockedKind) {
       if (!toWalletId || toWalletId === walletId) {
-        setHint("Выберите кошелёк назначения");
+        setHint(tr("Выберите кошелёк назначения"));
         haptic("warning");
         return;
       }
@@ -198,7 +194,7 @@ export function ComposerSheet(props: ComposerProps) {
         if (!toAmount) {
           setField("to");
           shake(amountCtl);
-          setHint("Сколько поступит на второй счёт?");
+          setHint(tr("Сколько поступит на второй счёт?"));
           return;
         }
       }
@@ -221,7 +217,7 @@ export function ComposerSheet(props: ComposerProps) {
     };
 
     const isNew = !editing;
-    const label = isNew ? (effectiveKind === "income" ? "Доход добавлен" : effectiveKind === "expense" ? "Расход добавлен" : "Перевод выполнен") : "Изменения сохранены";
+    const label = isNew ? (effectiveKind === "income" ? tr("Доход добавлен") : effectiveKind === "expense" ? tr("Расход добавлен") : tr("Перевод выполнен")) : tr("Изменения сохранены");
 
     undoable(label, () => {
       let recurringId = editing?.recurringId;
@@ -230,7 +226,7 @@ export function ComposerSheet(props: ComposerProps) {
         const anchor = anchorOf(day);
         recurringId = st.addRecurring({
           kind,
-          title: cleanNote || (categoryId ? catMap.get(categoryId)?.name : undefined) || "Перевод",
+          title: cleanNote || (categoryId ? catMap.get(categoryId)?.name : undefined) || tr("Перевод"),
           amount,
           walletId,
           toWalletId: kind === "transfer" ? toWalletId : undefined,
@@ -254,7 +250,7 @@ export function ComposerSheet(props: ComposerProps) {
         for (const p of splitParts) st.addTransaction({ ...base, amount: parseAmount(p.buf), categoryId: p.categoryId, splitId });
       } else st.addTransaction({ ...(fields as Omit<Transaction, "id" | "createdAt">), recurringId });
       if (saveFav && kind !== "transfer") {
-        st.addFavorite({ kind, title: cleanNote || catMap.get(categoryId!)?.name || "Избранное", amount, walletId, categoryId, note: cleanNote });
+        st.addFavorite({ kind, title: cleanNote || catMap.get(categoryId!)?.name || tr("Избранное"), amount, walletId, categoryId, note: cleanNote });
       }
     });
     haptic("success");
@@ -307,21 +303,21 @@ export function ComposerSheet(props: ComposerProps) {
   })();
 
   const titleFor: Record<View, string | undefined> = {
-    main: editing ? "Изменить операцию" : undefined,
-    from: kind === "transfer" ? "Откуда" : "Кошелёк",
-    to: "Куда",
-    categories: "Категория",
-    details: "Подробности",
-    split: "Разделить чек"
+    main: editing ? tr("Изменить операцию") : undefined,
+    from: kind === "transfer" ? tr("Откуда") : tr("Кошелёк"),
+    to: tr("Куда"),
+    categories: tr("Категория"),
+    details: tr("Подробности"),
+    split: tr("Разделить чек")
   };
 
   return (
     <Sheet
       tall
-      ariaLabel={editing ? "Изменить операцию" : "Новая операция"}
+      ariaLabel={editing ? tr("Изменить операцию") : tr("Новая операция")}
       title={view === "main" ? undefined : titleFor[view]}
-      left={view === "main" ? undefined : <SheetAction onClick={() => setView("main")}>Назад</SheetAction>}
-      right={view === "details" ? <SheetAction strong onClick={() => setView("main")}>Готово</SheetAction> : undefined}
+      left={view === "main" ? undefined : <SheetAction onClick={() => setView("main")}>{tr("Назад")}</SheetAction>}
+      right={view === "details" ? <SheetAction strong onClick={() => setView("main")}>{tr("Готово")}</SheetAction> : undefined}
       contentClassName="flex flex-col"
     >
       <AnimatePresence mode="wait" initial={false}>
@@ -335,9 +331,9 @@ export function ComposerSheet(props: ComposerProps) {
             transition={{ duration: 0.18, ease: ease.out }}
           >
             <div className="flex shrink-0 items-center gap-2 px-3">
-              <IconButton icon={X} label="Закрыть" variant="plain" size={38} iconSize={20} onClick={close} />
+              <IconButton icon={X} label={tr("Закрыть")} variant="plain" size={38} iconSize={20} onClick={close} />
               {lockedKind ? (
-                <div className="flex-1 text-center text-headline font-semibold">Изменить операцию</div>
+                <div className="flex-1 text-center text-headline font-semibold">{tr("Изменить операцию")}</div>
               ) : (
                 <KindSwitch value={kind} onChange={setKind} />
               )}
@@ -348,8 +344,8 @@ export function ComposerSheet(props: ComposerProps) {
             <motion.div animate={amountCtl} className="flex min-h-[112px] flex-1 flex-col items-center justify-center px-4 py-2">
               {cross ? (
                 <div className="flex w-full flex-col items-center gap-3">
-                  <AmountDisplay compact buffer={shown(buf)} currency={from!.currency} active={field === "amount"} label="Списать" onClick={() => setField("amount")} glow={field === "amount" ? KIND_GLOW.transfer : undefined} />
-                  <AmountDisplay compact buffer={shown(toBuf)} currency={to!.currency} active={field === "to"} label="Зачислить" onClick={() => setField("to")} />
+                  <AmountDisplay compact buffer={shown(buf)} currency={from!.currency} active={field === "amount"} label={tr("Списать")} onClick={() => setField("amount")} />
+                  <AmountDisplay compact buffer={shown(toBuf)} currency={to!.currency} active={field === "to"} label={tr("Зачислить")} onClick={() => setField("to")} />
                 </div>
               ) : (
                 <>
@@ -362,7 +358,7 @@ export function ComposerSheet(props: ComposerProps) {
                       )}
                     </AnimatePresence>
                   </div>
-                  <AmountDisplay buffer={shown(buf)} currency={currency} sign={kind === "income" ? "+" : undefined} glow={KIND_GLOW[kind]} />
+                  <AmountDisplay buffer={shown(buf)} currency={currency} sign={kind === "income" ? "+" : undefined} />
                 </>
               )}
               <div className="mt-1 h-5 text-footnote">
@@ -373,7 +369,7 @@ export function ComposerSheet(props: ComposerProps) {
                     </motion.span>
                   ) : from && amount > 0 ? (
                     <motion.span key="after" className="text-ink-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                      {kind === "income" ? "Станет" : "Останется"} <Money value={balanceAfter} currency={from.currency} className="text-ink-2" /> на «{from.name}»
+                      {kind === "income" ? tr("Станет") : tr("Останется")} <Money value={balanceAfter} currency={from.currency} className="text-ink-2" />{tr("на «")}{from.name}»
                     </motion.span>
                   ) : note ? (
                     <motion.span key="note" className="text-ink-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
@@ -388,18 +384,18 @@ export function ComposerSheet(props: ComposerProps) {
             <div className="flex shrink-0 items-center gap-1.5 px-4">
               {kind === "income" && !lockedKind ? (
                 <>
-                  <CategoryTile ctl={catCtl} caption="Откуда" category={categoryId ? catMap.get(categoryId) : undefined} onClick={() => setView("categories")} />
+                  <CategoryTile ctl={catCtl} caption={tr("Откуда")} category={categoryId ? catMap.get(categoryId) : undefined} onClick={() => setView("categories")} />
                   <FlowArrow kind={kind} />
-                  <WalletTile caption="Куда" name={from?.name} icon={from ? walletKindInfo(from.kind).icon : "Wallet"} onClick={() => setView("from")} />
+                  <WalletTile caption={tr("Куда")} name={from?.name} icon={from ? walletKindInfo(from.kind).icon : "Wallet"} onClick={() => setView("from")} />
                 </>
               ) : (
                 <>
-                  <WalletTile caption="Откуда" name={from?.name} icon={from ? walletKindInfo(from.kind).icon : "Wallet"} onClick={() => setView("from")} />
+                  <WalletTile caption={tr("Откуда")} name={from?.name} icon={from ? walletKindInfo(from.kind).icon : "Wallet"} onClick={() => setView("from")} />
                   {!lockedKind && <FlowArrow kind={kind} />}
                   {kind === "transfer" && !lockedKind ? (
-                    <WalletTile caption="Куда" name={to?.name} icon={to ? walletKindInfo(to.kind).icon : "Wallet"} onClick={() => setView("to")} />
+                    <WalletTile caption={tr("Куда")} name={to?.name} icon={to ? walletKindInfo(to.kind).icon : "Wallet"} onClick={() => setView("to")} />
                   ) : !lockedKind ? (
-                    <CategoryTile ctl={catCtl} caption="Куда" category={categoryId ? catMap.get(categoryId) : undefined} onClick={() => setView("categories")} />
+                    <CategoryTile ctl={catCtl} caption={tr("Куда")} category={categoryId ? catMap.get(categoryId) : undefined} onClick={() => setView("categories")} />
                   ) : null}
                 </>
               )}
@@ -434,9 +430,7 @@ export function ComposerSheet(props: ComposerProps) {
                     {c.name}
                   </QuickChip>
                 ))}
-                <QuickChip icon={<LayoutGrid size={15} strokeWidth={2} />} onClick={() => setView("categories")}>
-                  Все
-                </QuickChip>
+                <QuickChip icon={<LayoutGrid size={15} strokeWidth={2} />} onClick={() => setView("categories")}>{tr("Все")}</QuickChip>
               </div>
             )}
 
@@ -450,13 +444,13 @@ export function ComposerSheet(props: ComposerProps) {
                 </span>
               </button>
               <div className="ml-auto flex shrink-0 gap-1.5">
-                <ToolButton icon={MessageSquareText} label={note ? `Комментарий: ${note}` : "Комментарий"} active={!!note} onClick={() => setView("details")} />
-                <ToolButton icon={Hash} label={tags.length ? `Теги: ${tags.join(", ")}` : "Теги"} active={tags.length > 0} onClick={() => setView("details")} />
-                {!editingRecurring && !lockedKind && !parts.length && <ToolButton icon={Repeat} label={repeat === "none" ? "Повтор" : freqLabel(repeat)} active={repeat !== "none"} onClick={() => setView("details")} />}
+                <ToolButton icon={MessageSquareText} label={note ? tr("Комментарий: {0}", note) : tr("Комментарий")} active={!!note} onClick={() => setView("details")} />
+                <ToolButton icon={Hash} label={tags.length ? tr("Теги: {0}", tags.join(", ")) : tr("Теги")} active={tags.length > 0} onClick={() => setView("details")} />
+                {!editingRecurring && !lockedKind && !parts.length && <ToolButton icon={Repeat} label={repeat === "none" ? tr("Повтор") : freqLabel(repeat)} active={repeat !== "none"} onClick={() => setView("details")} />}
                 {kind === "expense" && !editing && (
                   <ToolButton
                     icon={Split}
-                    label="Разделить"
+                    label={tr("Разделить")}
                     active={parts.some((p) => parseAmount(p.buf) > 0)}
                     onClick={() => {
                       if (!parts.length) setParts([{ key: uid(), buf: "" }]);
@@ -464,7 +458,7 @@ export function ComposerSheet(props: ComposerProps) {
                     }}
                   />
                 )}
-                {photosSupported() && <ToolButton icon={Camera} label="Фото чека" active={photos.length > 0} count={photos.length} onClick={() => setView("details")} />}
+                {photosSupported() && <ToolButton icon={Camera} label={tr("Фото чека")} active={photos.length > 0} count={photos.length} onClick={() => setView("details")} />}
               </div>
             </div>
 
@@ -481,7 +475,7 @@ export function ComposerSheet(props: ComposerProps) {
                 className={cn("flex h-[54px] w-full items-center justify-center gap-2 rounded-[16px] text-headline font-semibold transition-colors duration-300", KIND_META[lockedKind ? "transfer" : kind].fill, KIND_META[lockedKind ? "transfer" : kind].on)}
                 style={{ boxShadow: KIND_META[lockedKind ? "transfer" : kind].shadow }}
               >
-                {editing || lockedKind ? "Сохранить" : SAVE_LABEL[kind]}
+                {editing || lockedKind ? tr("Сохранить") : SAVE_LABEL[kind]}
                 {amount > 0 && !cross && <span className="num font-medium opacity-75">· {formatMoney(amount, { currency })}</span>}
               </motion.button>
             </div>
@@ -543,7 +537,7 @@ export function ComposerSheet(props: ComposerProps) {
                 ))}
               <CategoryItem
                 wide
-                name="Новая"
+                name={tr("Новая")}
                 iconNode={<Plus size={20} strokeWidth={2} />}
                 onClick={() =>
                   nav.sheet("category", {
@@ -562,17 +556,17 @@ export function ComposerSheet(props: ComposerProps) {
         {view === "details" && (
           <motion.div key="details" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 24 }} transition={{ duration: 0.18, ease: ease.out }} className="flex flex-col gap-5 pt-1">
             <Group>
-              <FormRow label="Дата и время">
+              <FormRow label={tr("Дата и время")}>
                 <input type="datetime-local" value={date} max={`${addDays(todayKey(), 366)}T23:59`} onChange={(e) => e.target.value && setDate(e.target.value.slice(0, 16))} className={cn(inputCls, "text-right")} />
               </FormRow>
               <div className="flex gap-2 px-4 py-2.5">
-                <Chip selected={dayOf(date) === todayKey()} onClick={() => setDate(`${todayKey()}T${timeOf(nowISO())}`)}>Сегодня</Chip>
-                <Chip selected={dayOf(date) === addDays(todayKey(), -1)} onClick={() => setDate(`${addDays(todayKey(), -1)}T${timeOf(date) || "12:00"}`)}>Вчера</Chip>
+                <Chip selected={dayOf(date) === todayKey()} onClick={() => setDate(`${todayKey()}T${timeOf(nowISO())}`)}>{tr("Сегодня")}</Chip>
+                <Chip selected={dayOf(date) === addDays(todayKey(), -1)} onClick={() => setDate(`${addDays(todayKey(), -1)}T${timeOf(date) || "12:00"}`)}>{tr("Вчера")}</Chip>
               </div>
             </Group>
             <Group>
               <div className="px-4 py-3">
-                <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Комментарий" maxLength={120} enterKeyHint="done" className={inputCls} />
+                <input value={note} onChange={(e) => setNote(e.target.value)} placeholder={tr("Комментарий")} maxLength={120} enterKeyHint="done" className={inputCls} />
               </div>
               {suggested && (
                 <button
@@ -585,50 +579,49 @@ export function ComposerSheet(props: ComposerProps) {
                   className="flex w-full items-center gap-3 px-4 py-2.5 text-left active:bg-surface-press"
                 >
                   <IconChip name={suggested.icon} color={suggested.color} size={28} />
-                  <span className="min-w-0 flex-1 text-subhead text-ink-2">
-                    Как в прошлый раз: <span className="font-semibold text-ink">{suggested.name}</span>
+                  <span className="min-w-0 flex-1 text-subhead text-ink-2">{tr("Как в прошлый раз:")}{" "}<span className="font-semibold text-ink">{suggested.name}</span>
                   </span>
-                  <span className="text-subhead font-semibold text-accent-ink">Выбрать</span>
+                  <span className="text-subhead font-semibold text-accent-ink">{tr("Выбрать")}</span>
                 </button>
               )}
             </Group>
-            <Group header="Теги">
+            <Group header={tr("Теги")}>
               <div className="px-4 py-3">
                 <TagInput value={tags} onChange={setTags} suggestions={tagSuggestions} />
               </div>
             </Group>
             {photosSupported() && (
-              <Group header="Фото чека" footer="Хранятся только на этом устройстве и не входят в резервную копию.">
+              <Group header={tr("Фото чека")} footer={tr("Хранятся только на этом устройстве и не входят в резервную копию.")}>
                 <PhotoStrip ids={photos} onChange={setPhotos} />
               </Group>
             )}
             {!editingRecurring && !lockedKind && (
-              <Group header="Повторять" footer={repeat !== "none" ? "Следующие операции будут записываться автоматически. Управлять ими можно в разделе «Подписки и платежи»." : undefined}>
+              <Group header={tr("Повторять")} footer={repeat !== "none" ? tr("Следующие операции будут записываться автоматически. Управлять ими можно в разделе «Подписки и платежи».") : undefined}>
                 <div className="px-3 py-3">
                   <Segmented
                     value={repeat}
                     onChange={(v) => setRepeat(v)}
                     options={[
-                      { value: "none", label: "Нет" },
-                      { value: "week", label: "Неделя" },
-                      { value: "month", label: "Месяц" },
-                      { value: "year", label: "Год" }
+                      { value: "none", label: tr("Нет") },
+                      { value: "week", label: tr("Неделя") },
+                      { value: "month", label: tr("Месяц") },
+                      { value: "year", label: tr("Год") }
                     ]}
                   />
                 </div>
               </Group>
             )}
             {editingRecurring && (
-              <Group footer={`Операция из регулярного платежа «${editingRecurring.title}»`}>
-                <FormRow label="Повтор">
+              <Group footer={tr("Операция из регулярного платежа «{0}»", editingRecurring.title)}>
+                <FormRow label={tr("Повтор")}>
                   <span className="text-ink-2">{freqLabel(editingRecurring.freq, editingRecurring.interval)}</span>
                 </FormRow>
               </Group>
             )}
             {!editing && kind !== "transfer" && (
-              <Group footer="Появится над категориями — одно касание, и всё заполнено.">
-                <FormRow label="Добавить в избранное">
-                  <Toggle checked={saveFav} onChange={setSaveFav} label="Добавить в избранное" />
+              <Group footer={tr("Появится над категориями — одно касание, и всё заполнено.")}>
+                <FormRow label={tr("Добавить в избранное")}>
+                  <Toggle checked={saveFav} onChange={setSaveFav} label={tr("Добавить в избранное")} />
                 </FormRow>
               </Group>
             )}
@@ -645,9 +638,7 @@ export function ComposerSheet(props: ComposerProps) {
               categories={categories.filter((c) => c.kind === "expense" && !c.archived)}
             />
             <div className="px-4 pb-2">
-              <Button block onClick={() => setView("main")}>
-                Готово
-              </Button>
+              <Button block onClick={() => setView("main")}>{tr("Готово")}</Button>
             </div>
           </motion.div>
         )}
@@ -679,8 +670,7 @@ function SplitEditor({
 
   return (
     <>
-      <p className="px-5 text-callout text-ink-2">
-        Чек на <Money value={total} currency={currency} className="font-semibold text-ink" />. Укажите, сколько ушло на другие категории, — остаток останется в {mainCategory ? `«${mainCategory.name}»` : "основной категории"}.
+      <p className="px-5 text-callout text-ink-2">{tr("Чек на")}{" "}<Money value={total} currency={currency} className="font-semibold text-ink" />{tr(". Укажите, сколько ушло на другие категории, — остаток останется в")}{" "}{mainCategory ? `«${mainCategory.name}»` : tr("основной категории")}.
       </p>
       <Group>
         {parts.map((p, k) => {
@@ -691,7 +681,7 @@ function SplitEditor({
                 type="button"
                 onClick={() =>
                   nav.sheet("picker", {
-                    title: "Категория части",
+                    title: tr("Категория части"),
                     value: p.categoryId,
                     options: categories.map((x) => ({ value: x.id, label: x.name, iconName: x.icon })),
                     onSelect: (id: string) => set(k, { categoryId: id })
@@ -700,7 +690,7 @@ function SplitEditor({
                 className="flex min-w-0 flex-1 items-center gap-2.5 rounded-[12px] py-1 text-left active:opacity-60"
               >
                 <IconChip name={c?.icon ?? "CircleDashed"} color={c?.color} size={36} />
-                <span className={cn("truncate text-body", c ? "text-ink" : "text-ink-3")}>{c?.name ?? "Категория"}</span>
+                <span className={cn("truncate text-body", c ? "text-ink" : "text-ink-3")}>{c?.name ?? tr("Категория")}</span>
                 <ChevronDown size={15} className="shrink-0 text-ink-3" />
               </button>
               <div className="w-24 shrink-0">
@@ -708,24 +698,24 @@ function SplitEditor({
                   inputMode="decimal"
                   value={p.buf}
                   placeholder="0"
-                  aria-label={`Сумма части ${k + 1}`}
+                  aria-label={tr("Сумма части {0}", k + 1)}
                   onChange={(e) => set(k, { buf: e.target.value.replace(/[^\d.,]/g, "") })}
                   className={cn(inputCls, "num text-right text-headline")}
                 />
               </div>
-              <button type="button" aria-label="Убрать часть" onClick={() => onChange(parts.filter((_, i) => i !== k))} className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-ink-3 active:bg-surface-press">
+              <button type="button" aria-label={tr("Убрать часть")} onClick={() => onChange(parts.filter((_, i) => i !== k))} className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-ink-3 active:bg-surface-press">
                 <X size={17} />
               </button>
             </div>
           );
         })}
-        <Row icon={Plus} title="Добавить часть" onClick={() => onChange([...parts, { key: uid(), buf: "" }])} />
+        <Row icon={Plus} title={tr("Добавить часть")} onClick={() => onChange([...parts, { key: uid(), buf: "" }])} />
       </Group>
       <Group>
         <Row
           leading={<IconChip name={mainCategory?.icon ?? "CircleDashed"} color={mainCategory?.color} size={36} />}
-          title={mainCategory ? `Остаток — ${mainCategory.name}` : "Остаток"}
-          subtitle={!mainCategory && remainder > 0 ? "Выберите основную категорию на главном экране" : undefined}
+          title={mainCategory ? tr("Остаток — {0}", mainCategory.name) : tr("Остаток")}
+          subtitle={!mainCategory && remainder > 0 ? tr("Выберите основную категорию на главном экране") : undefined}
           value={<Money value={remainder} currency={currency} tone={remainder < 0 ? "negative" : "default"} className="font-medium" />}
         />
       </Group>
@@ -742,7 +732,7 @@ function effectOf(tx: Transaction): Minor {
 /** Расход · Доход · Перевод — the pill slides and takes the colour of the kind. */
 function KindSwitch({ value, onChange }: { value: FlowKind; onChange: (k: FlowKind) => void }) {
   return (
-    <div role="tablist" aria-label="Тип операции" className="relative flex min-w-0 flex-1 rounded-full p-1" style={{ background: "color-mix(in srgb, var(--ink) 6%, transparent)", boxShadow: "inset 0 0 0 0.5px var(--line)" }}>
+    <div role="tablist" aria-label={tr("Тип операции")} className="relative flex min-w-0 flex-1 rounded-full p-1" style={{ background: "color-mix(in srgb, var(--ink) 6%, transparent)", boxShadow: "inset 0 0 0 0.5px var(--line)" }}>
       <motion.span
         aria-hidden="true"
         className={cn("pointer-events-none absolute inset-y-1 left-1 rounded-full", KIND_META[value].fill)}
@@ -786,11 +776,11 @@ function FlowArrow({ kind }: { kind: FlowKind }) {
 
 function WalletTile({ caption, name, icon, onClick }: { caption: string; name?: string; icon: string; onClick: () => void }) {
   return (
-    <motion.button type="button" whileTap={{ scale: 0.97 }} transition={spring.press} onClick={onClick} aria-label={`${caption}: ${name ?? "выберите кошелёк"}`} className="panel flex h-[60px] min-w-0 flex-1 items-center gap-2.5 rounded-[18px] px-2.5 text-left">
+    <motion.button type="button" whileTap={{ scale: 0.97 }} transition={spring.press} onClick={onClick} aria-label={`${caption}: ${name ?? tr("выберите кошелёк")}`} className="panel flex h-[60px] min-w-0 flex-1 items-center gap-2.5 rounded-[18px] px-2.5 text-left">
       <IconChip name={icon} size={34} />
       <span className="min-w-0 flex-1">
         <span className="block text-caption text-ink-3">{caption}</span>
-        <span className={cn("block truncate text-subhead font-semibold", name ? "text-ink" : "text-ink-3")}>{name ?? "Кошелёк"}</span>
+        <span className={cn("block truncate text-subhead font-semibold", name ? "text-ink" : "text-ink-3")}>{name ?? tr("Кошелёк")}</span>
       </span>
     </motion.button>
   );
@@ -803,13 +793,13 @@ function CategoryTile({ caption, category, onClick, ctl }: { caption: string; ca
       animate={ctl}
       whileTap={{ scale: 0.97 }}
       onClick={onClick}
-      aria-label={`${caption}: ${category?.name ?? "выберите категорию"}`}
+      aria-label={`${caption}: ${category?.name ?? tr("выберите категорию")}`}
       className={cn("flex h-[60px] min-w-0 flex-1 items-center gap-2.5 rounded-[18px] px-2.5 text-left", category ? "panel" : "border border-dashed border-line-strong")}
     >
       {category ? <IconChip name={category.icon} color={category.color} size={34} /> : <span className="grid h-[34px] w-[34px] shrink-0 place-items-center rounded-[12px] border border-dashed border-ink-4 text-ink-3"><LayoutGrid size={16} /></span>}
       <span className="min-w-0 flex-1">
         <span className="block text-caption text-ink-3">{caption}</span>
-        <span className={cn("block truncate text-subhead font-semibold", category ? "text-ink" : "text-ink-3")}>{category?.name ?? "Категория"}</span>
+        <span className={cn("block truncate text-subhead font-semibold", category ? "text-ink" : "text-ink-3")}>{category?.name ?? tr("Категория")}</span>
       </span>
     </motion.button>
   );

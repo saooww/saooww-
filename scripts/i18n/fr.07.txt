@@ -1,0 +1,153 @@
+Retards des jours précédents
+Un bon mois.
+Stockage
+Stockées sur cet appareil uniquement et non incluses dans la sauvegarde.
+Couleur
+Couleur {0}
+Couleur d'accent
+Couleur sur les graphiques
+Couleur de l'objectif
+Objectifs
+Objectif
+Objectif atteint
+Objectif alimenté
+Objectif créé
+Objectif enregistré
+Objectif supprimé
+Pavé numérique
+Chiffres
+Les parties du ticket dépassent son total
+Souvent
+Partie du ticket
+Le plus souvent — «
+Ticket de
+Ticket réparti en {0} — chacune compte dans sa catégorie et son budget.
+Ticket supprimé
+Check-list
+Dans {0}
+Via le portefeuille
+Nombres
+Patrimoine net
+Jeu
+Que faut-il faire ?
+Qu'est-ce qui a marché ? Qu'est-ce qui a gêné ? Qu'est-ce qui compte demain ?
+Un problème est survenu
+Pour saisir un taux à la main, désactivez les taux de la Banque centrale
+Étape {0} sur {1}
+Larges
+Police des montants
+Cette semaine
+Ces trois catégories —
+C'est
+Cette tâche a été supprimée.
+C'est un abonnement
+Ce mois-ci
+Moi
+août
+avr.
+sans {0} — pas de taux
+sans date
+sans aucune dépense
+sans échéance
+sans dépense
+plus
+était au {0}
+en
+dans « {0} »
+par an
+par an.
+par jour
+par mois
+par semaine
+en moyenne
+on vous doit {0}
+on vous doit
+dim
+de toutes les dépenses du mois.
+tout est fait
+mar
+vous devez {0}
+vous devez
+vous n'utilisez presque pas. Les résilier ferait économiser
+choisissez une catégorie
+choisissez un portefeuille
+{0} sur {1} choisis
+déc.
+jour
+jours
+jours
+d'ici {0}
+∅
+encore
+sur 90 jours
+prévu
+salaire 120 000
+et
+sur
+depuis « {0} »
+depuis un texte
+depuis un fichier
+solde
+juil.
+juin
+carrousel
+café 300
+portefeuille
+mars
+mai
+moins
+M
+vers «
+par jour
+rien pour aujourd'hui
+non choisis
+non défini
+non définis
+je n'utilise pas
+aucun versement
+nov.
+oct.
+de la catégorie principale
+reste {0}
+des revenus en
+mettre 5000 de côté pour les vacances
+sont en retard
+est en retard
+lun
+au taux actuel
+appeler maman demain à 18 h
+rien pour l'instant
+dépensé
+exécuté
+sauté
+en retard de {0} j
+de l'an dernier
+du trimestre dernier
+du mois dernier
+la semaine dernière
+de la semaine dernière
+l'an dernier
+le trimestre dernier
+le mois dernier
+ven
+vide
+rarement
+depuis le début de la période
+sam
+aujourd'hui
+sept.
+prochain — {0}
+mer
+taxi 450 hier
+dépenses
+dépense
+dépenses
+k
+déjà lié
+févr.
+х
+jeu
+janv.
+ — pas de taux de change →
+≈ {0} par jour jusqu'à la fin du mois
+≈ {0} par mois
