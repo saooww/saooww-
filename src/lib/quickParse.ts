@@ -1,6 +1,7 @@
 import type { ID, TaskRepeat } from "../store/types";
 import { WEEKDAYS_ACC, addDays, addMonths, capitalize, daysInMonth, formatDate, weekdayIndex, type DayKey } from "./dates";
 import { REPEAT_LABEL, dueLabel } from "./tasks";
+import { tr } from "../i18n/i18n";
 
 /**
  * Reads a task written the way people think it:
@@ -30,9 +31,16 @@ export interface ParsedTask {
   tokens: ParseToken[];
 }
 
-// Cyrillic-aware word edges: \b knows only Latin letters.
-const S = "(?<![\\p{L}\\p{N}])";
-const E = "(?![\\p{L}\\p{N}])";
+// Unicode-aware word edges: \b knows only Latin letters (marks count too: Hindi vowel signs).
+const S = "(?<![\\p{L}\\p{M}\\p{N}])";
+const E = "(?![\\p{L}\\p{M}\\p{N}])";
+// Chinese and Japanese have no spaces between words: no edges there
+const cjk = (src: string) => new RegExp(src, "u");
+
+/* Day words of the other languages; Russian ones are below, with their grammar. */
+const DAY_AFTER = "day\\s+after\\s+tomorrow|pasado\\s+mañana|après-demain|übermorgen|depois\\s+de\\s+amanhã|öbür\\s+gün|परसों";
+const TOMORROW = "tomorrow|mañana|demain|morgen|amanhã|yarın|कल";
+const TODAY = "today|hoy|aujourd'hui|heute|hoje|bugün|आज";
 const re = (src: string) => new RegExp(S + src + E, "iu");
 
 const WEEKDAY_FORMS: Array<{ i: number; forms: string[] }> = [
@@ -136,6 +144,12 @@ export function parseTask(input: string, today: DayKey, opts: ParseOptions = {})
       [re("сегодня"), () => today],
       [re("послезавтра"), () => addDays(today, 2)],
       [re("завтра"), () => addDays(today, 1)],
+      [re(`(?:${DAY_AFTER})`), () => addDays(today, 2)],
+      [re(`(?:${TOMORROW})`), () => addDays(today, 1)],
+      [re(`(?:${TODAY})`), () => today],
+      [cjk("后天|明後日|あさって"), () => addDays(today, 2)],
+      [cjk("明天|明日|あした"), () => addDays(today, 1)],
+      [cjk("今天|今日|きょう"), () => today],
       [re("на\\s+выходных"), () => {
         const wd = weekdayIndex(today);
         return wd >= 5 ? today : addDays(today, 5 - wd);
@@ -180,10 +194,10 @@ export function parseTask(input: string, today: DayKey, opts: ParseOptions = {})
     const m = take(/(?<=\s)(!{1,3})(?=\s)/u);
     if (m) {
       out.priority = m[1].length >= 2 ? 2 : 1;
-      token("priority", m[0], out.priority === 2 ? "Срочно" : "Важно");
+      token("priority", m[0], out.priority === 2 ? tr("Срочно") : tr("Важно"));
     } else if (re("срочно").test(rest)) {
       out.priority = 2;
-      token("priority", "", "Срочно");
+      token("priority", "", tr("Срочно"));
     }
   }
 
@@ -215,9 +229,36 @@ export function parseTask(input: string, today: DayKey, opts: ParseOptions = {})
     let m: RegExpMatchArray | null;
     const HOUR = "([01]?\\d|2[0-3])(?:\\s*(?:ч|час|часа|часов))?";
     const PART_WORD = "(утра|дня|вечера|ночи|утром|днём|днем|вечером|ночью)";
-    if ((m = take(re("(?:в\\s+)?([01]?\\d|2[0-3]):([0-5]\\d)"))) || (m = take(re("в\\s+([01]?\\d|2[0-3])\\.([0-5]\\d)")))) {
+    if ((m = take(re("(?:в\\s+|at\\s+|um\\s+|à\\s+|a\\s+las\\s+|às\\s+|saat\\s+)?([01]?\\d|2[0-3]):([0-5]\\d)(?:\\s*uhr)?"))) || (m = take(re("в\\s+([01]?\\d|2[0-3])\\.([0-5]\\d)")))) {
       h = Number(m[1]);
       min = Number(m[2]);
+      text = m[0];
+    } else if ((m = take(re("(?:at\\s+)?(1[0-2]|0?[1-9])(?:[:.]([0-5]\\d))?\\s*(am|pm|a\\.m\\.|p\\.m\\.)")))) {
+      // «6pm», «at 7:30 am»
+      h = Number(m[1]) % 12 + (/^p/i.test(m[3]) ? 12 : 0);
+      min = Number(m[2] ?? 0);
+      text = m[0];
+    } else if ((m = take(re("(?:at|um|à|a\\s+las|alle|às|saat)\\s+([01]?\\d|2[0-3])(?:[.h]([0-5]\\d))?(?:\\s*(?:uhr|h))?")))) {
+      // «at 18», «um 18 Uhr», «à 18 h», «a las 18», «às 18»
+      h = Number(m[1]);
+      min = Number(m[2] ?? 0);
+      text = m[0];
+    } else if ((m = take(re("([01]?\\d|2[0-3])(?:[:.]([0-5]\\d))?'(?:de|da|te|ta)")))) {
+      // Turkish «18'de»
+      h = Number(m[1]);
+      min = Number(m[2] ?? 0);
+      text = m[0];
+    } else if ((m = take(cjk("(上午|早上|中午|下午|晚上|午前|午後)?\\s*([01]?\\d|2[0-3])\\s*[点點時](?:\\s*(半)|\\s*([0-5]?\\d)\\s*分)?")))) {
+      // «下午6点», «18時»
+      h = Number(m[2]);
+      if (m[1] && /下午|晚上|午後/.test(m[1]) && h < 12) h += 12;
+      min = m[3] ? 30 : Number(m[4] ?? 0);
+      text = m[0];
+    } else if ((m = take(re("(?:(सुबह|दोपहर|शाम|रात)\\s+)?([01]?\\d|2[0-3])(?:[:.]([0-5]\\d))?\\s*बजे")))) {
+      // «शाम 6 बजे»
+      h = Number(m[2]);
+      if (m[1] && m[1] !== "सुबह" && h < 12) h += 12;
+      min = Number(m[3] ?? 0);
       text = m[0];
     } else if ((m = take(re(`в\\s+${HOUR}\\s+${PART_WORD}`)))) {
       // «в 7 вечера», «в 9 утром»
@@ -262,6 +303,8 @@ export function parseTask(input: string, today: DayKey, opts: ParseOptions = {})
     .replace(/\s+/g, " ")
     .replace(/\s+([,.;:!?])/g, "$1")
     .replace(/^[\s,.;:–—-]+|[\s,;:–—-]+$/g, "")
+    // Japanese particles left at the edge once a date or time is cut out: «明日18時に母に電話»
+    .replace(/^[にでへはを、，]+/u, "")
     .trim();
   out.title = title ? title[0].toUpperCase() + title.slice(1) : "";
   return out;
@@ -277,7 +320,8 @@ function partOf(word: string): "morning" | "day" | "evening" | "night" {
 
 function dateLabel(due: DayKey, today: DayKey): string {
   const l = dueLabel(due, today);
-  return /^[А-Я][а-я]$/.test(l) ? `${l}, ${formatDate(due)}` : l;
+  // a bare weekday («Чт», «Thu») also gets its date
+  return /^\p{Lu}\p{Ll}{1,2}\.?$/u.test(l) ? `${l}, ${formatDate(due)}` : l;
 }
 
 /** Several lines pasted at once become several tasks. */

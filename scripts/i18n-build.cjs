@@ -15,7 +15,8 @@ for (const lang of LANGS) {
   lines.forEach((line, i) => {
     const key = keys.texts[i];
     if (key === undefined) return;
-    let v = line.trim();
+    // «\\n» in a line stands for a line break inside the text
+    let v = line.trim().replace(/\\n/g, "\n");
     if (!v) return;
     // «∅» — deliberately empty (a Russian word ending that other languages don't have)
     if (v === "∅") {

@@ -10,7 +10,7 @@ import { useData } from "../../store/store";
 import { nav } from "../../store/ui";
 import { Screen } from "../../nav/Screen";
 import { Avatar, Button, Group, IconButton, Row } from "../../ui/primitives";
-import { tr } from "../../i18n/i18n";
+import { getLang, locale, tr } from "../../i18n/i18n";
 
 export function MoreScreen() {
   const data = useAppData();
@@ -21,7 +21,7 @@ export function MoreScreen() {
   const demo = useData((s) => s.meta.demo);
   const name = useData((s) => s.settings.name);
   const createdAt = useData((s) => s.meta.createdAt);
-  const since = createdAt ? `${MONTHS_GEN[parseDay(createdAt.slice(0, 10)).getMonth()]} ${createdAt.slice(0, 4)}` : "";
+  const since = !createdAt ? "" : getLang() === "ru" ? `${MONTHS_GEN[parseDay(createdAt.slice(0, 10)).getMonth()]} ${createdAt.slice(0, 4)}` : new Intl.DateTimeFormat(locale(), { month: "long", year: "numeric" }).format(parseDay(createdAt.slice(0, 10)));
 
   const s = useMemo(() => {
     const goals = data.goals.filter((g) => !g.archived);

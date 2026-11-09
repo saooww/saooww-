@@ -2,6 +2,7 @@ import { parseTask, type ParsedTask } from "./quickParse";
 import { addDays, type DayKey } from "./dates";
 import type { Minor } from "./money";
 import type { Category, Goal, ID, Project, Transaction } from "../store/types";
+import { getLang } from "../i18n/i18n";
 
 /**
  * The smart line: one sentence, and the app works out what it is.
@@ -20,9 +21,9 @@ const S = "(?<![\\p{L}\\p{N}])";
 const E = "(?![\\p{L}\\p{N}])";
 
 // money words that mean «it came in»
-const INCOME = /(?<![\p{L}])(зарплат|зп|аванс|преми|кешб[эе]к|кэшб[эе]к|получил|поступлени|доход|вернули|возврат|продал|дивиденд|процент|фриланс|гонорар|подарили|salary|income|refund|cashback)/iu;
+const INCOME = /(?<![\p{L}])(зарплат|зп|аванс|преми|кешб[эе]к|кэшб[эе]к|получил|поступлени|доход|вернули|возврат|продал|дивиденд|процент|фриланс|гонорар|подарили|salary|income|refund|cashback|paycheck|sueldo|salario|nómina|salaire|gehalt|lohn|salário|maaş|वेतन|तनख्वाह)|(工资|薪水|給料)/iu;
 // «put aside for a goal»
-const GOAL = /(?<![\p{L}])(отлож|накоп|копил|в цель|на цель|пополн|save|saving)/iu;
+const GOAL = /(?<![\p{L}])(отлож|накоп|копил|в цель|на цель|пополн|save|saving|put aside|ahorr|apartar|de côté|épargn|zurückleg|spar|guardar|poupar|biriktir|kenara|बचा)|(存|貯め|貯金)/iu;
 
 /** Keywords → default categories, for a first guess before the person's history kicks in. */
 const KEYWORDS: Array<[RegExp, ID]> = [
@@ -55,18 +56,21 @@ const INCOME_KEYWORDS: Array<[RegExp, ID]> = [
 ];
 
 /** An amount: «300», «1 200», «1200,50», «5к», «5 тыс», «2.5k», with or without ₽/р/руб. */
-const AMOUNT = new RegExp(`${S}(\\d{1,3}(?:[  ]\\d{3})+|\\d+)(?:[.,](\\d{1,2}))?\\s*(к|k|тыс\\.?|т\\.?р\\.?)?\\s*(₽|р\\.?|руб\\.?|рублей|рубля|rub)?${E}`, "iu");
+// Edges only against Latin and Cyrillic letters: in Chinese and Japanese digits sit right next to words («5000貯める»).
+const AS = "(?<![\\p{Script=Latin}\\p{Script=Cyrillic}\\p{N}])";
+const AE = "(?![\\p{Script=Latin}\\p{Script=Cyrillic}\\p{N}])";
+const AMOUNT = new RegExp(`${AS}(\\d{1,3}(?:[  .,']\\d{3})+|\\d+)(?:[.,](\\d{1,2}))?\\s*(к|k|тыс\\.?|т\\.?р\\.?)?\\s*(₽|р\\.?|руб\\.?|рублей|рубля|rub)?${AE}`, "iu");
 
 function findAmount(text: string): { amount: Minor; rest: string } | null {
   const m = text.match(AMOUNT);
   if (!m) return null;
-  let value = Number(m[1].replace(/[  ]/g, "")) + (m[2] ? Number(m[2].padEnd(2, "0")) / 100 : 0);
+  let value = Number(m[1].replace(/[  .,']/g, "")) + (m[2] ? Number(m[2].padEnd(2, "0")) / 100 : 0);
   if (m[3]) value *= 1000;
   if (!value) return null;
   return { amount: Math.round(value * 100), rest: (text.slice(0, m.index) + " " + text.slice((m.index ?? 0) + m[0].length)).replace(/\s+/g, " ").trim() };
 }
 
-const words = (s: string) => s.toLowerCase().split(/[^\p{L}\p{N}]+/u).filter((w) => w.length >= 3);
+const words = (s: string) => s.toLowerCase().split(/[^\p{L}\p{M}\p{N}]+/u).filter((w) => w.length >= 3);
 
 /** The goal the text names, by its words («отпуск» → «Отпуск в Японии»). */
 function findGoal(text: string, goals: Goal[]): Goal | undefined {
@@ -76,7 +80,12 @@ function findGoal(text: string, goals: Goal[]): Goal | undefined {
     if (g.archived) continue;
     const gw = words(g.name);
     const score = ws.filter((w) => gw.some((x) => x.startsWith(w.slice(0, Math.max(4, w.length - 2))) || w.startsWith(x.slice(0, Math.max(4, x.length - 2))))).length;
-    if (score > 0 && (!best || score > best.score)) best = { g, score };
+    // Chinese and Japanese: shared pairs of characters («为度假存» ~ «日本度假»)
+    const pairs = (v: string) => [...v.replace(/[^\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/gu, "")].map((c, i, a) => c + (a[i + 1] ?? "")).filter((x) => x.length === 2);
+    const gp = pairs(g.name);
+    const cjkScore = pairs(text).filter((x) => gp.includes(x) && !/^[のにをはでへ]|[のにをはでへ]$/.test(x)).length;
+    const total = score + cjkScore;
+    if (total > 0 && (!best || total > best.score)) best = { g, score: total };
   }
   return best?.g;
 }
@@ -98,6 +107,15 @@ function guessCategory(title: string, kind: "expense" | "income", categories: Ca
   for (const [rx, id] of kind === "income" ? INCOME_KEYWORDS : KEYWORDS) if (rx.test(t) && has(id)) return id;
   return undefined;
 }
+
+/** «The day before yesterday» and «yesterday» in each language, as extra regex alternatives. */
+const PAST: Record<string, [string, string]> = {
+  es: ["|anteayer|antier", "|ayer"],
+  fr: ["|avant-hier", "|hier"],
+  de: ["|vorgestern", "|gestern"],
+  pt: ["|anteontem", "|ontem"],
+  tr: ["|evvelsi gün|önceki gün", "|dün"]
+};
 
 export interface SmartContext {
   today: DayKey;
@@ -125,11 +143,15 @@ export function parseSmart(input: string, ctx: SmartContext): SmartResult {
     // money is usually written down after the fact: «вчера», «позавчера»
     let day = task.due && task.due <= ctx.today ? task.due : undefined;
     let rest = money.rest;
-    const back = rest.match(new RegExp(`${S}(позавчера|вчера|yesterday)${E}`, "iu"));
+    const [before, yesterday] = PAST[getLang()] ?? ["", ""];
+    const back = rest.match(new RegExp(`${S}(позавчера|day before yesterday${before}|вчера|yesterday${yesterday})${E}`, "iu")) ?? rest.match(/(前天|一昨日|おととい|昨天|昨日|きのう)/u);
     if (back) {
-      day = addDays(ctx.today, /поза/i.test(back[1]) ? -2 : -1);
+      day = addDays(ctx.today, /поза|before|^前|一昨|おとと/i.test(back[1]) || (before && new RegExp(`^(?:${before.slice(1)})$`, "iu").test(back[1])) ? -2 : -1);
       rest = rest.replace(back[0], " ");
     }
+    // Hindi «कल» is both yesterday and tomorrow: with money, it is yesterday
+    const kal = task.tokens.find((t) => t.kind === "date" && /^(कल|परसों)$/.test(t.text));
+    if (getLang() === "hi" && kal) day = addDays(ctx.today, kal.text === "कल" ? -1 : -2);
     rest = rest.replace(/^\+/, "").replace(/\s+(на|за)$/iu, "").replace(/\s+/g, " ").trim();
     const title = rest.charAt(0).toUpperCase() + rest.slice(1);
     return { kind, amount: money.amount, title, categoryId: guessCategory(title, kind, ctx.categories, ctx.history), day };

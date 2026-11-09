@@ -365,6 +365,12 @@
    "duotone"
   ]
  },
+ "Globe": {
+  "ph": "Globe",
+  "weights": [
+   "bold"
+  ]
+ },
  "GraduationCap": {
   "ph": "GraduationCap",
   "weights": [

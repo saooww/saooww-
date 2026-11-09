@@ -21,6 +21,13 @@ const plurals = new Set();
     }
   }
 })(ROOT);
-const out = { texts: [...texts].sort(), plurals: [...plurals].sort() };
-fs.writeFileSync(path.join(ROOT, "i18n/keys.json"), JSON.stringify(out, null, 1) + "\n");
+// Keep the existing order (translations are matched to keys by line number)
+// and add new texts at the end; texts no longer used stay, harmlessly.
+const file = path.join(ROOT, "i18n/keys.json");
+const old = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, "utf8")) : { texts: [], plurals: [] };
+const merge = (prev, now) => [...prev, ...[...now].filter((k) => !prev.includes(k)).sort()];
+const out = { texts: merge(old.texts, texts), plurals: merge(old.plurals, plurals) };
+const added = out.texts.length - old.texts.length;
+fs.writeFileSync(file, JSON.stringify(out, null, 1) + "\n");
+if (added) console.log("new texts from line", old.texts.length, ":", out.texts.slice(old.texts.length));
 console.log("texts", out.texts.length, "plurals", out.plurals.length, "chars", out.texts.join("").length);

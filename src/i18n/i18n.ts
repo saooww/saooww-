@@ -7,17 +7,18 @@
  */
 export type Lang = "ru" | "en" | "es" | "fr" | "de" | "pt" | "tr" | "zh" | "ja" | "hi";
 
-export const LANGS: Array<{ id: Lang; name: string; locale: string }> = [
-  { id: "ru", name: "Русский", locale: "ru-RU" },
-  { id: "en", name: "English", locale: "en-GB" },
-  { id: "es", name: "Español", locale: "es-ES" },
-  { id: "fr", name: "Français", locale: "fr-FR" },
-  { id: "de", name: "Deutsch", locale: "de-DE" },
-  { id: "pt", name: "Português", locale: "pt-BR" },
-  { id: "tr", name: "Türkçe", locale: "tr-TR" },
-  { id: "zh", name: "中文", locale: "zh-CN" },
-  { id: "ja", name: "日本語", locale: "ja-JP" },
-  { id: "hi", name: "हिन्दी", locale: "hi-IN" }
+/** Each language with its own name, locale and the likely starting currency and number style. */
+export const LANGS: Array<{ id: Lang; name: string; locale: string; currency: string; numbers: "ru" | "en" }> = [
+  { id: "ru", name: "Русский", locale: "ru-RU", currency: "RUB", numbers: "ru" },
+  { id: "en", name: "English", locale: "en-GB", currency: "USD", numbers: "en" },
+  { id: "es", name: "Español", locale: "es-ES", currency: "EUR", numbers: "ru" },
+  { id: "fr", name: "Français", locale: "fr-FR", currency: "EUR", numbers: "ru" },
+  { id: "de", name: "Deutsch", locale: "de-DE", currency: "EUR", numbers: "ru" },
+  { id: "pt", name: "Português", locale: "pt-BR", currency: "BRL", numbers: "ru" },
+  { id: "tr", name: "Türkçe", locale: "tr-TR", currency: "TRY", numbers: "ru" },
+  { id: "zh", name: "中文", locale: "zh-CN", currency: "CNY", numbers: "en" },
+  { id: "ja", name: "日本語", locale: "ja-JP", currency: "JPY", numbers: "en" },
+  { id: "hi", name: "हिन्दी", locale: "hi-IN", currency: "INR", numbers: "en" }
 ];
 
 const KEY = "ardessa-lang";
@@ -42,7 +43,18 @@ type Dict = Record<string, string | Record<string, string>>;
 let dict: Dict = {};
 
 export const getLang = (): Lang => lang;
-export const locale = (): string => LANGS.find((l) => l.id === lang)!.locale;
+export const langInfo = () => LANGS.find((l) => l.id === lang)!;
+export const locale = (): string => langInfo().locale;
+
+/** A language's name in the current one — «English» → «английский». */
+export function languageName(id: Lang): string {
+  try {
+    const n = new Intl.DisplayNames([locale()], { type: "language" }).of(id);
+    return n ? n.charAt(0).toLocaleUpperCase(locale()) + n.slice(1) : id;
+  } catch {
+    return id;
+  }
+}
 
 /** Loads the chosen language's dictionary; call before the app renders. */
 export async function loadLanguage(): Promise<void> {

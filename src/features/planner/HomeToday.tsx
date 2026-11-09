@@ -59,7 +59,7 @@ export function HomeToday() {
           <button type="button" onClick={() => nav.sheet("planDay", {})} className="ml-auto flex h-9 items-center gap-1.5 rounded-full px-2.5 text-footnote font-medium text-ink-2 active:bg-surface-3">
             <Sunrise size={15} />{tr("Спланировать день")}</button>
         ) : more > 0 ? (
-          <button type="button" onClick={() => nav.planner("today")} className="ml-auto h-9 rounded-full px-2.5 text-footnote font-medium text-ink-2 active:bg-surface-3">{tr("ещё")}{" "}{pluralN(more, ["дело", "дела", "дел"])}
+          <button type="button" onClick={() => nav.planner("today")} className="ml-auto h-9 rounded-full px-2.5 text-footnote font-medium text-ink-2 active:bg-surface-3">{tr("ещё {0}", pluralN(more, ["дело", "дела", "дел"]))}
           </button>
         ) : null}
       </div>

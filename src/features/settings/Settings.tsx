@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ALargeSmall, Archive, Calendar, Zap, ClipboardPaste, Coins, Copy, Database, EyeOff, Landmark, RefreshCw, Share, ShieldCheck, Hash, HardDriveDownload, Info, Moon, Palette, RotateCcw, Shapes, Sparkles, Trash2, Type, Upload, Vibrate, WalletCards } from "../../ui/glyphs";
+import { ALargeSmall, Archive, Calendar, Zap, ClipboardPaste, Coins, Copy, Database, EyeOff, Globe, Landmark, RefreshCw, Share, ShieldCheck, Hash, HardDriveDownload, Info, Moon, Palette, RotateCcw, Shapes, Sparkles, Trash2, Type, Upload, Vibrate, WalletCards } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { formatDate, formatDateTime, pluralN } from "../../lib/dates";
 import { refreshRatesIfStale } from "../../lib/rates";
@@ -19,7 +19,7 @@ import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
 import { NUMBER_FONTS, type NumberFont } from "../../ui/numFont";
 import { PALETTES, paletteOf, type PaletteId } from "../../ui/palettes";
 import { SecuritySettings } from "../lock/SecuritySettings";
-import { tr } from "../../i18n/i18n";
+import { LANGS, getLang, langInfo, languageName, switchLanguage, tr, type Lang } from "../../i18n/i18n";
 
 export function SettingsScreen() {
   const s = useData((st) => st.settings);
@@ -37,6 +37,10 @@ export function SettingsScreen() {
               <input value={s.name} onChange={(e) => update({ name: e.target.value })} placeholder={tr("Ваше имя")} maxLength={30} className={cn(inputCls, "text-headline font-semibold")} />
             </div>
           </div>
+        </Group>
+
+        <Group>
+          <Row icon={Globe} title={tr("Язык")} value={langInfo().name} chevron onClick={pickLanguage} />
         </Group>
 
         <Group header={tr("Деньги")}>
@@ -573,6 +577,18 @@ const ACCENTS: Array<{ id: Settings["accent"]; label: string; color: string }> =
 ];
 
 /** Each theme as a tiny screen: its background, a card, the accent and a sphere. */
+/** All ten languages, each also named in the current one; choosing restarts the app in it. */
+export function pickLanguage() {
+  nav.sheet("picker", {
+    title: tr("Язык"),
+    value: getLang(),
+    options: LANGS.map((l) => ({ value: l.id, label: l.name, sub: l.id === getLang() ? undefined : languageName(l.id) })),
+    onSelect: (v: string) => {
+      if (v !== getLang()) switchLanguage(v as Lang);
+    }
+  });
+}
+
 function ThemeGallery({ value, onChange }: { value: PaletteId; onChange: (v: PaletteId) => void }) {
   return (
     <div className="py-3">

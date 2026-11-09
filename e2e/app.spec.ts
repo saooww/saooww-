@@ -356,3 +356,23 @@ test.describe("маленький экран", () => {
     await expect.poll(cutLabels).toEqual([]);
   });
 });
+
+test("язык: выбор на первом экране переводит приложение и запоминается", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Язык" }).click();
+  await page.getByRole("radiogroup", { name: "Язык" }).getByRole("radio", { name: "English" }).click();
+  // the app restarts in English, with dollars offered first
+  await expect(page.getByRole("button", { name: "Start" })).toBeVisible();
+  await page.getByRole("button", { name: "Start" }).click();
+  await expect(page.getByRole("button", { name: "USD", exact: false }).first()).toHaveAttribute("aria-pressed", "true");
+  await page.reload();
+  await expect(page.getByRole("button", { name: "See an example" })).toBeVisible();
+  await page.getByRole("button", { name: "See an example" }).click();
+  await expect(page.getByRole("tab", { name: "Money" })).toBeVisible();
+  // and back to Russian from the settings
+  await page.getByRole("tab", { name: "Profile" }).click();
+  await page.locator('.app-canvas > [aria-hidden="false"]').getByRole("button", { name: /^Settings|Alex/ }).first().click();
+  await page.getByRole("button", { name: /Language/ }).click();
+  await page.getByRole("dialog").getByRole("button", { name: /Русский/ }).click();
+  await expect(page.getByRole("tab", { name: "Деньги" })).toBeVisible();
+});

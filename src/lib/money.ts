@@ -23,7 +23,10 @@ export const CURRENCIES: CurrencyInfo[] = [
   { code: "TRY", symbol: "₺", name: tr("Турецкая лира") },
   { code: "AED", symbol: "AED", name: tr("Дирхам ОАЭ") },
   { code: "GEL", symbol: "₾", name: tr("Грузинский лари") },
-  { code: "AMD", symbol: "֏", name: tr("Армянский драм") }
+  { code: "AMD", symbol: "֏", name: tr("Армянский драм") },
+  { code: "JPY", symbol: "¥", name: tr("Японская иена") },
+  { code: "INR", symbol: "₹", name: tr("Индийская рупия") },
+  { code: "BRL", symbol: "R$", name: tr("Бразильский реал") }
 ];
 
 const BY_CODE = new Map(CURRENCIES.map((c) => [c.code, c]));

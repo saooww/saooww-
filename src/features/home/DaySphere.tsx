@@ -136,7 +136,7 @@ export function DaySphere() {
           <AnimatedMoney value={Math.abs(left)} currency={base} variant="hero" privacy className={level > 0.55 ? "mt-0.5 text-[40px] leading-none text-white" : "mt-0.5 text-[40px] leading-none text-ink"} />
         )}
         {!empty && (
-          <span className={level > 0.55 ? "mt-1.5 text-caption text-white/80" : "mt-1.5 text-caption text-ink-2"}>{tr("из")}{" "}<Money value={allowance} currency={base} privacy />{tr("на день")}</span>
+          <span className={level > 0.55 ? "mt-1.5 text-caption text-white/80" : "mt-1.5 text-caption text-ink-2"}>{tr("из")}{" "}<Money value={allowance} currency={base} privacy />{" "}{tr("на день")}</span>
         )}
         <span className={level > 0.3 ? "mt-2 rounded-full bg-black/20 px-2.5 py-0.5 text-caption font-semibold text-white" : "mt-2 rounded-full bg-[var(--chart-grid)] px-2.5 py-0.5 text-caption font-semibold text-ink-2"}>
           {plan.total ? tr("Дела {0} из {1}", plan.completed, plan.total) : tr("Дел нет")}

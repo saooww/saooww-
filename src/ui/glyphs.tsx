@@ -197,3 +197,4 @@ export const Wrench = glyph("Wrench", false);
 export const X = glyph("X", true);
 export const Zap = glyph("Zap", false);
 export const ArrowUp = glyph("ArrowUp", true);
+export const Globe = glyph("Globe", true);

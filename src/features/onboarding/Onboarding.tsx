@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Banknote, Check, ChevronLeft, CircleCheckBig, CreditCard, PiggyBank, ShieldCheck, Target, WalletCards, type LucideIcon } from "../../ui/glyphs";
+import { Banknote, Check, ChevronLeft, CircleCheckBig, CreditCard, Globe, PiggyBank, ShieldCheck, Target, WalletCards, type LucideIcon } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { nowISO } from "../../lib/dates";
 import { haptic } from "../../lib/haptics";
@@ -12,7 +12,7 @@ import type { CardStyle, Wallet, WalletKind } from "../../store/types";
 import { FullLogo } from "../../ui/Brand";
 import { ease } from "../../ui/motion";
 import { Button, IconButton, inputCls } from "../../ui/primitives";
-import { tr } from "../../i18n/i18n";
+import { LANGS, getLang, langInfo, switchLanguage, tr } from "../../i18n/i18n";
 
 type Step = 0 | 1 | 2;
 
@@ -38,12 +38,18 @@ const FEATURES: Array<{ icon: LucideIcon; text: string }> = [
   { icon: ShieldCheck, text: tr("Данные только на вашем устройстве, вход по коду или Face ID") }
 ];
 
-/** First launch: a short welcome, name and currency, starting balances. */
+/** The language's own currency first, then the common ones. */
+const START_CURRENCIES = [...new Set([langInfo().currency, "USD", "EUR", "RUB", "CNY", "GBP", "TRY", "KZT"])]
+  .slice(0, 6)
+  .map((code) => CURRENCIES.find((c) => c.code === code)!);
+
+/** First launch: language and a short welcome, name and currency, starting balances. */
 export function Onboarding() {
   const [step, setStep] = useState<Step>(0);
   const [dir, setDir] = useState(1);
   const [name, setName] = useState("");
-  const [currency, setCurrency] = useState("RUB");
+  const [currency, setCurrency] = useState(langInfo().currency);
+  const [langOpen, setLangOpen] = useState(false);
   const [wallets, setWallets] = useState(PRESETS);
 
   const go = (s: Step) => {
@@ -70,7 +76,7 @@ export function Onboarding() {
     completeOnboarding({
       ...base,
       wallets: list,
-      settings: { ...defaultSettings(), name: name.trim(), baseCurrency: currency, rates: currency === "RUB" ? defaultSettings().rates : {}, defaultWalletId: list[0].id },
+      settings: { ...defaultSettings(), name: name.trim(), baseCurrency: currency, numberFormat: langInfo().numbers, rates: currency === "RUB" ? defaultSettings().rates : {}, defaultWalletId: list[0].id },
       meta: { demo: false, createdAt: now }
     });
   };
@@ -83,14 +89,64 @@ export function Onboarding() {
   return (
     <div className="app-canvas fixed inset-0 z-[110] flex flex-col" style={{ paddingTop: "calc(var(--safe-top) + 12px)", paddingBottom: "calc(var(--safe-bottom) + 16px)" }}>
       <div className="flex h-11 items-center justify-between px-4">
-        <div className="w-9">{step > 0 && <IconButton icon={ChevronLeft} label={tr("Назад")} iconSize={22} onClick={() => go((step - 1) as Step)} />}</div>
+        <div className="flex flex-1">{step > 0 && <IconButton icon={ChevronLeft} label={tr("Назад")} iconSize={22} onClick={() => go((step - 1) as Step)} />}</div>
         <div className="flex gap-1.5" aria-hidden="true">
           {[0, 1, 2].map((i) => (
             <motion.span key={i} className={cn("h-[5px] rounded-full", i === step ? "bg-ink" : "bg-ink-4")} animate={{ width: i === step ? 20 : 5 }} />
           ))}
         </div>
-        <div className="w-9" />
+        <div className="flex flex-1 justify-end">
+          {step === 0 && (
+            <button
+              type="button"
+              aria-label={tr("Язык")}
+              aria-expanded={langOpen}
+              onClick={() => {
+                haptic();
+                setLangOpen((v) => !v);
+              }}
+              className="tile flex h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 text-footnote font-semibold text-ink"
+            >
+              <Globe size={16} />
+              {langInfo().name}
+            </button>
+          )}
+        </div>
       </div>
+
+      <AnimatePresence>
+        {langOpen && (
+          <motion.div
+            role="radiogroup"
+            aria-label={tr("Язык")}
+            className="panel absolute inset-x-4 z-10 grid grid-cols-2 gap-1 rounded-[20px] p-2"
+            style={{ top: "calc(var(--safe-top) + 64px)" }}
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.22, ease: ease.out }}
+          >
+            {LANGS.map((l) => (
+              <button
+                key={l.id}
+                type="button"
+                role="radio"
+                aria-checked={l.id === getLang()}
+                lang={l.id}
+                onClick={() => {
+                  haptic();
+                  if (l.id === getLang()) setLangOpen(false);
+                  else switchLanguage(l.id);
+                }}
+                className={cn("flex h-12 items-center justify-between rounded-[14px] px-3.5 text-left text-callout", l.id === getLang() ? "bg-ink text-ink-inverse" : "text-ink active:bg-surface-press")}
+              >
+                {l.name}
+                {l.id === getLang() && <Check size={16} strokeWidth={2.6} />}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="relative min-h-0 flex-1 overflow-hidden">
         <AnimatePresence initial={false} custom={dir} mode="popLayout">
@@ -131,7 +187,7 @@ export function Onboarding() {
                 </label>
                 <div className="section-label mt-8 px-1">{tr("Основная валюта")}</div>
                 <div className="mt-3 grid grid-cols-3 gap-2">
-                  {CURRENCIES.slice(0, 6).map((c) => (
+                  {START_CURRENCIES.map((c) => (
                     <button
                       key={c.code}
                       type="button"

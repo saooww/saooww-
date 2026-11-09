@@ -46,8 +46,10 @@ export function startBoot() {
       else onboarding = true;
     }
     // The app became Ardessa: the old default accent takes the brand red once.
+    // Not during the welcome flow: saving anything then would make a restart
+    // (a language switch, a closed tab) skip the welcome with empty data.
     const before = useData.getState().settings;
-    if (!before.ardessa) useData.getState().updateSettings({ ardessa: true, accent: before.accent === "vermilion" ? "ardessa" : before.accent });
+    if (!onboarding && !before.ardessa) useData.getState().updateSettings({ ardessa: true, accent: before.accent === "vermilion" ? "ardessa" : before.accent });
 
     const s = useData.getState().settings;
     useUI.setState({ booted: true, onboarding, locked: !onboarding && s.lockEnabled && !!s.lockPinHash });
