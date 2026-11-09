@@ -1,0 +1,4 @@
+Bu ayın günleri
+Gün kartı
+Gün kartı ve günün akışı her zaman görünür, akıllı satır menünün üstünde. Gerisi isteğe bağlı.
+Sınır, bugünkü günlük tutardır.

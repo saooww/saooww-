@@ -15,7 +15,7 @@ import { TxRow, usePresentCtx } from "../transactions/TxRow";
 import { useLingering } from "../planner/actions";
 import { tr } from "../../i18n/i18n";
 
-/** Behind the day sphere: today's money and tasks in plain numbers. */
+/** Behind the day card: today's money and tasks in plain numbers. */
 export function DaySheet() {
   const { close } = useSheet();
   const data = useAppData();
@@ -65,7 +65,7 @@ export function DaySheet() {
       )}
 
       {s && s.allowance > 0 && (
-        <Group header={tr("Месяц вокруг шара")} footer={tr("Точки вокруг шара — дни месяца. Норма — сегодняшняя сумма на день.")}>
+        <Group header={tr("Дни этого месяца")} footer={tr("Норма — сегодняшняя сумма на день.")}>
           <div className="grid grid-cols-3 gap-2 p-3">
             <Legend color="var(--positive)" label={tr("без трат")} n={count("free")} />
             <Legend color="color-mix(in srgb, var(--ink) 62%, transparent)" label={tr("в норме")} n={count("ok")} />

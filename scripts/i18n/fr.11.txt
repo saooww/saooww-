@@ -1,0 +1,4 @@
+Jours de ce mois
+Carte du jour
+La carte et le fil de la journée sont toujours affichés, la ligne intelligente est au-dessus du menu. Le reste, à votre choix.
+La norme est le montant journalier d'aujourd'hui.

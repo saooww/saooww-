@@ -16,7 +16,7 @@ import { Sheet } from "../../ui/Sheet";
 import type { HomeBlock } from "../../store/types";
 import { TxRow, usePresentCtx } from "../transactions/TxRow";
 import { WalletCarousel } from "./WalletCarousel";
-import { DaySphere } from "./DaySphere";
+import { DayCard } from "./DayCard";
 import { DayTimeline } from "./DayTimeline";
 import { HomeFeed } from "./HomeCards";
 import { HomeToday } from "../planner/HomeToday";
@@ -46,7 +46,7 @@ export function HomeScreen() {
       </Reveal>
 
       <Reveal intro={intro} delay={0.7} y={14}>
-        <DaySphere />
+        <DayCard />
       </Reveal>
 
       <Reveal intro={intro} delay={0.82} y={12}>
@@ -132,7 +132,7 @@ export function HomeLayoutSheet() {
   const update = useData((s) => s.updateSettings);
   return (
     <Sheet title={tr("Главная")} ariaLabel={tr("Настроить главную")}>
-      <p className="px-6 pb-4 text-center text-footnote text-ink-2">{tr("Сфера дня и лента дня видны всегда, умная строка — над меню. Остальное — по желанию.")}</p>
+      <p className="px-6 pb-4 text-center text-footnote text-ink-2">{tr("Карта дня и лента дня видны всегда, умная строка — над меню. Остальное — по желанию.")}</p>
       <Group>
         {HOME_BLOCKS.map((b) => (
           <div key={b.id} className="flex min-h-[58px] items-center gap-3 px-4 py-2.5">

@@ -1,0 +1,4 @@
+Days this month
+Day card
+The day card and timeline are always shown, the smart line sits above the menu. The rest is up to you.
+The norm is today's daily amount.

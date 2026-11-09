@@ -1,0 +1,4 @@
+Dias deste mês
+Cartão do dia
+O cartão e a linha do dia ficam sempre visíveis; a linha inteligente fica acima do menu. O resto, como preferir.
+A meta é o valor diário de hoje.

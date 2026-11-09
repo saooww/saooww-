@@ -1,0 +1,4 @@
+Tage dieses Monats
+Tageskarte
+Tageskarte und Tagesleiste sind immer sichtbar, die smarte Zeile liegt über dem Menü. Der Rest nach Wunsch.
+Der Rahmen ist der heutige Tagesbetrag.
