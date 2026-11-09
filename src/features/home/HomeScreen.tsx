@@ -1,6 +1,6 @@
 import { locale } from "../../i18n/i18n";
 import { useMemo, useState } from "react";
-import { WalletCards, ListChecks, ReceiptText, Search, SlidersHorizontal, Sparkles, Target, type LucideIcon } from "../../ui/glyphs";
+import { ListChecks, ReceiptText, Search, SlidersHorizontal, Sparkles, Target, type LucideIcon } from "../../ui/glyphs";
 import { capitalize, formatDate } from "../../lib/dates";
 import { formatMoney } from "../../lib/money";
 import { goalInfo, goalSaved } from "../../lib/finance";
@@ -15,8 +15,7 @@ import { Avatar, Group, IconButton, IconChip, ProgressBar, SectionHeader, Toggle
 import { Sheet } from "../../ui/Sheet";
 import type { HomeBlock } from "../../store/types";
 import { TxRow, usePresentCtx } from "../transactions/TxRow";
-import { WalletCarousel } from "./WalletCarousel";
-import { DayCard } from "./DayCard";
+import { HomeHero } from "./HomeHero";
 import { DayTimeline } from "./DayTimeline";
 import { HomeFeed } from "./HomeCards";
 import { HomeToday } from "../planner/HomeToday";
@@ -46,7 +45,7 @@ export function HomeScreen() {
       </Reveal>
 
       <Reveal intro={intro} delay={0.7} y={14}>
-        <DayCard />
+        <HomeHero intro={intro} />
       </Reveal>
 
       <Reveal intro={intro} delay={0.82} y={12}>
@@ -91,7 +90,6 @@ function HomeBlocks() {
     <>
       {shown("today") && <HomeToday />}
       {shown("feed") && <HomeFeed />}
-      {shown("cards") && <HomeCardsBlock />}
       {shown("recent") && <RecentOperations />}
       {shown("goal") && <PrimaryGoal />}
       <div className="mt-8 flex justify-center">
@@ -102,37 +100,20 @@ function HomeBlocks() {
   );
 }
 
-/** The wallet cards, now a block of their own under the day. */
-function HomeCardsBlock() {
-  return (
-    <div className="mt-8">
-      <SectionHeader title={tr("Счета")} action={{ label: tr("Все"), onClick: () => nav.tab("wallets") }} />
-      <WalletCarousel
-        onOpen={(card, rect) => {
-          if (card.walletId) nav.push("wallet", { id: card.walletId, from: { x: rect.x, y: rect.y, w: rect.width, h: rect.height } });
-          else nav.tab("wallets");
-        }}
-        onAdd={() => nav.sheet("wallet")}
-      />
-    </div>
-  );
-}
-
 const HOME_BLOCKS: Array<{ id: HomeBlock; title: string; subtitle: string; icon: LucideIcon }> = [
   { id: "today", title: tr("Дела на сегодня"), subtitle: tr("Прогресс дня и ближайшие дела"), icon: ListChecks },
   { id: "feed", title: tr("Важное"), subtitle: tr("Итоги месяца, копия данных, подсказки"), icon: Sparkles },
-  { id: "cards", title: tr("Карты счетов"), subtitle: tr("Баланс каждого кошелька, свайпом"), icon: WalletCards },
   { id: "recent", title: tr("Последние операции"), subtitle: tr("Три последние записи"), icon: ReceiptText },
   { id: "goal", title: tr("Цель"), subtitle: tr("Главная цель и её прогресс"), icon: Target }
 ];
 
-/** Which blocks the home screen shows. The day sphere and the smart line always stay. */
+/** Which blocks the home screen shows. The cards, the timeline and the smart line always stay. */
 export function HomeLayoutSheet() {
   const hidden = useData((s) => s.settings.homeHidden ?? []);
   const update = useData((s) => s.updateSettings);
   return (
     <Sheet title={tr("Главная")} ariaLabel={tr("Настроить главную")}>
-      <p className="px-6 pb-4 text-center text-footnote text-ink-2">{tr("Карта дня и лента дня видны всегда, умная строка — над меню. Остальное — по желанию.")}</p>
+      <p className="px-6 pb-4 text-center text-footnote text-ink-2">{tr("Карты счетов и лента дня видны всегда, умная строка — над меню. Остальное — по желанию.")}</p>
       <Group>
         {HOME_BLOCKS.map((b) => (
           <div key={b.id} className="flex min-h-[58px] items-center gap-3 px-4 py-2.5">

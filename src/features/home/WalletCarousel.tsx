@@ -77,7 +77,7 @@ export function useCardModels(): CardModel[] {
   }, [wallets, balances, total, base]);
 }
 
-export function WalletCarousel({ onOpen, onAdd, intro = false }: { onOpen: (card: CardModel, rect: DOMRect) => void; onAdd: () => void; intro?: boolean }) {
+export function WalletCarousel({ onOpen, onAdd, intro = false, glow = false }: { onOpen: (card: CardModel, rect: DOMRect) => void; onAdd: () => void; intro?: boolean; /** The card in front lights the page around it in its colour */ glow?: boolean }) {
   const cards = useCardModels();
   const index = useUI((s) => s.homeCardIndex);
   const setIndex = useUI((s) => s.setHomeCardIndex);
@@ -157,6 +157,21 @@ export function WalletCarousel({ onOpen, onAdd, intro = false }: { onOpen: (card
         }}
         style={{ aspectRatio: String(CARD_RATIO) }}
       >
+        {/* the card in front casts a soft light of its own colour on the page */}
+        {glow && (
+          <AnimatePresence initial={false}>
+            <motion.div
+              key={cards[safeIndex]?.key}
+              aria-hidden="true"
+              className="pointer-events-none absolute -inset-x-6 -bottom-10 top-6 -z-0 rounded-[40px]"
+              style={{ background: `radial-gradient(60% 55% at 50% 60%, ${cards[safeIndex]?.material.glow ?? "transparent"}, transparent 75%)`, filter: "blur(18px)" }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+            />
+          </AnimatePresence>
+        )}
 
         {width > 0 && (
           <motion.div
