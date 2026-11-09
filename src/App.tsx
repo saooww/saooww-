@@ -50,7 +50,7 @@ export function App() {
     setRootAttr("data-theme", t);
     // a theme's surfaces and an accent of its own or the person's choosing, as CSS variables
     const accent = settings.accent === "custom" && settings.customAccent ? settings.customAccent : settings.accent === "theme" ? pal.accent : undefined;
-    const vars = { ...paletteVars(pal), ...(accent ? accentVars(accent, t) : {}) };
+    const vars: Record<string, string> = { ...paletteVars(pal), ...(accent ? accentVars(accent, t) : {}) };
     for (const el of [document.documentElement, document.body]) {
       for (const k of ALL_THEME_VARS) el.style.removeProperty(k);
       for (const [k, v] of Object.entries(vars)) el.style.setProperty(k, v);
@@ -61,8 +61,9 @@ export function App() {
 
   useEffect(() => {
     setRootAttr("data-num", settings.numberFont);
+    setRootAttr("data-motion", settings.animations ? "on" : "off");
     setRootAttr("data-text", settings.textSize);
-  }, [settings.numberFont, settings.textSize]);
+  }, [settings.numberFont, settings.textSize, settings.animations]);
 
   useEffect(() => {
     if (settings.theme !== "system") return;

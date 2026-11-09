@@ -149,7 +149,7 @@ export function AnalyticsScreen() {
           )}
           {skipped > 0 && (
             <button type="button" onClick={() => nav.push("currencies")} className="mt-2 px-5 text-left text-footnote text-warning">
-              {pluralN(skipped, ["операция не учтена", "операции не учтены", "операций не учтено"])}{tr("— нет курса валюты →")}</button>
+              {pluralN(skipped, ["операция не учтена", "операции не учтены", "операций не учтено"])}{" "}{tr("— нет курса валюты →")}</button>
           )}
 
           {/* Three short views instead of one endless scroll */}
@@ -169,7 +169,11 @@ export function AnalyticsScreen() {
                   <AnimatedMoney value={headline} currency={base} sign={metric === "net" ? "always" : "auto"} tone={metric === "income" || (metric === "net" && headline > 0) ? "positive" : "default"} variant="hero" className="mt-0.5 block text-[28px] font-semibold tracking-[-0.03em]" duration={0.45} />
                   {avgLine ? (
                     <div className="mt-0.5 flex items-center gap-1.5 text-caption text-ink-3">
-                      <span className="inline-block w-3.5 border-t border-dashed border-ink-2" />{tr("в среднем")}{" "}{formatMoney(avgLine, { currency: base })}{tr("в день")}</div>
+                      <span className="inline-block w-3.5 border-t border-dashed border-ink-2" />
+                      <span className="whitespace-nowrap">
+                        {tr("в среднем")} {formatMoney(avgLine, { currency: base })} {tr("в день")}
+                      </span>
+                    </div>
                   ) : null}
                 </div>
                 <Segmented
@@ -312,7 +316,7 @@ export function AnalyticsScreen() {
               <div className="panel rounded-xl p-4">
                 <div className="mb-3 flex items-center justify-between gap-3">
                   <div className="text-headline font-semibold">{tr("Календарь трат")}</div>
-                  {hab.noSpendDays > 0 && <div className="text-footnote text-ink-2">{pluralN(hab.noSpendDays, ["день", "дня", "дней"])}{tr("без трат")}</div>}
+                  {hab.noSpendDays > 0 && <div className="text-footnote text-ink-2">{pluralN(hab.noSpendDays, ["день", "дня", "дней"])}{" "}{tr("без трат")}</div>}
                 </div>
                 <SpendingCalendar key={range.from} entries={entries} from={range.from} to={range.to} today={today} categories={cats} currency={base} />
               </div>
@@ -367,8 +371,8 @@ export function AnalyticsScreen() {
               <div className="flex items-baseline justify-between gap-3">
                 <div className="text-headline font-semibold">{tr("Полгода")}</div>
                 <div className="flex items-center gap-3 text-caption text-ink-2">
-                  <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-positive" />{tr("Доходы")}</span>
-                  <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-ink" />{tr("Расходы")}</span>
+                  <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-positive" />{" "}{tr("Доходы")}</span>
+                  <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-ink" />{" "}{tr("Расходы")}</span>
                 </div>
               </div>
               <SixMonths months={months} base={base} />

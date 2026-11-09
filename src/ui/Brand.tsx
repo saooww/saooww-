@@ -21,7 +21,7 @@ export function LogoMark({ size = 22, color = "var(--brand)", className }: { siz
 export const BrandMark = LogoMark;
 
 /** The word ARDESSA. `size` is its cap height. */
-export function LogoWord({ size = 14, color = "var(--brand)", className }: { size?: number; color?: string; className?: string }) {
+export function LogoWord({ size = 14, color = "var(--brand-word, var(--brand))", className }: { size?: number; color?: string; className?: string }) {
   return (
     <svg width={(size * WORD.w) / WORD.h} height={size} viewBox={`0 0 ${WORD.w} ${WORD.h}`} aria-hidden="true" className={cn("shrink-0", className)}>
       <path d={WORD.d} fill={color} fillRule="evenodd" />

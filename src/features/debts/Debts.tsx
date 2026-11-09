@@ -95,7 +95,7 @@ export function DebtsScreen() {
                 {info.status !== "closed" && info.paid > 0 && (
                   <>
                     <ProgressBar value={info.progress} tone="positive" height={4} className="mt-3" />
-                    <div className="mt-1.5 text-caption text-ink-3">{tr("Возвращено")}{" "}{formatMoney(info.paid, { currency: d.currency })}{tr("из")}{" "}{formatMoney(d.amount, { currency: d.currency })}
+                    <div className="mt-1.5 text-caption text-ink-3">{tr("Возвращено")}{" "}{formatMoney(info.paid, { currency: d.currency })}{" "}{tr("из")}{" "}{formatMoney(d.amount, { currency: d.currency })}
                     </div>
                   </>
                 )}

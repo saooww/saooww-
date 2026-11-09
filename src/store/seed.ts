@@ -14,7 +14,7 @@ export function defaultSettings(): Settings {
     theme: "dark",
     animations: true,
     haptics: true,
-    numberFont: "elegant",
+    numberFont: "system",
     dateStyle: "short",
     numberFormat: "ru",
     kopecks: "auto",
@@ -25,7 +25,10 @@ export function defaultSettings(): Settings {
     lockAfter: 1,
     autoRates: true,
     launchAction: "home",
-    accent: "ardessa",
+    accent: "theme",
+    palette: "ios",
+    look: 4,
+    ardessa: true,
     textSize: "m"
   };
 }

@@ -23,6 +23,7 @@ export default {
       mono: ['"SF Mono"', "ui-monospace", "Menlo", "monospace"]
     },
     fontSize: {
+      "large-title": ["calc(34px * var(--text-scale))", { lineHeight: "calc(40px * var(--text-scale))", letterSpacing: "-0.03em" }],
       display: ["calc(40px * var(--text-scale))", { lineHeight: "calc(44px * var(--text-scale))", letterSpacing: "-0.035em" }],
       "title-1": ["calc(30px * var(--text-scale))", { lineHeight: "calc(36px * var(--text-scale))", letterSpacing: "-0.028em" }],
       "title-2": ["calc(22px * var(--text-scale))", { lineHeight: "calc(28px * var(--text-scale))", letterSpacing: "-0.022em" }],

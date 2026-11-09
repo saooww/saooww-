@@ -16,7 +16,7 @@ import { Sheet } from "../../ui/Sheet";
 import type { HomeBlock } from "../../store/types";
 import { TxRow, usePresentCtx } from "../transactions/TxRow";
 import { WalletCarousel } from "./WalletCarousel";
-import { DaySphere } from "./DaySphere";
+import { DayHero } from "./DayHero";
 import { SmartLine } from "../create/SmartLine";
 import { HomeFeed } from "./HomeCards";
 import { HomeToday } from "../planner/HomeToday";
@@ -46,10 +46,10 @@ export function HomeScreen() {
       </Reveal>
 
       <Reveal intro={intro} delay={0.7} y={14}>
-        <DaySphere />
+        <DayHero />
       </Reveal>
 
-      <Reveal intro={intro} delay={0.82} y={12} className="mt-6 px-4">
+      <Reveal intro={intro} delay={0.82} y={12} className="mt-5 px-4">
         <SmartLine compact />
       </Reveal>
 
@@ -74,7 +74,7 @@ function Greeting({ name }: { name: string }) {
   return (
     <div>
       <div className="section-label">{capitalize(date)}</div>
-      <h1 className="font-display mt-1.5 text-title-2 text-ink">
+      <h1 className="font-display mt-1 text-title-1 text-ink">
         {greetingFor(new Date().getHours())}
         {first ? <span className="text-ink-2">, {first}</span> : null}
       </h1>

@@ -56,8 +56,8 @@ export function BudgetsScreen() {
   return (
     <Screen title={tr("Бюджеты")} large actions={<IconButton icon={Plus} label={tr("Новый бюджет")} onClick={() => nav.sheet("budget")} />}>
       <div className="-mt-2 px-5 pb-4 text-subhead text-ink-2">
-        {monthTitle(today)}{tr("· осталось")}{" "}{pluralN(daysLeft, ["день", "дня", "дней"])}
-        {items.length > 0 && <>{tr("· в норме")}{" "}{calm}{tr("из")}{" "}{items.length}</>}
+        {monthTitle(today)}{" "}{tr("· осталось")}{" "}{pluralN(daysLeft, ["день", "дня", "дней"])}
+        {items.length > 0 && <>{tr("· в норме")}{" "}{calm}{" "}{tr("из")}{" "}{items.length}</>}
       </div>
 
       {states.length === 0 ? (
@@ -75,7 +75,7 @@ export function BudgetsScreen() {
               <ProgressBar value={overall.progress} tone={toneOf(overall, monthShare)} height={8} className="mt-3" marker={monthShare} />
               <div className="mt-2.5 text-footnote text-ink-2">
                 {overall.remaining >= 0 ? (
-                  <>{tr("Осталось")}{" "}<span className="font-semibold text-ink">{formatMoney(overall.remaining)}</span>{tr("· примерно")}{" "}{formatMoney(Math.floor(overall.remaining / daysLeft / 100) * 100)}{tr("в день")}</>
+                  <>{tr("Осталось")}{" "}<span className="font-semibold text-ink">{formatMoney(overall.remaining)}</span>{" "}{tr("· примерно")}{" "}{formatMoney(Math.floor(overall.remaining / daysLeft / 100) * 100)}{" "}{tr("в день")}</>
                 ) : (
                   <span className="text-negative">{tr("Превышен на")}{" "}{formatMoney(-overall.remaining)}</span>
                 )}
@@ -104,7 +104,7 @@ export function BudgetsScreen() {
                   <div className="min-w-0 flex-1">
                     <div className="truncate text-body font-medium">{c?.name ?? tr("Категория")}</div>
                     <div className="text-footnote text-ink-2">
-                      <Money value={b.spent} className="text-ink" />{tr("из")}{" "}<Money value={b.limit} />
+                      <Money value={b.spent} className="text-ink" />{" "}{tr("из")}{" "}<Money value={b.limit} />
                     </div>
                   </div>
                   <span className={cn("text-callout font-semibold tnum", b.level === "over" ? "text-negative" : toneOf(b, monthShare) === "warning" ? "text-warning" : "text-ink-2")}>{Math.round(b.progress * 100)}%</span>

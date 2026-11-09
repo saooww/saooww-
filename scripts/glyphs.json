@@ -757,7 +757,8 @@
  "Sparkles": {
   "ph": "Sparkle",
   "weights": [
-   "duotone"
+   "duotone",
+   "fill"
   ]
  },
  "Split": {

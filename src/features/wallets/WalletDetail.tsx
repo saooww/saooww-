@@ -189,7 +189,7 @@ export function WalletDetail({ id, from }: { id: ID; from?: Origin }) {
                 ]}
               />
             </div>
-            {wallet.currency !== base && <div className="mt-1 text-caption text-ink-3">{tr("в")}{" "}{base}{tr("по текущему курсу")}</div>}
+            {wallet.currency !== base && <div className="mt-1 text-caption text-ink-3">{tr("в")}{" "}{base}{" "}{tr("по текущему курсу")}</div>}
             <div className="mt-3">
               <LineChart points={series.map((p) => ({ value: p.value }))} height={120} onScrub={setScrub} formatValue={(v) => formatCompact(v)} animKey={range} ariaLabel={tr("История баланса")} />
             </div>

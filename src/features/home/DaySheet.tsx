@@ -56,7 +56,7 @@ export function DaySheet() {
           <div className="px-4 pb-4">
             <ProgressBar value={s.allowance ? Math.min(1, s.spentToday / s.allowance) : 0} tone={s.today < 0 ? "negative" : "ink"} />
             <div className="mt-2 text-footnote text-ink-2">
-              {s.daysLeft === 1 ? tr("Последний день месяца") : tr("До конца месяца {0} дн.", s.daysLeft)}{tr("· норма пересчитывается каждое утро")}</div>
+              {s.daysLeft === 1 ? tr("Последний день месяца") : tr("До конца месяца {0} дн.", s.daysLeft)}{" "}{tr("· норма пересчитывается каждое утро")}</div>
           </div>
         </Group>
       )}
@@ -76,7 +76,7 @@ export function DaySheet() {
           <div className="p-4">
             <div className="flex items-baseline justify-between">
               <span className="text-title-3 font-semibold tnum">
-                {plan.completed}
+                {plan.completed}{" "}
                 <span className="text-subhead font-normal text-ink-3">{tr("из")}{" "}{plan.total}</span>
               </span>
               <span className="text-footnote text-ink-2">{plan.total === 0 ? tr("на сегодня ничего") : plan.completed === plan.total ? tr("всё сделано") : tr("осталось {0}", plan.total - plan.completed)}</span>

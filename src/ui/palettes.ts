@@ -1,11 +1,12 @@
 import { tr } from "../i18n/i18n";
 /**
  * Themes: whole palettes — background, surfaces and an accent — on top of
- * the dark or light base. «Ardessa» is the original look and follows the
- * dark/light switch; the others carry their own mode. Applied as CSS custom
- * properties on <html> and <body>, so every component follows.
+ * the dark or light base. «iOS» is the default: Apple's own dark
+ * greys and system blue, flat, no gradients. «Ardessa» is the original red look and follows
+ * the dark/light switch; the others carry their own mode. Applied as CSS
+ * custom properties on <html> and <body>, so every component follows.
  */
-export type PaletteId = "ardessa" | "mono" | "midnight" | "forest" | "plum" | "mocha" | "sakura" | "ocean" | "sand";
+export type PaletteId = "ios" | "ardessa" | "mono" | "midnight" | "forest" | "plum" | "mocha" | "sakura" | "ocean" | "sand";
 
 export interface Palette {
   id: PaletteId;
@@ -20,9 +21,13 @@ export interface Palette {
   tile?: string;
   sheet?: string;
   seg?: string;
+  /** The ARDESSA word in the text colour instead of the brand red */
+  inkWord?: boolean;
 }
 
 export const PALETTES: Palette[] = [
+  // Apple's dark system colours: black, #1C1C1E grouped cells, #2C2C2E raised, system blue
+  { id: "ios", name: "iOS", mode: "dark", accent: "#0a84ff", bg: "#000000", surface: "#1c1c1e", surface3: "#2c2c2e", tile: "#2c2c2e", sheet: "#1c1c1e", seg: "#636366", inkWord: true },
   { id: "ardessa", name: "Ardessa" },
   { id: "mono", name: tr("Моно"), mode: "dark", accent: "#f4f2ef", bg: "#000000", surface: "#101010", surface3: "#1f1f1f", tile: "#1a1a1a", sheet: "#161616", seg: "#2a2a2a" },
   { id: "midnight", name: tr("Полночь"), mode: "dark", accent: "#5b8cff", bg: "#060a14", surface: "#0e1424", surface3: "#1b2338", tile: "#18213a", sheet: "#141c30", seg: "#26304a" },
@@ -64,6 +69,7 @@ export function paletteVars(p: Palette): Record<string, string> {
   if (!p.bg) return {};
   const dark = p.mode === "dark";
   return {
+    ...(p.inkWord ? { "--brand-word": "var(--ink)" } : {}),
     "--bg": p.bg,
     "--surface": p.surface!,
     "--surface-2": p.surface!,
@@ -83,5 +89,5 @@ export function paletteVars(p: Palette): Record<string, string> {
 
 export const ALL_THEME_VARS = [
   ...Object.keys(accentVars("#000000", "dark")),
-  ...Object.keys(paletteVars({ id: "mono", name: "", mode: "dark", bg: "#000", surface: "#000", surface3: "#000", tile: "#000", sheet: "#000", seg: "#000" }))
+  ...Object.keys(paletteVars({ id: "mono", name: "", mode: "dark", bg: "#000", surface: "#000", surface3: "#000", tile: "#000", sheet: "#000", seg: "#000", inkWord: true }))
 ];
