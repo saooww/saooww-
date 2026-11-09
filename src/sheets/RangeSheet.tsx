@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FormRow, Group, inputCls } from "../ui/primitives";
 import { Sheet, SheetAction, useSheet } from "../ui/Sheet";
+import { tr } from "../i18n/i18n";
 
 export function RangeSheet({ from: f0, to: t0, onApply }: { from: string; to: string; onApply: (from: string, to: string) => void }) {
   const { close } = useSheet();
@@ -9,8 +10,8 @@ export function RangeSheet({ from: f0, to: t0, onApply }: { from: string; to: st
   const valid = from && to && from <= to;
   return (
     <Sheet
-      title="Период"
-      left={<SheetAction onClick={close}>Отмена</SheetAction>}
+      title={tr("Период")}
+      left={<SheetAction onClick={close}>{tr("Отмена")}</SheetAction>}
       right={
         <SheetAction
           strong
@@ -19,16 +20,14 @@ export function RangeSheet({ from: f0, to: t0, onApply }: { from: string; to: st
             onApply(from, to);
             close();
           }}
-        >
-          Готово
-        </SheetAction>
+        >{tr("Готово")}</SheetAction>
       }
     >
-      <Group footer={!valid ? "Начало периода должно быть раньше конца." : undefined}>
-        <FormRow label="С">
+      <Group footer={!valid ? tr("Начало периода должно быть раньше конца.") : undefined}>
+        <FormRow label={tr("С")}>
           <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className={`${inputCls} text-right`} />
         </FormRow>
-        <FormRow label="По">
+        <FormRow label={tr("По")}>
           <input type="date" value={to} onChange={(e) => setTo(e.target.value)} className={`${inputCls} text-right`} />
         </FormRow>
       </Group>

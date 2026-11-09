@@ -2,6 +2,7 @@ import { addDays, addMonths, dayOf, monthTitle, type DayKey } from "./dates";
 import { balanceSeries, type GoalInfo } from "./finance";
 import { formatMoney, type Minor } from "./money";
 import type { AppData, Goal, ID, Transaction } from "../store/types";
+import { tr } from "../i18n/i18n";
 
 /** How much the goal grew per month over the last 90 days (can be ≤ 0). */
 export function goalPace(goal: Goal, data: AppData, balances: Record<ID, Minor>, today: DayKey): Minor {
@@ -39,17 +40,17 @@ export function goalStatus(goal: Goal, info: GoalInfo, pace: Minor, today: DayKe
 export function goalStatusText(s: GoalStatus, currency: string): { text: string; tone: "positive" | "warning" | "muted" } {
   switch (s.kind) {
     case "done":
-      return { text: "Цель достигнута", tone: "positive" };
+      return { text: tr("Цель достигнута"), tone: "positive" };
     case "onTrack":
-      return { text: s.eta ? `В графике · к ${monthTitle(s.eta, "always")}` : "В графике", tone: "positive" };
+      return { text: s.eta ? tr("В графике · к {0}", monthTitle(s.eta, "always")) : tr("В графике"), tone: "positive" };
     case "late":
       return {
-        text: s.needMonthly ? `Отстаёт · нужно ${formatMoney(s.needMonthly, { currency })}/мес` : s.eta ? `Отстаёт · при текущем темпе к ${monthTitle(s.eta, "always")}` : "Отстаёт от срока",
+        text: s.needMonthly ? tr("Отстаёт · нужно {0}/мес", formatMoney(s.needMonthly, { currency })) : s.eta ? tr("Отстаёт · при текущем темпе к {0}", monthTitle(s.eta, "always")) : tr("Отстаёт от срока"),
         tone: "warning"
       };
     case "open":
-      return { text: s.eta ? `При текущем темпе — ${monthTitle(s.eta, "always")}` : "Без срока", tone: "muted" };
+      return { text: s.eta ? tr("При текущем темпе — {0}", monthTitle(s.eta, "always")) : tr("Без срока"), tone: "muted" };
     case "stalled":
-      return { text: "Пополнений не было 3 месяца", tone: "muted" };
+      return { text: tr("Пополнений не было 3 месяца"), tone: "muted" };
   }
 }

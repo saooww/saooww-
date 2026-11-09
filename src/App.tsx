@@ -16,6 +16,7 @@ import { LockLayer } from "./features/lock/LockScreen";
 import { Onboarding } from "./features/onboarding/Onboarding";
 import { refreshRatesIfStale } from "./lib/rates";
 import { MonthStoryLayer } from "./features/story/MonthStory";
+import { tr } from "./i18n/i18n";
 
 const TABS: Tab[] = ["home", "planner", "wallets", "transactions", "analytics", "more"];
 
@@ -157,7 +158,7 @@ function Main({ formatKey }: { formatKey: string }) {
   useEffect(() => {
     const created = useData.getState().processRecurring(today);
     if (created.length) {
-      nav.toast(`Записано ${pluralN(created.length, ["регулярная операция", "регулярные операции", "регулярных операций"])}`, { tone: "positive" });
+      nav.toast(tr("Записано {0}", pluralN(created.length, ["регулярная операция", "регулярные операции", "регулярных операций"])), { tone: "positive" });
     }
   }, [today]);
 

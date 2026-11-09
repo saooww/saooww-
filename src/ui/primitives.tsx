@@ -5,6 +5,7 @@ import { cn } from "../lib/cn";
 import { haptic } from "../lib/haptics";
 import { NamedIcon } from "./icons";
 import { spring } from "./motion";
+import { tr } from "../i18n/i18n";
 
 /* ------------------------------------------------------------------ */
 /*  Pressable                                                          */
@@ -151,7 +152,7 @@ export function Chip({
       {onRemove && (
         <span
           role="button"
-          aria-label="Сбросить"
+          aria-label={tr("Сбросить")}
           onClick={(e) => {
             e.stopPropagation();
             onRemove();

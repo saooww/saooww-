@@ -17,13 +17,14 @@ import { Money } from "../../ui/Money";
 import { Button, Chip, FormRow, Group, Segmented, Toggle, inputCls } from "../../ui/primitives";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
 import { AmountDisplay } from "../transactions/AmountDisplay";
+import { tr } from "../../i18n/i18n";
 
 const PRESETS = [
-  { name: "Финансовая подушка", icon: "LifeBuoy", cushion: true },
-  { name: "Отпуск", icon: "Plane", target: 250_000 },
-  { name: "Автомобиль", icon: "Car", target: 2_500_000 },
-  { name: "Квартира", icon: "House", target: 3_000_000 },
-  { name: "Образование", icon: "GraduationCap", target: 200_000 }
+  { name: tr("Финансовая подушка"), icon: "LifeBuoy", cushion: true },
+  { name: tr("Отпуск"), icon: "Plane", target: 250_000 },
+  { name: tr("Автомобиль"), icon: "Car", target: 2_500_000 },
+  { name: tr("Квартира"), icon: "House", target: 3_000_000 },
+  { name: tr("Образование"), icon: "GraduationCap", target: 200_000 }
 ];
 
 export function GoalSheet({ editId }: { editId?: ID }) {
@@ -74,12 +75,12 @@ export function GoalSheet({ editId }: { editId?: ID }) {
       if (primary) st.setPrimaryGoal(id);
     }
     haptic("success");
-    nav.toast(existing ? "Цель сохранена" : "Цель создана", { tone: "positive" });
+    nav.toast(existing ? tr("Цель сохранена") : tr("Цель создана"), { tone: "positive" });
     close();
   };
 
   return (
-    <Sheet tall title={existing ? "Цель" : "Новая цель"} left={<SheetAction onClick={close}>Отмена</SheetAction>} right={<SheetAction strong disabled={!valid} onClick={save}>Готово</SheetAction>}>
+    <Sheet tall title={existing ? tr("Цель") : tr("Новая цель")} left={<SheetAction onClick={close}>{tr("Отмена")}</SheetAction>} right={<SheetAction strong disabled={!valid} onClick={save}>{tr("Готово")}</SheetAction>}>
       <div className="flex flex-col gap-5 pt-1">
         {!existing && (
           <div className="scroll-x flex gap-2 px-4">
@@ -101,19 +102,19 @@ export function GoalSheet({ editId }: { editId?: ID }) {
         )}
 
         <Group>
-          <FormRow label="Название">
-            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="На что копим" maxLength={40} className={cn(inputCls, "text-right")} />
+          <FormRow label={tr("Название")}>
+            <input value={name} onChange={(e) => setName(e.target.value)} placeholder={tr("На что копим")} maxLength={40} className={cn(inputCls, "text-right")} />
           </FormRow>
-          <FormRow label="Сумма цели">
+          <FormRow label={tr("Сумма цели")}>
             <input inputMode="decimal" value={target} onChange={(e) => setTarget(e.target.value.replace(/[^\d.,]/g, ""))} placeholder="0" className={cn(inputCls, "text-right tnum")} />
           </FormRow>
         </Group>
-        {name === "Финансовая подушка" && avgExpense > 0 && (
-          <p className="-mt-3 px-8 text-footnote text-ink-3">Рекомендация: 6 месяцев ваших обычных расходов ≈ {formatMoney(Math.round(avgExpense * 6))}.</p>
+        {name === tr("Финансовая подушка") && avgExpense > 0 && (
+          <p className="-mt-3 px-8 text-footnote text-ink-3">{tr("Рекомендация: 6 месяцев ваших обычных расходов ≈")}{" "}{formatMoney(Math.round(avgExpense * 6))}.</p>
         )}
 
-        <Group header="Оформление">
-          <div className="flex items-center justify-between gap-2 px-4 py-3" role="radiogroup" aria-label="Цвет цели">
+        <Group header={tr("Оформление")}>
+          <div className="flex items-center justify-between gap-2 px-4 py-3" role="radiogroup" aria-label={tr("Цвет цели")}>
             {GOAL_COLORS.map((c) => (
               <button
                 key={c}
@@ -131,11 +132,11 @@ export function GoalSheet({ editId }: { editId?: ID }) {
             ))}
           </div>
           <div className="px-4 pb-3">
-            <Segmented size="sm" value={look} onChange={setLook} options={[{ value: "ring", label: "Кольцо" }, { value: "jar", label: "Банка" }]} />
+            <Segmented size="sm" value={look} onChange={setLook} options={[{ value: "ring", label: tr("Кольцо") }, { value: "jar", label: tr("Банка") }]} />
           </div>
         </Group>
 
-        <Group header="Значок">
+        <Group header={tr("Значок")}>
           <div className="grid grid-cols-6 gap-1 p-2">
             {GOAL_ICON_CHOICES.map((ic) => (
               <button key={ic} type="button" aria-label={ic} aria-pressed={icon === ic} onClick={() => setIcon(ic)} className={cn("grid aspect-square place-items-center rounded-full", icon === ic ? "bg-ink text-ink-inverse" : "active:bg-surface-3")}>
@@ -146,22 +147,22 @@ export function GoalSheet({ editId }: { editId?: ID }) {
         </Group>
 
         <Group>
-          <FormRow label="Срок">
-            <Toggle checked={hasDeadline} onChange={setHasDeadline} label="Есть срок" />
+          <FormRow label={tr("Срок")}>
+            <Toggle checked={hasDeadline} onChange={setHasDeadline} label={tr("Есть срок")} />
           </FormRow>
           {hasDeadline && (
-            <FormRow label="Дата">
+            <FormRow label={tr("Дата")}>
               <input type="date" value={deadline} min={todayKey()} onChange={(e) => e.target.value && setDeadline(e.target.value)} className={cn(inputCls, "text-right")} />
             </FormRow>
           )}
         </Group>
 
-        <Group header="Где хранятся деньги" footer={mode === "wallet" ? "Прогресс будет равен балансу выбранного кошелька — удобно для накопительного счёта." : "У цели будет свой баланс: вы переносите в неё деньги из любого кошелька."}>
+        <Group header={tr("Где хранятся деньги")} footer={mode === "wallet" ? tr("Прогресс будет равен балансу выбранного кошелька — удобно для накопительного счёта.") : tr("У цели будет свой баланс: вы переносите в неё деньги из любого кошелька.")}>
           <div className="p-3">
-            <Segmented value={mode} onChange={setMode} options={[{ value: "envelope", label: "Свой баланс" }, { value: "wallet", label: "Кошелёк" }]} />
+            <Segmented value={mode} onChange={setMode} options={[{ value: "envelope", label: tr("Свой баланс") }, { value: "wallet", label: tr("Кошелёк") }]} />
           </div>
           {mode === "wallet" && (
-            <FormRow label="Кошелёк">
+            <FormRow label={tr("Кошелёк")}>
               <select value={walletId} onChange={(e) => setWalletId(e.target.value)} className={cn(inputCls, "appearance-none text-right")} dir="rtl">
                 {live.map((w) => (
                   <option key={w.id} value={w.id}>
@@ -174,8 +175,8 @@ export function GoalSheet({ editId }: { editId?: ID }) {
         </Group>
 
         <Group>
-          <FormRow label="На главном экране">
-            <Toggle checked={primary} onChange={setPrimary} label="Показывать на главном экране" />
+          <FormRow label={tr("На главном экране")}>
+            <Toggle checked={primary} onChange={setPrimary} label={tr("Показывать на главном экране")} />
           </FormRow>
         </Group>
       </div>
@@ -204,12 +205,12 @@ export function GoalMoneySheet({ goalId, direction: d0 }: { goalId: ID; directio
   const quick: Array<{ label: string; amount: number }> =
     direction === "deposit"
       ? [
-          ...(info.monthly ? [{ label: `В месяц · ${fmt(info.monthly)}`, amount: info.monthly }] : []),
-          ...(info.remaining > 0 && info.remaining !== info.monthly ? [{ label: `Остаток · ${fmt(info.remaining)}`, amount: info.remaining }] : []),
+          ...(info.monthly ? [{ label: tr("В месяц · {0}", fmt(info.monthly)), amount: info.monthly }] : []),
+          ...(info.remaining > 0 && info.remaining !== info.monthly ? [{ label: tr("Остаток · {0}", fmt(info.remaining)), amount: info.remaining }] : []),
           ...[100_000, 500_000, 1_000_000].map((v) => ({ label: fmt(v), amount: v }))
         ]
       : saved > 0
-        ? [{ label: `Всё · ${fmt(saved)}`, amount: saved }, ...(saved >= 200_000 ? [{ label: `Половину · ${fmt(Math.round(saved / 200) * 100)}`, amount: Math.round(saved / 200) * 100 }] : [])]
+        ? [{ label: tr("Всё · {0}", fmt(saved)), amount: saved }, ...(saved >= 200_000 ? [{ label: tr("Половину · {0}", fmt(Math.round(saved / 200) * 100)), amount: Math.round(saved / 200) * 100 }] : [])]
         : [];
 
   const save = () => {
@@ -217,21 +218,21 @@ export function GoalMoneySheet({ goalId, direction: d0 }: { goalId: ID; directio
       haptic("warning");
       return;
     }
-    undoable(direction === "deposit" ? "Цель пополнена" : "Деньги возвращены в кошелёк", () => useData.getState().moveGoalMoney(goal.id, walletId, amount, direction));
+    undoable(direction === "deposit" ? tr("Цель пополнена") : tr("Деньги возвращены в кошелёк"), () => useData.getState().moveGoalMoney(goal.id, walletId, amount, direction));
     haptic("success");
     close();
   };
 
   return (
-    <Sheet title={goal.name} left={<SheetAction onClick={close}>Отмена</SheetAction>}>
+    <Sheet title={goal.name} left={<SheetAction onClick={close}>{tr("Отмена")}</SheetAction>}>
       <div className="flex flex-col gap-4">
         <div className="px-4">
-          <Segmented value={direction} onChange={setDirection} options={[{ value: "deposit", label: "Пополнить" }, { value: "withdraw", label: "Снять" }]} />
+          <Segmented value={direction} onChange={setDirection} options={[{ value: "deposit", label: tr("Пополнить") }, { value: "withdraw", label: tr("Снять") }]} />
         </div>
         <div className="flex flex-col items-center gap-1 py-2">
           <AmountDisplay buffer={buf} currency={goal.currency} />
           <div className={cn("text-footnote", tooMuch ? "text-negative" : "text-ink-3")}>
-            {tooMuch ? "Больше, чем накоплено" : <>В цели <Money value={saved} currency={goal.currency} /></>}
+            {tooMuch ? tr("Больше, чем накоплено") : <>{tr("В цели")}{" "}<Money value={saved} currency={goal.currency} /></>}
           </div>
         </div>
         {/* ready-made amounts: the monthly instalment, what's left, round sums */}
@@ -243,10 +244,10 @@ export function GoalMoneySheet({ goalId, direction: d0 }: { goalId: ID; directio
           ))}
         </div>
         {live.length === 0 ? (
-          <div className="px-6 text-center text-callout text-ink-2">Нужен ещё один кошелёк в {goal.currency}, чтобы переводить деньги в цель.</div>
+          <div className="px-6 text-center text-callout text-ink-2">{tr("Нужен ещё один кошелёк в")}{" "}{goal.currency}{tr(", чтобы переводить деньги в цель.")}</div>
         ) : (
           <div>
-            <div className="section-label px-5 pb-2">{direction === "deposit" ? "С кошелька" : "В кошелёк"}</div>
+            <div className="section-label px-5 pb-2">{direction === "deposit" ? tr("С кошелька") : tr("В кошелёк")}</div>
             <div className="scroll-x flex gap-2 px-4">
             {live.map((w) => (
               <Chip key={w.id} selected={walletId === w.id} onClick={() => setWalletId(w.id)}>
@@ -260,7 +261,7 @@ export function GoalMoneySheet({ goalId, direction: d0 }: { goalId: ID; directio
         <Keypad compact onKey={(k: KeypadKey) => setBuf((b) => applyKey(b, k))} />
         <div className="px-4 pb-2">
           <Button block disabled={!amount || !walletId || tooMuch} onClick={save}>
-            {direction === "deposit" ? "Пополнить цель" : "Вернуть в кошелёк"}
+            {direction === "deposit" ? tr("Пополнить цель") : tr("Вернуть в кошелёк")}
           </Button>
         </div>
       </div>

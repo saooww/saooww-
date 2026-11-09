@@ -17,6 +17,7 @@ import { pluralN } from "../../lib/dates";
 import type { ID } from "../../store/types";
 import { Layers } from "../../ui/glyphs";
 import { INTRO_SHIFT } from "../../ui/intro";
+import { tr } from "../../i18n/i18n";
 
 const GAP = 14;
 
@@ -48,14 +49,14 @@ export function useCardModels(): CardModel[] {
       cards.push({
         key: "total",
         walletId: null,
-        title: "Все счета",
-        label: "Всего",
+        title: tr("Все счета"),
+        label: tr("Всего"),
         subtitle: pluralN(counted, ["счёт", "счёта", "счетов"]),
         icon: Layers,
         amount: total.total,
         currency: base,
         material: TOTAL_MATERIAL,
-        footnote: total.missing.length ? `без ${total.missing.join(", ")} — нет курса` : undefined
+        footnote: total.missing.length ? tr("без {0} — нет курса", total.missing.join(", ")) : undefined
       });
     }
     for (const w of list) {
@@ -134,7 +135,7 @@ export function WalletCarousel({ onOpen, onAdd, intro = false }: { onOpen: (card
         >
           <span className="flex flex-col items-center gap-2">
             <Plus size={24} />
-            <span className="text-callout font-medium">Добавить кошелёк</span>
+            <span className="text-callout font-medium">{tr("Добавить кошелёк")}</span>
           </span>
         </button>
       </div>
@@ -147,8 +148,8 @@ export function WalletCarousel({ onOpen, onAdd, intro = false }: { onOpen: (card
         ref={wrap}
         className="relative mx-5"
         role="region"
-        aria-roledescription="карусель"
-        aria-label="Кошельки"
+        aria-roledescription={tr("карусель")}
+        aria-label={tr("Кошельки")}
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === "ArrowRight") goTo(safeIndex + 1);

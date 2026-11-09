@@ -1,3 +1,4 @@
+import { tr } from "../i18n/i18n";
 /**
  * Money is stored as integer minor units (kopecks, cents) to avoid
  * floating-point drift. Everything that touches amounts goes through here.
@@ -12,17 +13,17 @@ export interface CurrencyInfo {
 }
 
 export const CURRENCIES: CurrencyInfo[] = [
-  { code: "RUB", symbol: "₽", name: "Российский рубль" },
-  { code: "USD", symbol: "$", name: "Доллар США" },
-  { code: "EUR", symbol: "€", name: "Евро" },
-  { code: "CNY", symbol: "¥", name: "Китайский юань" },
-  { code: "KZT", symbol: "₸", name: "Казахстанский тенге" },
-  { code: "BYN", symbol: "Br", name: "Белорусский рубль" },
-  { code: "GBP", symbol: "£", name: "Фунт стерлингов" },
-  { code: "TRY", symbol: "₺", name: "Турецкая лира" },
-  { code: "AED", symbol: "AED", name: "Дирхам ОАЭ" },
-  { code: "GEL", symbol: "₾", name: "Грузинский лари" },
-  { code: "AMD", symbol: "֏", name: "Армянский драм" }
+  { code: "RUB", symbol: "₽", name: tr("Российский рубль") },
+  { code: "USD", symbol: "$", name: tr("Доллар США") },
+  { code: "EUR", symbol: "€", name: tr("Евро") },
+  { code: "CNY", symbol: "¥", name: tr("Китайский юань") },
+  { code: "KZT", symbol: "₸", name: tr("Казахстанский тенге") },
+  { code: "BYN", symbol: "Br", name: tr("Белорусский рубль") },
+  { code: "GBP", symbol: "£", name: tr("Фунт стерлингов") },
+  { code: "TRY", symbol: "₺", name: tr("Турецкая лира") },
+  { code: "AED", symbol: "AED", name: tr("Дирхам ОАЭ") },
+  { code: "GEL", symbol: "₾", name: tr("Грузинский лари") },
+  { code: "AMD", symbol: "֏", name: tr("Армянский драм") }
 ];
 
 const BY_CODE = new Map(CURRENCIES.map((c) => [c.code, c]));
@@ -117,8 +118,8 @@ export function formatCompact(minor: Minor, currency?: string): string {
   const sign = minor < 0 ? MINUS : "";
   const dec = fmtConfig.numberFormat === "ru" ? "," : ".";
   let out: string;
-  if (major >= 1_000_000) out = trimDec((major / 1_000_000).toFixed(major >= 10_000_000 ? 0 : 1), dec) + NBSP + "млн";
-  else if (major >= 1_000) out = trimDec((major / 1_000).toFixed(major >= 100_000 ? 0 : 1), dec) + NBSP + "тыс";
+  if (major >= 1_000_000) out = trimDec((major / 1_000_000).toFixed(major >= 10_000_000 ? 0 : 1), dec) + NBSP + tr("млн");
+  else if (major >= 1_000) out = trimDec((major / 1_000).toFixed(major >= 100_000 ? 0 : 1), dec) + NBSP + tr("тыс");
   else out = String(Math.round(major));
   return sign + out + (currency ? NBSP + currencySymbol(currency) : "");
 }

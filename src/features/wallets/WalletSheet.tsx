@@ -12,6 +12,7 @@ import { FormRow, Group, Segmented, Toggle, inputCls } from "../../ui/primitives
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
 import { WalletCard } from "../../ui/WalletCard";
 import { Plus } from "../../ui/glyphs";
+import { tr } from "../../i18n/i18n";
 
 /** Create or edit a wallet. Editing never rewrites history: a changed balance becomes a correction entry. */
 export function WalletSheet({ editId }: { editId?: ID }) {
@@ -43,10 +44,10 @@ export function WalletSheet({ editId }: { editId?: ID }) {
     if (existing) {
       st.updateWallet(existing.id, { ...patch, currency: hasTx ? existing.currency : currency });
       if (amount !== (balances[existing.id] ?? 0)) st.setWalletBalance(existing.id, amount);
-      nav.toast("Кошелёк сохранён");
+      nav.toast(tr("Кошелёк сохранён"));
     } else {
       st.addWallet({ ...patch, currency, balance: amount });
-      nav.toast("Кошелёк создан", { tone: "positive" });
+      nav.toast(tr("Кошелёк создан"), { tone: "positive" });
     }
     haptic("success");
     close();
@@ -55,14 +56,14 @@ export function WalletSheet({ editId }: { editId?: ID }) {
   return (
     <Sheet
       tall
-      title={existing ? "Кошелёк" : "Новый кошелёк"}
-      left={<SheetAction onClick={close}>Отмена</SheetAction>}
-      right={<SheetAction strong disabled={!valid} onClick={save}>Готово</SheetAction>}
+      title={existing ? tr("Кошелёк") : tr("Новый кошелёк")}
+      left={<SheetAction onClick={close}>{tr("Отмена")}</SheetAction>}
+      right={<SheetAction strong disabled={!valid} onClick={save}>{tr("Готово")}</SheetAction>}
     >
       <div className="flex flex-col gap-5 pt-1">
         <div className="px-8">
           <WalletCard
-            title={name || "Название"}
+            title={name || tr("Название")}
             subtitle={walletKindInfo(kind).label}
             icon={iconByName(walletKindInfo(kind).icon)}
             ident={ident || undefined}
@@ -97,7 +98,7 @@ export function WalletSheet({ editId }: { editId?: ID }) {
           {/* any colour at all */}
           <button
             type="button"
-            aria-label="Свой цвет"
+            aria-label={tr("Свой цвет")}
             aria-pressed={!!customColor}
             onClick={() => colorInput.current?.click()}
             className="relative grid aspect-square w-full place-items-center rounded-full transition-[outline-color] duration-200"
@@ -109,7 +110,7 @@ export function WalletSheet({ editId }: { editId?: ID }) {
           >
             <Plus size={16} className="text-white mix-blend-difference" />
           </button>
-          <input ref={colorInput} type="color" aria-label="Выбрать цвет карты" value={customColor ?? "#3a6ea5"} onChange={(e) => setCustomColor(e.target.value)} className="pointer-events-none absolute h-0 w-0 opacity-0" />
+          <input ref={colorInput} type="color" aria-label={tr("Выбрать цвет карты")} value={customColor ?? "#3a6ea5"} onChange={(e) => setCustomColor(e.target.value)} className="pointer-events-none absolute h-0 w-0 opacity-0" />
         </div>
 
         <div className="px-4">
@@ -118,27 +119,27 @@ export function WalletSheet({ editId }: { editId?: ID }) {
             value={pattern}
             onChange={(v) => setPattern(v)}
             options={[
-              { value: "sail", label: "Парус" },
-              { value: "waves", label: "Волны" },
-              { value: "dots", label: "Точки" },
-              { value: "none", label: "Без узора" }
+              { value: "sail", label: tr("Парус") },
+              { value: "waves", label: tr("Волны") },
+              { value: "dots", label: tr("Точки") },
+              { value: "none", label: tr("Без узора") }
             ]}
           />
         </div>
 
         <Group>
-          <FormRow label="Название">
-            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Например, Карта" maxLength={32} className={cn(inputCls, "text-right")} />
+          <FormRow label={tr("Название")}>
+            <input value={name} onChange={(e) => setName(e.target.value)} placeholder={tr("Например, Карта")} maxLength={32} className={cn(inputCls, "text-right")} />
           </FormRow>
-          <FormRow label={existing ? "Текущий баланс" : "Начальный баланс"}>
+          <FormRow label={existing ? tr("Текущий баланс") : tr("Начальный баланс")}>
             <input inputMode="decimal" value={balance} onChange={(e) => setBalance(e.target.value.replace(/[^\d.,-]/g, ""))} placeholder="0" className={cn(inputCls, "text-right tnum")} />
           </FormRow>
-          <FormRow label="Последние цифры">
-            <input inputMode="numeric" value={ident} onChange={(e) => setIdent(e.target.value.slice(0, 6))} placeholder="Необязательно" className={cn(inputCls, "text-right tnum")} />
+          <FormRow label={tr("Последние цифры")}>
+            <input inputMode="numeric" value={ident} onChange={(e) => setIdent(e.target.value.slice(0, 6))} placeholder={tr("Необязательно")} className={cn(inputCls, "text-right tnum")} />
           </FormRow>
         </Group>
 
-        <Group header="Тип">
+        <Group header={tr("Тип")}>
           <div className="grid grid-cols-3 gap-2 p-2.5">
             {WALLET_KINDS.map((k) => (
               <button
@@ -155,8 +156,8 @@ export function WalletSheet({ editId }: { editId?: ID }) {
           </div>
         </Group>
 
-        <Group footer={hasTx ? "Валюту нельзя изменить, пока по кошельку есть операции." : "Для сумм в другой валюте задайте курс в настройках — иначе они не попадут в общий баланс."}>
-          <FormRow label="Валюта">
+        <Group footer={hasTx ? tr("Валюту нельзя изменить, пока по кошельку есть операции.") : tr("Для сумм в другой валюте задайте курс в настройках — иначе они не попадут в общий баланс.")}>
+          <FormRow label={tr("Валюта")}>
             <select value={currency} disabled={hasTx} onChange={(e) => setCurrency(e.target.value)} className={cn(inputCls, "appearance-none text-right disabled:text-ink-3")} dir="rtl">
               {CURRENCIES.map((c) => (
                 <option key={c.code} value={c.code}>
@@ -165,12 +166,12 @@ export function WalletSheet({ editId }: { editId?: ID }) {
               ))}
             </select>
           </FormRow>
-          <FormRow label="Учитывать в общем балансе">
-            <Toggle checked={include} onChange={setInclude} label="Учитывать в общем балансе" />
+          <FormRow label={tr("Учитывать в общем балансе")}>
+            <Toggle checked={include} onChange={setInclude} label={tr("Учитывать в общем балансе")} />
           </FormRow>
         </Group>
         {existing && amount !== (balances[existing.id] ?? 0) && balance !== "" && (
-          <p className="-mt-2 px-8 text-footnote text-ink-3">Разница будет записана как корректировка баланса — история операций не изменится.</p>
+          <p className="-mt-2 px-8 text-footnote text-ink-3">{tr("Разница будет записана как корректировка баланса — история операций не изменится.")}</p>
         )}
       </div>
     </Sheet>

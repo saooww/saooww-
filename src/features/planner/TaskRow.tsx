@@ -9,6 +9,7 @@ import type { Task } from "../../store/types";
 import { nav } from "../../store/ui";
 import { spring } from "../../ui/motion";
 import { deleteTask, moveToTomorrow, toggleDone } from "./actions";
+import { tr } from "../../i18n/i18n";
 
 /* ------------------------------------------------------------------ */
 /*  The check: a circle, or a square seal for the day's main things     */
@@ -22,7 +23,7 @@ export function TaskCheck({ task, seal, size = 24, onToggle }: { task: Task; sea
       type="button"
       role="checkbox"
       aria-checked={done}
-      aria-label={done ? `Вернуть: ${task.title}` : `Сделано: ${task.title}`}
+      aria-label={done ? tr("Вернуть: {0}", task.title) : tr("Сделано: {0}", task.title)}
       whileTap={{ scale: 0.82 }}
       transition={spring.press}
       onClick={(e) => {
@@ -127,8 +128,8 @@ export const TaskRow = memo(function TaskRow({ task, showDate = true, showList =
                   {subsDone}/{subs.length}
                 </span>
               )}
-              {task.repeat !== "none" && <Repeat size={12} strokeWidth={2.1} className="shrink-0" aria-label="Повторяется" />}
-              {task.note && <AlignLeft size={12} strokeWidth={2.1} className="shrink-0" aria-label="Есть заметка" />}
+              {task.repeat !== "none" && <Repeat size={12} strokeWidth={2.1} className="shrink-0" aria-label={tr("Повторяется")} />}
+              {task.note && <AlignLeft size={12} strokeWidth={2.1} className="shrink-0" aria-label={tr("Есть заметка")} />}
             </span>
           )}
         </span>
@@ -145,7 +146,7 @@ export const TaskRow = memo(function TaskRow({ task, showDate = true, showList =
         {!task.done && (
           <button
             type="button"
-            aria-label="Перенести на завтра"
+            aria-label={tr("Перенести на завтра")}
             onClick={() => {
               settle(0);
               moveToTomorrow(task);
@@ -154,12 +155,12 @@ export const TaskRow = memo(function TaskRow({ task, showDate = true, showList =
             style={{ width: ACTION_W }}
           >
             <Sunrise size={18} />
-            <span className="text-caption font-semibold">Завтра</span>
+            <span className="text-caption font-semibold">{tr("Завтра")}</span>
           </button>
         )}
         <button
           type="button"
-          aria-label="Удалить дело"
+          aria-label={tr("Удалить дело")}
           onClick={() => {
             settle(0);
             deleteTask(task);
@@ -168,7 +169,7 @@ export const TaskRow = memo(function TaskRow({ task, showDate = true, showList =
           style={{ width: ACTION_W }}
         >
           <Trash2 size={18} />
-          <span className="text-caption font-semibold">Удалить</span>
+          <span className="text-caption font-semibold">{tr("Удалить")}</span>
         </button>
       </motion.div>
       <motion.div

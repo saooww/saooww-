@@ -5,6 +5,7 @@ import { cn } from "../../lib/cn";
 import { haptic } from "../../lib/haptics";
 import { spring } from "../../ui/motion";
 import { PIN_LENGTH } from "./lock";
+import { tr } from "../../i18n/i18n";
 
 const KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "extra", "0", "back"] as const;
 
@@ -52,7 +53,7 @@ export function PinPad({ title, subtitle, onComplete, extra, disabled }: { title
     <div className="flex flex-col items-center">
       <div className="text-title-3 font-semibold text-ink">{title}</div>
       <div className="mt-1.5 h-5 text-footnote text-ink-2">{subtitle}</div>
-      <motion.div animate={dots} className="mt-6 flex gap-4" aria-label={`Введено ${pin.length} из ${PIN_LENGTH}`}>
+      <motion.div animate={dots} className="mt-6 flex gap-4" aria-label={tr("Введено {0} из {1}", pin.length, PIN_LENGTH)}>
         {Array.from({ length: PIN_LENGTH }, (_, i) => (
           <motion.span
             key={i}
@@ -63,7 +64,7 @@ export function PinPad({ title, subtitle, onComplete, extra, disabled }: { title
           />
         ))}
       </motion.div>
-      <div className="mt-10 grid grid-cols-3 gap-x-6 gap-y-4" role="group" aria-label="Цифровая клавиатура">
+      <div className="mt-10 grid grid-cols-3 gap-x-6 gap-y-4" role="group" aria-label={tr("Цифровая клавиатура")}>
         {KEYS.map((k) =>
           k === "extra" ? (
             <div key={k} className="grid h-[76px] w-[76px] place-items-center">
@@ -73,7 +74,7 @@ export function PinPad({ title, subtitle, onComplete, extra, disabled }: { title
             <motion.button
               key={k}
               type="button"
-              aria-label={k === "back" ? "Стереть" : k}
+              aria-label={k === "back" ? tr("Стереть") : k}
               whileTap={{ scale: 0.9 }}
               transition={spring.press}
               onClick={() => press(k)}

@@ -15,6 +15,7 @@ import { Screen } from "../../nav/Screen";
 import { Money } from "../../ui/Money";
 import { Badge, Button, EmptyState, FormRow, Group, IconButton, IconChip, Row, Segmented, Toggle, inputCls } from "../../ui/primitives";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
+import { tr } from "../../i18n/i18n";
 
 export function SubscriptionsScreen() {
   const recurring = useData((s) => s.recurring);
@@ -49,10 +50,10 @@ export function SubscriptionsScreen() {
         title={
           <span className={cn("flex items-center gap-2", !r.active && "text-ink-3")}>
             <span className="truncate">{r.title}</span>
-            {flagged && <Badge tone="warning">{r.usage === "never" ? "не пользуюсь" : "редко"}</Badge>}
+            {flagged && <Badge tone="warning">{r.usage === "never" ? tr("не пользуюсь") : tr("редко")}</Badge>}
           </span>
         }
-        subtitle={r.active ? `${capitalize(formatRelative(r.nextDate))} · ${formatDate(r.nextDate)}${w && w.id !== defaultWalletId ? ` · ${w.name}` : ""}` : "На паузе"}
+        subtitle={r.active ? `${capitalize(formatRelative(r.nextDate))} · ${formatDate(r.nextDate)}${w && w.id !== defaultWalletId ? ` · ${w.name}` : ""}` : tr("На паузе")}
         value={
           <span className="flex flex-col items-end">
             <Money value={r.kind === "income" ? r.amount : r.kind === "expense" ? -r.amount : r.amount} sign={r.kind === "transfer" ? "never" : "always"} tone={r.kind === "income" ? "positive" : "default"} currency={w?.currency ?? base} className="text-ink" />
@@ -65,21 +66,21 @@ export function SubscriptionsScreen() {
   };
 
   return (
-    <Screen title="Подписки и платежи" large actions={<IconButton icon={Plus} label="Добавить" onClick={() => nav.sheet("recurring", { isSubscription: true })} />}>
+    <Screen title={tr("Подписки и платежи")} large actions={<IconButton icon={Plus} label={tr("Добавить")} onClick={() => nav.sheet("recurring", { isSubscription: true })} />}>
       {recurring.length === 0 ? (
-        <EmptyState icon={Repeat} title="Нет регулярных платежей" text="Добавьте подписки, связь, кредит или зарплату — они будут записываться сами и попадут в прогнозы." action={<Button size="md" icon={Plus} onClick={() => nav.sheet("recurring", { isSubscription: true })}>Добавить</Button>} />
+        <EmptyState icon={Repeat} title={tr("Нет регулярных платежей")} text={tr("Добавьте подписки, связь, кредит или зарплату — они будут записываться сами и попадут в прогнозы.")} action={<Button size="md" icon={Plus} onClick={() => nav.sheet("recurring", { isSubscription: true })}>{tr("Добавить")}</Button>} />
       ) : (
         <>
           <div className="grid grid-cols-2 gap-2 px-4">
             <div className="panel rounded-md px-3.5 py-3">
-              <div className="text-caption font-medium text-ink-2">Подписки в месяц</div>
+              <div className="text-caption font-medium text-ink-2">{tr("Подписки в месяц")}</div>
               <Money value={monthlySubs} currency={base} className="mt-0.5 block text-headline font-semibold" />
-              <div className="text-caption text-ink-3">{formatMoney(monthlySubs * 12, { currency: base })} в год</div>
+              <div className="text-caption text-ink-3">{formatMoney(monthlySubs * 12, { currency: base })}{tr("в год")}</div>
             </div>
             <div className="panel rounded-md px-3.5 py-3">
-              <div className="text-caption font-medium text-ink-2">Все регулярные списания</div>
+              <div className="text-caption font-medium text-ink-2">{tr("Все регулярные списания")}</div>
               <Money value={monthlyAll} currency={base} className="mt-0.5 block text-headline font-semibold" />
-              <div className="text-caption text-ink-3">в месяц</div>
+              <div className="text-caption text-ink-3">{tr("в месяц")}</div>
             </div>
           </div>
 
@@ -87,18 +88,17 @@ export function SubscriptionsScreen() {
             <div className="mx-4 mt-3 flex items-start gap-3 rounded-lg border border-line-strong px-4 py-3">
               <Zap size={18} className="mt-0.5 shrink-0 text-warning" />
               <p className="text-subhead">
-                {unused.length === 1 ? `«${unused[0].title}»` : `${unused.length} подписки`} вы почти не используете. Отмена сэкономит <span className="font-semibold">{formatMoney(unusedYear)}</span> в год.
-              </p>
+                {unused.length === 1 ? `«${unused[0].title}»` : tr("{0} подписки", unused.length)}{tr("вы почти не используете. Отмена сэкономит")}{" "}<span className="font-semibold">{formatMoney(unusedYear)}</span>{tr("в год.")}</p>
             </div>
           )}
 
           <div className="mt-5 flex flex-col gap-5">
-            {groups.subs.length > 0 && <Group header="Подписки">{groups.subs.map(row)}</Group>}
-            {groups.bills.length > 0 && <Group header="Регулярные платежи">{groups.bills.map(row)}</Group>}
-            {groups.income.length > 0 && <Group header="Регулярные поступления">{groups.income.map(row)}</Group>}
-            {groups.transfers.length > 0 && <Group header="Автопереводы">{groups.transfers.map(row)}</Group>}
+            {groups.subs.length > 0 && <Group header={tr("Подписки")}>{groups.subs.map(row)}</Group>}
+            {groups.bills.length > 0 && <Group header={tr("Регулярные платежи")}>{groups.bills.map(row)}</Group>}
+            {groups.income.length > 0 && <Group header={tr("Регулярные поступления")}>{groups.income.map(row)}</Group>}
+            {groups.transfers.length > 0 && <Group header={tr("Автопереводы")}>{groups.transfers.map(row)}</Group>}
           </div>
-          <p className="mt-4 px-5 text-caption text-ink-3">Операции записываются автоматически в день платежа, когда вы открываете приложение. Пометка «редко» — ваша собственная оценка: банковских данных об использовании у приложения нет.</p>
+          <p className="mt-4 px-5 text-caption text-ink-3">{tr("Операции записываются автоматически в день платежа, когда вы открываете приложение. Пометка «редко» — ваша собственная оценка: банковских данных об использовании у приложения нет.")}</p>
         </>
       )}
     </Screen>
@@ -152,74 +152,74 @@ export function RecurringSheet({ editId, isSubscription: sub0 }: { editId?: ID; 
   };
 
   return (
-    <Sheet tall title={existing ? existing.title : isSubscription ? "Новая подписка" : "Регулярный платёж"} left={<SheetAction onClick={close}>Отмена</SheetAction>} right={<SheetAction strong disabled={!valid} onClick={save}>Готово</SheetAction>}>
+    <Sheet tall title={existing ? existing.title : isSubscription ? tr("Новая подписка") : tr("Регулярный платёж")} left={<SheetAction onClick={close}>{tr("Отмена")}</SheetAction>} right={<SheetAction strong disabled={!valid} onClick={save}>{tr("Готово")}</SheetAction>}>
       <div className="flex flex-col gap-5 pt-1">
         {existing && (
           <div className="grid grid-cols-3 gap-2 px-4">
-            <QuickBtn icon={Zap} label="Записать сейчас" disabled={!existing.active} onClick={() => { undoable("Платёж записан", () => useData.getState().postRecurringNow(existing.id)); close(); }} />
-            <QuickBtn icon={SkipForward} label="Пропустить раз" disabled={!existing.active} onClick={() => { undoable(`Следующий платёж: ${formatDate(existing.nextDate)} пропущен`, () => useData.getState().skipRecurring(existing.id)); close(); }} />
-            <QuickBtn icon={existing.active ? Pause : Play} label={existing.active ? "Пауза" : "Возобновить"} onClick={() => { useData.getState().updateRecurring(existing.id, { active: !existing.active, nextDate: existing.active ? existing.nextDate : existing.nextDate < todayKey() ? todayKey() : existing.nextDate }); haptic(); close(); }} />
+            <QuickBtn icon={Zap} label={tr("Записать сейчас")} disabled={!existing.active} onClick={() => { undoable(tr("Платёж записан"), () => useData.getState().postRecurringNow(existing.id)); close(); }} />
+            <QuickBtn icon={SkipForward} label={tr("Пропустить раз")} disabled={!existing.active} onClick={() => { undoable(tr("Следующий платёж: {0} пропущен", formatDate(existing.nextDate)), () => useData.getState().skipRecurring(existing.id)); close(); }} />
+            <QuickBtn icon={existing.active ? Pause : Play} label={existing.active ? tr("Пауза") : tr("Возобновить")} onClick={() => { useData.getState().updateRecurring(existing.id, { active: !existing.active, nextDate: existing.active ? existing.nextDate : existing.nextDate < todayKey() ? todayKey() : existing.nextDate }); haptic(); close(); }} />
           </div>
         )}
         <div className="px-4">
-          <Segmented value={kind} onChange={setKind} options={[{ value: "expense", label: "Списание" }, { value: "income", label: "Поступление" }, { value: "transfer", label: "Перевод" }]} />
+          <Segmented value={kind} onChange={setKind} options={[{ value: "expense", label: tr("Списание") }, { value: "income", label: tr("Поступление") }, { value: "transfer", label: tr("Перевод") }]} />
         </div>
         <Group>
-          <FormRow label="Название">
-            <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Например, музыка" maxLength={50} className={cn(inputCls, "text-right")} />
+          <FormRow label={tr("Название")}>
+            <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={tr("Например, музыка")} maxLength={50} className={cn(inputCls, "text-right")} />
           </FormRow>
-          <FormRow label="Сумма">
+          <FormRow label={tr("Сумма")}>
             <input inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value.replace(/[^\d.,]/g, ""))} placeholder="0" className={cn(inputCls, "text-right tnum")} />
           </FormRow>
-          <FormRow label="Следующий раз">
+          <FormRow label={tr("Следующий раз")}>
             <input type="date" value={nextDate} onChange={(e) => e.target.value && setNextDate(e.target.value)} className={cn(inputCls, "text-right")} />
           </FormRow>
         </Group>
-        <Group header="Периодичность" footer={freqLabel(freq, interval)}>
+        <Group header={tr("Периодичность")} footer={freqLabel(freq, interval)}>
           <div className="p-3">
-            <Segmented value={freq} onChange={setFreq} options={[{ value: "week", label: "Неделя" }, { value: "month", label: "Месяц" }, { value: "year", label: "Год" }, { value: "day", label: "День" }]} />
+            <Segmented value={freq} onChange={setFreq} options={[{ value: "week", label: tr("Неделя") }, { value: "month", label: tr("Месяц") }, { value: "year", label: tr("Год") }, { value: "day", label: tr("День") }]} />
           </div>
-          <FormRow label="Интервал">
+          <FormRow label={tr("Интервал")}>
             <div className="flex items-center gap-3">
-              <button type="button" aria-label="Меньше" onClick={() => setInterval_((v) => Math.max(1, v - 1))} className="grid h-8 w-8 place-items-center rounded-full tile text-headline">−</button>
+              <button type="button" aria-label={tr("Меньше")} onClick={() => setInterval_((v) => Math.max(1, v - 1))} className="grid h-8 w-8 place-items-center rounded-full tile text-headline">−</button>
               <span className="w-6 text-center tnum">{interval}</span>
-              <button type="button" aria-label="Больше" onClick={() => setInterval_((v) => Math.min(24, v + 1))} className="grid h-8 w-8 place-items-center rounded-full tile text-headline">+</button>
+              <button type="button" aria-label={tr("Больше")} onClick={() => setInterval_((v) => Math.min(24, v + 1))} className="grid h-8 w-8 place-items-center rounded-full tile text-headline">+</button>
             </div>
           </FormRow>
         </Group>
         <Group>
-          <FormRow label={kind === "transfer" ? "Откуда" : "Кошелёк"}>
+          <FormRow label={kind === "transfer" ? tr("Откуда") : tr("Кошелёк")}>
             <select value={walletId} onChange={(e) => setWalletId(e.target.value)} className={cn(inputCls, "appearance-none text-right")} dir="rtl">
               {live.map((w) => <option key={w.id} value={w.id}>{w.name}</option>)}
             </select>
           </FormRow>
           {kind === "transfer" ? (
-            <FormRow label="Куда">
+            <FormRow label={tr("Куда")}>
               <select value={toWalletId} onChange={(e) => setToWalletId(e.target.value)} className={cn(inputCls, "appearance-none text-right")} dir="rtl">
                 {live.filter((w) => w.id !== walletId).map((w) => <option key={w.id} value={w.id}>{w.name}</option>)}
               </select>
             </FormRow>
           ) : (
-            <FormRow label="Категория">
+            <FormRow label={tr("Категория")}>
               <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className={cn(inputCls, "appearance-none text-right")} dir="rtl">
-                <option value="">Не выбрана</option>
+                <option value="">{tr("Не выбрана")}</option>
                 {categories.filter((c) => c.kind === kind && !c.archived).map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </FormRow>
           )}
-          <FormRow label="Записывать автоматически">
-            <Toggle checked={autoPost} onChange={setAutoPost} label="Записывать автоматически" />
+          <FormRow label={tr("Записывать автоматически")}>
+            <Toggle checked={autoPost} onChange={setAutoPost} label={tr("Записывать автоматически")} />
           </FormRow>
         </Group>
         {kind === "expense" && (
-          <Group footer={isSubscription ? "Отметьте честно — приложение подскажет, от чего можно отказаться." : undefined}>
-            <FormRow label="Это подписка">
-              <Toggle checked={isSubscription} onChange={setIsSubscription} label="Это подписка" />
+          <Group footer={isSubscription ? tr("Отметьте честно — приложение подскажет, от чего можно отказаться.") : undefined}>
+            <FormRow label={tr("Это подписка")}>
+              <Toggle checked={isSubscription} onChange={setIsSubscription} label={tr("Это подписка")} />
             </FormRow>
             {isSubscription && (
               <div className="px-3 pb-3">
-                <div className="px-1 pb-2 text-footnote text-ink-2">Как часто пользуетесь</div>
-                <Segmented value={usage} onChange={setUsage} options={[{ value: "often", label: "Часто" }, { value: "rarely", label: "Редко" }, { value: "never", label: "Почти нет" }]} />
+                <div className="px-1 pb-2 text-footnote text-ink-2">{tr("Как часто пользуетесь")}</div>
+                <Segmented value={usage} onChange={setUsage} options={[{ value: "often", label: tr("Часто") }, { value: "rarely", label: tr("Редко") }, { value: "never", label: tr("Почти нет") }]} />
               </div>
             )}
           </Group>
@@ -232,20 +232,18 @@ export function RecurringSheet({ editId, isSubscription: sub0 }: { editId?: ID; 
               icon={Trash2}
               onClick={() =>
                 confirmDelete({
-                  title: `Удалить «${existing.title}»?`,
-                  message: "Уже записанные операции останутся в истории.",
+                  title: tr("Удалить «{0}»?", existing.title),
+                  message: tr("Уже записанные операции останутся в истории."),
                   onConfirm: () => {
-                    undoable("Регулярный платёж удалён", () => useData.getState().deleteRecurring(existing.id));
+                    undoable(tr("Регулярный платёж удалён"), () => useData.getState().deleteRecurring(existing.id));
                     close();
                   }
                 })
               }
-            >
-              Удалить
-            </Button>
+            >{tr("Удалить")}</Button>
           </div>
         )}
-        <p className="px-8 text-footnote text-ink-3">{monthlyEquivalent({ amount: value, freq, interval }) > 0 ? `≈ ${formatMoney(monthlyEquivalent({ amount: value, freq, interval }))} в месяц` : ""}</p>
+        <p className="px-8 text-footnote text-ink-3">{monthlyEquivalent({ amount: value, freq, interval }) > 0 ? tr("≈ {0} в месяц", formatMoney(monthlyEquivalent({ amount: value, freq, interval }))) : ""}</p>
       </div>
     </Sheet>
   );

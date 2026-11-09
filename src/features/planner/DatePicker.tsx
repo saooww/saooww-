@@ -9,6 +9,7 @@ import { useToday } from "../../store/hooks";
 import { useData } from "../../store/store";
 import { Chip, FormRow, Group, IconButton, Toggle, inputCls } from "../../ui/primitives";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
+import { tr } from "../../i18n/i18n";
 
 export interface DatePickerProps {
   title?: string;
@@ -21,7 +22,7 @@ export interface DatePickerProps {
   onPick: (due: DayKey | undefined, time?: string) => void;
 }
 
-export function DatePickerSheet({ title = "Когда", value, time: time0, withTime, allowNone = true, onPick }: DatePickerProps) {
+export function DatePickerSheet({ title = tr("Когда"), value, time: time0, withTime, allowNone = true, onPick }: DatePickerProps) {
   const { close } = useSheet();
   const today = useToday();
   const tasks = useData((s) => s.tasks);
@@ -53,7 +54,7 @@ export function DatePickerSheet({ title = "Когда", value, time: time0, with
   return (
     <Sheet
       title={title}
-      left={withTime ? <SheetAction onClick={close}>Отмена</SheetAction> : undefined}
+      left={withTime ? <SheetAction onClick={close}>{tr("Отмена")}</SheetAction> : undefined}
       right={
         withTime ? (
           <SheetAction
@@ -62,9 +63,7 @@ export function DatePickerSheet({ title = "Когда", value, time: time0, with
               onPick(day, day && hasTime ? time : undefined);
               close();
             }}
-          >
-            Готово
-          </SheetAction>
+          >{tr("Готово")}</SheetAction>
         ) : undefined
       }
     >
@@ -79,17 +78,15 @@ export function DatePickerSheet({ title = "Когда", value, time: time0, with
             );
           })}
           {allowNone && (
-            <Chip selected={!day} onClick={() => commit(undefined)}>
-              Без даты
-            </Chip>
+            <Chip selected={!day} onClick={() => commit(undefined)}>{tr("Без даты")}</Chip>
           )}
         </div>
 
         <div className="mx-4 panel rounded-xl p-3">
           <div className="flex items-center justify-between px-1">
-            <IconButton icon={ChevronLeft} label="Предыдущий месяц" variant="plain" onClick={() => { setDir(-1); setMonth(addMonths(month, -1, 1)); }} />
+            <IconButton icon={ChevronLeft} label={tr("Предыдущий месяц")} variant="plain" onClick={() => { setDir(-1); setMonth(addMonths(month, -1, 1)); }} />
             <div className="text-headline font-semibold">{monthTitle(month)}</div>
-            <IconButton icon={ChevronRight} label="Следующий месяц" variant="plain" onClick={() => { setDir(1); setMonth(addMonths(month, 1, 1)); }} />
+            <IconButton icon={ChevronRight} label={tr("Следующий месяц")} variant="plain" onClick={() => { setDir(1); setMonth(addMonths(month, 1, 1)); }} />
           </div>
           <div className="mt-1 grid grid-cols-7 text-center text-caption font-medium text-ink-3">
             {WEEKDAYS_SHORT.map((d) => (
@@ -118,7 +115,7 @@ export function DatePickerSheet({ title = "Когда", value, time: time0, with
                     type="button"
                     disabled={past}
                     onClick={() => commit(d)}
-                    aria-label={`${formatDayHeading(d)}${n ? `, дел: ${n}` : ""}`}
+                    aria-label={`${formatDayHeading(d)}${n ? tr(", дел: {0}", n) : ""}`}
                     aria-pressed={sel}
                     className="flex h-11 flex-col items-center justify-center gap-[3px] disabled:opacity-30"
                   >
@@ -138,12 +135,12 @@ export function DatePickerSheet({ title = "Когда", value, time: time0, with
         </div>
 
         {withTime && (
-          <Group footer={day ? undefined : "Время можно указать, когда выбран день."}>
-            <FormRow label="Время">
-              <Toggle checked={hasTime && !!day} disabled={!day} onChange={setHasTime} label="Время" />
+          <Group footer={day ? undefined : tr("Время можно указать, когда выбран день.")}>
+            <FormRow label={tr("Время")}>
+              <Toggle checked={hasTime && !!day} disabled={!day} onChange={setHasTime} label={tr("Время")} />
             </FormRow>
             {hasTime && day && (
-              <FormRow label="Во сколько">
+              <FormRow label={tr("Во сколько")}>
                 <input type="time" value={time} onChange={(e) => e.target.value && setTime(e.target.value)} className={cn(inputCls, "num text-right")} />
               </FormRow>
             )}

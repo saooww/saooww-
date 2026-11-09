@@ -4,6 +4,7 @@ import { cn } from "../lib/cn";
 import { moneyParts, type Minor } from "../lib/money";
 import { useData } from "../store/store";
 import { ease } from "./motion";
+import { tr } from "../i18n/i18n";
 
 export type MoneyTone = "default" | "auto" | "positive" | "negative" | "muted" | "inherit";
 
@@ -55,7 +56,7 @@ export function Money({ value, currency = "RUB", sign = "auto", tone = "inherit"
 
   if (hidden) {
     return (
-      <span className={cn(numCls, "whitespace-nowrap", toneCls, className)} style={heroStyle} aria-label="Сумма скрыта">
+      <span className={cn(numCls, "whitespace-nowrap", toneCls, className)} style={heroStyle} aria-label={tr("Сумма скрыта")}>
         {MASK}
         <span className={cn(variant === "hero" && "ml-[0.12em] text-[0.62em] font-medium opacity-60", symbolClassName)}>
           {variant === "hero" ? p.symbol : ` ${p.symbol}`}

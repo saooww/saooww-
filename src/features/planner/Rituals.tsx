@@ -15,6 +15,7 @@ import { Button } from "../../ui/primitives";
 import { Sheet, useSheet } from "../../ui/Sheet";
 import { MAX_FOCUS, deleteTask, moveTasks, toggleFocus } from "./actions";
 import { Enso } from "./Enso";
+import { tr } from "../../i18n/i18n";
 
 type Step = "overdue" | "inbox" | "focus" | "done";
 
@@ -66,21 +67,19 @@ export function PlanDaySheet({ start }: { start?: Exclude<Step, "done"> }) {
   return (
     <Sheet
       tall
-      ariaLabel="План на день"
+      ariaLabel={tr("План на день")}
       footer={
         step === "done" ? (
-          <Button block onClick={close}>
-            Начать день
-          </Button>
+          <Button block onClick={close}>{tr("Начать день")}</Button>
         ) : (
           <Button block onClick={next}>
-            {steps[i + 1] === "done" ? "Готово" : "Дальше"}
+            {steps[i + 1] === "done" ? tr("Готово") : tr("Дальше")}
           </Button>
         )
       }
     >
       {step !== "done" && counted.length > 1 && (
-        <div className="flex gap-1.5 px-5 pb-4" aria-label={`Шаг ${i + 1} из ${counted.length}`}>
+        <div className="flex gap-1.5 px-5 pb-4" aria-label={tr("Шаг {0} из {1}", i + 1, counted.length)}>
           {counted.map((s, k) => (
             <motion.span key={s} className="h-[3px] flex-1 rounded-full" animate={{ background: k <= i ? "var(--accent)" : "var(--line-strong)" }} transition={{ duration: 0.25 }} />
           ))}
@@ -90,19 +89,19 @@ export function PlanDaySheet({ start }: { start?: Exclude<Step, "done"> }) {
         <motion.div key={step} initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}>
           {step === "overdue" && (
             <SortStep
-              title="Хвосты с прошлых дней"
-              text="Не успели — бывает. Решите, когда за них взяться, или отпустите."
+              title={tr("Хвосты с прошлых дней")}
+              text={tr("Не успели — бывает. Решите, когда за них взяться, или отпустите.")}
               ids={snap.overdue}
               byId={byId}
               today={today}
-              bulk={{ label: "Всё на сегодня", run: () => moveTasks(snap.overdue.filter((id) => byId.has(id)), today) }}
+              bulk={{ label: tr("Всё на сегодня"), run: () => moveTasks(snap.overdue.filter((id) => byId.has(id)), today) }}
               options={["today", "tomorrow", "none"]}
             />
           )}
           {step === "inbox" && (
             <SortStep
-              title="Входящие"
-              text="Всё, что записано на бегу. Назначьте день — или оставьте на потом, если не к спеху."
+              title={tr("Входящие")}
+              text={tr("Всё, что записано на бегу. Назначьте день — или оставьте на потом, если не к спеху.")}
               ids={snap.inbox}
               byId={byId}
               today={today}
@@ -128,7 +127,7 @@ function SortStep({ title, text, ids, byId, today, bulk, options }: { title: str
     if (o === "weekend") return quickDate("weekend", today);
     return undefined;
   };
-  const LABEL: Record<SortOption, string> = { today: "Сегодня", tomorrow: "Завтра", weekend: "Выходные", none: "Без даты" };
+  const LABEL: Record<SortOption, string> = { today: tr("Сегодня"), tomorrow: tr("Завтра"), weekend: tr("Выходные"), none: tr("Без даты") };
 
   return (
     <div>
@@ -151,11 +150,11 @@ function SortStep({ title, text, ids, byId, today, bulk, options }: { title: str
                     <div className="text-body text-ink">{t.title}</div>
                     {(t.due || list) && (
                       <div className="mt-0.5 text-footnote text-ink-3">
-                        {[t.due && t.due < today ? `было на ${formatDate(t.due)}` : t.due ? dueLabel(t.due, today) : "", list].filter(Boolean).join(", ")}
+                        {[t.due && t.due < today ? tr("было на {0}", formatDate(t.due)) : t.due ? dueLabel(t.due, today) : "", list].filter(Boolean).join(", ")}
                       </div>
                     )}
                   </button>
-                  <button type="button" aria-label={`Удалить: ${t.title}`} onClick={() => deleteTask(t)} className="-mr-2 -mt-1 grid h-8 w-8 place-items-center rounded-full text-ink-3 active:bg-surface-3">
+                  <button type="button" aria-label={tr("Удалить: {0}", t.title)} onClick={() => deleteTask(t)} className="-mr-2 -mt-1 grid h-8 w-8 place-items-center rounded-full text-ink-3 active:bg-surface-3">
                     <Trash2 size={16} />
                   </button>
                 </div>
@@ -180,7 +179,7 @@ function SortStep({ title, text, ids, byId, today, bulk, options }: { title: str
             );
           })}
         </AnimatePresence>
-        {!rows.length && <div className="rounded-lg border border-dashed border-line-strong px-4 py-6 text-center text-subhead text-ink-2">Всё разобрано</div>}
+        {!rows.length && <div className="rounded-lg border border-dashed border-line-strong px-4 py-6 text-center text-subhead text-ink-2">{tr("Всё разобрано")}</div>}
       </div>
     </div>
   );
@@ -221,14 +220,14 @@ function FocusStep({ today }: { today: DayKey }) {
 
   return (
     <div>
-      <StepHeader title="Главное на сегодня" text="Выберите до трёх дел. Если успеете только их — день прошёл не зря." />
+      <StepHeader title={tr("Главное на сегодня")} text={tr("Выберите до трёх дел. Если успеете только их — день прошёл не зря.")} />
       <div className="flex items-center gap-2 px-5 pb-3">
         {Array.from({ length: MAX_FOCUS }, (_, k) => (
           <motion.span key={k} className="grid h-7 w-7 place-items-center rounded-[8px] border-[1.5px]" style={{ rotate: -4 }} animate={{ borderColor: k < picked ? "rgba(0,0,0,0)" : "var(--line-strong)", background: k < picked ? "var(--accent)" : "rgba(0,0,0,0)" }} transition={spring.snappy}>
             {k < picked && <Check size={14} strokeWidth={3} className="text-[var(--accent-on)]" />}
           </motion.span>
         ))}
-        <span className="ml-1 text-footnote text-ink-2">{picked ? `выбрано ${picked} из ${MAX_FOCUS}` : "пока ничего"}</span>
+        <span className="ml-1 text-footnote text-ink-2">{picked ? tr("выбрано {0} из {1}", picked, MAX_FOCUS) : tr("пока ничего")}</span>
       </div>
 
       <div className="mx-4 overflow-hidden panel rounded-lg [&>*+*]:hairline-t">
@@ -246,22 +245,20 @@ function FocusStep({ today }: { today: DayKey }) {
                 add();
               }
             }}
-            placeholder="Дело на сегодня"
+            placeholder={tr("Дело на сегодня")}
             enterKeyHint="done"
-            aria-label="Дело на сегодня"
+            aria-label={tr("Дело на сегодня")}
             className="min-w-0 flex-1 bg-transparent py-3 text-body outline-none placeholder:text-ink-3"
           />
           {draft.trim() && (
-            <button type="button" onClick={add} className="text-subhead font-semibold text-accent-ink">
-              Добавить
-            </button>
+            <button type="button" onClick={add} className="text-subhead font-semibold text-accent-ink">{tr("Добавить")}</button>
           )}
         </div>
       </div>
 
       {others.length > 0 && (
         <div className="mt-6">
-          <div className="px-5 pb-2.5 text-subhead font-medium text-ink-2">Можно взять из других дней</div>
+          <div className="px-5 pb-2.5 text-subhead font-medium text-ink-2">{tr("Можно взять из других дней")}</div>
           <div className="mx-4 overflow-hidden panel rounded-lg [&>*+*]:hairline-t">
             {others.map((t) => (
               <PickRow key={t.id} task={t} on={false} today={today} showDue />
@@ -281,7 +278,7 @@ function PickRow({ task, on, today, showDue }: { task: Task; on: boolean; today:
       </span>
       <span className="min-w-0 flex-1">
         <span className="block text-body text-ink">{task.title}</span>
-        {showDue && <span className="block text-footnote text-ink-3">{task.due ? dueLabel(task.due, today) : "без даты"}</span>}
+        {showDue && <span className="block text-footnote text-ink-3">{task.due ? dueLabel(task.due, today) : tr("без даты")}</span>}
       </span>
       {task.time && <span className="num text-subhead text-ink-2">{task.time}</span>}
     </button>
@@ -300,11 +297,10 @@ function DoneStep({ today }: { today: DayKey }) {
   return (
     <div className="flex flex-col items-center px-6 pt-4 text-center">
       <Enso value={drawn} complete={drawn === 1} size={132} />
-      <h2 className="mt-5 text-title-2 font-semibold">План на день готов</h2>
+      <h2 className="mt-5 text-title-2 font-semibold">{tr("План на день готов")}</h2>
       {focus.length ? (
         <>
-          <p className="mt-2 max-w-[300px] text-callout text-ink-2">
-            Начните с «{focus[0].title}». {focus.length > 1 ? "Потом — остальное главное." : ""}
+          <p className="mt-2 max-w-[300px] text-callout text-ink-2">{tr("Начните с «")}{focus[0].title}». {focus.length > 1 ? tr("Потом — остальное главное.") : ""}
           </p>
           <div className="mt-5 flex w-full flex-col gap-2">
             {focus.map((t, k) => (
@@ -320,7 +316,7 @@ function DoneStep({ today }: { today: DayKey }) {
         </>
       ) : (
         <p className="mt-2 max-w-[300px] text-callout text-ink-2">
-          {plan.total ? `На сегодня ${pluralN(plan.total - plan.completed, ["дело", "дела", "дел"])}. Главное можно выбрать позже.` : "Свободный день. Запишите дела, когда появятся."}
+          {plan.total ? tr("На сегодня {0}. Главное можно выбрать позже.", pluralN(plan.total - plan.completed, ["дело", "дела", "дел"])) : tr("Свободный день. Запишите дела, когда появятся.")}
         </p>
       )}
     </div>
@@ -355,18 +351,16 @@ export function ReviewDaySheet() {
     }
     st.updateSettings({ dayReviewedOn: today });
     haptic("success");
-    nav.toast("День закрыт. До завтра", { tone: "positive" });
+    nav.toast(tr("День закрыт. До завтра"), { tone: "positive" });
     close();
   };
 
   return (
     <Sheet
       tall
-      ariaLabel="Итоги дня"
+      ariaLabel={tr("Итоги дня")}
       footer={
-        <Button block onClick={finish}>
-          Завершить день
-        </Button>
+        <Button block onClick={finish}>{tr("Завершить день")}</Button>
       }
     >
       <div className="flex flex-col items-center px-6 pt-2 text-center">
@@ -376,20 +370,20 @@ export function ReviewDaySheet() {
             <span className="num text-callout text-ink-3">/{plan.total}</span>
           </div>
         </Enso>
-        <h2 className="mt-4 text-title-2 font-semibold">Итоги дня</h2>
+        <h2 className="mt-4 text-title-2 font-semibold">{tr("Итоги дня")}</h2>
         <p className="mt-1.5 max-w-[300px] text-callout text-ink-2">
           {plan.total === 0
-            ? "Сегодня без отмеченных дел. Завтра попробуйте начать с плана."
+            ? tr("Сегодня без отмеченных дел. Завтра попробуйте начать с плана.")
             : allDone
-              ? "Всё, что планировали, — сделано."
-              : `Сделано ${plan.completed} из ${plan.total}.`}
-          {streak > 1 ? ` ${pluralN(streak, ["день", "дня", "дней"])} подряд с отмеченными делами.` : ""}
+              ? tr("Всё, что планировали, — сделано.")
+              : tr("Сделано {0} из {1}.", plan.completed, plan.total)}
+          {streak > 1 ? tr(" {0} подряд с отмеченными делами.", pluralN(streak, ["день", "дня", "дней"])) : ""}
         </p>
       </div>
 
       {plan.done.length > 0 && (
         <div className="mt-6">
-          <div className="px-5 pb-2.5 text-subhead font-medium text-ink-2">Сделано</div>
+          <div className="px-5 pb-2.5 text-subhead font-medium text-ink-2">{tr("Сделано")}</div>
           <div className="mx-4 overflow-hidden panel rounded-lg [&>*+*]:hairline-t">
             {plan.done.slice(0, 8).map((t) => (
               <div key={t.id} className="flex items-center gap-3 px-4 py-2.5">
@@ -399,7 +393,7 @@ export function ReviewDaySheet() {
                 <span className="min-w-0 flex-1 truncate text-subhead text-ink-2">{t.title}</span>
               </div>
             ))}
-            {plan.done.length > 8 && <div className="px-4 py-2.5 text-footnote text-ink-3">и ещё {plan.done.length - 8}</div>}
+            {plan.done.length > 8 && <div className="px-4 py-2.5 text-footnote text-ink-3">{tr("и ещё")}{" "}{plan.done.length - 8}</div>}
           </div>
         </div>
       )}
@@ -407,10 +401,8 @@ export function ReviewDaySheet() {
       {leftRows.length > 0 && (
         <div className="mt-6">
           <div className="flex items-baseline justify-between px-5 pb-2.5">
-            <span className="text-subhead font-medium text-ink-2">Не успели</span>
-            <button type="button" onClick={() => moveTasks(leftRows.map((t) => t.id), addDays(today, 1), "Перенесено на завтра")} className="text-subhead font-semibold text-accent-ink">
-              Всё на завтра
-            </button>
+            <span className="text-subhead font-medium text-ink-2">{tr("Не успели")}</span>
+            <button type="button" onClick={() => moveTasks(leftRows.map((t) => t.id), addDays(today, 1), tr("Перенесено на завтра"))} className="text-subhead font-semibold text-accent-ink">{tr("Всё на завтра")}</button>
           </div>
           <div className="mx-4 overflow-hidden panel rounded-lg [&>*+*]:hairline-t">
             <AnimatePresence initial={false}>
@@ -420,12 +412,8 @@ export function ReviewDaySheet() {
                   <motion.div key={t.id} layout exit={{ opacity: 0, height: 0 }} className="flex items-center gap-3 px-4 py-2.5">
                     <span className="min-w-0 flex-1 truncate text-body">{t.title}</span>
                     <div className="flex shrink-0 gap-1.5">
-                      <button type="button" aria-pressed={t.due === tomorrow} onClick={() => moveTasks([t.id], tomorrow)} className={cn("h-8 rounded-full px-3 text-footnote font-semibold", t.due === tomorrow ? "bg-ink text-ink-inverse" : "tile text-ink-2")}>
-                        Завтра
-                      </button>
-                      <button type="button" aria-pressed={!t.due} onClick={() => moveTasks([t.id], undefined)} className={cn("h-8 rounded-full px-3 text-footnote font-semibold", !t.due ? "bg-ink text-ink-inverse" : "tile text-ink-2")}>
-                        Позже
-                      </button>
+                      <button type="button" aria-pressed={t.due === tomorrow} onClick={() => moveTasks([t.id], tomorrow)} className={cn("h-8 rounded-full px-3 text-footnote font-semibold", t.due === tomorrow ? "bg-ink text-ink-inverse" : "tile text-ink-2")}>{tr("Завтра")}</button>
+                      <button type="button" aria-pressed={!t.due} onClick={() => moveTasks([t.id], undefined)} className={cn("h-8 rounded-full px-3 text-footnote font-semibold", !t.due ? "bg-ink text-ink-inverse" : "tile text-ink-2")}>{tr("Позже")}</button>
                     </div>
                   </motion.div>
                 );
@@ -436,15 +424,15 @@ export function ReviewDaySheet() {
       )}
 
       <div className="mt-6 px-4">
-        <div className="px-1 pb-2.5 text-subhead font-medium text-ink-2">Пара строк о дне</div>
+        <div className="px-1 pb-2.5 text-subhead font-medium text-ink-2">{tr("Пара строк о дне")}</div>
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={4}
-          placeholder="Что получилось? Что мешало? Что важно завтра?"
+          placeholder={tr("Что получилось? Что мешало? Что важно завтра?")}
           className="panel w-full resize-none rounded-lg px-4 py-3 text-body leading-[23px] outline-none placeholder:text-ink-3"
         />
-        <p className="px-1 pt-2 text-footnote text-ink-3">Сохранится в дневник — его видно в «Заметках».</p>
+        <p className="px-1 pt-2 text-footnote text-ink-3">{tr("Сохранится в дневник — его видно в «Заметках».")}</p>
       </div>
     </Sheet>
   );

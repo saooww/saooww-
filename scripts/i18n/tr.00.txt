@@ -1,0 +1,150 @@
+ {0} üst üste görev tamamlandı.
+· ayda {0}
+· gecikmiş
+ aynı günlerde
+ ve {0} tane daha
+% geçen haftaya göre
+). Sorun değil — önemli olan bunu görmek.
+, toplam
+, görev: {0}
+, yapıldı {0}
+, etkinlik: {0}
+, son tarih {0}
+, göre
+, geçen aya göre
+ hedefe para aktarmak için.
+. Arşivde
+. Kur gerekmez.
+. Diğer kategorilere ne kadar gittiğini belirtin — kalan şurada kalır:
+1 dk
+15 dk
+21 Eki
+30 gün
+30G
+Uygulamaya giriş için 4 rakam
+5 dk
+90G
+: kur belirleyin →
+Ardessa tüm verileri yalnızca bu cihazda tutar. Dışarı yalnızca Merkez Bankası kur isteği gider, verileriniz olmadan. Verileri başka cihaza taşımak için Dosyalar'a bir kopya kaydedip orada yükleyin.
+Ardessa — yedek
+Face ID bağlanmadı — tekrar deneyin
+{0} {1} önce
+{0} · ortalama %{1}
+{0} KB
+{0} MB
+{1} günün {0} harcamasız
+{0} limite yakın
+ayda {0}
+7 günde {0}
+{0} / {1}
+süresi doldu, {0}
+{0} abonelik
+üst üste {0}
+{0} neredeyse kullanılmıyor — yılda {1}
+{0} aşıldı{1}
+{0} borç ödeme tarihi: {1}, {2}
+{0} — size borçlular
+%{0} tamamlandı
+{0}: {1} görev
+{0}: bütçe {1} aşıldı
+{0}: {2} için {1} kaldı
+· sınırda
+· ortalama
+· norm her sabah yeniden hesaplanır
+· kaldı
+· yaklaşık
+» hiçbir şey yok
+Otomatik
+Otomatik yedekler
+Araba
+Otomatik transferler
+Aktif · {0}
+Vurgu
+Analiz
+Animasyonlar
+Ermeni dramı
+Arşiv ·
+Bakiye
+Her cüzdanın bakiyesi, kaydırarak
+Bakiye gizli
+Bakiyeler ve analiz otomatik yeniden hesaplanır.
+Kavanoz
+Banka kartı
+Banka hesabı
+Tarihsiz
+Hesapta hareket yok
+Kategorisiz
+Kod olmadan, kilidi açık telefonunuzu alan kişi bakiyelerinizi göremez. Verilerin kendisi cihazda şifrelenmez.
+Cüzdansız
+Bu ay limit yok
+Adsız
+Birikim ve yatırım hesapları hariç. Olağan harcama, 60 günlük ortalama hızınızdır.
+Listesiz
+Listesiz — sonra düzenlersiniz
+Süresiz
+Harcama yok
+Harcamasız tek gün yok
+Desensiz
+Sayılmaz
+Beyaz
+Belarus rublesi
+Önümüzdeki 30 gün
+Kilitle
+Daha fazla
+En çok harcadığınız gün:
+Kalandan fazla ({0})
+Biriktirilenden fazla
+Bordo
+Cihazda yer kalmazsa tarayıcı verileri silebilir. Uygulamayı Ana Ekran'a yükleyin ve Dosyalar'a kopya kaydedin.
+Veriler, ayarlar, fiş fotoğrafları ve otomatik yedekler silinecek. Gerekirse önce Dosyalar'a kopya kaydedin.
+Plandan hızlı · ay sonunda ~{0}
+Bütçe
+Bütçe silindi
+Henüz bütçe yok
+Bütçeler
+Bütçeler, hedefler ve planlar — ve bugün ne kadar harcayabileceğiniz
+{0} tarihinden beri Ardessa'da
+Dosyalar'a veya iCloud'a — telefon kaybolursa diye
+Arşivde
+Arşivde:
+Planda
+Planda · {0} itibarıyla
+Günlükte {0}
+Günlük henüz boş — akşam birkaç satır iyi gelir
+Favorilere
+Cüzdana
+Aylık · {0}
+Günlük ortalama
+Ortalama olarak gelirinizin {0} kadarını biriktiriyorsunuz{1}
+Hedefte
+Hedefe
+«{0}» hedefine
+Hedeflerde
+Bu ay hâlâ beklenen: gelen {0}, giden {1}.
+Bu dönemde harcama yok
+Önemli
+Önemli
+Para birimi
+Cüzdanda işlem varken para birimi değiştirilemez.
+Size borçlular
+Sizin
+Gününüz
+Profiliniz
+Adınız
+Verileriniz yerinde. Uygulamayı yeniden başlatın — hata tekrarlarsa önce kopya kaydedin.
+Hesaplarınız
+{1} hanenin {0} tanesi girildi
+Kodu girin
+Tutar girin
+Geri ver
+Cüzdana geri ver
+Plana geri al
+Son geri verme tarihi
+Borcu öde: {0}
+Arşivden çıkar
+Geri ver: {0}
+Geri verecek: {0}
+Sürüm
+Dikey işaret ayın ne kadarının geçtiğini gösterir. Çubuk işareti geçiyorsa plandan hızlı harcıyorsunuz.
+Tüm fiş
+Akşam — özet

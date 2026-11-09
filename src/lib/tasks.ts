@@ -1,5 +1,6 @@
 import type { ID, Project, Task, TaskRepeat } from "../store/types";
 import { addDays, addMonths, dayOf, diffDays, eachDay, plural, weekdayIndex, type DayKey } from "./dates";
+import { tr } from "../i18n/i18n";
 
 /* ------------------------------------------------------------------ */
 /*  Repeats                                                            */
@@ -34,12 +35,12 @@ export function nextOccurrence(task: Pick<Task, "due" | "repeat">, today: DayKey
 }
 
 export const REPEAT_LABEL: Record<TaskRepeat, string> = {
-  none: "Не повторять",
-  day: "Каждый день",
-  weekdays: "По будням",
-  week: "Каждую неделю",
-  month: "Каждый месяц",
-  year: "Каждый год"
+  none: tr("Не повторять"),
+  day: tr("Каждый день"),
+  weekdays: tr("По будням"),
+  week: tr("Каждую неделю"),
+  month: tr("Каждый месяц"),
+  year: tr("Каждый год")
 };
 
 /* ------------------------------------------------------------------ */
@@ -158,20 +159,20 @@ export function quickDate(kind: QuickDate, today: DayKey): DayKey {
   }
 }
 
-export const QUICK_DATE_LABEL: Record<QuickDate, string> = { today: "Сегодня", tomorrow: "Завтра", weekend: "На выходных", nextweek: "След. неделя" };
+export const QUICK_DATE_LABEL: Record<QuickDate, string> = { today: tr("Сегодня"), tomorrow: tr("Завтра"), weekend: tr("На выходных"), nextweek: tr("След. неделя") };
 
 /** "Сегодня" · "Завтра" · "Пт" (this week) · "12 ноя" · "3 дня назад" */
 export function dueLabel(due: DayKey, today: DayKey): string {
   const delta = diffDays(due, today);
-  if (delta === 0) return "Сегодня";
-  if (delta === 1) return "Завтра";
-  if (delta === -1) return "Вчера";
-  if (delta < 0) return `${-delta} ${plural(-delta, ["день", "дня", "дней"])} назад`;
-  if (delta < 7) return ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"][weekdayIndex(due)];
+  if (delta === 0) return tr("Сегодня");
+  if (delta === 1) return tr("Завтра");
+  if (delta === -1) return tr("Вчера");
+  if (delta < 0) return tr("{0} {1} назад", -delta, plural(-delta, ["день", "дня", "дней"]));
+  if (delta < 7) return [tr("Пн"), tr("Вт"), tr("Ср"), tr("Чт"), tr("Пт"), tr("Сб"), tr("Вс")][weekdayIndex(due)];
   return shortDate(due);
 }
 
-const MONTHS = ["янв", "фев", "мар", "апр", "мая", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"];
+const MONTHS = [tr("янв"), tr("фев"), tr("мар"), tr("апр"), tr("мая"), tr("июн"), tr("июл"), tr("авг"), tr("сен"), tr("окт"), tr("ноя"), tr("дек")];
 function shortDate(d: DayKey): string {
   const [y, m, day] = d.split("-").map(Number);
   const year = y !== new Date().getFullYear() ? ` ${y}` : "";
@@ -211,14 +212,14 @@ export const PROJECT_ICONS = [
 
 /** Life areas offered when the planner is opened for the first time. */
 export const AREA_PRESETS: Array<{ name: string; icon: string; color: string }> = [
-  { name: "Личное", icon: "User", color: "#8E7CE3" },
-  { name: "Работа", icon: "BriefcaseBusiness", color: "#4E9FD1" },
-  { name: "Дом", icon: "House", color: "#5DB98A" },
-  { name: "Здоровье", icon: "HeartPulse", color: "#D06AA2" },
-  { name: "Учёба", icon: "GraduationCap", color: "#E9A23B" },
-  { name: "Финансы", icon: "Wallet", color: "#C8B25A" },
-  { name: "Покупки", icon: "ShoppingBasket", color: "#FF6A3D" },
-  { name: "Спорт", icon: "Dumbbell", color: "#45B3A8" }
+  { name: tr("Личное"), icon: "User", color: "#8E7CE3" },
+  { name: tr("Работа"), icon: "BriefcaseBusiness", color: "#4E9FD1" },
+  { name: tr("Дом"), icon: "House", color: "#5DB98A" },
+  { name: tr("Здоровье"), icon: "HeartPulse", color: "#D06AA2" },
+  { name: tr("Учёба"), icon: "GraduationCap", color: "#E9A23B" },
+  { name: tr("Финансы"), icon: "Wallet", color: "#C8B25A" },
+  { name: tr("Покупки"), icon: "ShoppingBasket", color: "#FF6A3D" },
+  { name: tr("Спорт"), icon: "Dumbbell", color: "#45B3A8" }
 ];
 
 export function projectName(projects: Project[], id: ID | undefined): string | undefined {

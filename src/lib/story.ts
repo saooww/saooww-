@@ -3,6 +3,7 @@ import { habits } from "./analytics";
 import { pctChange, periodStats, type LedgerEntry } from "./finance";
 import type { Minor } from "./money";
 import type { Category, ID } from "../store/types";
+import { tr } from "../i18n/i18n";
 
 export interface StoryCategory {
   id: string;
@@ -39,7 +40,7 @@ export interface MonthSummary {
   weekday: Minor[];
 }
 
-const OTHER = { name: "Без категории", icon: "CircleDashed", color: "#7C7C84" };
+const OTHER = { name: tr("Без категории"), icon: "CircleDashed", color: "#7C7C84" };
 
 /** Everything the monthly story tells, computed from base-currency ledger entries. */
 export function monthSummary(entries: LedgerEntry[], categories: Map<ID, Category>, anyDay: DayKey, today: DayKey): MonthSummary {
@@ -66,7 +67,7 @@ export function monthSummary(entries: LedgerEntry[], categories: Map<ID, Categor
     if (e.tx.kind !== "expense" || e.day < from || e.day > to) continue;
     if (!biggest || e.base > biggest.amount) {
       const c = e.tx.categoryId ? categories.get(e.tx.categoryId) : undefined;
-      biggest = { title: e.tx.note || c?.name || "Расход", amount: e.base, day: e.day, icon: c?.icon ?? OTHER.icon, color: c?.color ?? OTHER.color };
+      biggest = { title: e.tx.note || c?.name || tr("Расход"), amount: e.base, day: e.day, icon: c?.icon ?? OTHER.icon, color: c?.color ?? OTHER.color };
     }
   }
 
@@ -79,7 +80,7 @@ export function monthSummary(entries: LedgerEntry[], categories: Map<ID, Categor
     nameGen: MONTHS_GEN[d.getMonth()] + year,
     prevNameGen: MONTHS_GEN[parseDay(prevFrom).getMonth()],
     // genitive → prepositional: сентября → сентябре, мая → мае, марта → марте
-    prevNamePrep: MONTHS_GEN[parseDay(prevFrom).getMonth()].replace(/[яа]$/, "е"),
+    prevNamePrep: MONTHS_GEN[parseDay(prevFrom).getMonth()].replace(/[яа]$/, tr("е")),
     income: cur.income,
     expense: cur.expense,
     net: cur.net,

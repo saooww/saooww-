@@ -1,3 +1,4 @@
+import { getLang, locale, pluralForm, t } from "../i18n/i18n";
 /**
  * Dates are stored as local, timezone-free strings:
  *   day keys   — "YYYY-MM-DD"
@@ -125,17 +126,33 @@ export const WEEKDAYS_SHORT = ["пн", "вт", "ср", "чт", "пт", "сб", "
 export const WEEKDAYS_LONG = ["понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресенье"];
 export const WEEKDAYS_ACC = ["понедельникам", "вторникам", "средам", "четвергам", "пятницам", "субботам", "воскресеньям"];
 
+// Other languages: the same arrays, filled from the browser's own names.
+if (getLang() !== "ru") {
+  const loc = locale();
+  const month = (m: number, style: "long" | "short") => new Intl.DateTimeFormat(loc, { month: style }).format(new Date(2024, m, 15));
+  const monthInDate = (m: number) => {
+    const parts = new Intl.DateTimeFormat(loc, { day: "numeric", month: "long" }).formatToParts(new Date(2024, m, 15));
+    return parts.find((x) => x.type === "month")?.value ?? month(m, "long");
+  };
+  const weekday = (i: number, style: "long" | "short") => new Intl.DateTimeFormat(loc, { weekday: style }).format(new Date(2024, 0, 1 + i)); // 1 Jan 2024 was a Monday
+  for (let m = 0; m < 12; m++) {
+    MONTHS_NOM[m] = month(m, "long");
+    MONTHS_GEN[m] = monthInDate(m);
+    MONTHS_SHORT[m] = MONTHS_SHORT_NOM[m] = month(m, "short").replace(/\.$/, "");
+  }
+  for (let i = 0; i < 7; i++) {
+    WEEKDAYS_LONG[i] = WEEKDAYS_ACC[i] = weekday(i, "long");
+    WEEKDAYS_SHORT[i] = weekday(i, "short").replace(/\.$/, "");
+  }
+}
+
 export function capitalize(s: string): string {
   return s ? s[0].toUpperCase() + s.slice(1) : s;
 }
 
+/** The word's form for n, in the current language (Russian forms are the key). */
 export function plural(n: number, forms: [string, string, string]): string {
-  const a = Math.abs(n) % 100;
-  const b = a % 10;
-  if (a > 10 && a < 20) return forms[2];
-  if (b > 1 && b < 5) return forms[1];
-  if (b === 1) return forms[0];
-  return forms[2];
+  return pluralForm(n, forms);
 }
 
 export function pluralN(n: number, forms: [string, string, string]): string {
@@ -162,6 +179,7 @@ export function formatDate(key: DayKey, opts: { year?: "auto" | "always" | "neve
     return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()}`;
   }
   const showYear = yearMode === "always" || (yearMode === "auto" && d.getFullYear() !== thisYear);
+  if (getLang() !== "ru") return new Intl.DateTimeFormat(locale(), { day: "numeric", month: opts.long ? "long" : "short", year: showYear ? "numeric" : undefined }).format(d);
   const month = opts.long ? MONTHS_GEN[d.getMonth()] : MONTHS_SHORT[d.getMonth()];
   return `${d.getDate()} ${month}${showYear ? ` ${d.getFullYear()}` : ""}`;
 }
@@ -170,10 +188,12 @@ export function formatDate(key: DayKey, opts: { year?: "auto" | "always" | "neve
 export function formatDayHeading(key: DayKey): string {
   const today = todayKey();
   const delta = diffDays(key, today);
-  if (delta === 0) return "Сегодня";
-  if (delta === -1) return "Вчера";
-  if (delta === 1) return "Завтра";
+  if (delta === 0) return t("Сегодня");
+  if (delta === -1) return t("Вчера");
+  if (delta === 1) return t("Завтра");
   const d = parseDay(key);
+  if (getLang() !== "ru" && dateStyle !== "numeric")
+    return capitalize(new Intl.DateTimeFormat(locale(), { weekday: "long", day: "numeric", month: "long", year: d.getFullYear() !== new Date().getFullYear() ? "numeric" : undefined }).format(d));
   const wd = capitalize(WEEKDAYS_LONG[weekdayIndex(key)]);
   if (dateStyle === "numeric") return `${wd}, ${formatDate(key)}`;
   const year = d.getFullYear() !== new Date().getFullYear() ? ` ${d.getFullYear()}` : "";
@@ -183,6 +203,7 @@ export function formatDayHeading(key: DayKey): string {
 /** Short relative label: "сегодня", "завтра", "через 3 дня", "2 дня назад" */
 export function formatRelative(key: DayKey): string {
   const delta = diffDays(key, todayKey());
+  if (getLang() !== "ru") return new Intl.RelativeTimeFormat(locale(), { numeric: "auto" }).format(delta, "day");
   if (delta === 0) return "сегодня";
   if (delta === 1) return "завтра";
   if (delta === -1) return "вчера";

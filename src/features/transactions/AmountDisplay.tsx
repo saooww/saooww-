@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { cn } from "../../lib/cn";
 import { currencySymbol, formatInputBuffer } from "../../lib/money";
 import { spring } from "../../ui/motion";
+import { tr } from "../../i18n/i18n";
 
 function sizeFor(len: number, compact?: boolean): number {
   const base = compact ? 34 : 58;
@@ -54,7 +55,7 @@ export function AmountDisplay({
         className="num-display relative flex items-baseline justify-center whitespace-nowrap leading-none"
         style={{ fontSize: size, height: size * 1.12 }}
         aria-live="polite"
-        aria-label={`Сумма: ${text} ${currencySymbol(currency)}`}
+        aria-label={tr("Сумма: {0} {1}", text, currencySymbol(currency))}
       >
         {sign && !empty && <span className={cn("mr-[0.06em]", sign === "+" ? "text-positive" : "text-ink-2")}>{sign}</span>}
         {chars.map((ch, i) =>

@@ -20,6 +20,7 @@ import {
 import { balanceSeries, debtInfo, rateOf, toBase, totalWallets, type LedgerEntry, type Range } from "./finance";
 import type { Minor } from "./money";
 import { occurrencesInRange } from "./recurrence";
+import { tr } from "../i18n/i18n";
 
 /* ------------------------------------------------------------------ */
 /*  Buckets                                                            */
@@ -118,7 +119,7 @@ export function categoryRows(cur: Map<string, Minor>, prev: Map<string, Minor>, 
     const p = prev.get(id) ?? 0;
     rows.push({
       id,
-      name: c?.name ?? "Без категории",
+      name: c?.name ?? tr("Без категории"),
       icon: c?.icon ?? "CircleDashed",
       color: c?.color ?? OTHER_COLOR,
       amount,
@@ -137,7 +138,7 @@ export function donutSlices(rows: CategoryRow[], max = 6): CategoryRow[] {
   const tail = rows.slice(max - 1);
   const amount = tail.reduce((s, r) => s + r.amount, 0);
   const share = tail.reduce((s, r) => s + r.share, 0);
-  return [...head, { id: "__rest", name: "Остальное", icon: "Ellipsis", color: OTHER_COLOR, amount, share, prev: 0, delta: null }];
+  return [...head, { id: "__rest", name: tr("Остальное"), icon: "Ellipsis", color: OTHER_COLOR, amount, share, prev: 0, delta: null }];
 }
 
 /* ------------------------------------------------------------------ */
@@ -229,7 +230,7 @@ export function scheduledBetween(data: AppData, from: DayKey, to: DayKey, includ
       if (info.status === "closed" || !info.remaining) continue;
       const amt = toBase(info.remaining, d.currency, data.settings);
       if (amt === null) continue;
-      items.push({ date: d.dueDate, title: d.direction === "i_owe" ? `Вернуть: ${d.counterparty}` : `Вернёт: ${d.counterparty}`, amount: amt, kind: d.direction === "i_owe" ? "expense" : "income", source: "debt" });
+      items.push({ date: d.dueDate, title: d.direction === "i_owe" ? tr("Вернуть: {0}", d.counterparty) : tr("Вернёт: {0}", d.counterparty), amount: amt, kind: d.direction === "i_owe" ? "expense" : "income", source: "debt" });
     }
   }
   items.sort((a, b) => (a.date < b.date ? -1 : 1));

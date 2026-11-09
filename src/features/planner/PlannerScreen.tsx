@@ -10,12 +10,13 @@ import { ListsView } from "./ListsView";
 import { TodayView } from "./TodayView";
 import { WeekView } from "./WeekView";
 import { useToday } from "../../store/hooks";
+import { tr } from "../../i18n/i18n";
 
 const VIEWS: Array<{ value: PlannerView; label: string }> = [
-  { value: "today", label: "Сегодня" },
-  { value: "week", label: "Неделя" },
-  { value: "lists", label: "Списки" },
-  { value: "notes", label: "Заметки" }
+  { value: "today", label: tr("Сегодня") },
+  { value: "week", label: tr("Неделя") },
+  { value: "lists", label: tr("Списки") },
+  { value: "notes", label: tr("Заметки") }
 ];
 
 /** «Дела»: today, the week, lists and notes — everything that is not money. */
@@ -32,10 +33,10 @@ export function PlannerScreen() {
   return (
     <div className="absolute inset-0">
       <IntroOnFirstVisit />
-      <Screen title="Дела" large actions={
+      <Screen title={tr("Дела")} large actions={
           <>
-            <IconButton icon={Search} label="Поиск" onClick={() => nav.sheet("search")} />
-            <IconButton icon={Plus} label={view === "notes" ? "Новая заметка" : "Новое дело"} onClick={add} />
+            <IconButton icon={Search} label={tr("Поиск")} onClick={() => nav.sheet("search")} />
+            <IconButton icon={Plus} label={view === "notes" ? tr("Новая заметка") : tr("Новое дело")} onClick={add} />
           </>
         }>
         <div className="px-4 pb-5">

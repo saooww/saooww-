@@ -1,0 +1,150 @@
+ {0} am Stück mit erledigten Aufgaben.
+· {0} pro Monat
+· überfällig
+ an denselben Tagen
+ und {0} weitere
+% ggü. letzter Woche
+). Kein Drama — wichtig ist, es zu sehen.
+, insgesamt
+, Aufgaben: {0}
+, erledigt {0}
+, Termine: {0}
+, fällig {0}
+, als im
+, als im Vormonat
+, um Geld ins Ziel zu überweisen.
+. Archiviert
+. Keine Kurse nötig.
+. Gib an, wie viel auf andere Kategorien entfiel — der Rest bleibt in
+1 Min.
+15 Min.
+21. Okt.
+30 Tage
+30T
+4 Ziffern zum Entsperren der App
+5 Min.
+90T
+: Kurs festlegen →
+Ardessa speichert alle Daten nur auf diesem Gerät. Nur die Abfrage der Zentralbank-Kurse verlässt es — ohne deine Daten. Um Daten auf ein anderes Gerät zu bringen, speichere eine Kopie in Dateien und lade sie dort.
+Ardessa — Sicherung
+Face ID hat sich nicht verbunden — versuche es erneut
+vor {0} {1}
+{0} · im Schnitt {1} %
+{0} KB
+{0} MB
+{0} ohne Ausgaben von {1}
+{0} nahe am Limit
+{0} pro Monat
+{0} in 7 Tagen
+{0} von {1}
+{0} seit Ablauf
+{0} Abos
+{0} am Stück
+{0} werden kaum genutzt — das sind {1} im Jahr
+{0} überschritten{1}
+{0} Rückzahlung fällig: {1}, {2}
+{0} — schuldet man dir
+{0} % erledigt
+{0}: {1} Aufgaben
+{0}: Budget um {1} überschritten
+{0}: noch {1} für {2}
+· im Rahmen
+· im Schnitt
+· die Norm wird jeden Morgen neu berechnet
+· übrig
+· etwa
+» gibt es nichts
+Auto
+Auto-Sicherungen
+Auto
+Daueraufträge
+Aktiv · {0}
+Akzent
+Analyse
+Animationen
+Armenischer Dram
+Archiv ·
+Saldo
+Saldo jedes Kontos, per Wischen
+Saldo verborgen
+Salden und Analyse werden automatisch neu berechnet.
+Glas
+Bankkarte
+Bankkonto
+Ohne Datum
+Keine Bewegung auf dem Konto
+Ohne Kategorie
+Ohne Code sieht niemand deine Salden, der dein entsperrtes Handy nimmt. Die Daten selbst werden auf dem Gerät nicht verschlüsselt.
+Ohne Konto
+Kein Limit diesen Monat
+Ohne Namen
+Ohne Spar- und Anlagekonten. Übliche Ausgaben sind dein Durchschnitt der letzten 60 Tage.
+Ohne Liste
+Ohne Liste — später sortieren
+Ohne Frist
+Keine Ausgaben
+Kein Tag ohne Ausgaben
+Ohne Muster
+Nicht gezählt
+Weiß
+Belarussischer Rubel
+Nächste 30 Tage
+Sperren
+Mehr
+Am meisten gibst du aus am
+Mehr als der Rest ({0})
+Mehr als gespart
+Bordeaux
+Der Browser kann Daten löschen, wenn der Speicher knapp wird. Installiere die App auf dem Home-Bildschirm und speichere eine Kopie in Dateien.
+Daten, Einstellungen, Belegfotos und Auto-Sicherungen werden gelöscht. Speichere bei Bedarf zuerst eine Kopie in Dateien.
+Schneller als geplant · ~{0} zum Monatsende
+Budget
+Budget gelöscht
+Noch keine Budgets
+Budgets
+Budgets, Ziele und Pläne — und wie viel du heute ausgeben kannst
+Bei Ardessa seit {0}
+In Dateien oder iCloud — falls das Handy verloren geht
+Archiviert
+Archiviert:
+Im Plan
+Im Plan · bis {0}
+Im Tagebuch: {0}
+Das Tagebuch ist noch leer — ein paar Zeilen am Abend helfen
+Zu Favoriten
+Aufs Konto
+Monatlich · {0}
+Im Schnitt pro Tag
+Im Schnitt sparst du {0} deines Einkommens{1}
+Im Ziel
+Ins Ziel
+Ins Ziel „{0}“
+In Zielen
+Diesen Monat noch erwartet: Eingänge {0}, Abbuchungen {1}.
+Keine Ausgaben in diesem Zeitraum
+Wichtig
+Wichtig
+Währung
+Die Währung lässt sich nicht ändern, solange das Konto Buchungen hat.
+Man schuldet dir
+Dein
+Dein Tag
+Dein Profil
+Dein Name
+Deine Daten sind sicher. Starte die App neu — und wenn der Fehler bleibt, speichere zuerst eine Kopie.
+Deine Konten
+Eingegeben {0} von {1}
+Code eingeben
+Betrag eingeben
+Zurückgeben
+Zurück aufs Konto
+Zurück in den Plan
+Zurückgeben bis
+Schuld zurückzahlen: {0}
+Aus dem Archiv holen
+Zurückgeben: {0}
+Gibt zurück: {0}
+Version
+Die senkrechte Marke zeigt, wie viel vom Monat vorbei ist. Liegt der Balken rechts davon, gibst du schneller aus als geplant.
+Ganzer Beleg
+Abends — Rückblick

@@ -1,0 +1,150 @@
+ {0} in a row with tasks done.
+ · {0} a month
+ · overdue
+ over the same days
+ and {0} more
+% vs last week
+). No big deal — what matters is seeing it.
+, total
+, tasks: {0}
+, done {0}
+, events: {0}
+, due {0}
+, than in
+, than last month
+ to move money into the goal.
+. Archived
+. No rates needed.
+. Say how much went to other categories — the rest stays in
+1 min
+15 min
+Oct 21
+30 days
+30D
+4 digits — to unlock the app
+5 min
+90D
+: set a rate →
+Ardessa keeps all data on this device only. The only request that leaves it is for the Central Bank exchange rates — without your data. To move your data to another device, save a copy to Files and load it there.
+Ardessa — backup
+Face ID didn't connect — try again
+{0} {1} ago
+{0} · {1}% on average
+{0} KB
+{0} MB
+{0} without spending out of {1}
+{0} close to the limit
+{0} a month
+{0} in 7 days
+{0} of {1}
+{0} since it expired
+{0} subscriptions
+{0} in a row
+{0} are barely used — that's {1} a year
+{0} over{1}
+{0} debt repayment due: {1}, {2}
+{0} — owed to you
+{0}% done
+{0}: {1} tasks
+{0}: budget exceeded by {1}
+{0}: {1} left for {2}
+ · on track
+ · on average
+ · the norm is recalculated every morning
+ · left
+ · about
+» there's nothing
+Auto
+Auto backups
+Car
+Auto transfers
+Active · {0}
+Accent
+Analytics
+Animations
+Armenian dram
+Archive ·
+Balance
+Each wallet's balance, by swiping
+Balance hidden
+Balances and analytics will be recalculated automatically.
+Jar
+Bank card
+Bank account
+No date
+No movement on the account
+No category
+Without a code, whoever picks up your unlocked phone won't see your balances. The data itself isn't encrypted on the device.
+No wallet
+No limit this month
+Untitled
+Excluding savings and investment accounts. Usual spending is your average pace over 60 days.
+No list
+No list — sort it out later
+No deadline
+No spending
+Not a single day without spending
+No pattern
+Not counted
+White
+Belarusian ruble
+Next 30 days
+Lock
+More
+You spend the most on
+More than the rest ({0})
+More than saved
+Bordeaux
+The browser may clear data if the device runs out of space. Install the app on the Home Screen and save a copy to Files.
+Data, settings, receipt photos and auto backups will be deleted. If needed, save a copy to Files first.
+Ahead of plan · ~{0} by month end
+Budget
+Budget deleted
+No budgets yet
+Budgets
+Budgets, goals and plans — and how much you can spend today
+In Ardessa since {0}
+To Files or iCloud — in case you lose your phone
+Archived
+Archived:
+On track
+On track · by {0}
+{0} in the diary
+The diary is empty so far — a couple of lines in the evening helps
+Add to favourites
+To wallet
+Monthly · {0}
+Average per day
+On average you save {0} of income{1}
+In goal
+To goal
+To goal «{0}»
+In goals
+Still expected this month: {0} incoming, {1} outgoing.
+No expenses in this period
+Important
+Important
+Currency
+The currency can't be changed while the wallet has operations.
+Owed to you
+Your
+Your day
+Your profile
+Your name
+Your data is safe. Restart the app — and if the error repeats, save a copy first.
+Your accounts
+Entered {0} of {1}
+Enter the code
+Enter an amount
+Return
+Return to wallet
+Back to plan
+Return by
+Repay debt: {0}
+Restore from archive
+Return: {0}
+Will return: {0}
+Version
+The vertical mark shows how much of the month has passed. If the bar is past the mark, you're spending faster than planned.
+Whole receipt
+Evening — review

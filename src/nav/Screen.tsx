@@ -4,6 +4,7 @@ import { ChevronLeft } from "../ui/glyphs";
 import { cn } from "../lib/cn";
 import { useUI, type Route, type Tab } from "../store/ui";
 import { IconButton } from "../ui/primitives";
+import { tr } from "../i18n/i18n";
 
 export interface RouteCtx {
   tab: Tab;
@@ -80,7 +81,7 @@ export function Screen({ title, large, ownTitle, actions, header, children, clas
           {header ?? (
             <>
               <div className="flex min-w-[40px] items-center">
-                {!isRoot && <IconButton icon={ChevronLeft} label="Назад" iconSize={22} onClick={onBack ?? pop} />}
+                {!isRoot && <IconButton icon={ChevronLeft} label={tr("Назад")} iconSize={22} onClick={onBack ?? pop} />}
               </div>
               <motion.div className="pointer-events-none absolute inset-x-24 truncate text-center text-headline font-semibold" style={{ opacity: compactTitle }}>
                 {title}

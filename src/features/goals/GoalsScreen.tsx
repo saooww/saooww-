@@ -16,6 +16,7 @@ import { NamedIcon } from "../../ui/icons";
 import { Money } from "../../ui/Money";
 import { spring } from "../../ui/motion";
 import { Button, EmptyState, IconButton, ProgressBar } from "../../ui/primitives";
+import { tr } from "../../i18n/i18n";
 
 export function GoalsScreen() {
   const goals = useData((s) => s.goals);
@@ -43,13 +44,13 @@ export function GoalsScreen() {
   const late = items.filter((x) => x.status.kind === "late").length;
 
   return (
-    <Screen title="Цели" large actions={<IconButton icon={Plus} label="Новая цель" onClick={() => nav.sheet("goal")} />}>
+    <Screen title={tr("Цели")} large actions={<IconButton icon={Plus} label={tr("Новая цель")} onClick={() => nav.sheet("goal")} />}>
       {items.length === 0 ? (
         <EmptyState
           icon={Target}
-          title="Поставьте первую цель"
-          text="Квартира, автомобиль, отпуск или финансовая подушка — посчитаем, сколько откладывать в месяц."
-          action={<Button size="md" icon={Plus} onClick={() => nav.sheet("goal")}>Новая цель</Button>}
+          title={tr("Поставьте первую цель")}
+          text={tr("Квартира, автомобиль, отпуск или финансовая подушка — посчитаем, сколько откладывать в месяц.")}
+          action={<Button size="md" icon={Plus} onClick={() => nav.sheet("goal")}>{tr("Новая цель")}</Button>}
         />
       ) : (
         <>
@@ -57,20 +58,20 @@ export function GoalsScreen() {
           <div className="panel mx-4 mb-4 rounded-lg px-4 py-4">
             <div className="flex items-end justify-between gap-3">
               <div className="min-w-0">
-                <div className="text-footnote font-medium text-ink-2">Накоплено на {pluralN(items.length, ["цель", "цели", "целей"])}</div>
+                <div className="text-footnote font-medium text-ink-2">{tr("Накоплено на")}{" "}{pluralN(items.length, ["цель", "цели", "целей"])}</div>
                 <Money value={saved} currency={base} privacy variant="hero" className="mt-0.5 block text-[28px] font-semibold" />
               </div>
-              {target > 0 && <div className="pb-1 text-right text-footnote text-ink-2">из <Money value={target} currency={base} /></div>}
+              {target > 0 && <div className="pb-1 text-right text-footnote text-ink-2">{tr("из")}{" "}<Money value={target} currency={base} /></div>}
             </div>
             <ProgressBar value={target ? saved / target : 0} tone="ink" className="mt-3" />
             <div className="mt-3 grid grid-cols-2 gap-2">
               <div className="tile rounded-[14px] px-3 py-2.5">
-                <div className="text-caption text-ink-2">Откладывать в месяц</div>
+                <div className="text-caption text-ink-2">{tr("Откладывать в месяц")}</div>
                 <div className="mt-0.5 text-subhead font-semibold tnum text-ink">{monthly ? formatMoney(monthly, { currency: base }) : "—"}</div>
               </div>
               <div className="tile rounded-[14px] px-3 py-2.5">
-                <div className="text-caption text-ink-2">По графику</div>
-                <div className={cn("mt-0.5 text-subhead font-semibold", late ? "text-warning" : "text-ink")}>{late ? `${pluralN(late, ["цель", "цели", "целей"])} ${late === 1 ? "отстаёт" : "отстают"}` : "Всё идёт по плану"}</div>
+                <div className="text-caption text-ink-2">{tr("По графику")}</div>
+                <div className={cn("mt-0.5 text-subhead font-semibold", late ? "text-warning" : "text-ink")}>{late ? `${pluralN(late, ["цель", "цели", "целей"])} ${late === 1 ? tr("отстаёт") : tr("отстают")}` : tr("Всё идёт по плану")}</div>
               </div>
             </div>
           </div>
@@ -111,15 +112,14 @@ function GoalCard({ goal, info, status, index }: { goal: Goal; info: GoalInfo; s
             <span className="truncate text-body font-semibold">{goal.name}</span>
             {goal.primary && <Star size={13} className="shrink-0 fill-current text-accent-ink" />}
           </div>
-          <div className="truncate text-footnote text-ink-2">{goal.deadline ? `до ${formatDate(goal.deadline, { year: "auto" })}` : "Без срока"}</div>
+          <div className="truncate text-footnote text-ink-2">{goal.deadline ? tr("до {0}", formatDate(goal.deadline, { year: "auto" })) : tr("Без срока")}</div>
         </div>
         <div className="text-title-3 font-semibold tnum">{Math.floor(info.progress * 100)}%</div>
       </div>
       <ProgressBar value={info.progress} tone={info.done ? "positive" : "ink"} color={info.done ? undefined : goal.color} className="mt-3.5" />
       <div className="mt-2 flex justify-between text-footnote text-ink-2">
         <Money value={info.saved} currency={goal.currency} privacy className="text-ink" />
-        <span>
-          из <Money value={goal.target} currency={goal.currency} />
+        <span>{tr("из")}{" "}<Money value={goal.target} currency={goal.currency} />
         </span>
       </div>
       <div className="mt-3 flex items-center gap-2 border-t border-line pt-3">
@@ -134,9 +134,7 @@ function GoalCard({ goal, info, status, index }: { goal: Goal; info: GoalInfo; s
             }}
             className="tile flex h-8 shrink-0 items-center gap-1 rounded-full px-3 text-footnote font-semibold text-ink active:opacity-70"
           >
-            <Plus size={14} strokeWidth={2.4} />
-            Пополнить
-          </button>
+            <Plus size={14} strokeWidth={2.4} />{tr("Пополнить")}</button>
         )}
       </div>
     </motion.div>

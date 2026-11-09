@@ -12,6 +12,7 @@ import { Group, IconButton } from "../../ui/primitives";
 import { EventRow, useEvents, type CalEvent } from "../plans/Plans";
 import { useLingering } from "./actions";
 import { TaskList } from "./TaskRow";
+import { tr } from "../../i18n/i18n";
 
 function rangeTitle(from: DayKey, to: DayKey): string {
   const a = parseDay(from);
@@ -45,7 +46,7 @@ export function WeekView() {
     return m;
   }, [tasks, keep, days, events]);
 
-  const label = offset === 0 ? "Эта неделя" : offset === 1 ? "Следующая неделя" : offset === -1 ? "Прошлая неделя" : "";
+  const label = offset === 0 ? tr("Эта неделя") : offset === 1 ? tr("Следующая неделя") : offset === -1 ? tr("Прошлая неделя") : "";
   const max = Math.max(1, ...days.map((d) => byDay.get(d)!.open.length + byDay.get(d)!.done.length));
 
   const jump = (d: DayKey) => {
@@ -56,12 +57,12 @@ export function WeekView() {
   return (
     <div>
       <div className="flex items-center justify-between px-3">
-        <IconButton icon={ChevronLeft} label="Предыдущая неделя" variant="plain" onClick={() => setOffset((o) => o - 1)} />
-        <button type="button" onClick={() => setOffset(0)} className="text-center" aria-label="К этой неделе">
+        <IconButton icon={ChevronLeft} label={tr("Предыдущая неделя")} variant="plain" onClick={() => setOffset((o) => o - 1)} />
+        <button type="button" onClick={() => setOffset(0)} className="text-center" aria-label={tr("К этой неделе")}>
           <div className="text-headline font-semibold">{rangeTitle(from, to)}</div>
           <div className="h-4 text-caption text-ink-3">{label}</div>
         </button>
-        <IconButton icon={ChevronRight} label="Следующая неделя" variant="plain" onClick={() => setOffset((o) => o + 1)} />
+        <IconButton icon={ChevronRight} label={tr("Следующая неделя")} variant="plain" onClick={() => setOffset((o) => o + 1)} />
       </div>
 
       {/* load of each day */}
@@ -75,7 +76,7 @@ export function WeekView() {
               key={d}
               type="button"
               onClick={() => jump(d)}
-              aria-label={`${capitalize(WEEKDAYS_LONG[i])}: ${n} дел`}
+              aria-label={tr("{0}: {1} дел", capitalize(WEEKDAYS_LONG[i]), n)}
               className={cn("flex flex-col items-center gap-1.5 rounded-[14px] pb-2 pt-2 transition-colors", isToday ? "tile" : "active:bg-surface-3")}
             >
               <span className={cn("text-caption font-medium", isToday ? "text-accent-ink" : "text-ink-3")}>{WEEKDAYS_SHORT[i]}</span>
@@ -92,9 +93,7 @@ export function WeekView() {
       {from <= today && (
         <div className="mt-3 px-4">
           <button type="button" onClick={() => nav.sheet("weekReview", { from })} className="tile flex h-11 w-full items-center justify-center gap-2 rounded-[14px] text-subhead font-semibold text-ink active:opacity-80">
-            <CalendarCheck size={17} strokeWidth={2} className="text-accent-ink" />
-            Итоги недели
-          </button>
+            <CalendarCheck size={17} strokeWidth={2} className="text-accent-ink" />{tr("Итоги недели")}</button>
         </div>
       )}
 
@@ -108,17 +107,17 @@ export function WeekView() {
             <section key={d} id={`wk-${d}`} style={{ scrollMarginTop: "calc(var(--safe-top) + 64px)" }}>
               <div className="flex items-center justify-between px-5 pb-2.5">
                 <h3 className={cn("text-headline font-semibold", past && "text-ink-2")}>
-                  {isToday ? "Сегодня" : capitalize(WEEKDAYS_LONG[weekdayIndex(d)])}
+                  {isToday ? tr("Сегодня") : capitalize(WEEKDAYS_LONG[weekdayIndex(d)])}
                   <span className="ml-1.5 font-normal text-ink-3">
                     {dd.getDate()} {MONTHS_GEN[dd.getMonth()]}
                   </span>
                 </h3>
                 {!past && (
-                  <IconButton icon={Plus} label={`Дело на ${dd.getDate()} ${MONTHS_GEN[dd.getMonth()]}`} size={30} onClick={() => nav.sheet("quickAdd", { due: d })} />
+                  <IconButton icon={Plus} label={tr("Дело на {0} {1}", dd.getDate(), MONTHS_GEN[dd.getMonth()])} size={30} onClick={() => nav.sheet("quickAdd", { due: d })} />
                 )}
               </div>
               {slot.open.length + slot.done.length === 0 ? (
-                <div className="mx-4 rounded-lg border border-dashed border-line px-4 py-3 text-subhead text-ink-3">{past ? "Ничего не было" : "Свободно"}</div>
+                <div className="mx-4 rounded-lg border border-dashed border-line px-4 py-3 text-subhead text-ink-3">{past ? tr("Ничего не было") : tr("Свободно")}</div>
               ) : (
                 <TaskList tasks={[...slot.open, ...slot.done]} showDate={false} />
               )}

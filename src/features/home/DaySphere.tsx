@@ -8,6 +8,7 @@ import { useData } from "../../store/store";
 import { nav } from "../../store/ui";
 import { AnimatedMoney, Money } from "../../ui/Money";
 import { useLingering } from "../planner/actions";
+import { tr } from "../../i18n/i18n";
 
 const SIZE = 248; // drawn in 248 units, shown a little larger
 const SHOWN = 276;
@@ -56,7 +57,7 @@ export function DaySphere() {
   return (
     <motion.button
       type="button"
-      aria-label={empty ? "Сфера дня" : `${over ? "Сегодня сверх нормы" : "Можно потратить сегодня"}: ${Math.abs(left) / 100} ${base}`}
+      aria-label={empty ? tr("Сфера дня") : `${over ? tr("Сегодня сверх нормы") : tr("Можно потратить сегодня")}: ${Math.abs(left) / 100} ${base}`}
       onClick={() => {
         haptic();
         nav.sheet("day");
@@ -128,19 +129,17 @@ export function DaySphere() {
 
       {/* the numbers, legible over glass and liquid alike */}
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center" style={{ textShadow: level > 0.55 ? "0 1px 12px rgba(0,0,0,0.35)" : undefined }}>
-        <span className={level > 0.55 ? "text-caption font-semibold text-white/85" : "section-label"}>{empty ? "Сегодня" : over ? "Сверх нормы" : "Можно сегодня"}</span>
+        <span className={level > 0.55 ? "text-caption font-semibold text-white/85" : "section-label"}>{empty ? tr("Сегодня") : over ? tr("Сверх нормы") : tr("Можно сегодня")}</span>
         {empty ? (
-          <span className="mt-1 px-10 text-subhead font-medium text-ink-2">Добавьте остатки — посчитаю сумму на день</span>
+          <span className="mt-1 px-10 text-subhead font-medium text-ink-2">{tr("Добавьте остатки — посчитаю сумму на день")}</span>
         ) : (
           <AnimatedMoney value={Math.abs(left)} currency={base} variant="hero" privacy className={level > 0.55 ? "mt-0.5 text-[40px] leading-none text-white" : "mt-0.5 text-[40px] leading-none text-ink"} />
         )}
         {!empty && (
-          <span className={level > 0.55 ? "mt-1.5 text-caption text-white/80" : "mt-1.5 text-caption text-ink-2"}>
-            из <Money value={allowance} currency={base} privacy /> на день
-          </span>
+          <span className={level > 0.55 ? "mt-1.5 text-caption text-white/80" : "mt-1.5 text-caption text-ink-2"}>{tr("из")}{" "}<Money value={allowance} currency={base} privacy />{tr("на день")}</span>
         )}
         <span className={level > 0.3 ? "mt-2 rounded-full bg-black/20 px-2.5 py-0.5 text-caption font-semibold text-white" : "mt-2 rounded-full bg-[var(--chart-grid)] px-2.5 py-0.5 text-caption font-semibold text-ink-2"}>
-          {plan.total ? `Дела ${plan.completed} из ${plan.total}` : "Дел нет"}
+          {plan.total ? tr("Дела {0} из {1}", plan.completed, plan.total) : tr("Дел нет")}
         </span>
       </div>
     </motion.button>

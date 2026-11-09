@@ -8,6 +8,7 @@ import { IconChip } from "../../ui/primitives";
 import { Sheet, useSheet } from "../../ui/Sheet";
 import { TxRow, usePresentCtx } from "../transactions/TxRow";
 import type { LucideIcon } from "../../ui/glyphs";
+import { tr } from "../../i18n/i18n";
 
 interface Hit {
   key: string;
@@ -40,23 +41,23 @@ export function SearchSheet() {
       .sort((a, b) => (a.date < b.date ? 1 : -1))
       .slice(0, 12);
     const groups: Array<{ title: string; hits: Hit[] }> = [
-      { title: "Кошельки", hits: s.wallets.filter((w) => has(w.name, w.ident)).map((w) => ({ key: w.id, iconName: walletKindInfo(w.kind).icon, title: w.name, sub: w.archived ? "В архиве" : walletKindInfo(w.kind).label, open: go(() => nav.push("wallet", { id: w.id }, "wallets")) })) },
-      { title: "Цели", hits: s.goals.filter((g) => has(g.name)).map((g) => ({ key: g.id, icon: Target, title: g.name, sub: g.deadline ? `до ${formatDate(g.deadline)}` : undefined, open: go(() => nav.push("goal", { id: g.id }, "more")) })) },
-      { title: "Долги", hits: s.debts.filter((d) => has(d.counterparty, d.note)).map((d) => ({ key: d.id, icon: HandCoins, title: d.counterparty, sub: d.direction === "owed_to_me" ? "Вам должны" : "Вы должны", open: go(() => nav.push("debt", { id: d.id }, "more")) })) },
-      { title: "Дела", hits: s.tasks.filter((t) => has(t.title, t.note, ...(t.subtasks ?? []).map((x) => x.title))).sort((a, b) => Number(a.done) - Number(b.done)).map((t) => ({ key: t.id, icon: ListTodo, title: t.title, sub: t.done ? "Сделано" : t.due ? formatDate(t.due) : s.projects.find((p) => p.id === t.projectId)?.name ?? "Входящие", open: go(() => nav.sheet("task", { editId: t.id })) })) },
-      { title: "Списки", hits: s.projects.filter((p) => has(p.name, p.note)).map((p) => ({ key: p.id, iconName: p.icon, title: p.name, sub: p.archived ? "В архиве" : pluralN(s.tasks.filter((t) => t.projectId === p.id && !t.done).length, ["дело", "дела", "дел"]), open: go(() => nav.push("project", { id: p.id }, "planner")) })) },
-      { title: "Заметки", hits: s.notes.filter((n) => has(n.title, n.body, ...n.tags, ...(n.checklist ?? []).map((c) => c.title))).map((n) => ({ key: n.id, icon: n.journal ? BookOpen : NotebookPen, title: n.title || "Без названия", sub: n.body.slice(0, 60) || (n.journal ? "Дневник" : undefined), open: go(() => nav.push("note", { id: n.id }, "planner")) })) },
-      { title: "Планы", hits: s.plans.filter((p) => has(p.title, p.note)).map((p) => ({ key: p.id, icon: CalendarCheck, title: p.title, sub: formatDate(p.date), open: go(() => nav.sheet("planActions", { id: p.id })) })) },
-      { title: "Подписки и платежи", hits: s.recurring.filter((r) => has(r.title)).map((r) => ({ key: r.id, icon: Repeat, title: r.title, sub: `следующий — ${formatDate(r.nextDate)}`, open: go(() => nav.sheet("recurring", { editId: r.id })) })) },
+      { title: tr("Кошельки"), hits: s.wallets.filter((w) => has(w.name, w.ident)).map((w) => ({ key: w.id, iconName: walletKindInfo(w.kind).icon, title: w.name, sub: w.archived ? tr("В архиве") : walletKindInfo(w.kind).label, open: go(() => nav.push("wallet", { id: w.id }, "wallets")) })) },
+      { title: tr("Цели"), hits: s.goals.filter((g) => has(g.name)).map((g) => ({ key: g.id, icon: Target, title: g.name, sub: g.deadline ? tr("до {0}", formatDate(g.deadline)) : undefined, open: go(() => nav.push("goal", { id: g.id }, "more")) })) },
+      { title: tr("Долги"), hits: s.debts.filter((d) => has(d.counterparty, d.note)).map((d) => ({ key: d.id, icon: HandCoins, title: d.counterparty, sub: d.direction === "owed_to_me" ? tr("Вам должны") : tr("Вы должны"), open: go(() => nav.push("debt", { id: d.id }, "more")) })) },
+      { title: tr("Дела"), hits: s.tasks.filter((t) => has(t.title, t.note, ...(t.subtasks ?? []).map((x) => x.title))).sort((a, b) => Number(a.done) - Number(b.done)).map((t) => ({ key: t.id, icon: ListTodo, title: t.title, sub: t.done ? tr("Сделано") : t.due ? formatDate(t.due) : s.projects.find((p) => p.id === t.projectId)?.name ?? tr("Входящие"), open: go(() => nav.sheet("task", { editId: t.id })) })) },
+      { title: tr("Списки"), hits: s.projects.filter((p) => has(p.name, p.note)).map((p) => ({ key: p.id, iconName: p.icon, title: p.name, sub: p.archived ? tr("В архиве") : pluralN(s.tasks.filter((t) => t.projectId === p.id && !t.done).length, ["дело", "дела", "дел"]), open: go(() => nav.push("project", { id: p.id }, "planner")) })) },
+      { title: tr("Заметки"), hits: s.notes.filter((n) => has(n.title, n.body, ...n.tags, ...(n.checklist ?? []).map((c) => c.title))).map((n) => ({ key: n.id, icon: n.journal ? BookOpen : NotebookPen, title: n.title || tr("Без названия"), sub: n.body.slice(0, 60) || (n.journal ? tr("Дневник") : undefined), open: go(() => nav.push("note", { id: n.id }, "planner")) })) },
+      { title: tr("Планы"), hits: s.plans.filter((p) => has(p.title, p.note)).map((p) => ({ key: p.id, icon: CalendarCheck, title: p.title, sub: formatDate(p.date), open: go(() => nav.sheet("planActions", { id: p.id })) })) },
+      { title: tr("Подписки и платежи"), hits: s.recurring.filter((r) => has(r.title)).map((r) => ({ key: r.id, icon: Repeat, title: r.title, sub: tr("следующий — {0}", formatDate(r.nextDate)), open: go(() => nav.sheet("recurring", { editId: r.id })) })) },
       {
-        title: "Категории",
+        title: tr("Категории"),
         hits: s.categories
           .filter((c) => has(c.name))
           .map((c) => ({
             key: c.id,
             iconName: c.icon,
             title: c.name,
-            sub: "Показать операции",
+            sub: tr("Показать операции"),
             open: go(() => {
               useUI.getState().setTxFilter({ categoryId: c.id }, true);
               nav.tab("transactions");
@@ -68,13 +69,13 @@ export function SearchSheet() {
   }, [query, s, close]);
 
   return (
-    <Sheet tall ariaLabel="Поиск">
+    <Sheet tall ariaLabel={tr("Поиск")}>
       <div className="px-4 pb-3">
         <label className="flex h-11 items-center gap-2 rounded-md tile px-3">
           <Search size={18} className="text-ink-3" />
-          <input autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder="Операции, дела, заметки, люди…" enterKeyHint="search" className="h-full min-w-0 flex-1 bg-transparent text-body outline-none placeholder:text-ink-3" />
+          <input autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder={tr("Операции, дела, заметки, люди…")} enterKeyHint="search" className="h-full min-w-0 flex-1 bg-transparent text-body outline-none placeholder:text-ink-3" />
           {q && (
-            <button type="button" aria-label="Очистить" onClick={() => setQ("")} className="grid h-6 w-6 place-items-center rounded-full bg-ink-4 text-ink-inverse">
+            <button type="button" aria-label={tr("Очистить")} onClick={() => setQ("")} className="grid h-6 w-6 place-items-center rounded-full bg-ink-4 text-ink-inverse">
               <X size={13} strokeWidth={3} />
             </button>
           )}
@@ -83,10 +84,10 @@ export function SearchSheet() {
       {!res ? (
         <div className="px-6 pt-10 text-center">
           <IconChip icon={Shapes} size={52} />
-          <p className="mx-auto mt-3 max-w-[260px] text-callout text-ink-2">Ищите по названию, комментарию, тегу, имени или сумме</p>
+          <p className="mx-auto mt-3 max-w-[260px] text-callout text-ink-2">{tr("Ищите по названию, комментарию, тегу, имени или сумме")}</p>
         </div>
       ) : res.total === 0 ? (
-        <div className="px-6 pt-10 text-center text-callout text-ink-2">По запросу «{q}» ничего нет</div>
+        <div className="px-6 pt-10 text-center text-callout text-ink-2">{tr("По запросу «")}{q}{tr("» ничего нет")}</div>
       ) : (
         <div className="flex flex-col gap-5">
           {res.groups.map((g) => (
@@ -107,7 +108,7 @@ export function SearchSheet() {
           ))}
           {res.tx.length > 0 && (
             <section>
-              <h3 className="section-label px-5 pb-2.5">Операции</h3>
+              <h3 className="section-label px-5 pb-2.5">{tr("Операции")}</h3>
               <div className="mx-4 overflow-hidden panel rounded-lg [&>*+*]:hairline-t">
                 {res.tx.map((t) => (
                   <div key={t.id}>
@@ -124,9 +125,7 @@ export function SearchSheet() {
                   nav.tab("transactions");
                 }}
                 className="mt-2 w-full py-2 text-center text-subhead font-semibold text-accent-ink"
-              >
-                Все операции по запросу
-              </button>
+              >{tr("Все операции по запросу")}</button>
             </section>
           )}
         </div>

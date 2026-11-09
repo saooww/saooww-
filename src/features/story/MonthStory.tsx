@@ -12,6 +12,7 @@ import { nav, useUI } from "../../store/ui";
 import { NamedIcon } from "../../ui/icons";
 import { useCountUp } from "../../ui/Money";
 import { ease } from "../../ui/motion";
+import { tr } from "../../i18n/i18n";
 
 const SLIDE_MS = 6500;
 
@@ -88,7 +89,7 @@ function MonthStory({ month }: { month: string }) {
       className="fixed inset-0 z-[95] overflow-hidden text-white"
       role="dialog"
       aria-modal="true"
-      aria-label={`Итоги: ${s.nameNom}`}
+      aria-label={tr("Итоги: {0}", s.nameNom)}
       initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.96, transition: { duration: 0.25 } }}
@@ -112,7 +113,7 @@ function MonthStory({ month }: { month: string }) {
       </div>
       <button
         type="button"
-        aria-label="Закрыть"
+        aria-label={tr("Закрыть")}
         onClick={close}
         className="absolute right-3 z-20 grid h-10 w-10 place-items-center rounded-full bg-white/10 active:bg-white/20"
         style={{ top: "calc(var(--safe-top) + 22px)" }}
@@ -147,9 +148,7 @@ function MonthStory({ month }: { month: string }) {
 
       {i === slides.length - 1 && (
         <div className="absolute inset-x-7 z-20 flex gap-2.5" style={{ bottom: "calc(var(--safe-bottom) + 24px)" }}>
-          <button type="button" onClick={close} className="h-[52px] flex-1 rounded-[16px] bg-white/15 text-callout font-semibold backdrop-blur active:bg-white/20">
-            Закрыть
-          </button>
+          <button type="button" onClick={close} className="h-[52px] flex-1 rounded-[16px] bg-white/15 text-callout font-semibold backdrop-blur active:bg-white/20">{tr("Закрыть")}</button>
           <button
             type="button"
             onClick={() => {
@@ -157,9 +156,7 @@ function MonthStory({ month }: { month: string }) {
               nav.tab("analytics");
             }}
             className="h-[52px] flex-1 rounded-[16px] bg-white text-callout font-semibold text-black active:opacity-80"
-          >
-            Аналитика
-          </button>
+          >{tr("Аналитика")}</button>
         </div>
       )}
     </motion.div>
@@ -202,13 +199,11 @@ function buildSlides(s: MonthSummary, cur: string): Slide[] {
     bg: BG.sumi,
     body: (
       <div className="flex flex-1 flex-col justify-end pb-24">
-        <Eyebrow>Итоги месяца</Eyebrow>
-        <motion.h1 variants={item} className="mt-3 text-[64px] font-bold leading-[0.95] tracking-[-0.04em]">
-          Ваш
-          <br />
+        <Eyebrow>{tr("Итоги месяца")}</Eyebrow>
+        <motion.h1 variants={item} className="mt-3 text-[64px] font-bold leading-[0.95] tracking-[-0.04em]">{tr("Ваш")}<br />
           {s.nameNom}
         </motion.h1>
-        <Line>Коротко о главном: сколько ушло, куда и что получилось сберечь.</Line>
+        <Line>{tr("Коротко о главном: сколько ушло, куда и что получилось сберечь.")}</Line>
       </div>
     )
   });
@@ -219,16 +214,14 @@ function buildSlides(s: MonthSummary, cur: string): Slide[] {
     bg: BG.ember,
     body: (
       <div className="flex flex-1 flex-col justify-center">
-        <Eyebrow>Потрачено</Eyebrow>
+        <Eyebrow>{tr("Потрачено")}</Eyebrow>
         <Big value={s.expense} currency={cur} />
         {change !== null && Math.abs(change) >= 0.01 && (
-          <Line>
-            На <b className="font-semibold text-white">{formatPercent(Math.abs(change))}</b> {change < 0 ? "меньше" : "больше"}, чем в {s.prevNamePrep}
+          <Line>{tr("На")}{" "}<b className="font-semibold text-white">{formatPercent(Math.abs(change))}</b> {change < 0 ? tr("меньше") : tr("больше")}{tr(", чем в")}{" "}{s.prevNamePrep}
           </Line>
         )}
         <Line className="text-white/70">
-          {s.purchases} {s.purchases % 10 === 1 && s.purchases % 100 !== 11 ? "трата" : [2, 3, 4].includes(s.purchases % 10) && ![12, 13, 14].includes(s.purchases % 100) ? "траты" : "трат"} · в среднем {money(s.avgPerDay)} в день
-        </Line>
+          {s.purchases} {s.purchases % 10 === 1 && s.purchases % 100 !== 11 ? tr("трата") : [2, 3, 4].includes(s.purchases % 10) && ![12, 13, 14].includes(s.purchases % 100) ? tr("траты") : tr("трат")}{tr("· в среднем")}{" "}{money(s.avgPerDay)}{tr("в день")}</Line>
       </div>
     )
   });
@@ -240,15 +233,14 @@ function buildSlides(s: MonthSummary, cur: string): Slide[] {
       bg: rate >= 0 ? BG.jade : BG.plum,
       body: (
         <div className="flex flex-1 flex-col justify-center">
-          <Eyebrow>{rate >= 0 ? "Отложено" : "Перерасход"}</Eyebrow>
+          <Eyebrow>{rate >= 0 ? tr("Отложено") : tr("Перерасход")}</Eyebrow>
           <Big value={Math.abs(s.net)} currency={cur} />
           <Line>
             {rate >= 0 ? (
-              <>
-                Это <b className="font-semibold text-white">{formatPercent(rate)}</b> от дохода в {money(s.income)}.
+              <>{tr("Это")}{" "}<b className="font-semibold text-white">{formatPercent(rate)}</b>{tr("от дохода в")}{" "}{money(s.income)}.
               </>
             ) : (
-              <>Расходы превысили доходы ({money(s.income)}). Ничего страшного — главное это видеть.</>
+              <>{tr("Расходы превысили доходы (")}{money(s.income)}{tr("). Ничего страшного — главное это видеть.")}</>
             )}
           </Line>
           <motion.div variants={item} className="mt-8 h-2 overflow-hidden rounded-full bg-white/15">
@@ -265,7 +257,7 @@ function buildSlides(s: MonthSummary, cur: string): Slide[] {
       bg: BG.indigo,
       body: (
         <div className="flex flex-1 flex-col justify-center">
-          <Eyebrow>Куда ушло больше всего</Eyebrow>
+          <Eyebrow>{tr("Куда ушло больше всего")}</Eyebrow>
           <div className="mt-6 flex flex-col gap-5">
             {s.top.map((c, k) => (
               <motion.div key={c.id} variants={item}>
@@ -282,7 +274,7 @@ function buildSlides(s: MonthSummary, cur: string): Slide[] {
               </motion.div>
             ))}
           </div>
-          <Line className="text-white/70">Эти три категории — {formatPercent(s.top.reduce((a, c) => a + c.share, 0))} всех трат месяца.</Line>
+          <Line className="text-white/70">{tr("Эти три категории —")}{" "}{formatPercent(s.top.reduce((a, c) => a + c.share, 0))}{tr("всех трат месяца.")}</Line>
         </div>
       )
     });
@@ -294,7 +286,7 @@ function buildSlides(s: MonthSummary, cur: string): Slide[] {
       bg: BG.plum,
       body: (
         <div className="flex flex-1 flex-col justify-center">
-          <Eyebrow>Самая крупная трата</Eyebrow>
+          <Eyebrow>{tr("Самая крупная трата")}</Eyebrow>
           <motion.div variants={item} className="mt-6 grid h-16 w-16 place-items-center rounded-[20px]" style={{ background: s.biggest.color }}>
             <NamedIcon name={s.biggest.icon} size={30} strokeWidth={1.9} />
           </motion.div>
@@ -314,11 +306,11 @@ function buildSlides(s: MonthSummary, cur: string): Slide[] {
     bg: BG.sand,
     body: (
       <div className="flex flex-1 flex-col justify-center">
-        <Eyebrow>Ритм месяца</Eyebrow>
+        <Eyebrow>{tr("Ритм месяца")}</Eyebrow>
         <motion.div variants={item} className="mt-4 text-[44px] font-bold leading-none tracking-[-0.03em]">
-          {s.noSpendDays} {s.noSpendDays % 10 === 1 && s.noSpendDays % 100 !== 11 ? "день" : [2, 3, 4].includes(s.noSpendDays % 10) && ![12, 13, 14].includes(s.noSpendDays % 100) ? "дня" : "дней"}
+          {s.noSpendDays} {s.noSpendDays % 10 === 1 && s.noSpendDays % 100 !== 11 ? tr("день") : [2, 3, 4].includes(s.noSpendDays % 10) && ![12, 13, 14].includes(s.noSpendDays % 100) ? tr("дня") : tr("дней")}
         </motion.div>
-        <Line className="!mt-2">без единой траты</Line>
+        <Line className="!mt-2">{tr("без единой траты")}</Line>
         {s.peakWeekday !== null && (
           <>
             <motion.div variants={item} className="mt-10 flex h-28 items-end gap-2.5">
@@ -329,8 +321,7 @@ function buildSlides(s: MonthSummary, cur: string): Slide[] {
                 </div>
               ))}
             </motion.div>
-            <Line>
-              Больше всего тратите по <b className="font-semibold text-white">{WEEKDAYS_ACC[s.peakWeekday]}</b>.
+            <Line>{tr("Больше всего тратите по")}{" "}<b className="font-semibold text-white">{WEEKDAYS_ACC[s.peakWeekday]}</b>.
             </Line>
           </>
         )}
@@ -345,9 +336,9 @@ function buildSlides(s: MonthSummary, cur: string): Slide[] {
       <div className="flex flex-1 flex-col justify-center pb-24">
         <Eyebrow>{s.nameNom}</Eyebrow>
         <motion.h2 variants={item} className="mt-3 text-[40px] font-bold leading-[1.05] tracking-[-0.03em]">
-          {s.net >= 0 ? "Хороший месяц." : "Новый месяц — новый шанс."}
+          {s.net >= 0 ? tr("Хороший месяц.") : tr("Новый месяц — новый шанс.")}
         </motion.h2>
-        <Line>{s.net >= 0 ? `Вы сберегли ${money(s.net)}. Так держать.` : "Загляните в бюджеты — там видно, где можно подтянуть."}</Line>
+        <Line>{s.net >= 0 ? tr("Вы сберегли {0}. Так держать.", money(s.net)) : tr("Загляните в бюджеты — там видно, где можно подтянуть.")}</Line>
       </div>
     )
   });

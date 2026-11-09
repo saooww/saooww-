@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { motion } from "framer-motion";
 import { haptic } from "../lib/haptics";
+import { tr } from "../i18n/i18n";
 
 export interface DonutSlice {
   id: string;
@@ -56,7 +57,7 @@ export function Donut({
 
   return (
     <div className="relative" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="-rotate-90" onPointerDown={onTap} role="img" aria-label="Распределение по категориям">
+      <svg width={size} height={size} className="-rotate-90" onPointerDown={onTap} role="img" aria-label={tr("Распределение по категориям")}>
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--line)" strokeWidth={thickness} />
         <g key={animKey}>
           {total > 0 &&

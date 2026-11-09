@@ -4,6 +4,7 @@ import { nav } from "../../store/ui";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
 import { hashPin, newSalt } from "./lock";
 import { PinPad } from "./PinPad";
+import { tr } from "../../i18n/i18n";
 
 /**
  * mode "set": enter a new code twice, then `onDone`.
@@ -40,12 +41,12 @@ export function PinSheet({ mode, onDone }: { mode: "set" | "verify"; onDone: () 
   };
 
   return (
-    <Sheet ariaLabel="Код-пароль" left={<SheetAction onClick={close}>Отмена</SheetAction>}>
+    <Sheet ariaLabel={tr("Код-пароль")} left={<SheetAction onClick={close}>{tr("Отмена")}</SheetAction>}>
       <div className="pb-6 pt-2">
         <PinPad
           key={first === null ? "a" : "b"}
-          title={mode === "verify" ? "Текущий код" : first === null ? "Придумайте код" : "Повторите код"}
-          subtitle={mismatch ? "Коды не совпали — ещё раз" : mode === "set" && first === null ? "4 цифры — для входа в приложение" : undefined}
+          title={mode === "verify" ? tr("Текущий код") : first === null ? tr("Придумайте код") : tr("Повторите код")}
+          subtitle={mismatch ? tr("Коды не совпали — ещё раз") : mode === "set" && first === null ? tr("4 цифры — для входа в приложение") : undefined}
           onComplete={complete}
         />
       </div>

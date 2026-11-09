@@ -19,6 +19,7 @@ import { ease, gpu, spring } from "../../ui/motion";
 import { EmptyState, FormRow, Group, Row, SectionHeader, Segmented, Toggle } from "../../ui/primitives";
 import { WalletCard } from "../../ui/WalletCard";
 import { TxRow, usePresentCtx } from "../transactions/TxRow";
+import { tr } from "../../i18n/i18n";
 
 interface Origin {
   x: number;
@@ -116,8 +117,8 @@ export function WalletDetail({ id, from }: { id: ID; from?: Origin }) {
 
   if (!wallet) {
     return (
-      <Screen title="Кошелёк">
-        <EmptyState icon={Trash2} title="Кошелёк удалён" />
+      <Screen title={tr("Кошелёк")}>
+        <EmptyState icon={Trash2} title={tr("Кошелёк удалён")} />
       </Screen>
     );
   }
@@ -153,19 +154,19 @@ export function WalletDetail({ id, from }: { id: ID; from?: Origin }) {
         <motion.div style={{ opacity: fade }}>
           {!wallet.archived && (
             <div className="mt-5 grid grid-cols-3 gap-2.5 px-5">
-              <MiniAction icon={ArrowDownLeft} label="Доход" onClick={() => open("income")} />
-              <MiniAction icon={ArrowUpRight} label="Расход" onClick={() => open("expense")} />
-              <MiniAction icon={ArrowLeftRight} label="Перевод" onClick={() => open("transfer")} />
+              <MiniAction icon={ArrowDownLeft} label={tr("Доход")} onClick={() => open("income")} />
+              <MiniAction icon={ArrowUpRight} label={tr("Расход")} onClick={() => open("expense")} />
+              <MiniAction icon={ArrowLeftRight} label={tr("Перевод")} onClick={() => open("transfer")} />
             </div>
           )}
 
           <div className="mt-6 grid grid-cols-2 gap-2 px-5">
             <div className="panel rounded-md px-3.5 py-3">
-              <div className="text-caption font-medium text-ink-2">Поступления в этом месяце</div>
+              <div className="text-caption font-medium text-ink-2">{tr("Поступления в этом месяце")}</div>
               <Money value={monthStats.inflow} sign="always" tone="positive" currency={wallet.currency} className="mt-0.5 block text-callout font-semibold" />
             </div>
             <div className="panel rounded-md px-3.5 py-3">
-              <div className="text-caption font-medium text-ink-2">Списания в этом месяце</div>
+              <div className="text-caption font-medium text-ink-2">{tr("Списания в этом месяце")}</div>
               <Money value={-monthStats.outflow} currency={wallet.currency} className="mt-0.5 block text-callout font-semibold" />
             </div>
           </div>
@@ -173,7 +174,7 @@ export function WalletDetail({ id, from }: { id: ID; from?: Origin }) {
           <section className="mt-6 px-5">
             <div className="flex flex-wrap items-end gap-3">
               <div className="min-w-0 grow-[999] basis-[140px]">
-                <div className="text-footnote font-medium text-ink-2">{shown ? formatDate(shown.day, { year: "auto" }) : "История баланса"}</div>
+                <div className="text-footnote font-medium text-ink-2">{shown ? formatDate(shown.day, { year: "auto" }) : tr("История баланса")}</div>
                 <Money value={shown ? shown.value : series[series.length - 1]?.value ?? 0} currency={base} privacy className="text-title-3 font-semibold" />
               </div>
               <Segmented
@@ -182,25 +183,25 @@ export function WalletDetail({ id, from }: { id: ID; from?: Origin }) {
                 value={range}
                 onChange={setRange}
                 options={[
-                  { value: "30", label: "30Д" },
-                  { value: "90", label: "90Д" },
-                  { value: "365", label: "Год" }
+                  { value: "30", label: tr("30Д") },
+                  { value: "90", label: tr("90Д") },
+                  { value: "365", label: tr("Год") }
                 ]}
               />
             </div>
-            {wallet.currency !== base && <div className="mt-1 text-caption text-ink-3">в {base} по текущему курсу</div>}
+            {wallet.currency !== base && <div className="mt-1 text-caption text-ink-3">{tr("в")}{" "}{base}{tr("по текущему курсу")}</div>}
             <div className="mt-3">
-              <LineChart points={series.map((p) => ({ value: p.value }))} height={120} onScrub={setScrub} formatValue={(v) => formatCompact(v)} animKey={range} ariaLabel="История баланса" />
+              <LineChart points={series.map((p) => ({ value: p.value }))} height={120} onScrub={setScrub} formatValue={(v) => formatCompact(v)} animKey={range} ariaLabel={tr("История баланса")} />
             </div>
           </section>
 
           <section className="mt-7">
             <SectionHeader
-              title="Операции"
+              title={tr("Операции")}
               action={
                 list.length > 0
                   ? {
-                      label: `Все · ${list.length}`,
+                      label: tr("Все · {0}", list.length),
                       onClick: () => {
                         useUI.getState().setTxFilter({ walletId: wallet.id }, true);
                         nav.tab("transactions");
@@ -210,7 +211,7 @@ export function WalletDetail({ id, from }: { id: ID; from?: Origin }) {
               }
             />
             {groups.length === 0 ? (
-              <div className="mx-5 rounded-lg border border-dashed border-line-strong px-4 py-6 text-center text-subhead text-ink-2">По этому кошельку пока нет операций</div>
+              <div className="mx-5 rounded-lg border border-dashed border-line-strong px-4 py-6 text-center text-subhead text-ink-2">{tr("По этому кошельку пока нет операций")}</div>
             ) : (
               groups.map((g) => (
                 <div key={g.day} className="mb-3">
@@ -227,45 +228,45 @@ export function WalletDetail({ id, from }: { id: ID; from?: Origin }) {
 
           <div className="mt-6 flex flex-col gap-4">
             <Group>
-              <Row icon={Pencil} title="Изменить" chevron onClick={() => nav.sheet("wallet", { editId: wallet.id })} />
+              <Row icon={Pencil} title={tr("Изменить")} chevron onClick={() => nav.sheet("wallet", { editId: wallet.id })} />
               <Row
                 icon={SlidersHorizontal}
-                title="Скорректировать баланс"
+                title={tr("Скорректировать баланс")}
                 chevron
                 onClick={() => nav.sheet("wallet", { editId: wallet.id })}
               />
             </Group>
-            <Group footer="Основной кошелёк подставляется в новые операции по умолчанию.">
-              <FormRow label={<span className="flex items-center gap-3"><Star size={18} className="text-ink-2" />Основной кошелёк</span>}>
-                <Toggle checked={isDefault} onChange={(v) => useData.getState().updateSettings({ defaultWalletId: v ? wallet.id : undefined })} label="Основной кошелёк" />
+            <Group footer={tr("Основной кошелёк подставляется в новые операции по умолчанию.")}>
+              <FormRow label={<span className="flex items-center gap-3"><Star size={18} className="text-ink-2" />{tr("Основной кошелёк")}</span>}>
+                <Toggle checked={isDefault} onChange={(v) => useData.getState().updateSettings({ defaultWalletId: v ? wallet.id : undefined })} label={tr("Основной кошелёк")} />
               </FormRow>
-              <FormRow label="Учитывать в общем балансе">
-                <Toggle checked={wallet.includeInTotal} onChange={(v) => useData.getState().updateWallet(wallet.id, { includeInTotal: v })} label="Учитывать в общем балансе" />
+              <FormRow label={tr("Учитывать в общем балансе")}>
+                <Toggle checked={wallet.includeInTotal} onChange={(v) => useData.getState().updateWallet(wallet.id, { includeInTotal: v })} label={tr("Учитывать в общем балансе")} />
               </FormRow>
             </Group>
             <Group>
               <Row
                 icon={wallet.archived ? ArchiveRestore : Archive}
-                title={wallet.archived ? "Вернуть из архива" : "Перенести в архив"}
+                title={wallet.archived ? tr("Вернуть из архива") : tr("Перенести в архив")}
                 onClick={() => {
                   haptic();
                   const archived = !wallet.archived;
-                  undoable(archived ? "Кошелёк в архиве" : "Кошелёк восстановлен", () => useData.getState().updateWallet(wallet.id, { archived }));
+                  undoable(archived ? tr("Кошелёк в архиве") : tr("Кошелёк восстановлен"), () => useData.getState().updateWallet(wallet.id, { archived }));
                   if (archived) nav.pop();
                 }}
               />
               <Row
                 icon={Trash2}
                 iconTone="negative"
-                title="Удалить кошелёк"
+                title={tr("Удалить кошелёк")}
                 destructive
                 onClick={() =>
                   confirmDelete({
-                    title: `Удалить «${wallet.name}»?`,
-                    message: "Доходы и расходы этого кошелька будут удалены. Переводы в другие кошельки сохранятся как корректировки, чтобы их балансы не изменились. Если нужна история — перенесите кошелёк в архив.",
+                    title: tr("Удалить «{0}»?", wallet.name),
+                    message: tr("Доходы и расходы этого кошелька будут удалены. Переводы в другие кошельки сохранятся как корректировки, чтобы их балансы не изменились. Если нужна история — перенесите кошелёк в архив."),
                     onConfirm: () => {
                       nav.pop();
-                      setTimeout(() => undoable("Кошелёк удалён", () => useData.getState().deleteWallet(wallet.id)), 420);
+                      setTimeout(() => undoable(tr("Кошелёк удалён"), () => useData.getState().deleteWallet(wallet.id)), 420);
                     }
                   })
                 }

@@ -1,3 +1,4 @@
+import { locale } from "../../i18n/i18n";
 import { useMemo, useState } from "react";
 import { WalletCards, ListChecks, ReceiptText, Search, SlidersHorizontal, Sparkles, Target, type LucideIcon } from "../../ui/glyphs";
 import { capitalize, formatDate } from "../../lib/dates";
@@ -19,6 +20,7 @@ import { DaySphere } from "./DaySphere";
 import { SmartLine } from "../create/SmartLine";
 import { HomeFeed } from "./HomeCards";
 import { HomeToday } from "../planner/HomeToday";
+import { tr } from "../../i18n/i18n";
 
 export function HomeScreen() {
   const name = useData((s) => s.settings.name);
@@ -31,9 +33,9 @@ export function HomeScreen() {
         <Reveal intro={intro} delay={0.55} y={-6} className="flex w-full items-center justify-between">
           <Wordmark />
           <div className="flex items-center gap-2">
-            <IconButton icon={Search} label="Поиск" size={36} iconSize={18} onClick={() => nav.sheet("search")} />
-            <button type="button" aria-label="Настройки и профиль" onClick={() => nav.push("settings")} className="rounded-full active:opacity-70">
-              <Avatar name={name || "Я"} size={36} />
+            <IconButton icon={Search} label={tr("Поиск")} size={36} iconSize={18} onClick={() => nav.sheet("search")} />
+            <button type="button" aria-label={tr("Настройки и профиль")} onClick={() => nav.push("settings")} className="rounded-full active:opacity-70">
+              <Avatar name={name || tr("Я")} size={36} />
             </button>
           </div>
         </Reveal>
@@ -59,15 +61,15 @@ export function HomeScreen() {
 }
 
 function greetingFor(hour: number): string {
-  if (hour >= 5 && hour < 12) return "Доброе утро";
-  if (hour >= 12 && hour < 18) return "Добрый день";
-  if (hour >= 18 && hour < 23) return "Добрый вечер";
-  return "Доброй ночи";
+  if (hour >= 5 && hour < 12) return tr("Доброе утро");
+  if (hour >= 12 && hour < 18) return tr("Добрый день");
+  if (hour >= 18 && hour < 23) return tr("Добрый вечер");
+  return tr("Доброй ночи");
 }
 
 function Greeting({ name }: { name: string }) {
   const today = useToday();
-  const date = useMemo(() => new Intl.DateTimeFormat("ru-RU", { weekday: "long", day: "numeric", month: "long" }).format(new Date()), [today]);
+  const date = useMemo(() => new Intl.DateTimeFormat(locale(), { weekday: "long", day: "numeric", month: "long" }).format(new Date()), [today]);
   const first = name.trim().split(/\s+/)[0];
   return (
     <div>
@@ -94,9 +96,7 @@ function HomeBlocks() {
       {shown("goal") && <PrimaryGoal />}
       <div className="mt-8 flex justify-center">
         <button type="button" onClick={() => nav.sheet("homeLayout")} className="flex h-10 items-center gap-2 rounded-full px-4 text-footnote font-medium text-ink-2 active:bg-surface-press">
-          <SlidersHorizontal size={15} strokeWidth={2} />
-          Настроить главную
-        </button>
+          <SlidersHorizontal size={15} strokeWidth={2} />{tr("Настроить главную")}</button>
       </div>
     </>
   );
@@ -106,7 +106,7 @@ function HomeBlocks() {
 function HomeCardsBlock() {
   return (
     <div className="mt-8">
-      <SectionHeader title="Счета" action={{ label: "Все", onClick: () => nav.tab("wallets") }} />
+      <SectionHeader title={tr("Счета")} action={{ label: tr("Все"), onClick: () => nav.tab("wallets") }} />
       <WalletCarousel
         onOpen={(card, rect) => {
           if (card.walletId) nav.push("wallet", { id: card.walletId, from: { x: rect.x, y: rect.y, w: rect.width, h: rect.height } });
@@ -119,11 +119,11 @@ function HomeCardsBlock() {
 }
 
 const HOME_BLOCKS: Array<{ id: HomeBlock; title: string; subtitle: string; icon: LucideIcon }> = [
-  { id: "today", title: "Дела на сегодня", subtitle: "Прогресс дня и ближайшие дела", icon: ListChecks },
-  { id: "feed", title: "Важное", subtitle: "Итоги месяца, копия данных, подсказки", icon: Sparkles },
-  { id: "cards", title: "Карты счетов", subtitle: "Баланс каждого кошелька, свайпом", icon: WalletCards },
-  { id: "recent", title: "Последние операции", subtitle: "Три последние записи", icon: ReceiptText },
-  { id: "goal", title: "Цель", subtitle: "Главная цель и её прогресс", icon: Target }
+  { id: "today", title: tr("Дела на сегодня"), subtitle: tr("Прогресс дня и ближайшие дела"), icon: ListChecks },
+  { id: "feed", title: tr("Важное"), subtitle: tr("Итоги месяца, копия данных, подсказки"), icon: Sparkles },
+  { id: "cards", title: tr("Карты счетов"), subtitle: tr("Баланс каждого кошелька, свайпом"), icon: WalletCards },
+  { id: "recent", title: tr("Последние операции"), subtitle: tr("Три последние записи"), icon: ReceiptText },
+  { id: "goal", title: tr("Цель"), subtitle: tr("Главная цель и её прогресс"), icon: Target }
 ];
 
 /** Which blocks the home screen shows. The day sphere and the smart line always stay. */
@@ -131,8 +131,8 @@ export function HomeLayoutSheet() {
   const hidden = useData((s) => s.settings.homeHidden ?? []);
   const update = useData((s) => s.updateSettings);
   return (
-    <Sheet title="Главная" ariaLabel="Настроить главную">
-      <p className="px-6 pb-4 text-center text-footnote text-ink-2">Сфера дня и умная строка видны всегда. Остальное — по желанию.</p>
+    <Sheet title={tr("Главная")} ariaLabel={tr("Настроить главную")}>
+      <p className="px-6 pb-4 text-center text-footnote text-ink-2">{tr("Сфера дня и умная строка видны всегда. Остальное — по желанию.")}</p>
       <Group>
         {HOME_BLOCKS.map((b) => (
           <div key={b.id} className="flex min-h-[58px] items-center gap-3 px-4 py-2.5">
@@ -159,7 +159,7 @@ function RecentOperations() {
   const recent = useMemo(() => [...transactions].sort((a, b) => (a.date < b.date ? 1 : -1)).slice(0, 3), [transactions]);
   return (
     <div className="mt-8">
-      <SectionHeader title="Последние операции" action={recent.length ? { label: "Все", onClick: () => nav.tab("transactions") } : undefined} />
+      <SectionHeader title={tr("Последние операции")} action={recent.length ? { label: tr("Все"), onClick: () => nav.tab("transactions") } : undefined} />
       {recent.length ? (
         <Group>
           {recent.map((tx) => (
@@ -167,9 +167,7 @@ function RecentOperations() {
           ))}
         </Group>
       ) : (
-        <div className="mx-4 rounded-lg border border-dashed border-line-strong px-4 py-7 text-center text-subhead text-ink-2">
-          Здесь появятся ваши операции. Начните с кнопок выше.
-        </div>
+        <div className="mx-4 rounded-lg border border-dashed border-line-strong px-4 py-7 text-center text-subhead text-ink-2">{tr("Здесь появятся ваши операции. Начните с кнопок выше.")}</div>
       )}
     </div>
   );
@@ -188,7 +186,7 @@ function PrimaryGoal() {
   const info = goalInfo(goal, goalSaved(goal, env, balances), today);
   return (
     <div className="mt-8">
-      <SectionHeader title="Цель" action={{ label: "Все цели", onClick: () => nav.push("goals") }} />
+      <SectionHeader title={tr("Цель")} action={{ label: tr("Все цели"), onClick: () => nav.push("goals") }} />
       <button
         type="button"
         onClick={() => nav.push("goal", { id: goal.id })}
@@ -199,8 +197,8 @@ function PrimaryGoal() {
           <div className="min-w-0 flex-1">
             <div className="truncate text-body font-medium">{goal.name}</div>
             <div className="text-footnote text-ink-2">
-              {info.done ? "Цель достигнута" : goal.deadline ? `до ${formatDate(goal.deadline, { year: "auto" })}` : "без срока"}
-              {info.monthly && !info.done ? ` · ${formatMoney(info.monthly, { currency: goal.currency })} в месяц` : ""}
+              {info.done ? tr("Цель достигнута") : goal.deadline ? tr("до {0}", formatDate(goal.deadline, { year: "auto" })) : tr("без срока")}
+              {info.monthly && !info.done ? tr(" · {0} в месяц", formatMoney(info.monthly, { currency: goal.currency })) : ""}
             </div>
           </div>
           <div className="text-right">

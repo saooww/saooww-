@@ -10,6 +10,7 @@ import { MARK } from "./brandPaths";
 import { INTRO_SHIFT } from "./intro";
 import { displayGroups, useCountMotion } from "./Money";
 import { numberFontScale } from "./numFont";
+import { tr } from "../i18n/i18n";
 
 export const CARD_RATIO = 1.586; // ISO/IEC 7810 ID-1
 
@@ -114,7 +115,7 @@ export const WalletCard = memo(function WalletCard({
   onToggleHidden,
   badge,
   footnote,
-  label = "Баланс",
+  label = tr("Баланс"),
   className,
   sheen,
   intro,
@@ -158,7 +159,7 @@ export const WalletCard = memo(function WalletCard({
       <div
         className="num-display mt-2.5 whitespace-nowrap leading-none"
         style={{ fontSize: size, transform: "translateZ(0)" }}
-        aria-label={hidden ? "Баланс скрыт" : `${final.sign}${final.int}${final.frac} ${final.symbol}`}
+        aria-label={hidden ? tr("Баланс скрыт") : `${final.sign}${final.int}${final.frac} ${final.symbol}`}
       >
         {hidden ? (
           <span className="tracking-[0.08em]">
@@ -211,7 +212,7 @@ export const WalletCard = memo(function WalletCard({
         <button
           type="button"
           data-no-tap=""
-          aria-label={hidden ? "Показать баланс" : "Скрыть баланс"}
+          aria-label={hidden ? tr("Показать баланс") : tr("Скрыть баланс")}
           onClick={(e) => {
             e.stopPropagation();
             onToggleHidden();

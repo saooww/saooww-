@@ -1,10 +1,11 @@
 import { useUI, type Tab } from "../store/ui";
 import { Segmented } from "../ui/primitives";
+import { tr } from "../i18n/i18n";
 
 const OPTIONS: Array<{ value: Tab; label: string }> = [
-  { value: "wallets", label: "Счета" },
-  { value: "transactions", label: "Операции" },
-  { value: "analytics", label: "Аналитика" }
+  { value: "wallets", label: tr("Счета") },
+  { value: "transactions", label: tr("Операции") },
+  { value: "analytics", label: tr("Аналитика") }
 ];
 
 /**

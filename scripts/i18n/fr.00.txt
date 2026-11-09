@@ -1,0 +1,150 @@
+ {0} d'affilée avec des tâches faites.
+· {0} par mois
+· en retard
+ sur les mêmes jours
+ et {0} de plus
+% par rapport à la semaine dernière
+). Pas de souci : l'important est de le voir.
+, au total
+, tâches : {0}
+, fait {0}
+, événements : {0}
+, échéance {0}
+, qu'en
+, que le mois dernier
+ pour transférer de l'argent vers l'objectif.
+. Archivé
+. Pas besoin de taux.
+. Indiquez combien est allé à d'autres catégories — le reste reste dans
+1 min
+15 min
+21 oct.
+30 jours
+30J
+4 chiffres pour ouvrir l'app
+5 min
+90J
+ : définir un taux →
+Ardessa garde toutes les données sur cet appareil uniquement. Seule la demande des taux de la Banque centrale en sort, sans vos données. Pour transférer vos données, enregistrez une copie dans Fichiers et chargez-la sur l'autre appareil.
+Ardessa — sauvegarde
+Face ID ne s'est pas connecté — réessayez
+il y a {0} {1}
+{0} · {1} % en moyenne
+{0} Ko
+{0} Mo
+{0} sans dépense sur {1}
+{0} près de la limite
+{0} par mois
+{0} en 7 jours
+{0} sur {1}
+{0} depuis l'échéance
+{0} abonnements
+{0} d'affilée
+{0} presque inutilisés — soit {1} par an
+{0} dépassé{1}
+{0} échéance de remboursement : {1}, {2}
+{0} — on vous doit
+{0} % fait
+{0} : {1} tâches
+{0} : budget dépassé de {1}
+{0} : reste {1} pour {2}
+· dans les clous
+· en moyenne
+· la norme est recalculée chaque matin
+· reste
+· environ
+» il n'y a rien
+Auto
+Sauvegardes auto
+Voiture
+Virements auto
+Actives · {0}
+Accent
+Analyse
+Animations
+Dram arménien
+Archives ·
+Solde
+Le solde de chaque portefeuille, en glissant
+Solde masqué
+Les soldes et l'analyse seront recalculés automatiquement.
+Bocal
+Carte bancaire
+Compte bancaire
+Sans date
+Aucun mouvement sur le compte
+Sans catégorie
+Sans code, celui qui prend votre téléphone déverrouillé ne verra pas vos soldes. Les données elles-mêmes ne sont pas chiffrées sur l'appareil.
+Sans portefeuille
+Sans limite ce mois-ci
+Sans nom
+Hors comptes d'épargne et d'investissement. Les dépenses habituelles sont votre rythme moyen sur 60 jours.
+Sans liste
+Sans liste — à trier plus tard
+Sans échéance
+Sans dépense
+Pas un jour sans dépense
+Sans motif
+Non compté
+Blanche
+Rouble biélorusse
+30 prochains jours
+Verrouiller
+Plus
+Vous dépensez le plus le
+Plus que le reste ({0})
+Plus que l'épargne
+Bordeaux
+Le navigateur peut effacer les données si l'appareil manque d'espace. Installez l'app sur l'écran d'accueil et enregistrez une copie dans Fichiers.
+Les données, réglages, photos de tickets et sauvegardes auto seront supprimés. Si besoin, enregistrez d'abord une copie dans Fichiers.
+En avance sur le plan · ~{0} en fin de mois
+Budget
+Budget supprimé
+Pas encore de budgets
+Budgets
+Budgets, objectifs et plans — et combien vous pouvez dépenser aujourd'hui
+Dans Ardessa depuis {0}
+Dans Fichiers ou iCloud — en cas de perte du téléphone
+Archivé
+Archivé :
+Dans les temps
+Dans les temps · pour {0}
+Dans le journal : {0}
+Le journal est vide — quelques lignes le soir, ça aide
+Aux favoris
+Vers le portefeuille
+Par mois · {0}
+Moyenne par jour
+En moyenne, vous épargnez {0} de vos revenus{1}
+Dans l'objectif
+Vers l'objectif
+Vers l'objectif « {0} »
+Dans les objectifs
+Encore attendu ce mois-ci : entrées {0}, sorties {1}.
+Aucune dépense sur cette période
+Important
+Important
+Devise
+La devise ne peut pas être changée tant que le portefeuille a des opérations.
+On vous doit
+Votre
+Votre journée
+Votre profil
+Votre prénom
+Vos données sont intactes. Redémarrez l'app — et si l'erreur revient, enregistrez d'abord une copie.
+Vos comptes
+Saisi {0} sur {1}
+Saisissez le code
+Saisissez un montant
+Rendre
+Remettre dans le portefeuille
+Remettre au plan
+À rendre avant
+Rembourser : {0}
+Sortir des archives
+Rendre : {0}
+Rendra : {0}
+Version
+La marque verticale montre la part du mois écoulée. Si la barre la dépasse, vous dépensez plus vite que prévu.
+Ticket entier
+Le soir — bilan

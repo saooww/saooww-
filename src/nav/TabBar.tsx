@@ -6,15 +6,16 @@ import { haptic } from "../lib/haptics";
 import { MONEY_TABS, nav, useUI, type Tab } from "../store/ui";
 import { INTRO_SHIFT, introActive } from "../ui/intro";
 import { spring } from "../ui/motion";
+import { tr } from "../i18n/i18n";
 
 type Item = { id: "home" | "money" | "planner" | "more"; label: string; icon: LucideIcon; slot: number };
 
 // Five slots: four sections and the create button in the middle.
 const ITEMS: Item[] = [
-  { id: "home", label: "Главная", icon: House, slot: 0 },
-  { id: "money", label: "Деньги", icon: WalletCards, slot: 1 },
-  { id: "planner", label: "Дела", icon: CircleCheckBig, slot: 3 },
-  { id: "more", label: "Профиль", icon: User, slot: 4 }
+  { id: "home", label: tr("Главная"), icon: House, slot: 0 },
+  { id: "money", label: tr("Деньги"), icon: WalletCards, slot: 1 },
+  { id: "planner", label: tr("Дела"), icon: CircleCheckBig, slot: 3 },
+  { id: "more", label: tr("Профиль"), icon: User, slot: 4 }
 ];
 
 const itemOf = (tab: Tab): Item["id"] => (MONEY_TABS.includes(tab) ? "money" : (tab as Item["id"]));
@@ -29,7 +30,7 @@ export function TabBar() {
   const slot = ITEMS.find((i) => i.id === current)?.slot ?? 0;
 
   return (
-    <nav aria-label="Разделы" className="pointer-events-none fixed inset-x-0 z-40 px-3 max-[389px]:px-2" style={{ bottom: "var(--tabbar-bottom)" }}>
+    <nav aria-label={tr("Разделы")} className="pointer-events-none fixed inset-x-0 z-40 px-3 max-[389px]:px-2" style={{ bottom: "var(--tabbar-bottom)" }}>
       <motion.div
         role="tablist"
         className="glass pointer-events-auto relative mx-auto grid max-w-[480px] grid-cols-5 rounded-[26px] p-[5px]"
@@ -75,7 +76,7 @@ export function TabBar() {
         <div className="relative grid place-items-center" style={{ gridColumn: 3, gridRow: 1 }}>
           <motion.button
             type="button"
-            aria-label="Создать"
+            aria-label={tr("Создать")}
             whileTap={{ scale: 0.88 }}
             transition={spring.press}
             onClick={() => {

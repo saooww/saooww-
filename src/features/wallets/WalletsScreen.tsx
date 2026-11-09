@@ -22,6 +22,7 @@ import { spring } from "../../ui/motion";
 import { Button, EmptyState, Group, IconButton, Row } from "../../ui/primitives";
 import { MoneySwitch } from "../../nav/MoneySwitch";
 import { CARD_RATIO, WalletCard } from "../../ui/WalletCard";
+import { tr } from "../../i18n/i18n";
 
 const PEEK = 72;
 
@@ -34,11 +35,11 @@ export function WalletsScreen() {
   const [showArchive, setShowArchive] = useState(false);
 
   return (
-    <Screen title="Деньги" large subheader={<MoneySwitch current="wallets" />} actions={<IconButton icon={Plus} label="Новый кошелёк" onClick={() => nav.sheet("wallet")} />}>
+    <Screen title={tr("Деньги")} large subheader={<MoneySwitch current="wallets" />} actions={<IconButton icon={Plus} label={tr("Новый кошелёк")} onClick={() => nav.sheet("wallet")} />}>
       <NetWorthBlock />
 
       {live.length === 0 ? (
-        <EmptyState icon={WalletCards} title="Нет кошельков" text="Добавьте карту, наличные или накопительный счёт." action={<Button size="md" icon={Plus} onClick={() => nav.sheet("wallet")}>Добавить кошелёк</Button>} />
+        <EmptyState icon={WalletCards} title={tr("Нет кошельков")} text={tr("Добавьте карту, наличные или накопительный счёт.")} action={<Button size="md" icon={Plus} onClick={() => nav.sheet("wallet")}>{tr("Добавить кошелёк")}</Button>} />
       ) : (
         <WalletStack wallets={live} base={base} hidden={hidden} />
       )}
@@ -48,14 +49,13 @@ export function WalletsScreen() {
       {archived.length > 0 && (
         <div className="mt-6">
           <button type="button" onClick={() => setShowArchive((v) => !v)} className="flex w-full items-center gap-2 px-5 py-2 text-subhead font-medium text-ink-2">
-            <Archive size={16} />
-            Архив · {archived.length}
+            <Archive size={16} />{tr("Архив ·")}{" "}{archived.length}
             <ChevronDown size={16} className={cn("transition-transform", showArchive && "rotate-180")} />
           </button>
           {showArchive && (
             <Group>
               {archived.map((w) => (
-                <Row key={w.id} iconName={walletKindInfo(w.kind).icon} title={w.name} subtitle="В архиве" chevron onClick={() => nav.push("wallet", { id: w.id })} />
+                <Row key={w.id} iconName={walletKindInfo(w.kind).icon} title={w.name} subtitle={tr("В архиве")} chevron onClick={() => nav.push("wallet", { id: w.id })} />
               ))}
             </Group>
           )}
@@ -79,27 +79,25 @@ function NetWorthBlock() {
 
   return (
     <section className="px-5">
-      <div className="text-footnote font-medium text-ink-2">{shown ? formatDate(shown.day, { year: "auto" }) : "Чистый капитал"}</div>
+      <div className="text-footnote font-medium text-ink-2">{shown ? formatDate(shown.day, { year: "auto" }) : tr("Чистый капитал")}</div>
       <div className="mt-1 text-[34px] font-semibold leading-[40px] tracking-[-0.035em]">
         {shown ? <Money value={shown.value} currency={base} variant="hero" privacy /> : <AnimatedMoney value={nw.total} currency={base} variant="hero" privacy />}
       </div>
       <div className={cn("mt-1 text-footnote font-medium tnum", delta >= 0 ? "text-positive" : "text-negative")}>
         {delta >= 0 ? "+" : "−"}
-        {formatMoney(Math.abs(delta), { currency: base })} <span className="font-normal text-ink-3">{shown ? "с начала периода" : "за 90 дней"}</span>
+        {formatMoney(Math.abs(delta), { currency: base })} <span className="font-normal text-ink-3">{shown ? tr("с начала периода") : tr("за 90 дней")}</span>
       </div>
       <div className="-mx-1 mt-3">
-        <LineChart points={series.map((p) => ({ value: p.value }))} height={92} onScrub={setScrub} formatValue={(v) => formatCompact(v)} ariaLabel="Капитал за 90 дней" padY={14} />
+        <LineChart points={series.map((p) => ({ value: p.value }))} height={92} onScrub={setScrub} formatValue={(v) => formatCompact(v)} ariaLabel={tr("Капитал за 90 дней")} padY={14} />
       </div>
       {nw.missing.length > 0 && (
-        <button type="button" onClick={() => nav.push("currencies")} className="mt-2 text-footnote text-warning">
-          Без учёта {nw.missing.join(", ")}: задайте курс →
-        </button>
+        <button type="button" onClick={() => nav.push("currencies")} className="mt-2 text-footnote text-warning">{tr("Без учёта")}{" "}{nw.missing.join(", ")}{tr(": задайте курс →")}</button>
       )}
       <div className="mt-4 grid grid-cols-2 gap-2">
-        <Stat label="На счетах" value={nw.wallets} currency={base} />
-        <Stat label="В целях" value={nw.goals} currency={base} onClick={() => nav.push("goals")} />
-        <Stat label="Вам должны" value={nw.receivables} currency={base} onClick={() => nav.push("debts")} />
-        <Stat label="Вы должны" value={-nw.liabilities} currency={base} onClick={() => nav.push("debts")} />
+        <Stat label={tr("На счетах")} value={nw.wallets} currency={base} />
+        <Stat label={tr("В целях")} value={nw.goals} currency={base} onClick={() => nav.push("goals")} />
+        <Stat label={tr("Вам должны")} value={nw.receivables} currency={base} onClick={() => nav.push("debts")} />
+        <Stat label={tr("Вы должны")} value={-nw.liabilities} currency={base} onClick={() => nav.push("debts")} />
       </div>
     </section>
   );
@@ -183,12 +181,12 @@ function Cushion() {
   const tone = m >= 6 ? "positive" : m >= 3 ? undefined : "warning";
   return (
     <div className="mt-7">
-      <Group footer={`Накопительные счета против средних расходов за 3 месяца (${formatMoney(Math.round(info.avg))} в месяц). Рекомендуемый запас — 3–6 месяцев.`}>
+      <Group footer={tr("Накопительные счета против средних расходов за 3 месяца ({0} в месяц). Рекомендуемый запас — 3–6 месяцев.", formatMoney(Math.round(info.avg)))}>
         <Row
           icon={LifeBuoy}
           iconTone={tone}
-          title="Финансовая подушка"
-          subtitle={info.reserve > 0 ? `Хватит на ${String(m).replace(".", ",")} мес. обычной жизни` : "Отметьте накопительные счета типом «Накопления»"}
+          title={tr("Финансовая подушка")}
+          subtitle={info.reserve > 0 ? tr("Хватит на {0} мес. обычной жизни", String(m).replace(".", ",")) : tr("Отметьте накопительные счета типом «Накопления»")}
           value={<Money value={Math.round(info.reserve)} privacy />}
         />
       </Group>

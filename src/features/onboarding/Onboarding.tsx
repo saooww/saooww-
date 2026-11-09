@@ -12,6 +12,7 @@ import type { CardStyle, Wallet, WalletKind } from "../../store/types";
 import { FullLogo } from "../../ui/Brand";
 import { ease } from "../../ui/motion";
 import { Button, IconButton, inputCls } from "../../ui/primitives";
+import { tr } from "../../i18n/i18n";
 
 type Step = 0 | 1 | 2;
 
@@ -25,16 +26,16 @@ interface Preset {
 }
 
 const PRESETS: Preset[] = [
-  { kind: "card", name: "Карта", icon: CreditCard, style: "ardessa", on: true, amount: "" },
-  { kind: "cash", name: "Наличные", icon: Banknote, style: "graphite", on: true, amount: "" },
-  { kind: "savings", name: "Накопления", icon: PiggyBank, style: "titanium", on: false, amount: "" }
+  { kind: "card", name: tr("Карта"), icon: CreditCard, style: "ardessa", on: true, amount: "" },
+  { kind: "cash", name: tr("Наличные"), icon: Banknote, style: "graphite", on: true, amount: "" },
+  { kind: "savings", name: tr("Накопления"), icon: PiggyBank, style: "titanium", on: false, amount: "" }
 ];
 
 const FEATURES: Array<{ icon: LucideIcon; text: string }> = [
-  { icon: WalletCards, text: "Все карты, наличные и накопления в одном месте" },
-  { icon: Target, text: "Бюджеты, цели и планы — и сколько можно потратить сегодня" },
-  { icon: CircleCheckBig, text: "Дела, списки и заметки: план на день, чтобы ничего не забыть" },
-  { icon: ShieldCheck, text: "Данные только на вашем устройстве, вход по коду или Face ID" }
+  { icon: WalletCards, text: tr("Все карты, наличные и накопления в одном месте") },
+  { icon: Target, text: tr("Бюджеты, цели и планы — и сколько можно потратить сегодня") },
+  { icon: CircleCheckBig, text: tr("Дела, списки и заметки: план на день, чтобы ничего не забыть") },
+  { icon: ShieldCheck, text: tr("Данные только на вашем устройстве, вход по коду или Face ID") }
 ];
 
 /** First launch: a short welcome, name and currency, starting balances. */
@@ -82,7 +83,7 @@ export function Onboarding() {
   return (
     <div className="app-canvas fixed inset-0 z-[110] flex flex-col" style={{ paddingTop: "calc(var(--safe-top) + 12px)", paddingBottom: "calc(var(--safe-bottom) + 16px)" }}>
       <div className="flex h-11 items-center justify-between px-4">
-        <div className="w-9">{step > 0 && <IconButton icon={ChevronLeft} label="Назад" iconSize={22} onClick={() => go((step - 1) as Step)} />}</div>
+        <div className="w-9">{step > 0 && <IconButton icon={ChevronLeft} label={tr("Назад")} iconSize={22} onClick={() => go((step - 1) as Step)} />}</div>
         <div className="flex gap-1.5" aria-hidden="true">
           {[0, 1, 2].map((i) => (
             <motion.span key={i} className={cn("h-[5px] rounded-full", i === step ? "bg-ink" : "bg-ink-4")} animate={{ width: i === step ? 20 : 5 }} />
@@ -107,7 +108,7 @@ export function Onboarding() {
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: ease.out }}>
                   <FullLogo layout="row" size={27} />
                 </motion.div>
-                <p className="mt-7 text-body text-ink-2">Деньги и дела — спокойно и под контролем.</p>
+                <p className="mt-7 text-body text-ink-2">{tr("Деньги и дела — спокойно и под контролем.")}</p>
                 <div className="mt-10 flex flex-col gap-5">
                   {FEATURES.map((f, i) => (
                     <motion.div key={f.text} className="flex items-start gap-3.5" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 + i * 0.08, duration: 0.5, ease: ease.out }}>
@@ -123,12 +124,12 @@ export function Onboarding() {
 
             {step === 1 && (
               <div className="pt-6">
-                <h1 className="text-title-1 font-display text-ink">Знакомство</h1>
-                <p className="mt-2 text-callout text-ink-2">Как к вам обращаться и в какой валюте считать.</p>
+                <h1 className="text-title-1 font-display text-ink">{tr("Знакомство")}</h1>
+                <p className="mt-2 text-callout text-ink-2">{tr("Как к вам обращаться и в какой валюте считать.")}</p>
                 <label className="panel mt-7 flex h-14 items-center rounded-[16px] px-4">
-                  <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Имя (необязательно)" maxLength={30} enterKeyHint="next" className={cn(inputCls, "text-headline")} />
+                  <input value={name} onChange={(e) => setName(e.target.value)} placeholder={tr("Имя (необязательно)")} maxLength={30} enterKeyHint="next" className={cn(inputCls, "text-headline")} />
                 </label>
-                <div className="section-label mt-8 px-1">Основная валюта</div>
+                <div className="section-label mt-8 px-1">{tr("Основная валюта")}</div>
                 <div className="mt-3 grid grid-cols-3 gap-2">
                   {CURRENCIES.slice(0, 6).map((c) => (
                     <button
@@ -151,8 +152,8 @@ export function Onboarding() {
 
             {step === 2 && (
               <div className="pt-6">
-                <h1 className="text-title-1 font-display text-ink">Ваши счета</h1>
-                <p className="mt-2 text-callout text-ink-2">Отметьте, что у вас есть, и сколько там сейчас. Поправить можно в любой момент.</p>
+                <h1 className="text-title-1 font-display text-ink">{tr("Ваши счета")}</h1>
+                <p className="mt-2 text-callout text-ink-2">{tr("Отметьте, что у вас есть, и сколько там сейчас. Поправить можно в любой момент.")}</p>
                 <div className="mt-7 flex flex-col gap-2.5">
                   {wallets.map((w, i) => (
                     <div key={w.kind} className={cn("panel flex items-center gap-3 rounded-[18px] px-3.5 py-3 transition-opacity", !w.on && "opacity-60")}>
@@ -180,7 +181,7 @@ export function Onboarding() {
                           value={w.amount}
                           disabled={!w.on}
                           placeholder="0"
-                          aria-label={`Остаток: ${w.name}`}
+                          aria-label={tr("Остаток: {0}", w.name)}
                           onChange={(e) => {
                             const v = e.target.value.replace(/[^\d.,]/g, "");
                             setWallets((list) => list.map((x, j) => (j === i ? { ...x, amount: v } : x)));
@@ -201,23 +202,15 @@ export function Onboarding() {
       <div className="flex flex-col gap-2 px-6 pt-3">
         {step === 0 && (
           <>
-            <Button block onClick={() => go(1)}>
-              Начать
-            </Button>
-            <Button block variant="ghost" onClick={demo}>
-              Посмотреть на примере
-            </Button>
+            <Button block onClick={() => go(1)}>{tr("Начать")}</Button>
+            <Button block variant="ghost" onClick={demo}>{tr("Посмотреть на примере")}</Button>
           </>
         )}
         {step === 1 && (
-          <Button block onClick={() => go(2)}>
-            Дальше
-          </Button>
+          <Button block onClick={() => go(2)}>{tr("Дальше")}</Button>
         )}
         {step === 2 && (
-          <Button block onClick={finish} disabled={!wallets.some((w) => w.on)}>
-            Готово
-          </Button>
+          <Button block onClick={finish} disabled={!wallets.some((w) => w.on)}>{tr("Готово")}</Button>
         )}
       </div>
     </div>

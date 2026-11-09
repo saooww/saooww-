@@ -10,6 +10,7 @@ import { spring } from "../../ui/motion";
 import { useLingering } from "./actions";
 import { Enso } from "./Enso";
 import { TaskCheck } from "./TaskRow";
+import { tr } from "../../i18n/i18n";
 
 /** «Дела на сегодня» on the home screen: progress, the next three tasks, one tap to add. */
 export function HomeToday() {
@@ -24,12 +25,12 @@ export function HomeToday() {
 
   return (
     <div className="panel mx-5 mt-3 overflow-hidden rounded-[20px]">
-      <button type="button" onClick={() => nav.planner("today")} className="flex w-full items-center gap-3 px-3.5 pb-2 pt-3 text-left" aria-label="Открыть дела на сегодня">
+      <button type="button" onClick={() => nav.planner("today")} className="flex w-full items-center gap-3 px-3.5 pb-2 pt-3 text-left" aria-label={tr("Открыть дела на сегодня")}>
         <Enso value={plan.total ? plan.completed / plan.total : 0} complete={allDone} size={40} />
         <span className="min-w-0 flex-1">
-          <span className="block text-callout font-semibold text-ink">Дела на сегодня</span>
+          <span className="block text-callout font-semibold text-ink">{tr("Дела на сегодня")}</span>
           <span className="block text-footnote text-ink-2">
-            {plan.total === 0 ? "Пока ничего не запланировано" : allDone ? "Всё сделано" : `Сделано ${plan.completed} из ${plan.total}`}
+            {plan.total === 0 ? tr("Пока ничего не запланировано") : allDone ? tr("Всё сделано") : tr("Сделано {0} из {1}", plan.completed, plan.total)}
           </span>
         </span>
         <ChevronRight size={16} className="shrink-0 text-ink-3" />
@@ -53,15 +54,12 @@ export function HomeToday() {
 
       <div className="flex items-center gap-1 px-2 pb-2 pt-1">
         <button type="button" onClick={() => nav.sheet("quickAdd", { due: today })} className="flex h-9 items-center gap-1.5 rounded-full px-2.5 text-footnote font-semibold text-accent-ink active:bg-surface-3">
-          <Plus size={15} strokeWidth={2.4} /> Записать дело
-        </button>
+          <Plus size={15} strokeWidth={2.4} />{tr("Записать дело")}</button>
         {planned !== today && plan.total - plan.completed === 0 ? (
           <button type="button" onClick={() => nav.sheet("planDay", {})} className="ml-auto flex h-9 items-center gap-1.5 rounded-full px-2.5 text-footnote font-medium text-ink-2 active:bg-surface-3">
-            <Sunrise size={15} /> Спланировать день
-          </button>
+            <Sunrise size={15} />{tr("Спланировать день")}</button>
         ) : more > 0 ? (
-          <button type="button" onClick={() => nav.planner("today")} className="ml-auto h-9 rounded-full px-2.5 text-footnote font-medium text-ink-2 active:bg-surface-3">
-            ещё {pluralN(more, ["дело", "дела", "дел"])}
+          <button type="button" onClick={() => nav.planner("today")} className="ml-auto h-9 rounded-full px-2.5 text-footnote font-medium text-ink-2 active:bg-surface-3">{tr("ещё")}{" "}{pluralN(more, ["дело", "дела", "дел"])}
           </button>
         ) : null}
       </div>

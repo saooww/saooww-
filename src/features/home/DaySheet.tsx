@@ -1,3 +1,4 @@
+import { locale } from "../../i18n/i18n";
 import { useMemo } from "react";
 import { CalendarCheck, CircleCheckBig, ReceiptText } from "../../ui/glyphs";
 import { capitalize, dayOf, startOfWeek } from "../../lib/dates";
@@ -11,6 +12,7 @@ import { Button, Group, ProgressBar } from "../../ui/primitives";
 import { Sheet, useSheet } from "../../ui/Sheet";
 import { TxRow, usePresentCtx } from "../transactions/TxRow";
 import { useLingering } from "../planner/actions";
+import { tr } from "../../i18n/i18n";
 
 /** Behind the day sphere: today's money and tasks in plain numbers. */
 export function DaySheet() {
@@ -27,7 +29,7 @@ export function DaySheet() {
   const s = useMemo(() => safeToSpend(data, balances, entries, today), [data, balances, entries, today]);
   const plan = useMemo(() => dayPlan(tasks, today, keep), [tasks, today, keep]);
   const todays = useMemo(() => transactions.filter((t) => dayOf(t.date) === today && (t.kind === "expense" || t.kind === "income")).sort((a, b) => (a.date < b.date ? 1 : -1)), [transactions, today]);
-  const title = capitalize(new Intl.DateTimeFormat("ru-RU", { weekday: "long", day: "numeric", month: "long" }).format(new Date()));
+  const title = capitalize(new Intl.DateTimeFormat(locale(), { weekday: "long", day: "numeric", month: "long" }).format(new Date()));
 
   const go = (fn: () => void) => {
     close();
@@ -35,34 +37,33 @@ export function DaySheet() {
   };
 
   return (
-    <Sheet title="Ваш день" ariaLabel="Ваш день" tall>
+    <Sheet title={tr("Ваш день")} ariaLabel={tr("Ваш день")} tall>
       <div className="px-5 pb-4 text-center text-subhead text-ink-2">{title}</div>
 
       {s && s.allowance > 0 && (
-        <Group header="Деньги">
+        <Group header={tr("Деньги")}>
           <div className="grid grid-cols-3 gap-2 p-3">
-            <Stat label={s.today < 0 ? "Сверх нормы" : "Можно ещё"}>
+            <Stat label={s.today < 0 ? tr("Сверх нормы") : tr("Можно ещё")}>
               <Money value={Math.abs(s.today)} currency={base} tone={s.today < 0 ? "negative" : "default"} privacy />
             </Stat>
-            <Stat label="Потрачено">
+            <Stat label={tr("Потрачено")}>
               <Money value={s.spentToday} currency={base} privacy />
             </Stat>
-            <Stat label="Норма">
+            <Stat label={tr("Норма")}>
               <Money value={s.allowance} currency={base} privacy />
             </Stat>
           </div>
           <div className="px-4 pb-4">
             <ProgressBar value={s.allowance ? Math.min(1, s.spentToday / s.allowance) : 0} tone={s.today < 0 ? "negative" : "ink"} />
             <div className="mt-2 text-footnote text-ink-2">
-              {s.daysLeft === 1 ? "Последний день месяца" : `До конца месяца ${s.daysLeft} дн.`} · норма пересчитывается каждое утро
-            </div>
+              {s.daysLeft === 1 ? tr("Последний день месяца") : tr("До конца месяца {0} дн.", s.daysLeft)}{tr("· норма пересчитывается каждое утро")}</div>
           </div>
         </Group>
       )}
 
       {todays.length > 0 && (
         <div className="mt-4">
-          <Group header="Операции сегодня">
+          <Group header={tr("Операции сегодня")}>
             {todays.slice(0, 6).map((tx) => (
               <TxRow key={tx.id} tx={tx} ctx={ctx} onOpen={(t) => go(() => nav.sheet("tx", { id: t.id }))} />
             ))}
@@ -71,14 +72,14 @@ export function DaySheet() {
       )}
 
       <div className="mt-4">
-        <Group header="Дела">
+        <Group header={tr("Дела")}>
           <div className="p-4">
             <div className="flex items-baseline justify-between">
               <span className="text-title-3 font-semibold tnum">
                 {plan.completed}
-                <span className="text-subhead font-normal text-ink-3"> из {plan.total}</span>
+                <span className="text-subhead font-normal text-ink-3">{tr("из")}{" "}{plan.total}</span>
               </span>
-              <span className="text-footnote text-ink-2">{plan.total === 0 ? "на сегодня ничего" : plan.completed === plan.total ? "всё сделано" : `осталось ${plan.total - plan.completed}`}</span>
+              <span className="text-footnote text-ink-2">{plan.total === 0 ? tr("на сегодня ничего") : plan.completed === plan.total ? tr("всё сделано") : tr("осталось {0}", plan.total - plan.completed)}</span>
             </div>
             <ProgressBar value={plan.total ? plan.completed / plan.total : 0} tone={plan.total && plan.completed === plan.total ? "positive" : "ink"} className="mt-3" />
           </div>
@@ -86,15 +87,9 @@ export function DaySheet() {
       </div>
 
       <div className="mt-5 grid grid-cols-1 gap-2 px-4">
-        <Button variant="secondary" icon={CircleCheckBig} onClick={() => go(() => nav.planner("today"))}>
-          Открыть дела
-        </Button>
-        <Button variant="secondary" icon={ReceiptText} onClick={() => go(() => nav.tab("transactions"))}>
-          Все операции
-        </Button>
-        <Button variant="secondary" icon={CalendarCheck} onClick={() => go(() => nav.sheet("weekReview", { from: startOfWeek(today) }))}>
-          Итоги недели
-        </Button>
+        <Button variant="secondary" icon={CircleCheckBig} onClick={() => go(() => nav.planner("today"))}>{tr("Открыть дела")}</Button>
+        <Button variant="secondary" icon={ReceiptText} onClick={() => go(() => nav.tab("transactions"))}>{tr("Все операции")}</Button>
+        <Button variant="secondary" icon={CalendarCheck} onClick={() => go(() => nav.sheet("weekReview", { from: startOfWeek(today) }))}>{tr("Итоги недели")}</Button>
       </div>
     </Sheet>
   );

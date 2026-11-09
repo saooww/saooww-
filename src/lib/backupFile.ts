@@ -1,5 +1,6 @@
 import { nowISO } from "./dates";
 import { exportJSON, useData } from "../store/store";
+import { tr } from "../i18n/i18n";
 
 /** Inside an embedding frame (e.g. a Claude artifact) file saving and sharing are blocked. */
 export function isEmbedded(): boolean {
@@ -36,7 +37,7 @@ export async function saveBackupFile(raw?: string): Promise<SaveResult> {
   const file = backupFile(raw ?? exportJSON());
   try {
     if (navigator.canShare?.({ files: [file] })) {
-      await navigator.share({ files: [file], title: "Ardessa — резервная копия" });
+      await navigator.share({ files: [file], title: tr("Ardessa — резервная копия") });
       if (!raw) useData.getState().updateSettings({ lastExternalBackup: nowISO() });
       return "shared";
     }

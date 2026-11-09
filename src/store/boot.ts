@@ -5,6 +5,7 @@ import { hadStoredData, onStorageFailure, requestPersistence } from "./storage";
 import { useData } from "./store";
 import type { Settings } from "./types";
 import { nav, useUI } from "./ui";
+import { tr } from "../i18n/i18n";
 
 /** Small mirror of visual settings, read synchronously by index.html before first paint. */
 export const PREFS_KEY = "kapital-prefs";
@@ -73,9 +74,9 @@ export function startBoot() {
   onStorageFailure(() => {
     if (Date.now() - lastWarning < 60_000) return;
     lastWarning = Date.now();
-    nav.toast("Не получилось сохранить изменения — на устройстве мало места. Сохраните копию в Файлы.", {
+    nav.toast(tr("Не получилось сохранить изменения — на устройстве мало места. Сохраните копию в Файлы."), {
       tone: "warning",
-      action: { label: "Копия", run: () => void import("../lib/backupFile").then((m) => m.saveBackupFile()) }
+      action: { label: tr("Копия"), run: () => void import("../lib/backupFile").then((m) => m.saveBackupFile()) }
     });
   });
 }

@@ -12,6 +12,7 @@ import { Money } from "../../ui/Money";
 import { ease } from "../../ui/motion";
 import { Button, IconChip } from "../../ui/primitives";
 import { Sheet, useSheet } from "../../ui/Sheet";
+import { tr } from "../../i18n/i18n";
 
 /** Computes the week from the store. */
 export function useWeekSummary(from: string | null): WeekSummary | null {
@@ -42,27 +43,25 @@ export function WeekReviewSheet({ from }: { from: string }) {
   const change = w.expenseChange;
 
   return (
-    <Sheet title="Итоги недели" ariaLabel="Итоги недели" tall onClose={() => update({ weekSeen: w.from })}>
+    <Sheet title={tr("Итоги недели")} ariaLabel={tr("Итоги недели")} tall onClose={() => update({ weekSeen: w.from })}>
       <div className="px-5 pb-5 text-center">
         <div className="section-label">{w.label}</div>
         <div className="font-display mt-1 text-title-2 text-ink text-balance">{headline(w)}</div>
       </div>
 
       {/* money */}
-      <Block title="Деньги" delay={0}>
+      <Block title={tr("Деньги")} delay={0}>
         <div className="grid grid-cols-2 gap-2">
-          <Stat icon={ArrowUpRight} label="Потрачено">
+          <Stat icon={ArrowUpRight} label={tr("Потрачено")}>
             <Money value={w.expense} currency={base} className="text-title-3 font-semibold" />
             {change !== null && (
               <div className={cn("text-caption font-medium", change > 0.05 ? "text-warning" : change < -0.05 ? "text-positive" : "text-ink-2")}>
-                {change > 0 ? "↑" : change < 0 ? "↓" : ""} {Math.abs(Math.round(change * 100))}% к прошлой неделе
-              </div>
+                {change > 0 ? "↑" : change < 0 ? "↓" : ""} {Math.abs(Math.round(change * 100))}{tr("% к прошлой неделе")}</div>
             )}
           </Stat>
-          <Stat icon={ArrowDownLeft} label="Получено">
+          <Stat icon={ArrowDownLeft} label={tr("Получено")}>
             <Money value={w.income} currency={base} tone={w.income > 0 ? "positive" : "default"} className="text-title-3 font-semibold" />
-            <div className="text-caption text-ink-2">
-              итог <Money value={w.net} currency={base} sign="always" />
+            <div className="text-caption text-ink-2">{tr("итог")}{" "}<Money value={w.net} currency={base} sign="always" />
             </div>
           </Stat>
         </div>
@@ -86,46 +85,42 @@ export function WeekReviewSheet({ from }: { from: string }) {
         )}
         <div className="mt-4 flex flex-col gap-2 text-footnote text-ink-2">
           {w.biggest && (
-            <Line icon={Flame}>
-              Самая крупная трата — {w.biggest.title}, <Money value={w.biggest.amount} currency={base} className="text-ink" /> ({formatDate(w.biggest.day)})
+            <Line icon={Flame}>{tr("Самая крупная трата —")}{" "}{w.biggest.title}, <Money value={w.biggest.amount} currency={base} className="text-ink" /> ({formatDate(w.biggest.day)})
             </Line>
           )}
           <Line icon={Coffee}>
-            {w.noSpendDays > 0 ? `${pluralN(w.noSpendDays, ["день", "дня", "дней"])} без трат из ${w.daysCounted}` : "Без трат не обошлось ни дня"}
+            {w.noSpendDays > 0 ? tr("{0} без трат из {1}", pluralN(w.noSpendDays, ["день", "дня", "дней"]), w.daysCounted) : tr("Без трат не обошлось ни дня")}
           </Line>
         </div>
       </Block>
 
       {/* tasks */}
-      <Block title="Дела" delay={0.08}>
+      <Block title={tr("Дела")} delay={0.08}>
         <div className="grid grid-cols-2 gap-2">
-          <Stat icon={CheckCheck} label="Сделано">
+          <Stat icon={CheckCheck} label={tr("Сделано")}>
             <div className="text-title-3 font-semibold tnum text-ink">{w.tasksDone}</div>
             <div className="text-caption text-ink-2">{plural(w.tasksDone, ["дело", "дела", "дел"])}</div>
           </Stat>
-          <Stat icon={Sparkles} label="Главное дня">
+          <Stat icon={Sparkles} label={tr("Главное дня")}>
             <div className="text-title-3 font-semibold tnum text-ink">
               {w.focusDone}
-              <span className="text-subhead font-normal text-ink-3"> из {w.focusTotal}</span>
+              <span className="text-subhead font-normal text-ink-3">{tr("из")}{" "}{w.focusTotal}</span>
             </div>
-            <div className="text-caption text-ink-2">{w.focusTotal ? `${Math.round((w.focusDone / w.focusTotal) * 100)}% выполнено` : "не выбирали"}</div>
+            <div className="text-caption text-ink-2">{w.focusTotal ? tr("{0}% выполнено", Math.round((w.focusDone / w.focusTotal) * 100)) : tr("не выбирали")}</div>
           </Stat>
         </div>
         <div className="mt-4 flex flex-col gap-2 text-footnote text-ink-2">
           {w.bestDay && (
-            <Line icon={Flame}>
-              Самый продуктивный день — {WEEKDAYS_LONG[w.bestDay.weekday]}: {pluralN(w.bestDay.done, ["дело", "дела", "дел"])}
+            <Line icon={Flame}>{tr("Самый продуктивный день —")}{" "}{WEEKDAYS_LONG[w.bestDay.weekday]}: {pluralN(w.bestDay.done, ["дело", "дела", "дел"])}
             </Line>
           )}
-          <Line icon={BookOpen}>{w.journalDays ? `В дневнике ${pluralN(w.journalDays, ["запись", "записи", "записей"])}` : "В дневнике пока пусто — пара строк вечером помогает"}</Line>
-          <Line icon={CalendarRange}>{w.nextWeekTasks ? `На следующую неделю уже ${pluralN(w.nextWeekTasks, ["дело", "дела", "дел"])}` : "Следующая неделя пока пустая"}</Line>
+          <Line icon={BookOpen}>{w.journalDays ? tr("В дневнике {0}", pluralN(w.journalDays, ["запись", "записи", "записей"])) : tr("В дневнике пока пусто — пара строк вечером помогает")}</Line>
+          <Line icon={CalendarRange}>{w.nextWeekTasks ? tr("На следующую неделю уже {0}", pluralN(w.nextWeekTasks, ["дело", "дела", "дел"])) : tr("Следующая неделя пока пустая")}</Line>
         </div>
       </Block>
 
       <div className="flex flex-col gap-2 px-4 pt-2">
-        <Button block onClick={done}>
-          Готово
-        </Button>
+        <Button block onClick={done}>{tr("Готово")}</Button>
         <Button
           variant="secondary"
           block
@@ -134,20 +129,18 @@ export function WeekReviewSheet({ from }: { from: string }) {
             useUI.getState().setPlannerView("week");
             nav.tab("planner");
           }}
-        >
-          Открыть следующую неделю
-        </Button>
+        >{tr("Открыть следующую неделю")}</Button>
       </div>
     </Sheet>
   );
 }
 
 function headline(w: WeekSummary): string {
-  if (w.empty) return "Тихая неделя";
-  if (w.focusTotal && w.focusDone === w.focusTotal) return "Всё главное сделано";
-  if (w.expenseChange !== null && w.expenseChange < -0.1) return "Потратили меньше, чем неделей раньше";
-  if (w.tasksDone >= 10) return "Насыщенная неделя";
-  return "Вот как прошла неделя";
+  if (w.empty) return tr("Тихая неделя");
+  if (w.focusTotal && w.focusDone === w.focusTotal) return tr("Всё главное сделано");
+  if (w.expenseChange !== null && w.expenseChange < -0.1) return tr("Потратили меньше, чем неделей раньше");
+  if (w.tasksDone >= 10) return tr("Насыщенная неделя");
+  return tr("Вот как прошла неделя");
 }
 
 function Block({ title, delay, children }: { title: string; delay: number; children: ReactNode }) {

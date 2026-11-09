@@ -11,20 +11,21 @@ import { useToday } from "../../store/hooks";
 import { useData } from "../../store/store";
 import { nav } from "../../store/ui";
 import { undoable } from "../../store/undo";
+import { tr } from "../../i18n/i18n";
 
-const HINTS = ["кофе 300", "зарплата 120 000", "позвонить маме завтра в 18", "отложить 5000 на отпуск", "такси 450 вчера"];
+const HINTS = [tr("кофе 300"), tr("зарплата 120 000"), tr("позвонить маме завтра в 18"), tr("отложить 5000 на отпуск"), tr("такси 450 вчера")];
 
 /** What the line understood, as a short label with an icon and tone. */
 function describe(r: SmartResult, names: { cat: (id?: string) => string | undefined; goal: (id: string) => string | undefined }): { icon: LucideIcon; tone: string; kind: string; text: string } | null {
   switch (r.kind) {
     case "expense":
-      return { icon: ArrowUpRight, tone: "text-accent-ink", kind: "Расход", text: [names.cat(r.categoryId) ?? r.title, formatMoney(r.amount)].filter(Boolean).join(" · ") };
+      return { icon: ArrowUpRight, tone: "text-accent-ink", kind: tr("Расход"), text: [names.cat(r.categoryId) ?? r.title, formatMoney(r.amount)].filter(Boolean).join(" · ") };
     case "income":
-      return { icon: ArrowDownLeft, tone: "text-positive", kind: "Доход", text: [names.cat(r.categoryId) ?? r.title, formatMoney(r.amount)].filter(Boolean).join(" · ") };
+      return { icon: ArrowDownLeft, tone: "text-positive", kind: tr("Доход"), text: [names.cat(r.categoryId) ?? r.title, formatMoney(r.amount)].filter(Boolean).join(" · ") };
     case "goal":
-      return { icon: PiggyBank, tone: "text-accent-ink", kind: "В цель", text: `${names.goal(r.goalId)} · ${formatMoney(r.amount)}` };
+      return { icon: PiggyBank, tone: "text-accent-ink", kind: tr("В цель"), text: `${names.goal(r.goalId)} · ${formatMoney(r.amount)}` };
     case "task":
-      return { icon: CircleCheckBig, tone: "text-ink", kind: "Дело", text: [r.task.title, ...r.task.tokens.map((t) => t.label)].filter(Boolean).join(" · ") };
+      return { icon: CircleCheckBig, tone: "text-ink", kind: tr("Дело"), text: [r.task.title, ...r.task.tokens.map((t) => t.label)].filter(Boolean).join(" · ") };
     default:
       return null;
   }
@@ -62,22 +63,22 @@ export function SmartLine({ autoFocus, onDone, compact }: { autoFocus?: boolean;
     if (result.kind === "task") {
       if (!result.task.title) return;
       const t = result.task;
-      undoable("Дело записано", () => st.addTask({ title: t.title, due: t.due, time: t.due ? t.time : undefined, repeat: t.repeat ?? "none", priority: t.priority ?? 0, projectId: t.projectId }));
+      undoable(tr("Дело записано"), () => st.addTask({ title: t.title, due: t.due, time: t.due ? t.time : undefined, repeat: t.repeat ?? "none", priority: t.priority ?? 0, projectId: t.projectId }));
     } else if (result.kind === "goal") {
       const goal = goals.find((g) => g.id === result.goalId);
       const from = live.find((w) => w.currency === goal?.currency && w.id !== goal?.walletId);
       if (!goal || !from) {
-        nav.toast("Нужен кошелёк в валюте цели", { tone: "warning" });
+        nav.toast(tr("Нужен кошелёк в валюте цели"), { tone: "warning" });
         return;
       }
-      undoable("Цель пополнена", () => st.moveGoalMoney(goal.id, from.id, result.amount, "deposit"));
+      undoable(tr("Цель пополнена"), () => st.moveGoalMoney(goal.id, from.id, result.amount, "deposit"));
     } else {
       if (!wallet) {
-        nav.toast("Сначала добавьте кошелёк", { tone: "warning" });
+        nav.toast(tr("Сначала добавьте кошелёк"), { tone: "warning" });
         return;
       }
       const r = result;
-      undoable(r.kind === "income" ? "Доход записан" : "Расход записан", () =>
+      undoable(r.kind === "income" ? tr("Доход записан") : tr("Расход записан"), () =>
         st.addTransaction({ kind: r.kind, amount: r.amount, walletId: wallet.id, categoryId: r.categoryId, note: r.title || undefined, date: r.day ? `${r.day}T12:00:00` : nowISO() })
       );
     }
@@ -103,13 +104,13 @@ export function SmartLine({ autoFocus, onDone, compact }: { autoFocus?: boolean;
           onChange={(e) => setText(e.target.value)}
           autoFocus={autoFocus}
           enterKeyHint="done"
-          aria-label="Умная строка: трата, доход, дело или цель"
-          placeholder={`Напишите, например «${hint}»`}
+          aria-label={tr("Умная строка: трата, доход, дело или цель")}
+          placeholder={tr("Напишите, например «{0}»", hint)}
           className="h-full min-w-0 flex-1 bg-transparent text-body text-ink outline-none placeholder:text-ink-3"
         />
         <motion.button
           type="submit"
-          aria-label="Записать"
+          aria-label={tr("Записать")}
           disabled={!ready}
           animate={{ scale: ready ? 1 : 0.8, opacity: ready ? 1 : 0 }}
           transition={{ type: "spring", stiffness: 500, damping: 30 }}

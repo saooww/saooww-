@@ -1,6 +1,7 @@
 import type { Category, Debt, Goal, ID, Transaction, Wallet } from "../store/types";
 import { timeOf } from "./dates";
 import type { Minor } from "./money";
+import { tr } from "../i18n/i18n";
 
 export interface TxView {
   icon: string;
@@ -27,12 +28,12 @@ export interface PresentCtx {
 }
 
 export const KIND_LABEL: Record<Transaction["kind"], string> = {
-  income: "Доход",
-  expense: "Расход",
-  transfer: "Перевод",
-  adjustment: "Корректировка",
-  debt: "Долг",
-  goal: "Цель"
+  income: tr("Доход"),
+  expense: tr("Расход"),
+  transfer: tr("Перевод"),
+  adjustment: tr("Корректировка"),
+  debt: tr("Долг"),
+  goal: tr("Цель")
 };
 
 export function presentTx(tx: Transaction, ctx: PresentCtx, opts: { time?: boolean; walletId?: ID } = {}): TxView {
@@ -62,29 +63,29 @@ export function presentTx(tx: Transaction, ctx: PresentCtx, opts: { time?: boole
     case "transfer": {
       // Seen from one wallet, a transfer is money out or in.
       if (opts.walletId && opts.walletId === tx.toWalletId) {
-        return { icon: "ArrowLeftRight", title: tx.note || "Перевод", subtitle: join(`из «${w?.name ?? "—"}»`), amount: tx.toAmount ?? tx.amount, sign: "always", tone: "default", currency: to?.currency ?? currency, time: clock };
+        return { icon: "ArrowLeftRight", title: tx.note || tr("Перевод"), subtitle: join(tr("из «{0}»", w?.name ?? "—")), amount: tx.toAmount ?? tx.amount, sign: "always", tone: "default", currency: to?.currency ?? currency, time: clock };
       }
       if (opts.walletId && opts.walletId === tx.walletId) {
-        return { icon: "ArrowLeftRight", title: tx.note || "Перевод", subtitle: join(`в «${to?.name ?? "—"}»`), amount: -tx.amount, sign: "always", tone: "default", currency, time: clock };
+        return { icon: "ArrowLeftRight", title: tx.note || tr("Перевод"), subtitle: join(tr("в «{0}»", to?.name ?? "—")), amount: -tx.amount, sign: "always", tone: "default", currency, time: clock };
       }
-      return { icon: "ArrowLeftRight", title: tx.note || "Перевод", subtitle: join(`${w?.name ?? "—"} → ${to?.name ?? "—"}`), amount: tx.amount, sign: "never", tone: "muted", currency, time: clock };
+      return { icon: "ArrowLeftRight", title: tx.note || tr("Перевод"), subtitle: join(`${w?.name ?? "—"} → ${to?.name ?? "—"}`), amount: tx.amount, sign: "never", tone: "muted", currency, time: clock };
     }
     case "adjustment":
-      return { icon: "SlidersHorizontal", title: tx.note || "Корректировка баланса", subtitle: join(w?.name), amount: tx.flow === "out" ? -tx.amount : tx.amount, sign: "always", tone: "muted", currency, time: clock };
+      return { icon: "SlidersHorizontal", title: tx.note || tr("Корректировка баланса"), subtitle: join(w?.name), amount: tx.flow === "out" ? -tx.amount : tx.amount, sign: "always", tone: "muted", currency, time: clock };
     case "debt": {
       const d = tx.debtId ? ctx.debts?.get(tx.debtId) : undefined;
       const who = d?.counterparty ?? tx.note ?? "";
       let title: string;
-      if (tx.debtRole === "open") title = d?.direction === "i_owe" ? `Долг получен: ${who}` : `Долг выдан: ${who}`;
-      else title = d?.direction === "i_owe" ? `Погашение долга: ${who}` : `Возврат долга: ${who}`;
-      return { icon: "HandCoins", title, subtitle: join(w?.name ?? "Без кошелька"), amount: tx.flow === "out" ? -tx.amount : tx.amount, sign: tx.walletId ? "always" : "never", tone: "muted", currency, time: clock };
+      if (tx.debtRole === "open") title = d?.direction === "i_owe" ? tr("Долг получен: {0}", who) : tr("Долг выдан: {0}", who);
+      else title = d?.direction === "i_owe" ? tr("Погашение долга: {0}", who) : tr("Возврат долга: {0}", who);
+      return { icon: "HandCoins", title, subtitle: join(w?.name ?? tr("Без кошелька")), amount: tx.flow === "out" ? -tx.amount : tx.amount, sign: tx.walletId ? "always" : "never", tone: "muted", currency, time: clock };
     }
     case "goal": {
       const g = tx.goalId ? ctx.goals?.get(tx.goalId) : undefined;
-      const name = g?.name ?? tx.note ?? "Цель";
+      const name = g?.name ?? tx.note ?? tr("Цель");
       return {
         icon: "Target",
-        title: tx.flow === "out" ? `В цель «${name}»` : `Из цели «${name}»`,
+        title: tx.flow === "out" ? tr("В цель «{0}»", name) : tr("Из цели «{0}»", name),
         subtitle: join(w?.name),
         amount: tx.flow === "out" ? -tx.amount : tx.amount,
         sign: tx.walletId ? "always" : "never",

@@ -12,6 +12,7 @@ import { useAppData, useCategoryMap, useLedger, useToday } from "../../store/hoo
 import { useData } from "../../store/store";
 import { nav } from "../../store/ui";
 import { IconChip, SectionHeader } from "../../ui/primitives";
+import { tr } from "../../i18n/i18n";
 
 type FeedItem = {
   id: string;
@@ -68,8 +69,8 @@ export function HomeFeed() {
       id: "story",
       icon: Sparkles,
       tone: "accent",
-      title: `Итоги ${story.nameGen} готовы`,
-      subtitle: "Куда ушли деньги и что получилось сберечь",
+      title: tr("Итоги {0} готовы", story.nameGen),
+      subtitle: tr("Куда ушли деньги и что получилось сберечь"),
       onOpen: () => {
         haptic();
         update({ storySeen: monthKey(prevMonth) });
@@ -83,8 +84,8 @@ export function HomeFeed() {
       id: "week",
       icon: CalendarCheck,
       tone: "accent",
-      title: "Итоги недели готовы",
-      subtitle: `Деньги и дела за ${week.label}`,
+      title: tr("Итоги недели готовы"),
+      subtitle: tr("Деньги и дела за {0}", week.label),
       onOpen: () => {
         haptic();
         nav.sheet("weekReview", { from: week.from });
@@ -97,20 +98,20 @@ export function HomeFeed() {
       id: "backup",
       icon: Share,
       tone: "accent",
-      title: "Сохраните копию данных",
-      subtitle: settings.lastExternalBackup ? `Последняя — ${diffDays(today, settings.lastExternalBackup.slice(0, 10))} дн. назад` : "В Файлы или iCloud — на случай потери телефона",
+      title: tr("Сохраните копию данных"),
+      subtitle: settings.lastExternalBackup ? tr("Последняя — {0} дн. назад", diffDays(today, settings.lastExternalBackup.slice(0, 10))) : tr("В Файлы или iCloud — на случай потери телефона"),
       action: {
-        label: "Сохранить",
+        label: tr("Сохранить"),
         run: async () => {
           const r = await saveBackupFile();
           if (r === "shared" || r === "downloaded") {
             haptic("success");
-            nav.toast("Копия сохранена", { tone: "positive" });
-          } else if (r === "failed") nav.toast("Не получилось — попробуйте в «Настройки → Данные»", { tone: "warning" });
+            nav.toast(tr("Копия сохранена"), { tone: "positive" });
+          } else if (r === "failed") nav.toast(tr("Не получилось — попробуйте в «Настройки → Данные»"), { tone: "warning" });
         }
       },
       onDismiss: () => update({ backupSnoozeUntil: addDays(today, 3) }),
-      dismissLabel: "Напомнить через 3 дня"
+      dismissLabel: tr("Напомнить через 3 дня")
     });
   }
   // a hint hidden with × stays hidden for today; the same situation can come back tomorrow
@@ -129,7 +130,7 @@ export function HomeFeed() {
           }
         : undefined,
       onDismiss: () => update({ dismissedHints: [...dismissed.filter((k) => k.startsWith(today)), hintKey].slice(-8) }),
-      dismissLabel: "Скрыть на сегодня"
+      dismissLabel: tr("Скрыть на сегодня")
     });
   }
 
@@ -137,7 +138,7 @@ export function HomeFeed() {
     <AnimatePresence initial={false}>
       {items.length > 0 && (
         <motion.div key="feed" className="mt-8" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3 }}>
-          <SectionHeader title="Важное" />
+          <SectionHeader title={tr("Важное")} />
           <div className="panel mx-4 overflow-hidden rounded-lg">
             <AnimatePresence initial={false}>
               {items.map((it, i) => (
@@ -180,7 +181,7 @@ function FeedRow({ item }: { item: FeedItem }) {
           {item.action.label}
         </button>
       )}
-      <button type="button" aria-label={item.dismissLabel ?? "Скрыть"} onClick={item.onDismiss} className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-ink-3 active:bg-surface-press">
+      <button type="button" aria-label={item.dismissLabel ?? tr("Скрыть")} onClick={item.onDismiss} className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-ink-3 active:bg-surface-press">
         <X size={16} />
       </button>
     </div>

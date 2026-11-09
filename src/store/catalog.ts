@@ -1,4 +1,5 @@
 import type { CardStyle, Category, WalletKind, CardPattern } from "./types";
+import { tr } from "../i18n/i18n";
 
 /**
  * Chart palette: muted, evenly weighted hues. Colour is used only for data
@@ -22,35 +23,35 @@ export const CHART_COLORS = [
 export const OTHER_COLOR = "#7C7C84";
 
 export const DEFAULT_EXPENSE_CATEGORIES: Array<Omit<Category, "kind">> = [
-  { id: "c-groceries", name: "Продукты", icon: "ShoppingBasket", color: CHART_COLORS[0] },
-  { id: "c-cafe", name: "Кафе и рестораны", icon: "Coffee", color: CHART_COLORS[1] },
-  { id: "c-transport", name: "Транспорт", icon: "TramFront", color: CHART_COLORS[3] },
-  { id: "c-taxi", name: "Такси", icon: "CarTaxiFront", color: CHART_COLORS[9] },
-  { id: "c-car", name: "Автомобиль", icon: "Car", color: CHART_COLORS[7] },
-  { id: "c-home", name: "Дом и ЖКХ", icon: "House", color: CHART_COLORS[2] },
-  { id: "c-connect", name: "Связь и интернет", icon: "Wifi", color: CHART_COLORS[6] },
-  { id: "c-subs", name: "Подписки", icon: "Repeat", color: CHART_COLORS[4] },
-  { id: "c-health", name: "Здоровье", icon: "HeartPulse", color: CHART_COLORS[5] },
-  { id: "c-sport", name: "Спорт", icon: "Dumbbell", color: CHART_COLORS[10] },
-  { id: "c-shopping", name: "Покупки", icon: "ShoppingBag", color: CHART_COLORS[8] },
-  { id: "c-clothes", name: "Одежда", icon: "Shirt", color: CHART_COLORS[11] },
-  { id: "c-fun", name: "Развлечения", icon: "Ticket", color: CHART_COLORS[4] },
-  { id: "c-travel", name: "Путешествия", icon: "Plane", color: CHART_COLORS[3] },
-  { id: "c-education", name: "Образование", icon: "GraduationCap", color: CHART_COLORS[6] },
-  { id: "c-gifts", name: "Подарки", icon: "Gift", color: CHART_COLORS[5] },
-  { id: "c-beauty", name: "Красота", icon: "Sparkles", color: CHART_COLORS[11] },
-  { id: "c-pets", name: "Питомцы", icon: "PawPrint", color: CHART_COLORS[7] },
-  { id: "c-other", name: "Прочее", icon: "CircleDashed", color: OTHER_COLOR }
+  { id: "c-groceries", name: tr("Продукты"), icon: "ShoppingBasket", color: CHART_COLORS[0] },
+  { id: "c-cafe", name: tr("Кафе и рестораны"), icon: "Coffee", color: CHART_COLORS[1] },
+  { id: "c-transport", name: tr("Транспорт"), icon: "TramFront", color: CHART_COLORS[3] },
+  { id: "c-taxi", name: tr("Такси"), icon: "CarTaxiFront", color: CHART_COLORS[9] },
+  { id: "c-car", name: tr("Автомобиль"), icon: "Car", color: CHART_COLORS[7] },
+  { id: "c-home", name: tr("Дом и ЖКХ"), icon: "House", color: CHART_COLORS[2] },
+  { id: "c-connect", name: tr("Связь и интернет"), icon: "Wifi", color: CHART_COLORS[6] },
+  { id: "c-subs", name: tr("Подписки"), icon: "Repeat", color: CHART_COLORS[4] },
+  { id: "c-health", name: tr("Здоровье"), icon: "HeartPulse", color: CHART_COLORS[5] },
+  { id: "c-sport", name: tr("Спорт"), icon: "Dumbbell", color: CHART_COLORS[10] },
+  { id: "c-shopping", name: tr("Покупки"), icon: "ShoppingBag", color: CHART_COLORS[8] },
+  { id: "c-clothes", name: tr("Одежда"), icon: "Shirt", color: CHART_COLORS[11] },
+  { id: "c-fun", name: tr("Развлечения"), icon: "Ticket", color: CHART_COLORS[4] },
+  { id: "c-travel", name: tr("Путешествия"), icon: "Plane", color: CHART_COLORS[3] },
+  { id: "c-education", name: tr("Образование"), icon: "GraduationCap", color: CHART_COLORS[6] },
+  { id: "c-gifts", name: tr("Подарки"), icon: "Gift", color: CHART_COLORS[5] },
+  { id: "c-beauty", name: tr("Красота"), icon: "Sparkles", color: CHART_COLORS[11] },
+  { id: "c-pets", name: tr("Питомцы"), icon: "PawPrint", color: CHART_COLORS[7] },
+  { id: "c-other", name: tr("Прочее"), icon: "CircleDashed", color: OTHER_COLOR }
 ];
 
 export const DEFAULT_INCOME_CATEGORIES: Array<Omit<Category, "kind">> = [
-  { id: "i-salary", name: "Зарплата", icon: "BriefcaseBusiness", color: CHART_COLORS[2] },
-  { id: "i-freelance", name: "Фриланс", icon: "Laptop", color: CHART_COLORS[3] },
-  { id: "i-invest", name: "Проценты и дивиденды", icon: "TrendingUp", color: CHART_COLORS[6] },
-  { id: "i-cashback", name: "Кешбэк", icon: "BadgePercent", color: CHART_COLORS[1] },
-  { id: "i-gifts", name: "Подарки", icon: "Gift", color: CHART_COLORS[5] },
-  { id: "i-sale", name: "Продажа вещей", icon: "Tag", color: CHART_COLORS[7] },
-  { id: "i-other", name: "Прочее", icon: "CircleDashed", color: OTHER_COLOR }
+  { id: "i-salary", name: tr("Зарплата"), icon: "BriefcaseBusiness", color: CHART_COLORS[2] },
+  { id: "i-freelance", name: tr("Фриланс"), icon: "Laptop", color: CHART_COLORS[3] },
+  { id: "i-invest", name: tr("Проценты и дивиденды"), icon: "TrendingUp", color: CHART_COLORS[6] },
+  { id: "i-cashback", name: tr("Кешбэк"), icon: "BadgePercent", color: CHART_COLORS[1] },
+  { id: "i-gifts", name: tr("Подарки"), icon: "Gift", color: CHART_COLORS[5] },
+  { id: "i-sale", name: tr("Продажа вещей"), icon: "Tag", color: CHART_COLORS[7] },
+  { id: "i-other", name: tr("Прочее"), icon: "CircleDashed", color: OTHER_COLOR }
 ];
 
 export function defaultCategories(): Category[] {
@@ -72,12 +73,12 @@ export const CATEGORY_ICON_CHOICES = [
 export const GOAL_ICON_CHOICES = ["Target", "House", "Car", "Plane", "LifeBuoy", "GraduationCap", "Laptop", "Gem", "Baby", "Mountain", "Sofa", "Gift"];
 
 export const WALLET_KINDS: Array<{ kind: WalletKind; label: string; icon: string }> = [
-  { kind: "card", label: "Банковская карта", icon: "CreditCard" },
-  { kind: "cash", label: "Наличные", icon: "Banknote" },
-  { kind: "savings", label: "Накопления", icon: "PiggyBank" },
-  { kind: "bank", label: "Банковский счёт", icon: "Landmark" },
-  { kind: "investment", label: "Инвестиции", icon: "ChartCandlestick" },
-  { kind: "other", label: "Другое", icon: "Wallet" }
+  { kind: "card", label: tr("Банковская карта"), icon: "CreditCard" },
+  { kind: "cash", label: tr("Наличные"), icon: "Banknote" },
+  { kind: "savings", label: tr("Накопления"), icon: "PiggyBank" },
+  { kind: "bank", label: tr("Банковский счёт"), icon: "Landmark" },
+  { kind: "investment", label: tr("Инвестиции"), icon: "ChartCandlestick" },
+  { kind: "other", label: tr("Другое"), icon: "Wallet" }
 ];
 
 export function walletKindInfo(kind: WalletKind) {
@@ -129,7 +130,7 @@ export const CARD_MATERIALS: CardMaterial[] = [
   },
   {
     id: "obsidian",
-    name: "Обсидиан",
+    name: tr("Обсидиан"),
     background: lit("#1d1d20", "#0d0d0f", "#020203", 0.1),
     ink: "#F6F5F3",
     inkMuted: "rgba(246,245,243,0.56)",
@@ -139,7 +140,7 @@ export const CARD_MATERIALS: CardMaterial[] = [
   },
   {
     id: "graphite",
-    name: "Графит",
+    name: tr("Графит"),
     background: lit("#3a3a40", "#232327", "#111113", 0.13),
     ink: "#F6F5F3",
     inkMuted: "rgba(246,245,243,0.58)",
@@ -149,7 +150,7 @@ export const CARD_MATERIALS: CardMaterial[] = [
   },
   {
     id: "titanium",
-    name: "Титан",
+    name: tr("Титан"),
     background: lit("#a19d96", "#6a6762", "#33322e", 0.3),
     ink: "#FCFBF9",
     inkMuted: "rgba(252,251,249,0.7)",
@@ -159,7 +160,7 @@ export const CARD_MATERIALS: CardMaterial[] = [
   },
   {
     id: "bordeaux",
-    name: "Бордо",
+    name: tr("Бордо"),
     background: lit("#86202b", "#4f0d15", "#1c0306", 0.18),
     ink: "#FFF5F5",
     inkMuted: "rgba(255,245,245,0.64)",
@@ -169,7 +170,7 @@ export const CARD_MATERIALS: CardMaterial[] = [
   },
   {
     id: "ivory",
-    name: "Белая",
+    name: tr("Белая"),
     background: lit("#fbfaf6", "#ece8df", "#d6d0c4", 0.9),
     ink: "#16140F",
     inkMuted: "rgba(22,20,15,0.58)",
@@ -192,7 +193,7 @@ const RETIRED: Partial<Record<CardStyle, CardStyle>> = {
 /** The overview card: sumi black with a low vermilion sun. */
 export const TOTAL_MATERIAL: CardMaterial = {
   id: "graphite",
-  name: "Все счета",
+  name: tr("Все счета"),
   background: [
     // follows the chosen accent colour
     "radial-gradient(75% 65% at 92% 108%, color-mix(in srgb, var(--accent) 42%, transparent), color-mix(in srgb, var(--accent) 8%, transparent) 55%, transparent 75%)",
@@ -216,7 +217,7 @@ export function customMaterial(hex: string): CardMaterial {
   const light = 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.62;
   return {
     id: "graphite",
-    name: "Свой цвет",
+    name: tr("Свой цвет"),
     background: lit(`color-mix(in srgb, ${hex} 78%, white)`, hex, `color-mix(in srgb, ${hex} 45%, black)`, light ? 0.6 : 0.22),
     ink: light ? "#16140F" : "#FFFAF6",
     inkMuted: light ? "rgba(22,20,15,0.58)" : "rgba(255,250,246,0.7)",

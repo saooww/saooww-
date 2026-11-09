@@ -2,6 +2,7 @@ import { addDays, dayOf, eachDay, MONTHS_GEN, parseDay, startOfWeek, weekdayInde
 import type { LedgerEntry } from "./finance";
 import type { Minor } from "./money";
 import type { Category, ID, Note, Task } from "../store/types";
+import { tr } from "../i18n/i18n";
 
 export interface WeekCategory {
   id: string;
@@ -42,7 +43,7 @@ export interface WeekSummary {
   empty: boolean;
 }
 
-const OTHER = { name: "Без категории", icon: "CircleDashed", color: "#7C7C84" };
+const OTHER = { name: tr("Без категории"), icon: "CircleDashed", color: "#7C7C84" };
 
 export function weekLabel(from: DayKey, to: DayKey): string {
   const a = parseDay(from);
@@ -85,7 +86,7 @@ export function weekSummary(entries: LedgerEntry[], tasks: Task[], notes: Note[]
       byCat.set(k, (byCat.get(k) ?? 0) + e.base);
       if (!biggest || e.base > biggest.amount) {
         const c = e.tx.categoryId ? categories.get(e.tx.categoryId) : undefined;
-        biggest = { title: e.tx.note || c?.name || "Расход", amount: e.base, day: e.day, icon: c?.icon ?? OTHER.icon, color: c?.color ?? OTHER.color };
+        biggest = { title: e.tx.note || c?.name || tr("Расход"), amount: e.base, day: e.day, icon: c?.icon ?? OTHER.icon, color: c?.color ?? OTHER.color };
       }
     }
   }

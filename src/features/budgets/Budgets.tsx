@@ -17,16 +17,17 @@ import { Money } from "../../ui/Money";
 import { spring } from "../../ui/motion";
 import { Button, EmptyState, FormRow, Group, IconButton, IconChip, ProgressBar, inputCls } from "../../ui/primitives";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
+import { tr } from "../../i18n/i18n";
 
 /** Spending noticeably ahead of the calendar: more than 15 points past the share of the month gone. */
 const isFast = (b: BudgetState, monthShare: number) => b.level === "ok" && b.progress > monthShare + 0.15 && b.projected > b.limit;
 const toneOf = (b: BudgetState, monthShare: number) => (b.level === "over" ? "negative" : b.level === "near" || isFast(b, monthShare) ? "warning" : "ink");
 
 function statusOf(b: BudgetState, monthShare: number, daysLeft: number): { text: string; cls: string } {
-  if (b.level === "over") return { text: `Превышен на ${formatMoney(-b.remaining)}`, cls: "text-negative" };
-  if (b.level === "near") return { text: `Почти исчерпан · осталось ${formatMoney(b.remaining)}`, cls: "text-warning" };
-  if (isFast(b, monthShare)) return { text: `Быстрее плана · к концу месяца ~${formatMoney(Math.round(b.projected / 10_000) * 10_000)}`, cls: "text-warning" };
-  return { text: `≈ ${formatMoney(Math.floor(b.remaining / daysLeft / 100) * 100)} в день до конца месяца`, cls: "text-ink-2" };
+  if (b.level === "over") return { text: tr("Превышен на {0}", formatMoney(-b.remaining)), cls: "text-negative" };
+  if (b.level === "near") return { text: tr("Почти исчерпан · осталось {0}", formatMoney(b.remaining)), cls: "text-warning" };
+  if (isFast(b, monthShare)) return { text: tr("Быстрее плана · к концу месяца ~{0}", formatMoney(Math.round(b.projected / 10_000) * 10_000)), cls: "text-warning" };
+  return { text: tr("≈ {0} в день до конца месяца", formatMoney(Math.floor(b.remaining / daysLeft / 100) * 100)), cls: "text-ink-2" };
 }
 
 export function BudgetsScreen() {
@@ -53,37 +54,34 @@ export function BudgetsScreen() {
   }, [states, entries, today]);
 
   return (
-    <Screen title="Бюджеты" large actions={<IconButton icon={Plus} label="Новый бюджет" onClick={() => nav.sheet("budget")} />}>
+    <Screen title={tr("Бюджеты")} large actions={<IconButton icon={Plus} label={tr("Новый бюджет")} onClick={() => nav.sheet("budget")} />}>
       <div className="-mt-2 px-5 pb-4 text-subhead text-ink-2">
-        {monthTitle(today)} · осталось {pluralN(daysLeft, ["день", "дня", "дней"])}
-        {items.length > 0 && <> · в норме {calm} из {items.length}</>}
+        {monthTitle(today)}{tr("· осталось")}{" "}{pluralN(daysLeft, ["день", "дня", "дней"])}
+        {items.length > 0 && <>{tr("· в норме")}{" "}{calm}{tr("из")}{" "}{items.length}</>}
       </div>
 
       {states.length === 0 ? (
-        <EmptyState icon={Gauge} title="Бюджетов пока нет" text="Задайте месячный лимит для категории — например, «Продукты — 30 000 ₽». Мы подскажем, когда он будет близок." action={<Button size="md" icon={Plus} onClick={() => nav.sheet("budget")}>Создать бюджет</Button>} />
+        <EmptyState icon={Gauge} title={tr("Бюджетов пока нет")} text={tr("Задайте месячный лимит для категории — например, «Продукты — 30 000 ₽». Мы подскажем, когда он будет близок.")} action={<Button size="md" icon={Plus} onClick={() => nav.sheet("budget")}>{tr("Создать бюджет")}</Button>} />
       ) : (
         <div className="flex flex-col gap-3 px-4">
           {overall && (
             <motion.button type="button" whileTap={{ scale: 0.985 }} onClick={() => nav.sheet("budget", { editId: overall.id })} className="panel rounded-xl p-4 text-left">
-              <div className="text-footnote font-medium text-ink-2">Все расходы за месяц</div>
+              <div className="text-footnote font-medium text-ink-2">{tr("Все расходы за месяц")}</div>
               <div className="mt-1 flex items-baseline justify-between gap-3">
                 <Money value={overall.spent} variant="hero" className="text-title-2 font-semibold" />
-                <span className="text-footnote text-ink-2">
-                  из <Money value={overall.limit} />
+                <span className="text-footnote text-ink-2">{tr("из")}{" "}<Money value={overall.limit} />
                 </span>
               </div>
               <ProgressBar value={overall.progress} tone={toneOf(overall, monthShare)} height={8} className="mt-3" marker={monthShare} />
               <div className="mt-2.5 text-footnote text-ink-2">
                 {overall.remaining >= 0 ? (
-                  <>
-                    Осталось <span className="font-semibold text-ink">{formatMoney(overall.remaining)}</span> · примерно {formatMoney(Math.floor(overall.remaining / daysLeft / 100) * 100)} в день
-                  </>
+                  <>{tr("Осталось")}{" "}<span className="font-semibold text-ink">{formatMoney(overall.remaining)}</span>{tr("· примерно")}{" "}{formatMoney(Math.floor(overall.remaining / daysLeft / 100) * 100)}{tr("в день")}</>
                 ) : (
-                  <span className="text-negative">Превышен на {formatMoney(-overall.remaining)}</span>
+                  <span className="text-negative">{tr("Превышен на")}{" "}{formatMoney(-overall.remaining)}</span>
                 )}
               </div>
               {overall.level === "ok" && overall.projected > overall.limit && (
-                <div className="mt-1 text-footnote text-warning">При текущем темпе к концу месяца выйдет около {formatMoney(Math.round(overall.projected / 10_000) * 10_000)}</div>
+                <div className="mt-1 text-footnote text-warning">{tr("При текущем темпе к концу месяца выйдет около")}{" "}{formatMoney(Math.round(overall.projected / 10_000) * 10_000)}</div>
               )}
             </motion.button>
           )}
@@ -104,9 +102,9 @@ export function BudgetsScreen() {
                 <div className="flex items-center gap-3">
                   <IconChip name={c?.icon} color={c?.color} size={34} />
                   <div className="min-w-0 flex-1">
-                    <div className="truncate text-body font-medium">{c?.name ?? "Категория"}</div>
+                    <div className="truncate text-body font-medium">{c?.name ?? tr("Категория")}</div>
                     <div className="text-footnote text-ink-2">
-                      <Money value={b.spent} className="text-ink" /> из <Money value={b.limit} />
+                      <Money value={b.spent} className="text-ink" />{tr("из")}{" "}<Money value={b.limit} />
                     </div>
                   </div>
                   <span className={cn("text-callout font-semibold tnum", b.level === "over" ? "text-negative" : toneOf(b, monthShare) === "warning" ? "text-warning" : "text-ink-2")}>{Math.round(b.progress * 100)}%</span>
@@ -118,7 +116,7 @@ export function BudgetsScreen() {
           })}
           {unbudgeted.length > 0 && (
             <div className="mt-3">
-              <div className="section-label px-1 pb-2.5">Без лимита в этом месяце</div>
+              <div className="section-label px-1 pb-2.5">{tr("Без лимита в этом месяце")}</div>
               <Group className="!mx-0">
                 {unbudgeted.map(([id, spent]) => {
                   const c = cats.get(id);
@@ -126,20 +124,18 @@ export function BudgetsScreen() {
                     <button key={id} type="button" onClick={() => nav.sheet("budget", { categoryId: id })} className="flex min-h-[54px] w-full items-center gap-3 px-4 py-2.5 text-left active:bg-surface-press">
                       <IconChip name={c?.icon} color={c?.color} size={30} />
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-body text-ink">{c?.name ?? "Категория"}</span>
-                        <span className="block text-footnote text-ink-2">потрачено {formatMoney(spent)}</span>
+                        <span className="block truncate text-body text-ink">{c?.name ?? tr("Категория")}</span>
+                        <span className="block text-footnote text-ink-2">{tr("потрачено")}{" "}{formatMoney(spent)}</span>
                       </span>
                       <span className="tile flex h-8 shrink-0 items-center gap-1 rounded-full px-3 text-footnote font-semibold text-ink">
-                        <Plus size={14} strokeWidth={2.4} />
-                        Лимит
-                      </span>
+                        <Plus size={14} strokeWidth={2.4} />{tr("Лимит")}</span>
                     </button>
                   );
                 })}
               </Group>
             </div>
           )}
-          <p className="px-1 pt-1 text-caption text-ink-3">Вертикальная метка — сколько месяца уже прошло. Если полоса правее метки, вы тратите быстрее плана.</p>
+          <p className="px-1 pt-1 text-caption text-ink-3">{tr("Вертикальная метка — сколько месяца уже прошло. Если полоса правее метки, вы тратите быстрее плана.")}</p>
         </div>
       )}
     </Screen>
@@ -156,7 +152,7 @@ export function BudgetSheet({ editId, categoryId: presetCategory }: { editId?: I
   const [categoryId, setCategoryId] = useState<string>(existing ? existing.categoryId ?? "__all" : presetCategory ?? "");
   const [limit, setLimit] = useState(existing ? amountToInput(existing.limit).replace(",", ".") : "");
   const taken = new Set(budgets.filter((b) => b.id !== existing?.id).map((b) => b.categoryId ?? "__all"));
-  const options = [{ id: "__all", name: "Все расходы", icon: "Gauge" }, ...categories.filter((c) => c.kind === "expense" && !c.archived)].filter((c) => !taken.has(c.id));
+  const options = [{ id: "__all", name: tr("Все расходы"), icon: "Gauge" }, ...categories.filter((c) => c.kind === "expense" && !c.archived)].filter((c) => !taken.has(c.id));
 
   const typical = useMemo(() => {
     if (!categoryId) return 0;
@@ -183,26 +179,25 @@ export function BudgetSheet({ editId, categoryId: presetCategory }: { editId?: I
 
   return (
     <Sheet
-      title={existing ? "Бюджет" : "Новый бюджет"}
-      left={<SheetAction onClick={close}>Отмена</SheetAction>}
-      right={<SheetAction strong disabled={!valid} onClick={save}>Готово</SheetAction>}
+      title={existing ? tr("Бюджет") : tr("Новый бюджет")}
+      left={<SheetAction onClick={close}>{tr("Отмена")}</SheetAction>}
+      right={<SheetAction strong disabled={!valid} onClick={save}>{tr("Готово")}</SheetAction>}
     >
       <div className="flex flex-col gap-5 pt-1">
-        <Group footer={typical > 0 ? `Обычно вы тратите здесь около ${formatMoney(typical)} в месяц.` : undefined}>
-          <FormRow label="Лимит в месяц">
+        <Group footer={typical > 0 ? tr("Обычно вы тратите здесь около {0} в месяц.", formatMoney(typical)) : undefined}>
+          <FormRow label={tr("Лимит в месяц")}>
             <input autoFocus inputMode="decimal" value={limit} onChange={(e) => setLimit(e.target.value.replace(/[^\d.,]/g, ""))} placeholder="0" className={cn(inputCls, "text-right tnum")} />
           </FormRow>
           {typical > 0 && !limit && (
             <div className="px-4 pb-3">
-              <button type="button" onClick={() => setLimit(String(Math.ceil(typical / 100 / 1000) * 1000))} className="text-subhead font-medium text-accent-ink">
-                Подставить {formatMoney(Math.ceil(typical / 100 / 1000) * 100_000)}
+              <button type="button" onClick={() => setLimit(String(Math.ceil(typical / 100 / 1000) * 1000))} className="text-subhead font-medium text-accent-ink">{tr("Подставить")}{" "}{formatMoney(Math.ceil(typical / 100 / 1000) * 100_000)}
               </button>
             </div>
           )}
         </Group>
-        <Group header="Категория">
+        <Group header={tr("Категория")}>
           <div className="grid grid-cols-2 gap-1.5 p-2">
-            {(existing ? [...options, ...(existing.categoryId ? categories.filter((c) => c.id === existing.categoryId) : [{ id: "__all", name: "Все расходы", icon: "Gauge" }])].filter((v, i, a) => a.findIndex((x) => x.id === v.id) === i) : options).map((c) => (
+            {(existing ? [...options, ...(existing.categoryId ? categories.filter((c) => c.id === existing.categoryId) : [{ id: "__all", name: tr("Все расходы"), icon: "Gauge" }])].filter((v, i, a) => a.findIndex((x) => x.id === v.id) === i) : options).map((c) => (
               <button
                 key={c.id}
                 type="button"
@@ -227,19 +222,15 @@ export function BudgetSheet({ editId, categoryId: presetCategory }: { editId?: I
                 useUI.getState().setTxFilter({ kind: "expense", categoryId: existing.categoryId ?? undefined, period: "month" }, true);
                 nav.tab("transactions");
               }}
-            >
-              Операции за месяц
-            </Button>
+            >{tr("Операции за месяц")}</Button>
             <Button
               variant="danger"
               block
               onClick={() => {
-                undoable("Бюджет удалён", () => useData.getState().deleteBudget(existing.id));
+                undoable(tr("Бюджет удалён"), () => useData.getState().deleteBudget(existing.id));
                 close();
               }}
-            >
-              Удалить бюджет
-            </Button>
+            >{tr("Удалить бюджет")}</Button>
           </div>
         )}
       </div>
