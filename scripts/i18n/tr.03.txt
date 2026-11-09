@@ -1,0 +1,150 @@
+Hesap kartları
+Kategoriler
+Kategori
+Kategori gizlendi, geçmiş korundu
+Kategori silindi
+Parçanın kategorisi
+Kafe ve restoranlar
+Çeyrek
+Daire
+Daire, araba, tatil veya acil durum fonu — ayda ne kadar biriktireceğinizi hesaplayalım.
+Daire, tatil, fon
+Nakit iade
+Kınabarı
+Çin yuanı
+Tutar klavyesi
+Ne zaman
+Uygulamayı açarken 4 haneli kod. iPhone'da Face ID ile giriş yapabilirsiniz.
+Kod değiştirildi
+Kod yalnızca bu cihazda saklanır, geri getirilemez. Uygulama verilerini silip baştan başlayabilir, sonra kaydettiyseniz yedeği yükleyebilirsiniz.
+Giriş kodu
+Giriş kodu açık
+Giriş kodu kapalı
+Kodlar eşleşmedi — tekrar
+Halka
+Yorum
+Yorum: {0}
+Kime
+Kuruş
+Kopya
+Telefon dışında kopya
+Kopya geri yüklendi
+Kopya kaydedildi
+Kopya kaydedildi.
+Kısaca: ne kadar gitti, nereye ve ne kadar biriktirebildiniz.
+Düzeltme
+Bakiye düzeltmesi
+Bir güne dokunun
+Ayrıntılar için bir aya dokunun
+Cüzdanlar
+Cüzdan
+Cüzdan arşivlendi
+Cüzdan geri yüklendi
+Cüzdan ve içindeki para değişmez.
+Cüzdan oluşturuldu
+Cüzdan kaydedildi
+Cüzdan silindi
+Güzellik
+Büyük alımlar ve tahmin
+Büyük
+Kim kime ne kadar borçlu
+Nereye
+Görevler nereye eklensin
+Para nereye gitti ve ne kadar biriktirildi
+En çok nereye gitti
+Merkez Bankası kurları internet olunca yüklenecek.
+Merkez Bankası kurları otomatik
+Döviz kurları
+Kurlar elle girilir.
+Kurlar güncellendi
+Orman
+Limit
+Aylık limit
+Kategori limitleri
+Kişisel
+Daha az
+Ay
+Eksi
+Diğer günlerden alınabilir
+Hâlâ harcanabilir
+Bugün harcanabilir
+Bugün
+Moka
+Mono
+Gün
+Hafta sonu
+Ana ekranda
+Duraklatıldı
+Bugün için {0}. Önemlileri sonra seçebilirsiniz.
+Bugün için başka bir şey yok
+Gelecek hafta için şimdiden {0}
+Hesaplarda
+Ne için biriktiriyoruz
+Gözlemler
+Geri
+Ad
+Liste adı
+Birikim ve yatırım hesapları, hedeflerdeki para — {0} içinde
+3 aylık ortalama harcamaya karşı birikim hesapları (ayda {0}). Önerilen yedek 3–6 aydır.
+Birikimler {0} {1} olağan harcamayı karşılar{2}
+Birikimler
+Biriktirilen {0}, geldikleri cüzdanlara geri döner.
+Biriken
+Nakit
+Yazın, örneğin «{0}»
+3 gün sonra hatırlat
+Örneğin «Mutfak tadilatı»
+Örneğin Kart
+Örneğin müzik
+Örneğin prim
+Örneğin tadilat
+Ana sayfayı özelleştir
+Ayarlar
+Ayarlar ve profil
+Yoğun bir hafta
+Dönemin başlangıcı bitişinden önce olmalı.
+Başlangıç bakiyesi
+Başla
+Güne başla
+Baştan başla
+Sıfırdan başlansın mı?
+Kendi verilerimle başla
+Şununla başlayın: «
+Seçilmedi
+Tekrarlama
+Takvim açılamadı
+Kopyalanamadı.
+Değişiklikler kaydedilemedi — cihazda yer az. Dosyalar'a kopya kaydedin.
+Dosya kaydedilemedi — kopyalamayı deneyin.
+Dosya kaydedilemedi — yedeği metin olarak kopyalayın
+Fotoğraf kaydedilemedi
+Olmadı — «Ayarlar → Veriler» bölümünü deneyin
+Kurlar yüklenemedi — bağlantıyı kontrol edin
+Dosya okunamadı
+Belirtilmedi
+Yetişmedi
+Yetişmedi — olur böyle. Ne zaman yapacağınıza karar verin ya da bırakın.
+Yanlış kod · kalan deneme: {0}
+Hafta
+İsteğe bağlı
+Hayır
+Cüzdan yok
+Düzenli ödeme yok
+Hiçbir şey olmadı
+Planlanan bir şey yok
+Hiçbir şey bulunamadı
+Yeni
+Yeni not
+Göreve yeni not
+Yeni kategori
+Yeni işlem
+Yeni abonelik
+Yeni hedef
+Yeni görev
+Yeni
+Yeni bütçe
+Yeni borç
+Yeni cüzdan
+Yeni ay — yeni şans.
+Yeni harcama
+Yeni liste

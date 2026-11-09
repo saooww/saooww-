@@ -1,0 +1,150 @@
+Account cards
+Categories
+Category
+Category hidden, history kept
+Category deleted
+Part's category
+Cafes & restaurants
+Quarter
+Apartment
+Apartment, car, holiday or a safety cushion — we'll work out how much to save each month.
+Apartment, holiday, cushion
+Cashback
+Vermilion
+Chinese yuan
+Amount keypad
+When
+A 4-digit code when opening the app. On iPhone you can sign in with Face ID.
+Code changed
+The code is stored on this device only and can't be recovered. You can erase the app's data and start over — then load a backup if you saved one.
+Passcode
+Passcode on
+Passcode off
+Codes didn't match — try again
+Ring
+Comment
+Comment: {0}
+To whom
+Kopecks
+Copy
+Copy off the phone
+Copy restored
+Copy saved
+Copy saved.
+The essentials: how much went out, where, and what you managed to save.
+Adjustment
+Balance adjustment
+Tap a day
+Tap a month to see details
+Wallets
+Wallet
+Wallet archived
+Wallet restored
+The wallet and its money stay unchanged.
+Wallet created
+Wallet saved
+Wallet deleted
+Beauty
+Big purchases and forecast
+Large
+Who owes whom and how much
+To
+Where to add tasks
+Where the money went and what you managed to save
+Where most of it went
+Central Bank rates will load once you're online.
+Central Bank rates automatically
+Exchange rates
+Rates are set manually.
+Rates updated
+Forest
+Limit
+Monthly limit
+Limits by category
+Personal
+Less
+Month
+Minus
+Can be taken from other days
+Still available
+Safe to spend today
+Today
+Mocha
+Mono
+On
+On weekends
+On the home screen
+Paused
+{0} for today. You can pick the main ones later.
+Nothing else for today
+Already {0} for next week
+In accounts
+What we're saving for
+Insights
+Back
+Name
+List name
+Savings and investment accounts, money in goals — in {0}
+Savings accounts vs. average spending over 3 months ({0} a month). The recommended reserve is 3–6 months.
+Savings will cover {0} {1} of usual spending{2}
+Savings
+The saved {0} will return to the wallets they came from.
+Saved for
+Cash
+Type, for example «{0}»
+Remind me in 3 days
+For example, «Kitchen renovation»
+For example, Card
+For example, music
+For example, bonus
+For example, renovation
+Customize home
+Settings
+Settings and profile
+A busy week
+The period must start before it ends.
+Opening balance
+Start
+Start the day
+Start over
+Start from a clean slate?
+Start with my own data
+Start with «
+Not chosen
+Don't repeat
+Couldn't open Calendar
+Couldn't copy.
+Couldn't save changes — the device is low on space. Save a copy to Files.
+Couldn't save the file — try copying.
+Couldn't save the file — copy the backup as text
+Couldn't save the photo
+Didn't work — try «Settings → Data»
+Couldn't load rates — check your connection
+Couldn't read the file
+Not set
+Didn't get to
+Didn't get to them — it happens. Decide when to do them, or let them go.
+Wrong code · attempts left: {0}
+Week
+Optional
+No
+No wallets
+No regular payments
+Nothing happened
+Nothing planned
+Nothing found
+New
+New note
+New note for the task
+New category
+New operation
+New subscription
+New goal
+New task
+New
+New budget
+New debt
+New wallet
+A new month — a new chance.
+New expense
+New list

@@ -1,0 +1,150 @@
+Kontokarten
+Kategorien
+Kategorie
+Kategorie ausgeblendet, Verlauf bleibt
+Kategorie gelöscht
+Kategorie des Teils
+Cafés & Restaurants
+Quartal
+Wohnung
+Wohnung, Auto, Urlaub oder Notgroschen — wir berechnen, wie viel du monatlich zurücklegen solltest.
+Wohnung, Urlaub, Notgroschen
+Cashback
+Zinnober
+Chinesischer Yuan
+Betragstastatur
+Wann
+Ein 4-stelliger Code beim Öffnen der App. Auf dem iPhone geht es auch mit Face ID.
+Code geändert
+Der Code ist nur auf diesem Gerät gespeichert und lässt sich nicht wiederherstellen. Du kannst die Daten der App löschen und neu anfangen — und dann eine Sicherung laden, falls vorhanden.
+Code
+Code aktiviert
+Code deaktiviert
+Codes stimmen nicht überein — noch einmal
+Ring
+Kommentar
+Kommentar: {0}
+An wen
+Cent
+Kopie
+Kopie außerhalb des Handys
+Kopie wiederhergestellt
+Kopie gespeichert
+Kopie gespeichert.
+Das Wichtigste: wie viel ausgegeben wurde, wofür und was du sparen konntest.
+Korrektur
+Saldokorrektur
+Tippe auf einen Tag
+Tippe auf einen Monat für Details
+Konten
+Konto
+Konto archiviert
+Konto wiederhergestellt
+Das Konto und sein Geld bleiben unverändert.
+Konto erstellt
+Konto gespeichert
+Konto gelöscht
+Schönheit
+Große Anschaffungen und Prognose
+Groß
+Wer wem wie viel schuldet
+Wohin
+Wohin die Aufgaben sollen
+Wohin das Geld ging und was du sparen konntest
+Wohin das meiste ging
+Die Zentralbankkurse laden, sobald du online bist.
+Zentralbankkurse automatisch
+Wechselkurse
+Kurse werden manuell festgelegt.
+Kurse aktualisiert
+Wald
+Limit
+Monatslimit
+Limits nach Kategorie
+Privat
+Weniger
+Monat
+Minus
+Kann von anderen Tagen genommen werden
+Noch verfügbar
+Heute ausgebbar
+Heute
+Mokka
+Mono
+Am
+Am Wochenende
+Auf dem Startbildschirm
+Pausiert
+{0} für heute. Das Wichtigste kannst du später wählen.
+Nichts mehr für heute
+Schon {0} für nächste Woche
+Auf Konten
+Wofür wir sparen
+Beobachtungen
+Zurück
+Name
+Name der Liste
+Spar- und Anlagekonten, Geld in Zielen — in {0}
+Sparkonten im Vergleich zu den Durchschnittsausgaben von 3 Monaten ({0} pro Monat). Empfohlen sind 3–6 Monate Reserve.
+Die Ersparnisse reichen für {0} {1} üblicher Ausgaben{2}
+Ersparnisse
+Die gesparten {0} gehen zurück auf die Konten, von denen sie kamen.
+Gespart für
+Bargeld
+Schreib zum Beispiel „{0}“
+In 3 Tagen erinnern
+Zum Beispiel „Küche renovieren“
+Zum Beispiel Karte
+Zum Beispiel Musik
+Zum Beispiel Prämie
+Zum Beispiel Renovierung
+Startseite anpassen
+Einstellungen
+Einstellungen und Profil
+Eine volle Woche
+Der Zeitraum muss vor seinem Ende beginnen.
+Anfangssaldo
+Start
+Tag beginnen
+Neu beginnen
+Von vorn anfangen?
+Mit eigenen Daten starten
+Fang mit „
+Nicht gewählt
+Nicht wiederholen
+Kalender konnte nicht geöffnet werden
+Kopieren fehlgeschlagen.
+Änderungen konnten nicht gespeichert werden — zu wenig Speicher. Speichere eine Kopie in Dateien.
+Datei konnte nicht gespeichert werden — versuche zu kopieren.
+Datei konnte nicht gespeichert werden — kopiere die Sicherung als Text
+Foto konnte nicht gespeichert werden
+Hat nicht geklappt — versuche „Einstellungen → Daten“
+Kurse konnten nicht geladen werden — prüfe die Verbindung
+Datei konnte nicht gelesen werden
+Nicht angegeben
+Nicht geschafft
+Nicht geschafft — passiert. Entscheide, wann du sie machst, oder lass sie los.
+Falscher Code · verbleibende Versuche: {0}
+Woche
+Optional
+Nein
+Keine Konten
+Keine regelmäßigen Zahlungen
+Nichts passiert
+Nichts geplant
+Nichts gefunden
+Neu
+Neue Notiz
+Neue Notiz zur Aufgabe
+Neue Kategorie
+Neue Buchung
+Neues Abo
+Neues Ziel
+Neue Aufgabe
+Neu
+Neues Budget
+Neue Schuld
+Neues Konto
+Neuer Monat — neue Chance.
+Neue Ausgabe
+Neue Liste

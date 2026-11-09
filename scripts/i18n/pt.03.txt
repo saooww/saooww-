@@ -1,0 +1,150 @@
+Cartões das contas
+Categorias
+Categoria
+Categoria oculta, histórico mantido
+Categoria excluída
+Categoria da parte
+Cafés e restaurantes
+Trimestre
+Apartamento
+Apartamento, carro, férias ou reserva de emergência — vamos calcular quanto guardar por mês.
+Apartamento, férias, reserva
+Cashback
+Vermelhão
+Yuan chinês
+Teclado de valor
+Quando
+Um código de 4 dígitos ao abrir o app. No iPhone dá para entrar com Face ID.
+Código alterado
+O código fica só neste aparelho e não pode ser recuperado. Você pode apagar os dados do app e começar de novo — e depois carregar um backup, se tiver salvo.
+Código de acesso
+Código ativado
+Código desativado
+Os códigos não batem — de novo
+Anel
+Comentário
+Comentário: {0}
+Para quem
+Centavos
+Cópia
+Cópia fora do celular
+Cópia restaurada
+Cópia salva
+Cópia salva.
+O essencial: quanto saiu, para onde e quanto você conseguiu guardar.
+Ajuste
+Ajuste de saldo
+Toque em um dia
+Toque em um mês para ver os detalhes
+Carteiras
+Carteira
+Carteira arquivada
+Carteira restaurada
+A carteira e seu dinheiro não mudam.
+Carteira criada
+Carteira salva
+Carteira excluída
+Beleza
+Compras grandes e previsão
+Grande
+Quem deve a quem e quanto
+Para
+Onde adicionar tarefas
+Para onde foi o dinheiro e quanto você guardou
+Para onde foi mais
+As cotações do Banco Central serão carregadas quando houver internet.
+Cotações do Banco Central automáticas
+Câmbio
+As cotações são definidas à mão.
+Cotações atualizadas
+Floresta
+Limite
+Limite mensal
+Limites por categoria
+Pessoal
+Menos
+Mês
+Menos
+Pode vir de outros dias
+Ainda disponível
+Pode gastar hoje
+Hoje
+Mocha
+Mono
+Em
+No fim de semana
+Na tela inicial
+Pausado
+{0} para hoje. O principal você escolhe depois.
+Mais nada para hoje
+Já há {0} para a próxima semana
+Nas contas
+Para que estamos guardando
+Observações
+Voltar
+Nome
+Nome da lista
+Contas de poupança e investimento, dinheiro em metas — em {0}
+Contas de poupança vs. gasto médio de 3 meses ({0} por mês). A reserva recomendada é de 3–6 meses.
+A poupança cobre {0} {1} de gastos habituais{2}
+Poupança
+Os {0} guardados voltarão às carteiras de onde vieram.
+Guardado para
+Dinheiro
+Escreva, por exemplo, «{0}»
+Lembrar em 3 dias
+Por exemplo, «Reforma da cozinha»
+Por exemplo, Cartão
+Por exemplo, música
+Por exemplo, bônus
+Por exemplo, reforma
+Personalizar início
+Ajustes
+Ajustes e perfil
+Uma semana cheia
+O início do período deve ser antes do fim.
+Saldo inicial
+Começar
+Começar o dia
+Recomeçar
+Começar do zero?
+Começar com meus dados
+Comece por «
+Não escolhida
+Não repetir
+Não foi possível abrir o Calendário
+Não foi possível copiar.
+Não foi possível salvar as alterações — pouco espaço no aparelho. Salve uma cópia em Arquivos.
+Não foi possível salvar o arquivo — tente copiar.
+Não foi possível salvar o arquivo — copie o backup como texto
+Não foi possível salvar a foto
+Não deu certo — tente em «Ajustes → Dados»
+Não foi possível carregar as cotações — verifique a conexão
+Não foi possível ler o arquivo
+Não informado
+Não deu tempo
+Não deu tempo — acontece. Decida quando fazer, ou deixe para lá.
+Código errado · tentativas restantes: {0}
+Semana
+Opcional
+Não
+Nenhuma carteira
+Nenhum pagamento recorrente
+Nada aconteceu
+Nada planejado
+Nada encontrado
+Nova
+Nova nota
+Nova nota para a tarefa
+Nova categoria
+Nova operação
+Nova assinatura
+Nova meta
+Nova tarefa
+Novo
+Novo orçamento
+Nova dívida
+Nova carteira
+Mês novo, nova chance.
+Nova despesa
+Nova lista
