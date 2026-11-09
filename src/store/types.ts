@@ -313,8 +313,6 @@ export interface Settings {
   plannerIntroSeen?: boolean;
   /** The move to the Ardessa brand has been applied to these settings */
   ardessa?: boolean;
-  /** Version of the look the settings were moved to (4 — the iOS look) */
-  look?: number;
 }
 
 export interface AppData {

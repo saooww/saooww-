@@ -96,11 +96,9 @@ export function SmartLine({ autoFocus, onDone, compact }: { autoFocus?: boolean;
           e.preventDefault();
           save();
         }}
-        // an iOS search field: a quiet grey fill, an icon, the text
-        className={cn("flex items-center gap-2 rounded-[14px] pl-3 pr-1", compact ? "h-12" : "h-[52px]")}
-        style={{ background: "color-mix(in srgb, var(--ink) 11%, transparent)" }}
+        className={cn("panel flex items-center gap-2 rounded-[20px] pl-4 pr-1.5", compact ? "h-12" : "h-14")}
       >
-        <Sparkles size={18} weight="fill" className="shrink-0 text-ink-3" />
+        <Sparkles size={19} className="shrink-0 text-accent-ink" />
         <input
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -116,7 +114,7 @@ export function SmartLine({ autoFocus, onDone, compact }: { autoFocus?: boolean;
           disabled={!ready}
           animate={{ scale: ready ? 1 : 0.8, opacity: ready ? 1 : 0 }}
           transition={{ type: "spring", stiffness: 500, damping: 30 }}
-          className="fill-accent grid h-9 w-9 shrink-0 place-items-center rounded-full text-[var(--accent-on)]"
+          className="fill-accent grid h-10 w-10 shrink-0 place-items-center rounded-full text-[var(--accent-on)]"
         >
           <ArrowUp size={19} />
         </motion.button>

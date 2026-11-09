@@ -50,8 +50,6 @@ export function startBoot() {
     // (a language switch, a closed tab) skip the welcome with empty data.
     const before = useData.getState().settings;
     if (!onboarding && !before.ardessa) useData.getState().updateSettings({ ardessa: true, accent: before.accent === "vermilion" ? "ardessa" : before.accent });
-    // The iOS look: dark, Apple's system colours and figures — once, for everyone.
-    if (!onboarding && (useData.getState().settings.look ?? 0) < 4) useData.getState().updateSettings({ look: 4, palette: "ios", accent: "theme", numberFont: "system", theme: "dark" });
 
     const s = useData.getState().settings;
     useUI.setState({ booted: true, onboarding, locked: !onboarding && s.lockEnabled && !!s.lockPinHash });

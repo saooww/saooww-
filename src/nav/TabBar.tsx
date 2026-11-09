@@ -44,7 +44,7 @@ export function TabBar() {
         <motion.span
           aria-hidden="true"
           className="pointer-events-none absolute inset-y-[5px] left-[5px] rounded-[21px]"
-          style={{ width: "calc((100% - 10px) / 5)", background: "color-mix(in srgb, var(--ink) 9%, transparent)" }}
+          style={{ width: "calc((100% - 10px) / 5)", background: "color-mix(in srgb, var(--ink) 7%, transparent)" }}
           initial={false}
           animate={{ x: `${slot * 100}%` }}
           transition={spring.snappy}
@@ -83,7 +83,7 @@ export function TabBar() {
               haptic("medium");
               nav.sheet("create");
             }}
-            className="fill-accent grid h-[50px] w-[50px] place-items-center rounded-full text-[var(--accent-on)]"
+            className="fill-accent grid h-[48px] w-[48px] place-items-center rounded-[17px] text-[var(--accent-on)]"
           >
             <Plus size={24} />
           </motion.button>

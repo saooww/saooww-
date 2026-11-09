@@ -1,16 +1,6 @@
 import { useId, type ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-
-
-/** One wave of the liquid's surface, wide enough to slide by one period without a seam. */
-function wave(amp: number, period: number, width: number): string {
-  let d = `M 0 0`;
-  for (let x = 0; x <= width; x += period / 2) {
-    const up = (x / (period / 2)) % 2 === 0;
-    d += ` Q ${x + period / 4} ${up ? -amp : amp} ${x + period / 2} 0`;
-  }
-  return `${d} L ${width} 400 L 0 400 Z`;
-}
+import { wave } from "../home/DaySphere";
 
 /**
  * A goal as a jar that fills: the liquid rises with what's saved, in the
