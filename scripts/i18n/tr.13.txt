@@ -1,0 +1,65 @@
++ Yeni liste
+1–{0} {1} ile 1–{2} {3}: {4} / {5}. Transferler ve hedefler hariç.
+tüm harcamaların {0}
+tüm harcamaların {0} · geçen aya göre {1}{2}
+{0} → {1}
+Büyük kısmı
+Plandan hızlı
+Önümüzdeki iki haftada planlı ödeme yok.
+Sınır içinde
+Bu ay henüz harcama yok.
+Tüm liste
+Soru
+Tüm işler bitti
+Hedef için işler
+Günlük bütçe
+İş ekle
+Ulaşıldı
+Her zamanki gibi harcarsan {0} tarihine kadar para kalmayacak (≈ {1}). Şimdilik bir şey ayırmamak daha iyi.
+Her zamanki gibi harcarsan {0} tarihine kadar ≈ {1} kalacak. «{3}» için risksiz {2} ayırabilirsin.
+Her zamanki gibi harcarsan {0} tarihine kadar ≈ {1} kalacak. Risksiz {2} ayırabilirsin.
+İki haftada {0} çıkacak — {1}. Sıradaki: «{2}», {3}.
+Geçen ay harcama yok — karşılaştıracak bir şey yok.
+Aynı günlerde {0} daha fazla harcadın ({1}). Artışın {2} {3}.
+Hedef için yapılacakları planla — liste paranın yanında olacak.
+Nasıl hesaplandı
+Takvim
+Kartlar, günlük bütçe ve «Yakında» her zaman görünür, akıllı satır menünün üstünde. Gerisi isteğe bağlı.
+Az kaldı
+Bugün için {0} kaldı — sınırın beşte birinden az
+En çok para nereye gitti?
+Günlük sınır {0} · her işlemden sonra yeniden hesaplanır
+Günlük sınır {0} aşıldı. Yarının sınırı daha küçük olacak.
+Ay sonuna kalacak
+Kalan = günlük hesaplardaki para + beklenen gelir − ödemeler − olağan harcamalar (60 günlük ortalaman). Birikim ve yatırım hesapları hariç.
+Yanıtlar yalnızca bu cihazdaki kayıtlarından, hesabıyla birlikte. Tahmin yok.
+«{0}» için ayır
+Ay sonuna kadar ödemeler
+Şimdilik bu soruları yanıtlıyorum — birini seç:
+Göster: {0}
+«{0}» hedefine ekle
+Bugün harcanan
+Harcamalar neden arttı?
+Neredeyse tamamı
+Aşıldı
+Kalanın beşte biri yedekte kalır.
+1–{0} arası harcamalar: {1}, {2}. Hesaplar arası transferler ve hedeflere aktarımlar hariç.
+14 gün içindeki düzenli ödemeler, planlı alımlar ve borç vadeleri.
+1 {0} tarihinden beri en çok «{1}» için gitti — {2}, tüm harcamaların {3}.
+Ne kadar ayırabilirim?
+Yakında · para ve işler
+İş listesi oluştur
+Liste hedef kartında görünecek: biletler, oteller, rota — yapılacak her şey paranın yanında.
+Paran hakkında sor
+Sor
+Ardessa'ya sor
+Ay başından beri harcamalar sayılır.
+Harcamalar artmadı: aynı günlerde geçen aydan {0} daha az harcadın.
+Harcamalar neredeyse değişmedi — fark %2'den az.
+Yakında ne çekilecek?
+yolda
+{0} itibarıyla ≈ {1}
+bugün
+verilerine göre
+planda
+harcanan {0}

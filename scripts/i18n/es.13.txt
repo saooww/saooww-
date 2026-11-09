@@ -1,0 +1,65 @@
++ Nueva lista
+1–{0} {1} frente a 1–{2} {3}: {4} frente a {5}. Sin transferencias ni metas.
+{0} de todos los gastos
+{0} de todos los gastos · {1}{2} frente al mes pasado
+{0} → {1}
+La mayor parte
+Más rápido de lo previsto
+No hay pagos previstos en las próximas dos semanas.
+En la norma
+Aún no hay gastos este mes.
+Toda la lista
+Pregunta
+Todas las tareas hechas
+Tareas de la meta
+Presupuesto diario
+Añadir tarea
+Alcanzada
+Si gastas como siempre, para el {0} no quedará nada (≈ {1}). Mejor no apartar nada ahora.
+Si gastas como siempre, para el {0} quedarán ≈ {1}. Puedes apartar sin riesgo {2} para «{3}».
+Si gastas como siempre, para el {0} quedarán ≈ {1}. Puedes apartar sin riesgo {2}.
+En dos semanas saldrán {0} — {1}. El próximo es «{2}», {3}.
+El mes pasado no hubo gastos — no hay con qué comparar.
+En los mismos días gastaste un {0} más ({1}). {2} del aumento es {3}.
+Planifica qué hacer por la meta — la lista estará junto al dinero.
+Cómo se calcula
+Calendario
+Las tarjetas, el presupuesto diario y «Próximamente» siempre se ven; la línea inteligente está sobre el menú. Lo demás, a tu gusto.
+Queda poco
+Quedan {0} para hoy — menos de una quinta parte de la norma
+¿En qué se fue más dinero?
+Norma {0} al día · se recalcula tras cada operación
+Norma del día superada en {0}. La de mañana será menor.
+Quedará a fin de mes
+Restante = dinero en cuentas de gasto + ingresos esperados − pagos − gastos habituales (tu ritmo medio de 60 días). Sin cuentas de ahorro ni inversión.
+Las respuestas salen solo de tus registros en este dispositivo, con el cálculo. Sin suposiciones.
+Apartar para «{0}»
+Pagos hasta fin de mes
+Por ahora respondo estas preguntas — elige una:
+Mostrar: {0}
+Aportar a «{0}»
+Gastado hoy
+¿Por qué subieron los gastos?
+Casi todo
+Superado
+Una quinta parte del restante queda de reserva.
+Gastos del 1 al {0}: {1}, {2}. No incluye transferencias entre cuentas ni aportes a metas.
+Pagos periódicos, compras previstas y vencimientos de deudas a 14 días.
+Desde el 1 de {0} lo que más se llevó fue «{1}» — {2}, el {3} de todos los gastos.
+¿Cuánto puedo apartar?
+Próximamente · dinero y tareas
+Crear lista de tareas
+La lista aparecerá en la tarjeta de la meta: billetes, hoteles, ruta — todo lo que hay que hacer, junto al dinero.
+Pregunta sobre tu dinero
+Preguntar
+Pregunta a Ardessa
+Se cuentan los gastos desde el inicio del mes.
+Los gastos no subieron: en los mismos días gastaste un {0} menos que el mes pasado.
+Los gastos casi no cambiaron — menos de un 2% de diferencia.
+¿Qué se cobra pronto?
+en camino
+al {0} ≈ {1}
+hoy
+según tus datos
+según el plan
+gastado {0}

@@ -16,7 +16,6 @@ import { Sheet } from "../../ui/Sheet";
 import type { HomeBlock } from "../../store/types";
 import { TxRow, usePresentCtx } from "../transactions/TxRow";
 import { HomeHero } from "./HomeHero";
-import { DayTimeline } from "./DayTimeline";
 import { HomeFeed } from "./HomeCards";
 import { HomeToday } from "../planner/HomeToday";
 import { tr } from "../../i18n/i18n";
@@ -45,11 +44,7 @@ export function HomeScreen() {
       </Reveal>
 
       <Reveal intro={intro} delay={0.7} y={14}>
-        <HomeHero intro={intro} />
-      </Reveal>
-
-      <Reveal intro={intro} delay={0.82} y={12}>
-        <DayTimeline />
+        <HomeHero />
       </Reveal>
 
       <Reveal intro={intro} delay={0.95} y={12}>
@@ -113,7 +108,7 @@ export function HomeLayoutSheet() {
   const update = useData((s) => s.updateSettings);
   return (
     <Sheet title={tr("Главная")} ariaLabel={tr("Настроить главную")}>
-      <p className="px-6 pb-4 text-center text-footnote text-ink-2">{tr("Карты счетов и лента дня видны всегда, умная строка — над меню. Остальное — по желанию.")}</p>
+      <p className="px-6 pb-4 text-center text-footnote text-ink-2">{tr("Карты, дневной бюджет и «Скоро» видны всегда, умная строка — над меню. Остальное — по желанию.")}</p>
       <Group>
         {HOME_BLOCKS.map((b) => (
           <div key={b.id} className="flex min-h-[58px] items-center gap-3 px-4 py-2.5">

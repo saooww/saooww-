@@ -1,76 +1,31 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
-import { ArrowDownLeft, ArrowLeftRight, ArrowUpRight, ChevronRight, LayoutGrid, type LucideIcon } from "../../ui/glyphs";
+import { ArrowDownLeft, ArrowLeftRight, ArrowUpRight, LayoutGrid, Sparkles, type LucideIcon } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
-import { addDays, startOfMonth, startOfWeek, type DayKey } from "../../lib/dates";
-import { safeToSpend } from "../../lib/safeToSpend";
+import { addDays } from "../../lib/dates";
 import { haptic } from "../../lib/haptics";
-import { useAppData, useBalances, useLedger, useToday } from "../../store/hooks";
-import { nav, useUI } from "../../store/ui";
-import { AnimatedMoney, Money } from "../../ui/Money";
-import { spring } from "../../ui/motion";
-import { useCardModels, WalletCarousel } from "./WalletCarousel";
+import { useToday } from "../../store/hooks";
+import { useData } from "../../store/store";
+import { nav } from "../../store/ui";
+import { Group, SectionHeader } from "../../ui/primitives";
+import { EventRow, useEvents, type CalEvent } from "../plans/Plans";
+import { CardStack } from "./CardStack";
+import { DayBudget } from "./DayBudget";
 import { tr } from "../../i18n/i18n";
 
 /**
- * The top of the home screen, like a bank's: the wallet cards — the main
- * view — lighting the page in their colour, this month's money in and out
- * of the card in front, four quick actions, and a slim line for today.
+ * The top of the home screen: the wallet cards as a Wallet-like stack, four
+ * quick actions, the daily budget, «Спросить Ardessa» and the coming week of
+ * money and tasks together.
  */
-export function HomeHero({ intro }: { intro?: boolean }) {
+export function HomeHero() {
   return (
     <div>
-      <WalletCarousel
-        glow
-        intro={intro}
-        onOpen={(card, rect) => {
-          if (card.walletId) nav.push("wallet", { id: card.walletId, from: { x: rect.x, y: rect.y, w: rect.width, h: rect.height } });
-          else nav.tab("wallets");
-        }}
-        onAdd={() => nav.sheet("wallet")}
-      />
-      <CardFlow />
+      <CardStack />
       <QuickActions />
-      <TodaySummary />
-    </div>
-  );
-}
-
-/** Money in and out of the card in front, this month. */
-function CardFlow() {
-  const cards = useCardModels();
-  const index = useUI((s) => s.homeCardIndex);
-  const { entries } = useLedger();
-  const today = useToday();
-  const base = useAppData().settings.baseCurrency;
-  const card = cards[Math.min(index, cards.length - 1)];
-  const flow = useMemo(() => {
-    const from = startOfMonth(today);
-    let inflow = 0;
-    let outflow = 0;
-    for (const e of entries) {
-      if (e.day < from || e.day > today) continue;
-      if (card?.walletId && e.tx.walletId !== card.walletId) continue;
-      if (e.tx.kind === "income") inflow += e.base;
-      else if (e.tx.kind === "expense") outflow += e.base;
-    }
-    return { inflow, outflow };
-  }, [entries, today, card?.walletId]);
-  if (!card) return null;
-
-  return (
-    <div className="mx-5 mt-3 flex items-center justify-between text-footnote">
-      <span className="text-ink-3">{tr("В этом месяце")}</span>
-      <span className="flex items-center gap-3">
-        <span className="flex items-center gap-1 text-positive">
-          <ArrowDownLeft size={13} />
-          <Money value={flow.inflow} currency={base} privacy />
-        </span>
-        <span className="flex items-center gap-1 text-ink-2">
-          <ArrowUpRight size={13} />
-          <Money value={flow.outflow} currency={base} privacy />
-        </span>
-      </span>
+      <DayBudget />
+      <AskEntry />
+      <Upcoming />
     </div>
   );
 }
@@ -110,53 +65,61 @@ function QuickActions() {
   );
 }
 
-/** Today, in one line: what can still be spent and the week so far. Tap for the day. */
-function TodaySummary() {
-  const data = useAppData();
-  const balances = useBalances();
-  const { entries } = useLedger();
-  const today = useToday();
-  const base = data.settings.baseCurrency;
-  const s = useMemo(() => safeToSpend(data, balances, entries, today), [data, balances, entries, today]);
-  const week = useMemo(() => {
-    const from = startOfWeek(today);
-    const days = Array.from({ length: 7 }, (_, i) => addDays(from, i));
-    const spent = new Map<DayKey, number>();
-    for (const e of entries) if (e.tx.kind === "expense" && e.day >= days[0] && e.day <= days[6]) spent.set(e.day, (spent.get(e.day) ?? 0) + e.base);
-    return days.map((d) => ({ d, v: spent.get(d) ?? 0 }));
-  }, [entries, today]);
-  if (!s || s.allowance <= 0) return null;
-  const over = s.today < 0;
+export const QUESTIONS = [tr("На что ушло больше всего?"), tr("Почему траты выросли?"), tr("Сколько можно отложить?"), tr("Что скоро списать?")];
 
+/** The way into «Спросить Ardessa», with the questions it answers. */
+function AskEntry() {
   return (
-    <motion.button
-      type="button"
-      aria-label={`${over ? tr("Сегодня сверх нормы") : tr("Можно потратить сегодня")}: ${Math.abs(s.today) / 100} ${base}`}
-      onClick={() => {
-        haptic();
-        nav.sheet("day");
-      }}
-      whileTap={{ scale: 0.98 }}
-      transition={spring.press}
-      className="panel mx-4 mt-5 flex w-[calc(100%-32px)] items-center gap-3 rounded-[18px] px-4 py-3 text-left"
-    >
-      <span className="min-w-0 flex-1">
-        <span className="block text-caption text-ink-2">{over ? tr("Сегодня сверх нормы") : tr("Можно потратить сегодня")}</span>
-        <AnimatedMoney value={Math.abs(s.today)} currency={base} privacy className={cn("block text-headline font-semibold", over ? "text-negative" : "text-ink")} />
-      </span>
-      <span className="flex h-7 items-end gap-[3px]" aria-hidden="true">
-        {week.map(({ d, v }) => (
-          <span
-            key={d}
-            className="w-[5px] rounded-full"
-            style={{
-              height: d > today ? 3 : `${Math.max(12, Math.min(1, v / s.allowance) * 100)}%`,
-              background: d > today ? "color-mix(in srgb, var(--ink) 12%, transparent)" : v === 0 ? "var(--positive)" : v > s.allowance ? "var(--accent)" : d === today ? "var(--ink)" : "var(--ink-3)"
+    <section className="mx-4 mt-4 rounded-[22px] p-4" style={{ background: "linear-gradient(135deg, color-mix(in srgb, var(--accent) 16%, var(--surface)), var(--surface))", boxShadow: "inset 0 0 0 0.5px color-mix(in srgb, var(--accent) 30%, transparent)" }}>
+      <button type="button" onClick={() => nav.push("assistant", {})} className="flex w-full items-center gap-2.5 text-left">
+        <span className="fill-accent grid h-8 w-8 place-items-center rounded-[10px] text-[var(--accent-on)]">
+          <Sparkles size={16} />
+        </span>
+        <span className="flex-1 text-headline font-semibold">{tr("Спросить Ardessa")}</span>
+        <span className="text-caption text-ink-3">{tr("по вашим данным")}</span>
+      </button>
+      <div className="mt-3 flex flex-wrap gap-1.5">
+        {QUESTIONS.map((q, i) => (
+          <button
+            key={q}
+            type="button"
+            onClick={() => {
+              haptic();
+              nav.push("assistant", { ask: i });
             }}
-          />
+            className="rounded-full px-3 py-1.5 text-footnote text-ink active:opacity-70"
+            style={{ background: "color-mix(in srgb, var(--ink) 8%, transparent)" }}
+          >
+            {q}
+          </button>
         ))}
-      </span>
-      <ChevronRight size={16} className="shrink-0 text-ink-3" />
-    </motion.button>
+      </div>
+    </section>
+  );
+}
+
+/** The next seven days: payments, plans, debts and tasks in one list. */
+function Upcoming() {
+  const today = useToday();
+  const tasks = useData((s) => s.tasks);
+  const to = addDays(today, 7);
+  const events = useEvents(today, to);
+  const items = useMemo(() => {
+    const money = events.filter((e) => !e.done && e.kind !== "goal");
+    const taskEvents: CalEvent[] = tasks
+      .filter((t) => !t.done && t.due && t.due >= today && t.due <= to)
+      .map((t) => ({ key: `t-${t.id}`, kind: "task", date: t.due!, title: t.time ? `${t.title} · ${t.time}` : t.title, onOpen: () => nav.sheet("task", { editId: t.id }) }));
+    return [...money, ...taskEvents].sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0)).slice(0, 6);
+  }, [events, tasks, today, to]);
+  if (!items.length) return null;
+  return (
+    <div className="mt-6">
+      <SectionHeader title={tr("Скоро · деньги и дела")} action={{ label: tr("Календарь"), onClick: () => nav.push("plans") }} />
+      <Group>
+        {items.map((e) => (
+          <EventRow key={e.key} e={e} />
+        ))}
+      </Group>
+    </div>
   );
 }

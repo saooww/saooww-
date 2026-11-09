@@ -113,8 +113,10 @@ export interface Goal {
   primary?: boolean;
   /** The goal's own colour, #rrggbb */
   color?: string;
-  /** How progress is drawn: a ring or a jar filling up */
+  /** Former choice of a ring or a jar; goals are now drawn as cards */
   look?: "ring" | "jar";
+  /** The task list that goes with the goal (a trip: tickets, hotels, route) */
+  projectId?: ID;
   archived?: boolean;
   createdAt: LocalISO;
 }

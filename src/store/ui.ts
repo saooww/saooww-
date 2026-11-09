@@ -11,6 +11,7 @@ export type PlannerView = "today" | "week" | "lists" | "notes";
 
 export type RouteName =
   | "root"
+  | "assistant"
   | "wallet"
   | "goals"
   | "goal"

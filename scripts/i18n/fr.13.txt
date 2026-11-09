@@ -1,0 +1,65 @@
++ Nouvelle liste
+1–{0} {1} contre 1–{2} {3} : {4} contre {5}. Hors virements et objectifs.
+{0} des dépenses
+{0} des dépenses · {1}{2} par rapport au mois dernier
+{0} → {1}
+L'essentiel
+Plus vite que prévu
+Aucun paiement prévu dans les deux prochaines semaines.
+Dans la norme
+Pas encore de dépenses ce mois-ci.
+Toute la liste
+Question
+Toutes les tâches faites
+Tâches de l'objectif
+Budget du jour
+Ajouter une tâche
+Atteint
+Au rythme habituel, il ne restera rien au {0} (≈ {1}). Mieux vaut ne rien mettre de côté pour l'instant.
+Au rythme habituel, il restera ≈ {1} au {0}. Vous pouvez mettre de côté {2} pour « {3} » sans risque.
+Au rythme habituel, il restera ≈ {1} au {0}. Vous pouvez mettre de côté {2} sans risque.
+{0} partiront en deux semaines — {1}. Le prochain : « {2} », {3}.
+Aucune dépense le mois dernier — rien à comparer.
+Sur les mêmes jours, vous avez dépensé {0} de plus ({1}). {2} de la hausse vient de {3}.
+Prévoyez quoi faire pour l'objectif — la liste sera à côté de l'argent.
+Comment c'est calculé
+Calendrier
+Les cartes, le budget du jour et « À venir » sont toujours affichés, la ligne intelligente est au-dessus du menu. Le reste, à votre choix.
+Il reste peu
+Il reste {0} pour aujourd'hui — moins d'un cinquième de la norme
+Où est allé le plus d'argent ?
+Norme {0} par jour · recalculée après chaque opération
+Norme du jour dépassée de {0}. Celle de demain sera plus petite.
+Restera en fin de mois
+Reste = argent des comptes courants + revenus attendus − paiements − dépenses habituelles (votre rythme moyen sur 60 jours). Hors épargne et investissements.
+Les réponses viennent uniquement de vos données sur cet appareil, avec le calcul. Aucune supposition.
+Mettre de côté pour « {0} »
+Paiements jusqu'à la fin du mois
+Pour l'instant je réponds à ces questions — choisissez-en une :
+Afficher : {0}
+Alimenter « {0} »
+Dépensé aujourd'hui
+Pourquoi les dépenses ont augmenté ?
+Presque toute
+Dépassé
+Un cinquième du reste est gardé en réserve.
+Dépenses du 1er au {0} : {1}, {2}. Hors virements entre comptes et versements aux objectifs.
+Paiements réguliers, achats prévus et échéances de dettes sur 14 jours.
+Depuis le 1er {0}, le plus est allé à « {1} » — {2}, soit {3} des dépenses.
+Combien puis-je mettre de côté ?
+À venir · argent et tâches
+Créer une liste de tâches
+La liste apparaîtra sur la carte de l'objectif : billets, hôtels, itinéraire — tout ce qu'il faut faire, à côté de l'argent.
+Posez une question sur votre argent
+Demander
+Demander à Ardessa
+Les dépenses depuis le début du mois sont comptées.
+Les dépenses n'ont pas augmenté : sur les mêmes jours, vous avez dépensé {0} de moins que le mois dernier.
+Les dépenses ont à peine changé — moins de 2 % d'écart.
+Qu'est-ce qui sera prélevé bientôt ?
+en route
+au {0} ≈ {1}
+aujourd'hui
+selon vos données
+dans les temps
+dépensé {0}

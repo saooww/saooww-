@@ -1,0 +1,65 @@
++ New list
+1–{0} {1} vs 1–{2} {3}: {4} vs {5}. Transfers and goals not included.
+{0} of all spending
+{0} of all spending · {1}{2} vs last month
+{0} → {1}
+Most
+Faster than planned
+No payments planned in the next two weeks.
+Within the norm
+No spending this month yet.
+Whole list
+Question
+All tasks done
+Tasks for the goal
+Daily budget
+Add a task
+Reached
+If you spend as usual, nothing will be left by {0} (≈ {1}). Better not to set anything aside now.
+If you spend as usual, ≈ {1} will be left by {0}. You can safely set aside {2} for «{3}».
+If you spend as usual, ≈ {1} will be left by {0}. You can safely set aside {2}.
+{0} will go out in two weeks — {1}. The next one is «{2}», {3}.
+No spending last month — nothing to compare with.
+Over the same days you spent {0} more ({1}). {2} of the growth is {3}.
+Plan what to do for the goal — the list will sit next to the money.
+How it's counted
+Calendar
+Cards, the daily budget and «Coming up» are always shown, the smart line sits above the menu. The rest is up to you.
+Running low
+{0} left for today — less than a fifth of the norm
+Where did most money go?
+Norm {0} a day · recounted after every operation
+Today's norm exceeded by {0}. Tomorrow's norm will be smaller.
+Left by month end
+Left = money in everyday accounts + expected income − payments − usual spending (your average pace over 60 days). Savings and investment accounts are not included.
+Answers come only from your records on this device, with the calculation. No guessing.
+Set aside for «{0}»
+Payments until month end
+For now I answer these questions — pick one:
+Show: {0}
+Top up «{0}»
+Spent today
+Why did spending grow?
+Almost all
+Exceeded
+A fifth of the surplus stays in reserve.
+Spending from the 1st to {0}: {1}, {2}. Transfers between accounts and goal top-ups are not included.
+Regular payments, planned purchases and debt due dates 14 days ahead.
+Since 1 {0} the most went to «{1}» — {2}, that's {3} of all spending.
+How much can I set aside?
+Coming up · money and tasks
+Create a task list
+The task list will show on the goal card: tickets, hotels, route — everything to do, next to the money.
+Ask about your money
+Ask
+Ask Ardessa
+Spending since the start of the month is counted.
+Spending didn't grow: over the same days you spent {0} less than last month.
+Spending barely changed — less than 2% difference.
+What's due soon?
+on the way
+by {0} ≈ {1}
+left today
+from your data
+on track
+spent {0}

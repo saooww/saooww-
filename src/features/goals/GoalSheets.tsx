@@ -43,7 +43,10 @@ export function GoalSheet({ editId }: { editId?: ID }) {
   const [walletId, setWalletId] = useState<ID | undefined>(existing?.walletId ?? live.find((w) => w.kind === "savings")?.id ?? live[0]?.id);
   const [primary, setPrimary] = useState(existing?.primary ?? false);
   const [color, setColor] = useState(existing?.color ?? GOAL_COLORS[0]);
-  const [look, setLook] = useState<"ring" | "jar">(existing?.look ?? "ring");
+  const allProjects = useData((s) => s.projects);
+  const projects = useMemo(() => allProjects.filter((p) => !p.archived), [allProjects]);
+  // the goal's task list: an existing one, none, or a new one named after the goal
+  const [projectId, setProjectId] = useState<ID | "new" | undefined>(existing ? existing.projectId : undefined);
 
   const avgExpense = useMemo(() => {
     const m = monthlyTotals(entries, todayKey(), 4).slice(0, 3).filter((x) => x.expense > 0);
@@ -65,8 +68,9 @@ export function GoalSheet({ editId }: { editId?: ID }) {
       deadline: hasDeadline ? deadline : undefined,
       walletId: mode === "wallet" ? walletId : undefined,
       color,
-      look
+      projectId: projectId === "new" ? undefined : projectId
     };
+    if (projectId === "new") fields.projectId = st.addProject({ name: name.trim(), icon, color });
     if (existing) {
       st.updateGoal(existing.id, fields);
       if (!!existing.primary !== primary) st.setPrimaryGoal(existing.id);
@@ -131,8 +135,17 @@ export function GoalSheet({ editId }: { editId?: ID }) {
               />
             ))}
           </div>
-          <div className="px-4 pb-3">
-            <Segmented size="sm" value={look} onChange={setLook} options={[{ value: "ring", label: tr("Кольцо") }, { value: "jar", label: tr("Банка") }]} />
+        </Group>
+
+        <Group header={tr("Дела к цели")} footer={tr("Список дел появится на карточке цели: билеты, отели, маршрут — всё, что нужно сделать, рядом с деньгами.")}>
+          <div className="scroll-x flex gap-2 px-4 py-3">
+            <Chip selected={!projectId} onClick={() => setProjectId(undefined)}>{tr("Без списка")}</Chip>
+            <Chip selected={projectId === "new"} onClick={() => setProjectId("new")}>{tr("+ Новый список")}</Chip>
+            {projects.map((p) => (
+              <Chip key={p.id} selected={projectId === p.id} onClick={() => setProjectId(p.id)}>
+                {p.name}
+              </Chip>
+            ))}
           </div>
         </Group>
 
@@ -185,7 +198,7 @@ export function GoalSheet({ editId }: { editId?: ID }) {
 }
 
 /** Move money into a goal or take it back. */
-export function GoalMoneySheet({ goalId, direction: d0 }: { goalId: ID; direction: "deposit" | "withdraw" }) {
+export function GoalMoneySheet({ goalId, direction: d0, amount: preset }: { goalId: ID; direction: "deposit" | "withdraw"; /** Suggested amount, e.g. from «Спросить Ardessa» */ amount?: number }) {
   const { close } = useSheet();
   const goal = useData((s) => s.goals.find((g) => g.id === goalId));
   const wallets = useData((s) => s.wallets);
@@ -193,7 +206,7 @@ export function GoalMoneySheet({ goalId, direction: d0 }: { goalId: ID; directio
   const balances = useBalances();
   const env = useEnvelopes();
   const [direction, setDirection] = useState(d0);
-  const [buf, setBuf] = useState("");
+  const [buf, setBuf] = useState(preset ? amountToInput(preset) : "");
   const live = activeWallets(wallets).filter((w) => w.id !== goal?.walletId && (!goal || w.currency === goal.currency));
   const [walletId, setWalletId] = useState<ID | undefined>(live.find((w) => w.id === defaultWalletId)?.id ?? live[0]?.id);
   if (!goal) return null;

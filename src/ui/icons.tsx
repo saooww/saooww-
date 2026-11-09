@@ -1,5 +1,5 @@
 import type { LucideIcon, LucideProps } from "./glyphs";
-import { Camera, Hammer, Palette, Rocket, Star, User, Users } from "./glyphs";
+import { CalendarCheck, Camera, Hammer, Palette, Rocket, Star, User, Users } from "./glyphs";
 import {
   ArrowLeftRight,
   SlidersHorizontal,
@@ -143,6 +143,7 @@ const REGISTRY: Record<string, LucideIcon> = {
   Wifi,
   Wine,
   Wrench,
+  CalendarCheck,
   // planner lists
   Camera,
   Hammer,
