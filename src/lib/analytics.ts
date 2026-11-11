@@ -244,6 +244,18 @@ export function scheduledBetween(data: AppData, from: DayKey, to: DayKey, includ
   };
 }
 
+/** Plans dated today or earlier that are still open: the money has not moved yet, so every forecast waits for what is left of them. */
+export function pendingPlans(data: AppData, today: DayKey): Scheduled["items"] {
+  const out: Scheduled["items"] = [];
+  for (const p of data.plans) {
+    if (p.status !== "planned" || p.date > today) continue;
+    const left = planLeft(p, data.transactions);
+    const amt = left ? toBase(left, walletCurrency(data, p.walletId), data.settings) : null;
+    if (amt) out.push({ date: today, title: p.title, amount: amt, kind: p.kind, source: "plan" });
+  }
+  return out;
+}
+
 export interface MonthForecast {
   spent: Minor;
   projected: Minor;
@@ -321,14 +333,17 @@ export function freeCash(data: AppData, balances: Record<ID, Minor>, entries: Le
     available += Math.round((balances[w.id] ?? 0) * r);
   }
   const sch = scheduledBetween(data, addDays(today, 1), until);
+  const late = pendingPlans(data, today);
+  const income = sch.income + late.filter((i) => i.kind === "income").reduce((s, i) => s + i.amount, 0);
+  const obligations = sch.expense + late.filter((i) => i.kind === "expense").reduce((s, i) => s + i.amount, 0);
   const fc = monthForecast(data, entries, today);
   const everyday = fc.dailyRate * fc.daysLeft;
   return {
     available,
-    income: sch.income,
-    obligations: sch.expense,
+    income,
+    obligations,
     everyday,
-    free: available + sch.income - sch.expense - everyday,
+    free: available + income - obligations - everyday,
     until
   };
 }
@@ -437,13 +452,7 @@ export function capitalForecast(data: AppData, balances: Record<ID, Minor>, entr
   const fc = monthForecast(data, entries, today);
   const future = scheduledBetween(data, addDays(today, 1), until);
   // plans dated today or earlier that are not closed yet still count: the money has not come in
-  const items = future.items.map((i) => ({ ...i }));
-  for (const p of data.plans) {
-    if (p.status !== "planned" || p.date > today) continue;
-    const left = planLeft(p, data.transactions);
-    const amt = left ? toBase(left, walletCurrency(data, p.walletId), data.settings) : null;
-    if (amt) items.push({ date: today, title: p.title, amount: amt, kind: p.kind, source: "plan" });
-  }
+  const items = [...future.items.map((i) => ({ ...i })), ...pendingPlans(data, today)];
   const incomeLeft = items.filter((i) => i.kind === "income").reduce((s, i) => s + i.amount, 0);
   const obligations = items.filter((i) => i.kind === "expense").reduce((s, i) => s + i.amount, 0);
   const everyday = fc.dailyRate * fc.daysLeft;

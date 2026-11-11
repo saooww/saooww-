@@ -201,12 +201,16 @@ test("отмена: удаление части возвращает её в о�
   assert.equal(bal().card, 10_000_000);
 });
 
-known("правка полученной части вниз должна вернуть доход в ожидание", () => {
+test("правка полученной части вниз возвращает недостающее в ожидание, правка вверх закрывает доход", () => {
   const id = plan({ amount: 100_000_00 });
   const tx = st().receivePlan(id, 100_000_00, { walletId: "card", date: "2027-01-10T12:00" })!;
   st().updateTransaction(tx, { amount: 60_000_00 });
   const p = st().plans.find((x) => x.id === id)!;
+  assert.equal(p.status, "planned");
   assert.equal(planLeft(p, st().transactions), 40_000_00, "после правки части прогноз должен ждать ещё 40 000");
+  assert.equal(capitalForecast(data(), bal(), buildLedger(data()).entries, T0).incomeLeft, 40_000_00);
+  st().updateTransaction(tx, { amount: 100_000_00 });
+  assert.equal(st().plans.find((x) => x.id === id)!.status, "done");
 });
 
 /* ---------------- debts ---------------- */
@@ -255,10 +259,13 @@ test("долги по людям и распределение возврата 
   assert.equal(nw().receivables, after.toMe);
 });
 
-known("слишком большой возврат должен отклоняться и в хранилище, а не только в окне ввода", () => {
+test("слишком большой возврат в хранилище ограничивается остатком займа, лишнее не попадает на карту", () => {
   const id = st().addDebt({ direction: "owed_to_me", counterparty: "Игорь", amount: 1_000_00, currency: "RUB", date: "2027-01-02" }, "card");
   st().payDebt(id, 5_000_00, "card", "2027-01-05T12:00");
   assert.equal(bal().card, 10_000_000, "лишние 4 000 не должны попасть на карту");
+  assert.equal(debtInfo(st().debts[0], st().transactions, T0).status, "closed");
+  st().payDebt(id, 100_00, "card", "2027-01-06T12:00");
+  assert.equal(bal().card, 10_000_000, "платёж по закрытому долгу игнорируется");
 });
 
 /* ---------------- goals ---------------- */
@@ -310,18 +317,28 @@ test("прогнозы на разных экранах берут одинак�
   assert.equal(f.obligations, c.obligations);
 });
 
-known("ожидаемый доход на сегодня или просроченный должен учитываться одинаково во всех прогнозах", () => {
+test("ожидаемый доход на сегодня или просроченный учитывается одинаково во всех прогнозах", () => {
   plan({ amount: 40_000_00, date: T0 });
   const e = buildLedger(data()).entries;
   const f = capitalForecast(data(), bal(), e, T0);
   const c = freeCash(data(), bal(), e, T0);
   assert.equal(c.income, f.incomeLeft, "«Свободно к …» и прогноз месяца видят разные ожидаемые доходы");
+  plan({ title: "Просрочено", amount: 10_000_00, date: "2026-12-20" });
+  st().addPlan({ kind: "expense", title: "Просроченный платёж", amount: 2_000_00, date: "2027-01-03", walletId: "card" });
+  const f2 = capitalForecast(data(), bal(), e, T0);
+  const c2 = freeCash(data(), bal(), e, T0);
+  assert.equal(c2.income, f2.incomeLeft);
+  assert.equal(c2.obligations, f2.obligations);
 });
 
-known("регулярный перевод между валютами должен зачислять сумму в валюте получателя", () => {
+test("регулярный перевод между валютами зачисляет сумму в валюте получателя", () => {
   st().addRecurring({ kind: "transfer", title: "В доллары", amount: 9_500_00, walletId: "card", toWalletId: "usd", freq: "month", interval: 1, anchorDay: 10, nextDate: "2027-01-10", autoPost: true, isSubscription: false, active: true });
   st().processRecurring(T0);
   assert.equal(bal().usd, 100_000 + 100_00, "на долларовый счёт должно прийти 100 $, а не 9 500 $");
+  assert.equal(bal().card, 10_000_000 - 9_500_00);
+  st().postRecurringNow(st().recurring[0].id);
+  assert.equal(bal().usd, 100_000 + 200_00);
+  assert.equal(month().income + month().expense, 0);
 });
 
 /* ---------------- month helpers used by the forecast ---------------- */

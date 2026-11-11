@@ -70,6 +70,14 @@ export function toBase(minor: Minor, currency: string, settings: Settings): Mino
   return r === null ? null : Math.round(minor * r);
 }
 
+/** What a transfer credits to the destination when its currency differs: the amount at the two rates, rounded once. Null when a rate is missing. */
+export function crossAmount(minor: Minor, from: string, to: string, settings: Settings): Minor | null {
+  if (from === to) return minor;
+  const a = rateOf(from, settings);
+  const b = rateOf(to, settings);
+  return a === null || b === null ? null : Math.round((minor * a) / b);
+}
+
 export interface Total {
   total: Minor;
   /** Currencies that were left out because no exchange rate is set */
