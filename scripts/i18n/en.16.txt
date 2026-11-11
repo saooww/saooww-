@@ -1,0 +1,23 @@
+{0} · spent
+Balance and today's amount are always shown, the smart line sits above the menu. The rest is up to you.
+You'll get back
+You owe in total
+Per month
+Returned {0}%
+Today's tasks and the week's payments
+Trend
+Nothing returned yet
+Where it went
+Nobody owes anything
+Open goal «{0}»
+Period: {0}
+Today and soon
+Spending over 7 days
+The bigger the circle, the bigger the sum
+reached
+of {0}
+vs
+save {0} a month
+last year
+last quarter
+last month

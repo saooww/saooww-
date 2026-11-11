@@ -65,7 +65,7 @@ export function HeroCard({
         onPointerLeave={rest}
         onPointerCancel={rest}
         whileTap={{ scale: 0.985 }}
-        className="relative block w-full overflow-hidden rounded-[26px] text-left"
+        className={cn("relative block w-full overflow-hidden rounded-[26px] text-left", !material.light && "on-dark")}
         style={{
           rotateX,
           rotateY,

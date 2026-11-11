@@ -1,0 +1,19 @@
+Saldo de dívidas
+Próxima em {0}
+Devolveram
+Pagar dívida: {0} · {1}
+Peguei emprestado
+Emprestei
+Tarefa anotada para {0}
+Lembrar
+Lembrar da dívida: {0} · {1}
+Não dá
+Assinaturas por ano
+Atrasadas · {0}
+Sem prazos
+Essa tarefa já existe
+Dá
+Um quarto · {0}
+vão devolver mais do que você deve
+você deve mais do que vão devolver
+ninguém deve nada

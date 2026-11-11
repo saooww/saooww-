@@ -1,0 +1,19 @@
+Debt balance
+Next in {0}
+Got back
+Repay debt: {0} · {1}
+I borrowed
+I lent
+Task added for {0}
+Remind
+Remind about debt: {0} · {1}
+Not enough
+Subscriptions per year
+Overdue · {0}
+No due dates
+This task already exists
+Enough
+A quarter · {0}
+you'll get back more than you owe
+you owe more than you'll get back
+nobody owes anything

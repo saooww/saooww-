@@ -1,0 +1,19 @@
+Balance de deudas
+Próxima en {0}
+Devuelto
+Devolver deuda: {0} · {1}
+Pedí prestado
+Presté
+Tarea anotada para el {0}
+Recordar
+Recordar la deuda: {0} · {1}
+No alcanza
+Suscripciones al año
+Vencidas · {0}
+Sin plazos
+Esa tarea ya existe
+Alcanza
+Un cuarto · {0}
+te devolverán más de lo que debes
+debes más de lo que te devolverán
+nadie debe nada

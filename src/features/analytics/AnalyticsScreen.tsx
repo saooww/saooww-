@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChartColumn, ChevronLeft, ChevronRight, Sparkles } from "../../ui/glyphs";
+import { ChartColumn, ChevronDown, ChevronLeft, ChevronRight, Sparkles } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { bucketSeries, bucketsFor, capitalSeries, categoryRows, donutSlices, habits, monthForecast, monthlyTotals, type SeriesKind } from "../../lib/analytics";
 import { addDays, capitalize, formatDate, pluralN, WEEKDAYS_ACC, WEEKDAYS_SHORT } from "../../lib/dates";
@@ -17,7 +17,7 @@ import { NamedIcon } from "../../ui/icons";
 import { AnimatedMoney, Money } from "../../ui/Money";
 import { ease } from "../../ui/motion";
 import { EmptyState, IconButton, ProgressBar, Segmented } from "../../ui/primitives";
-import { MoneySwitch } from "../../nav/MoneySwitch";
+import { MoneyHeader } from "../../nav/MoneySwitch";
 import { SpendingCalendar } from "./SpendingCalendar";
 import { StoryRow } from "./StoryRow";
 import { tr } from "../../i18n/i18n";
@@ -30,10 +30,11 @@ const PERIODS: Array<{ value: Period; label: string }> = [
 ];
 
 const PREV_GEN: Record<Period, string> = { week: tr("прошлой недели"), month: tr("прошлого месяца"), quarter: tr("прошлого квартала"), year: tr("прошлого года") };
+const PREV_LABEL_SHORT: Record<Period, string> = { week: tr("прошлой неделе"), month: tr("прошлому месяцу"), quarter: tr("прошлому кварталу"), year: tr("прошлому году") };
 const PREV_LABEL: Record<Period, string> = { week: tr("прошлой неделе"), month: tr("прошлом месяце"), quarter: tr("прошлом квартале"), year: tr("прошлом году") };
 
 const VIEWS: Array<{ value: "overview" | "categories" | "trends"; label: string }> = [
-  { value: "overview", label: tr("Обзор") },
+  { value: "overview", label: tr("Динамика") },
   { value: "categories", label: tr("Категории") },
   { value: "trends", label: tr("Тренды") }
 ];
@@ -108,18 +109,34 @@ export function AnalyticsScreen() {
   const capDelta = capital.length ? capital[capital.length - 1].value - capital[0].value : 0;
 
   return (
-    <Screen title={tr("Деньги")} large subheader={<MoneySwitch current="analytics" />}>
-      <StoryRow />
-      <div className="px-4">
-        <Segmented options={PERIODS} value={period} onChange={changePeriod} />
-      </div>
-
-      <div className="mt-3 flex items-center justify-between px-3">
+    <Screen
+      title={tr("Деньги")}
+      header={<MoneyHeader current="analytics" />}
+    >
+      <div className="mt-1 flex items-center justify-between px-3">
         <IconButton icon={ChevronLeft} label={tr("Предыдущий период")} variant="plain" onClick={() => shift(-1)} />
         <AnimatePresence mode="wait" initial={false}>
-          <motion.div key={range.label} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.16 }} className="text-headline font-semibold">
+          <motion.button
+            key={range.label}
+            type="button"
+            aria-label={tr("Период: {0}", range.label)}
+            onClick={() =>
+              nav.sheet("picker", {
+                title: tr("Период"),
+                value: period,
+                options: PERIODS.map((p) => ({ value: p.value, label: p.label })),
+                onSelect: (v: string) => changePeriod(v as Period)
+              })
+            }
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.16 }}
+            className="tile flex h-[36px] items-center gap-1.5 rounded-full px-4 text-headline font-semibold"
+          >
             {range.label}
-          </motion.div>
+            <ChevronDown size={15} className="text-ink-3" />
+          </motion.button>
         </AnimatePresence>
         <IconButton icon={ChevronRight} label={tr("Следующий период")} variant="plain" disabled={offset >= 0} className="disabled:opacity-25" onClick={() => shift(1)} />
       </div>
@@ -128,15 +145,70 @@ export function AnalyticsScreen() {
         <EmptyState icon={ChartColumn} title={tr("Пока нечего анализировать")} text={tr("Добавьте несколько доходов и расходов — графики построятся автоматически.")} />
       ) : (
         <>
+          {/* the period's spending as one glowing ring, the total in the middle */}
+          <div className="mt-2 flex justify-center">
+            <Donut slices={slices.map((s) => ({ id: s.id, value: s.amount, color: s.color }))} selected={slice} onSelect={setSlice} animKey={animKey} size={252} thickness={24} glow>
+              <div className="max-w-[170px]">
+                <div className="truncate text-footnote font-medium text-ink-2">{selectedSlice ? selectedSlice.name : tr("Потрачено")}</div>
+                <AnimatedMoney value={selectedSlice ? selectedSlice.amount : stats.expense} currency={base} variant="hero" className="mt-0.5 block text-[30px] leading-none" duration={0.45} />
+                {selectedSlice ? (
+                  <div className="mt-1.5 text-footnote text-ink-3 tnum">{formatPercent(selectedSlice.share)}</div>
+                ) : (
+                  expChange !== null && (prev.expense > 0) && (
+                    <div className={cn("mt-1.5 text-footnote font-medium tnum", expChange <= 0 ? "text-positive" : "text-warning")}>
+                      {expChange >= 0 ? "↑" : "↓"} {formatPercent(Math.abs(expChange))} {tr("к")} {PREV_LABEL_SHORT[period]}
+                    </div>
+                  )
+                )}
+              </div>
+            </Donut>
+          </div>
+
           {/* Summary */}
-          <div className="mt-3 grid grid-cols-2 gap-2 px-4 min-[390px]:grid-cols-3">
+          <div className="mt-5 grid grid-cols-2 gap-2 px-4 min-[390px]:grid-cols-3">
             <SummaryTile label={tr("Доходы")} value={stats.income} change={incChange} goodWhenUp currency={base} tone="positive" />
             <SummaryTile label={tr("Расходы")} value={stats.expense} change={expChange} currency={base} />
             <SummaryTile label={tr("Итог")} value={stats.net} currency={base} signed className="col-span-2 min-[390px]:col-span-1" />
           </div>
           {partialCompare && (prev.income > 0 || prev.expense > 0) && <div className="mt-2 px-5 text-caption text-ink-3">{tr("Проценты — к тем же дням")}{" "}{PREV_GEN[period]}</div>}
+          {skipped > 0 && (
+            <button type="button" onClick={() => nav.push("currencies")} className="mt-2 px-5 text-left text-footnote text-warning">
+              {pluralN(skipped, ["операция не учтена", "операции не учтены", "операций не учтено"])}{" "}{tr("— нет курса валюты →")}</button>
+          )}
+
+          {/* where the money went */}
+          {rows.length > 0 && (
+            <section className="mt-7">
+              <div className="flex items-baseline justify-between px-5 pb-2.5">
+                <h2 className="text-title-3 font-semibold">{tr("Куда ушло")}</h2>
+                {rows.length > 5 && (
+                  <button type="button" onClick={() => setView("categories")} className="text-subhead text-ink-2 active:opacity-60">{tr("Все категории")} ›</button>
+                )}
+              </div>
+              <div className="panel mx-4 overflow-hidden rounded-[22px] [&>*+*]:hairline-t">
+                {rows.slice(0, 5).map((r) => {
+                  const inRing = slices.some((s) => s.id === r.id);
+                  const share = stats.expense ? r.amount / stats.expense : 0;
+                  return (
+                    <button
+                      key={r.id}
+                      type="button"
+                      onClick={() => setSlice(slice === r.id ? null : inRing ? r.id : "__rest")}
+                      className={cn("flex w-full items-center gap-3 px-4 py-3 text-left transition-opacity", slice && slice !== r.id && !(slice === "__rest" && !inRing) && "opacity-45")}
+                    >
+                      <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: inRing ? r.color : "var(--chart-muted)", boxShadow: inRing ? `0 0 10px ${r.color}` : undefined }} />
+                      <span className="min-w-0 flex-1 truncate text-callout">{r.name}</span>
+                      <span className="text-footnote text-ink-3 tnum">{formatPercent(share)}</span>
+                      <Money value={r.amount} currency={base} className="w-[92px] text-right text-callout font-semibold" />
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+          )}
+
           {period === "month" && hab.expenseCount >= 5 && (
-            <div className="mt-3 px-4">
+            <div className="mt-4 px-4">
               <motion.button
                 type="button"
                 whileTap={{ scale: 0.98 }}
@@ -149,13 +221,13 @@ export function AnalyticsScreen() {
               </motion.button>
             </div>
           )}
-          {skipped > 0 && (
-            <button type="button" onClick={() => nav.push("currencies")} className="mt-2 px-5 text-left text-footnote text-warning">
-              {pluralN(skipped, ["операция не учтена", "операции не учтены", "операций не учтено"])}{" "}{tr("— нет курса валюты →")}</button>
-          )}
+
+          <div className="mt-5">
+            <StoryRow />
+          </div>
 
           {/* Three short views instead of one endless scroll */}
-          <div className="mt-6 px-4">
+          <div className="mt-8 px-4">
             <Segmented options={VIEWS} value={view} onChange={setView} size="sm" />
           </div>
 
@@ -205,6 +277,7 @@ export function AnalyticsScreen() {
                   color={metric === "income" ? "var(--positive)" : metric === "net" ? "var(--ink-2)" : "var(--ink)"}
                   average={avgLine}
                   formatAxis={(v) => formatCompact(v)}
+                  formatValue={(v) => formatMoney(v, { currency: base })}
                   animKey={animKey}
                   ariaLabel={tr("Динамика за период")}
                 />
@@ -281,17 +354,8 @@ export function AnalyticsScreen() {
                 <div className="py-8 text-center text-callout text-ink-2">{tr("В этом периоде расходов нет")}</div>
               ) : (
                 <>
-                  <div className="mt-4 flex justify-center">
-                    <Donut slices={slices.map((s) => ({ id: s.id, value: s.amount, color: s.color }))} selected={slice} onSelect={setSlice} animKey={animKey}>
-                      <div className="max-w-[120px]">
-                        <div className="truncate text-caption font-medium text-ink-2">{selectedSlice ? selectedSlice.name : tr("Всего")}</div>
-                        <Money value={selectedSlice ? selectedSlice.amount : stats.expense} currency={base} className="block text-headline font-semibold" />
-                        {selectedSlice && <div className="text-caption text-ink-3 tnum">{formatPercent(selectedSlice.share)}</div>}
-                      </div>
-                    </Donut>
-                  </div>
                   <div className="mt-4 flex flex-col">
-                    {rows.slice(0, 8).map((r) => (
+                    {rows.map((r) => (
                       <button
                         key={r.id}
                         type="button"

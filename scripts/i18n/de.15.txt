@@ -1,0 +1,19 @@
+Schuldensaldo
+Nächste in {0}
+Zurückerhalten
+Schuld zurückzahlen: {0} · {1}
+Geliehen bekommen
+Verliehen
+Aufgabe für {0} notiert
+Erinnern
+An Schuld erinnern: {0} · {1}
+Reicht nicht
+Abos pro Jahr
+Überfällig · {0}
+Keine Fristen
+Diese Aufgabe gibt es schon
+Reicht
+Ein Viertel · {0}
+Sie bekommen mehr zurück, als Sie schulden
+Sie schulden mehr, als Sie zurückbekommen
+niemand schuldet etwas

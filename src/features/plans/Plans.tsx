@@ -17,6 +17,8 @@ import { Screen } from "../../nav/Screen";
 import { Money } from "../../ui/Money";
 import { Button, FormRow, Group, IconButton, IconChip, Row, Segmented, inputCls } from "../../ui/primitives";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
+import { HeroCard } from "../../ui/HeroCard";
+import { materialOf } from "../../store/catalog";
 import { tr } from "../../i18n/i18n";
 
 type EventKind = "plan" | "recurring" | "debt" | "task" | "goal";
@@ -113,10 +115,14 @@ export function PlansScreen() {
   return (
     <Screen title={tr("Планы")} large actions={<IconButton icon={Plus} label={tr("Запланировать")} onClick={() => nav.sheet("plan", { date: selected >= today ? selected : today })} />}>
       {/* Free cash forecast */}
-      <section className="px-4">
-        <div className="panel rounded-xl p-4">
-          <div className="text-footnote font-medium text-ink-2">{tr("Свободно к")}{" "}{formatDate(cash.until)}</div>
-          <Money value={cash.free} currency={base} variant="hero" privacy tone={cash.free < 0 ? "negative" : "default"} className="mt-0.5 block text-[30px] font-semibold tracking-[-0.03em]" />
+      <section>
+        <HeroCard material={materialOf("obsidian")} style={{ ["--ink" as string]: "#f5f3f0", ["--ink-2" as string]: "rgba(245,243,240,0.72)", ["--ink-3" as string]: "rgba(245,243,240,0.55)", ["--line" as string]: "rgba(255,255,255,0.12)" }}>
+          <div className="px-5 pb-4 pt-[18px]">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-3">{tr("Свободно к")}{" "}{formatDate(cash.until)}</span>
+            <span className={cn("rounded-full px-2.5 py-0.5 text-caption font-semibold", cash.free < 0 ? "bg-[var(--negative-soft)] text-negative" : "bg-[var(--positive-soft)] text-positive")}>{cash.free < 0 ? tr("Не хватит") : tr("Хватает")}</span>
+          </div>
+          <Money value={cash.free} currency={base} variant="hero" privacy tone={cash.free < 0 ? "negative" : "default"} className="mt-2 block text-[40px] leading-none" />
           <div className="mt-3 flex flex-col gap-1.5 text-subhead">
             <Line label={tr("Сейчас на счетах для трат")} value={cash.available} currency={base} />
             <Line label={tr("Ожидаемые поступления")} value={cash.income} currency={base} sign="+" />
@@ -124,7 +130,8 @@ export function PlansScreen() {
             <Line label={tr("Обычные траты до конца месяца")} value={-cash.everyday} currency={base} />
           </div>
           <p className="mt-3 text-caption text-ink-3">{tr("Без накопительных и инвестиционных счетов. Обычные траты — ваш средний темп за 60 дней.")}</p>
-        </div>
+          </div>
+        </HeroCard>
       </section>
 
       {overdue.length > 0 && (
