@@ -1,0 +1,12 @@
+Daha çok biriktirirsem?
+Para yatırılmazsa hedefe ulaşılamaz
+Şimdiki gibi
+Bu ayın sermayesi
+Süreden {0} sonra
+Son 3 ayda para yatırılmadı
+Şimdi ayda {0} biriktiriyorsunuz
+Süre içinde — {0}
+bu ay
+Şimdiki tempodan {0} önce ({1})
+şimdiki tempoyla
+bu ek tutarla

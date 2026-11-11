@@ -244,6 +244,18 @@ export function scheduledBetween(data: AppData, from: DayKey, to: DayKey, includ
   };
 }
 
+/** Plans dated today or earlier that are still open: the money has not moved yet, so every forecast waits for what is left of them. */
+export function pendingPlans(data: AppData, today: DayKey): Scheduled["items"] {
+  const out: Scheduled["items"] = [];
+  for (const p of data.plans) {
+    if (p.status !== "planned" || p.date > today) continue;
+    const left = planLeft(p, data.transactions);
+    const amt = left ? toBase(left, walletCurrency(data, p.walletId), data.settings) : null;
+    if (amt) out.push({ date: today, title: p.title, amount: amt, kind: p.kind, source: "plan" });
+  }
+  return out;
+}
+
 export interface MonthForecast {
   spent: Minor;
   projected: Minor;
@@ -321,14 +333,17 @@ export function freeCash(data: AppData, balances: Record<ID, Minor>, entries: Le
     available += Math.round((balances[w.id] ?? 0) * r);
   }
   const sch = scheduledBetween(data, addDays(today, 1), until);
+  const late = pendingPlans(data, today);
+  const income = sch.income + late.filter((i) => i.kind === "income").reduce((s, i) => s + i.amount, 0);
+  const obligations = sch.expense + late.filter((i) => i.kind === "expense").reduce((s, i) => s + i.amount, 0);
   const fc = monthForecast(data, entries, today);
   const everyday = fc.dailyRate * fc.daysLeft;
   return {
     available,
-    income: sch.income,
-    obligations: sch.expense,
+    income,
+    obligations,
     everyday,
-    free: available + sch.income - sch.expense - everyday,
+    free: available + income - obligations - everyday,
     until
   };
 }
@@ -405,55 +420,100 @@ export function monthlyTotals(entries: LedgerEntry[], today: DayKey, months: num
 /*  Capital at the end of the month                                    */
 /* ------------------------------------------------------------------ */
 
+export type ForecastItem = Scheduled["items"][number];
+
 export interface CapitalForecast {
+  /** The last day the forecast covers */
+  until: DayKey;
   /** On the accounts now, in the base currency */
   now: Minor;
   /** Expected income still to come: parts of salary and the like not yet received */
   incomeLeft: Minor;
-  /** Regular payments, plans and debts due until the end of the month */
+  /** Regular payments, plans and debts due until the last day */
   obligations: Minor;
   /** Everyday spending at the usual pace for the days left */
   everyday: Minor;
+  /** Everyday spending per day */
+  dailyRate: Minor;
   daysLeft: number;
-  /** Where the accounts will be on the last day of the month */
+  /** Where the accounts will be on the last day */
   end: Minor;
   /** The way there, day by day from today: payments and income on their dates, everyday spending evenly */
   path: Array<{ day: DayKey; value: Minor }>;
+  /** Every dated payment and income behind the path */
+  items: ForecastItem[];
+  /** Money in the everyday wallets (without savings and investments) and the way it goes: the one that can run out */
+  cashNow: Minor;
+  cashPath: Array<{ day: DayKey; value: Minor }>;
+  /** The first day everyday money would go below zero, if it does */
+  shortfall?: { day: DayKey; value: Minor; inDays: number };
 }
 
 /**
- * What will be on the accounts at the end of the month: what is there now,
- * plus the income still expected (a salary received in parts counts only
- * for what is left of it), minus payments and the usual everyday spending.
+ * What will be on the accounts on a day ahead (the end of the month unless
+ * said otherwise): what is there now, plus the income still expected (a
+ * salary received in parts counts only for what is left of it), minus
+ * payments and the usual everyday spending. The same engine serves the
+ * month, 7/30/90 days and the year.
  */
-export function capitalForecast(data: AppData, balances: Record<ID, Minor>, entries: LedgerEntry[], today: DayKey): CapitalForecast {
-  const until = endOfMonth(today);
+export function capitalForecast(data: AppData, balances: Record<ID, Minor>, entries: LedgerEntry[], today: DayKey, until: DayKey = endOfMonth(today)): CapitalForecast {
   let now = 0;
+  let cashNow = 0;
   for (const w of totalWallets(data.wallets)) {
     const r = rateOf(w.currency, data.settings);
     if (r === null) continue;
-    now += Math.round((balances[w.id] ?? 0) * r);
+    const v = Math.round((balances[w.id] ?? 0) * r);
+    now += v;
+    if (w.kind !== "savings" && w.kind !== "investment") cashNow += v;
   }
-  const fc = monthForecast(data, entries, today);
-  const future = scheduledBetween(data, addDays(today, 1), until);
+  const dailyRate = monthForecast(data, entries, today).dailyRate;
+  const daysLeft = Math.max(0, diffDays(until, today));
+  const future = daysLeft > 0 ? scheduledBetween(data, addDays(today, 1), until) : { items: [] as ForecastItem[] };
   // plans dated today or earlier that are not closed yet still count: the money has not come in
-  const items = future.items.map((i) => ({ ...i }));
-  for (const p of data.plans) {
-    if (p.status !== "planned" || p.date > today) continue;
-    const left = planLeft(p, data.transactions);
-    const amt = left ? toBase(left, walletCurrency(data, p.walletId), data.settings) : null;
-    if (amt) items.push({ date: today, title: p.title, amount: amt, kind: p.kind, source: "plan" });
-  }
+  const items = [...future.items.map((i) => ({ ...i })), ...pendingPlans(data, today)];
   const incomeLeft = items.filter((i) => i.kind === "income").reduce((s, i) => s + i.amount, 0);
   const obligations = items.filter((i) => i.kind === "expense").reduce((s, i) => s + i.amount, 0);
-  const everyday = fc.dailyRate * fc.daysLeft;
+  const everyday = dailyRate * daysLeft;
 
   const path: CapitalForecast["path"] = [{ day: today, value: now }];
+  const cashPath: CapitalForecast["path"] = [{ day: today, value: cashNow }];
   let run = now;
+  let cash = cashNow;
+  let shortfall: CapitalForecast["shortfall"];
   for (let d = addDays(today, 1); d <= until; d = addDays(d, 1)) {
-    for (const i of items) if (i.date === d || (d === addDays(today, 1) && i.date === today)) run += i.kind === "income" ? i.amount : -i.amount;
-    run -= fc.dailyRate;
+    for (const i of items) {
+      if (i.date === d || (d === addDays(today, 1) && i.date === today)) {
+        const v = i.kind === "income" ? i.amount : -i.amount;
+        run += v;
+        cash += v;
+      }
+    }
+    run -= dailyRate;
+    cash -= dailyRate;
     path.push({ day: d, value: run });
+    cashPath.push({ day: d, value: cash });
+    if (!shortfall && cash < 0) shortfall = { day: d, value: cash, inDays: diffDays(d, today) };
   }
-  return { now, incomeLeft, obligations, everyday, daysLeft: fc.daysLeft, end: now + incomeLeft - obligations - everyday, path };
+  return { until, now, incomeLeft, obligations, everyday, dailyRate, daysLeft, end: now + incomeLeft - obligations - everyday, path, items, cashNow, cashPath, shortfall };
+}
+
+export interface CapitalChange {
+  /** Capital at the end of the day before the month began, and now */
+  from: Minor;
+  to: Minor;
+  delta: Minor;
+  /** Change as a share of where the month began; null when it began at zero or below */
+  pct: number | null;
+}
+
+/**
+ * How capital (wallets + money set aside for goals + owed to you − what you
+ * owe) changed this month. Transfers, goal deposits and loans move money
+ * without changing it, so only real income and expense show here.
+ */
+export function capitalChange(data: AppData, balances: Record<ID, Minor>, today: DayKey): CapitalChange {
+  const series = capitalSeries(data, balances, addDays(startOfMonth(today), -1), today);
+  const from = series[0]?.value ?? 0;
+  const to = series[series.length - 1]?.value ?? from;
+  return { from, to, delta: to - from, pct: from > 0 ? (to - from) / from : null };
 }

@@ -1,4 +1,4 @@
-import { addDays, addMonths, dayOf, monthTitle, type DayKey } from "./dates";
+import { addDays, addMonths, dayOf, monthsBetween, monthTitle, type DayKey } from "./dates";
 import { balanceSeries, type GoalInfo } from "./finance";
 import { formatMoney, type Minor } from "./money";
 import type { AppData, Goal, ID, Transaction } from "../store/types";
@@ -75,4 +75,45 @@ export function goalHistory(goal: Goal, data: AppData, balances: Record<ID, Mino
   const out = [{ day: addDays(first, -3), value: 0 }, ...pts];
   if (out[out.length - 1].day < today) out.push({ day: today, value: run });
   return out;
+}
+
+export interface GoalWhatIf {
+  /** Monthly saving after the extra, in minor units (never below zero) */
+  monthly: Minor;
+  months: number | null;
+  eta: DayKey | null;
+  /** How many months sooner than at the current pace; null when either has no end in sight */
+  earlierBy: number | null;
+  /** Whether the new date is within the deadline; null for goals without a deadline or without a date */
+  meetsDeadline: boolean | null;
+  /** How many months past the deadline the new date falls (0 when in time) */
+  lateBy: number;
+}
+
+/**
+ * «What if I save more every month»: the date the goal is reached at the
+ * current pace plus an extra monthly amount. Pure arithmetic — nothing is
+ * saved or changed.
+ */
+export function goalWhatIf(goal: Goal, info: GoalInfo, pace: Minor, extra: Minor, today: DayKey): GoalWhatIf {
+  const now = Math.max(0, pace);
+  const monthly = now + Math.max(0, extra);
+  const monthsAt = (p: Minor) => (info.remaining > 0 && p > 0 ? Math.ceil(info.remaining / p) : null);
+  const months = monthsAt(monthly);
+  const base = monthsAt(now);
+  const eta = months === null ? null : addMonths(today, months);
+  const meetsDeadline = goal.deadline && eta ? eta <= goal.deadline : null;
+  const lateBy = goal.deadline && eta && eta > goal.deadline ? Math.max(1, Math.round(monthsBetween(goal.deadline, eta))) : 0;
+  return { monthly, months, eta, earlierBy: months !== null && base !== null ? base - months : null, meetsDeadline, lateBy };
+}
+
+/** Three round extra amounts that fit the size of the goal (about ½ %, 1 % and 2 % of the target, rounded to 1-2-5). */
+export function whatIfSteps(target: Minor): Minor[] {
+  const nice = (n: number) => {
+    const pow = Math.pow(10, Math.floor(Math.log10(Math.max(1, n))));
+    const m = n / pow;
+    return (m < 1.5 ? 1 : m < 3.5 ? 2 : m < 7.5 ? 5 : 10) * pow;
+  };
+  const out = [0.005, 0.01, 0.02].map((k) => Math.max(10_000, nice(target * k)));
+  return [...new Set(out)];
 }

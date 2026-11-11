@@ -1,4 +1,8 @@
+import { useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { capitalChange } from "../../lib/analytics";
+import { formatMoney, formatPercent } from "../../lib/money";
+import { useAppData, useBalances, useToday } from "../../store/hooks";
 import { ChevronDown, ChevronRight } from "../../ui/glyphs";
 import type { ReactNode } from "react";
 import { ForecastStrip } from "./Forecast";
@@ -35,6 +39,10 @@ export function BalanceHero({ children }: { children?: ReactNode }) {
   const i = Math.min(index, Math.max(0, cards.length - 1));
   const card = cards[i];
   const wallets = cards.filter((c) => c.walletId);
+  const data = useAppData();
+  const balances = useBalances();
+  const today = useToday();
+  const change = useMemo(() => capitalChange(data, balances, today), [data, balances, today]);
 
   const go = (n: number) => {
     const next = Math.max(0, Math.min(cards.length - 1, n));
@@ -95,6 +103,16 @@ export function BalanceHero({ children }: { children?: ReactNode }) {
             <button type="button" onClick={() => nav.sheet("wallet")} className="mt-1 text-title-2 font-semibold">{tr("Добавьте первый счёт")}</button>
           )}
           {hidden && <div className="mt-1 text-caption text-white/70">{tr("Суммы скрыты")}</div>}
+          {card && !card.walletId && !hidden && change.delta !== 0 && (
+            <div className="mt-1 flex items-center gap-1.5 text-footnote font-semibold" aria-label={tr("Капитал за месяц")}>
+              <span className={change.delta > 0 ? "text-[#9bf5cf]" : "text-[#ffd0d0]"}>
+                {change.delta > 0 ? "↑" : "↓"} {change.delta > 0 ? "+" : "−"}
+                {formatMoney(Math.abs(change.delta), { currency: card.currency })}
+                {change.pct !== null ? ` · ${formatPercent(Math.abs(change.pct), Math.abs(change.pct) < 0.1 ? 1 : 0)}` : ""}
+              </span>
+              <span className="font-normal text-white/70">{tr("за этот месяц")}</span>
+            </div>
+          )}
           <ForecastStrip />
         </motion.div>
 

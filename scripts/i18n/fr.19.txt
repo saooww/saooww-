@@ -1,0 +1,11 @@
+7 jours
+90 jours
+{0} : sur les comptes courants {1}
+Total en fin de période
+Capital jusqu'à la fin de la période
+Touchez le graphique pour voir le solde d'un jour
+La période se terminera à
+Prévision
+Dans {0}, l'argent peut manquer
+solde attendu en fin de journée
+c'était ainsi ce jour-là

@@ -1,0 +1,11 @@
+7 días
+90 días
+{0}: en las cuentas de uso diario {1}
+Total al fin del periodo
+Capital hasta el fin del periodo
+Toca el gráfico para ver el saldo de cualquier día
+El periodo cerrará con
+Pronóstico
+En {0} puede faltar dinero
+saldo esperado al final del día
+así fue ese día

@@ -4,7 +4,7 @@ import { useCallback, useContext, useRef, useSyncExternalStore } from "react";
 import { kvDel, kvGet, kvSet, persistStorage } from "./storage";
 import { FreezeContext } from "./freeze";
 import { MONTHS_GEN, nowISO, parseDay, todayKey, type DayKey } from "../lib/dates";
-import { computeBalances, debtInfo } from "../lib/finance";
+import { computeBalances, crossAmount, debtInfo } from "../lib/finance";
 import { uid } from "../lib/id";
 import type { Minor } from "../lib/money";
 import { planReceived } from "../lib/plans";
@@ -122,6 +122,13 @@ function initialData(): AppData {
   return createEmptyData();
 }
 
+/** What the destination of a transfer is credited with when the two wallets differ in currency. */
+function crossAmountOf(s: DataState, amount: Minor, fromId: ID, toId?: ID): Minor | undefined {
+  const from = s.wallets.find((w) => w.id === fromId)?.currency;
+  const to = toId ? s.wallets.find((w) => w.id === toId)?.currency : undefined;
+  return from && to && from !== to ? crossAmount(amount, from, to, s.settings) ?? undefined : undefined;
+}
+
 export function pickData(s: AppData): AppData {
   const out = {} as Record<string, unknown>;
   for (const k of DATA_KEYS) out[k] = s[k];
@@ -145,7 +152,19 @@ const useDataStore = create<DataState>()(
       },
 
       updateTransaction(id, patch) {
-        set((s) => ({ transactions: mapById(s.transactions, id, { ...patch, updatedAt: nowISO() }) }));
+        set((s) => {
+          const transactions = mapById(s.transactions, id, { ...patch, updatedAt: nowISO() });
+          const tx = transactions.find((t) => t.id === id);
+          // a part of an expected income was edited: the plan is done only while the parts add up to the whole
+          const plans = tx?.planId
+            ? s.plans.map((p) => {
+                if (p.id !== tx.planId || p.status === "skipped") return p;
+                const got = planReceived(p, transactions);
+                return got >= p.amount ? (p.status === "done" ? p : { ...p, status: "done" as const, txId: tx.id }) : p.status === "done" ? { ...p, status: "planned" as const, txId: undefined } : p;
+              })
+            : s.plans;
+          return { transactions, plans };
+        });
       },
 
       deleteTransaction(id) {
@@ -366,11 +385,14 @@ const useDataStore = create<DataState>()(
         const s = get();
         const debt = s.debts.find((d) => d.id === debtId);
         if (!debt || amount <= 0) return;
+        // never more than is still owed, whatever the caller passes
+        const left = debtInfo(debt, s.transactions, todayKey()).remaining;
+        if (left <= 0) return;
         s.addTransaction({
           kind: "debt",
           debtId,
           debtRole: "payment",
-          amount,
+          amount: Math.min(amount, left),
           walletId,
           flow: debt.direction === "i_owe" ? "out" : "in",
           note: note || debt.counterparty,
@@ -404,6 +426,12 @@ const useDataStore = create<DataState>()(
         const created: Transaction[] = [];
         const s = get();
         const walletIds = new Set(s.wallets.map((w) => w.id));
+        const cur = new Map(s.wallets.map((w) => [w.id, w.currency]));
+        const credited = (r: { amount: Minor; walletId: ID; toWalletId?: ID }) => {
+          const from = cur.get(r.walletId);
+          const to = r.toWalletId ? cur.get(r.toWalletId) : undefined;
+          return from && to && from !== to ? crossAmount(r.amount, from, to, s.settings) ?? undefined : undefined;
+        };
         const recurring = s.recurring.map((r) => {
           if (!r.active || !r.autoPost || r.nextDate > today || !walletIds.has(r.walletId)) return r;
           let d = r.nextDate;
@@ -412,7 +440,7 @@ const useDataStore = create<DataState>()(
             const date = `${d}T09:00`;
             created.push(
               r.kind === "transfer"
-                ? { id: uid("t-"), kind: "transfer", amount: r.amount, walletId: r.walletId, toWalletId: r.toWalletId, note: r.title, recurringId: r.id, tags: [], date, createdAt: nowISO() }
+                ? { id: uid("t-"), kind: "transfer", amount: r.amount, walletId: r.walletId, toWalletId: r.toWalletId, toAmount: credited(r), note: r.title, recurringId: r.id, tags: [], date, createdAt: nowISO() }
                 : { id: uid("t-"), kind: r.kind, amount: r.amount, walletId: r.walletId, categoryId: r.categoryId, note: r.title, recurringId: r.id, tags: [], date, createdAt: nowISO() }
             );
             d = nextAfter(d, r.freq, r.interval, r.anchorDay);
@@ -428,7 +456,7 @@ const useDataStore = create<DataState>()(
         if (!r) return;
         get().addTransaction(
           r.kind === "transfer"
-            ? { kind: "transfer", amount: r.amount, walletId: r.walletId, toWalletId: r.toWalletId, note: r.title, recurringId: r.id, date: nowISO() }
+            ? { kind: "transfer", amount: r.amount, walletId: r.walletId, toWalletId: r.toWalletId, toAmount: crossAmountOf(get(), r.amount, r.walletId, r.toWalletId), note: r.title, recurringId: r.id, date: nowISO() }
             : { kind: r.kind, amount: r.amount, walletId: r.walletId, categoryId: r.categoryId, note: r.title, recurringId: r.id, date: nowISO() }
         );
         get().updateRecurring(id, { nextDate: nextAfter(r.nextDate, r.freq, r.interval, r.anchorDay) });

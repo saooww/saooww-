@@ -1,0 +1,11 @@
+7 dias
+90 dias
+{0}: nas contas do dia a dia {1}
+Total no fim do período
+Capital até o fim do período
+Toque no gráfico para ver o saldo de qualquer dia
+O período fechará com
+Previsão
+Em {0} o dinheiro pode faltar
+saldo esperado no fim do dia
+foi assim naquele dia

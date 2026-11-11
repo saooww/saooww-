@@ -12,6 +12,7 @@ import { confirmDelete, undoable } from "../../store/undo";
 import { Screen } from "../../nav/Screen";
 import { GoalVisual } from "./GoalVisual";
 import { GoalPaceChart } from "./GoalPace";
+import { GoalWhatIf } from "./GoalWhatIf";
 import { GoalTasks } from "./GoalTasks";
 import { Money } from "../../ui/Money";
 import { Button, EmptyState, Group, IconChip, Row } from "../../ui/primitives";
@@ -57,6 +58,8 @@ export function GoalDetail({ id }: { id: ID }) {
         <div className="mb-2 text-footnote font-medium text-white/75">{tr("Темп накоплений")}</div>
         <GoalPaceChart goal={goal} info={info} />
       </div>
+
+      <GoalWhatIf goal={goal} info={info} />
 
       {!info.done && (
         <div className="mt-6 grid grid-cols-2 gap-2.5 px-5">
