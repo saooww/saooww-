@@ -68,7 +68,7 @@ function HomeBlocks() {
 }
 
 const HOME_BLOCKS: Array<{ id: HomeBlock; title: string; subtitle: string; icon: LucideIcon }> = [
-  { id: "today", title: tr("Дела на сегодня"), subtitle: tr("Прогресс дня и ближайшие дела"), icon: ListChecks },
+  { id: "today", title: tr("Сегодня и скоро"), subtitle: tr("Дела дня и платежи на неделю"), icon: ListChecks },
   { id: "feed", title: tr("Важное"), subtitle: tr("Итоги месяца, копия данных, подсказки"), icon: Sparkles },
   { id: "recent", title: tr("Последние операции"), subtitle: tr("Три последние записи"), icon: ReceiptText },
   { id: "goal", title: tr("Цель"), subtitle: tr("Главная цель и её прогресс"), icon: Target }
@@ -80,7 +80,7 @@ export function HomeLayoutSheet() {
   const update = useData((s) => s.updateSettings);
   return (
     <Sheet title={tr("Главная")} ariaLabel={tr("Настроить главную")}>
-      <p className="px-6 pb-4 text-center text-footnote text-ink-2">{tr("Карты, дневной бюджет и «Скоро» видны всегда, умная строка — над меню. Остальное — по желанию.")}</p>
+      <p className="px-6 pb-4 text-center text-footnote text-ink-2">{tr("Баланс и сумма на сегодня видны всегда, умная строка — над меню. Остальное — по желанию.")}</p>
       <Group>
         {HOME_BLOCKS.map((b) => (
           <div key={b.id} className="flex min-h-[58px] items-center gap-3 px-4 py-2.5">

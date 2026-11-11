@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
-import { ArrowDownLeft, ArrowUpRight, CalendarCheck, Check, CircleCheck, HandCoins, Pencil, Plus, RotateCcw, Trash2 } from "../../ui/glyphs";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowDownLeft, ArrowUpRight, CalendarCheck, Check, ChevronDown, ChevronRight, CircleCheck, HandCoins, Pencil, Plus, RotateCcw, Trash2 } from "../../ui/glyphs";
+import { AnimatedMoney } from "../../ui/Money";
 import { cn } from "../../lib/cn";
 import { dayOf, formatDate, formatDayHeading, nowISO, pluralN, todayKey } from "../../lib/dates";
 import { activeWallets, debtInfo, type DebtInfo } from "../../lib/finance";
@@ -15,8 +16,6 @@ import { Screen } from "../../nav/Screen";
 import { Money } from "../../ui/Money";
 import { spring } from "../../ui/motion";
 import { Button, Chip, EmptyState, FormRow, Group, IconButton, Row, Segmented, Toggle, inputCls } from "../../ui/primitives";
-import { HeroCard } from "../../ui/HeroCard";
-import { materialOf } from "../../store/catalog";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
 import { tr } from "../../i18n/i18n";
 
@@ -122,82 +121,155 @@ export function DebtsScreen() {
   const transactions = useData((s) => s.transactions);
   const base = useData((s) => s.settings.baseCurrency);
   const today = useToday();
-  const [tab, setTab] = useState<"active" | "closed">("active");
+  const [showClosed, setShowClosed] = useState(false);
   const items = useMemo(() => debts.map((d) => ({ d, info: debtInfo(d, transactions, today) })), [debts, transactions, today]);
-  const active = items.filter((x) => x.info.status !== "closed").sort((a, b) => (a.d.dueDate ?? "9") .localeCompare(b.d.dueDate ?? "9"));
+  const active = items.filter((x) => x.info.status !== "closed").sort((a, b) => b.info.remaining - a.info.remaining);
   const closed = items.filter((x) => x.info.status === "closed");
-  const toMe = active.filter((x) => x.d.direction === "owed_to_me");
-  const fromMe = active.filter((x) => x.d.direction === "i_owe");
-  const owedToMe = toMe.filter((x) => x.d.currency === base).reduce((s, x) => s + x.info.remaining, 0);
-  const iOwe = fromMe.filter((x) => x.d.currency === base).reduce((s, x) => s + x.info.remaining, 0);
+  const owedToMe = active.filter((x) => x.d.direction === "owed_to_me" && x.d.currency === base).reduce((s, x) => s + x.info.remaining, 0);
+  const iOwe = active.filter((x) => x.d.direction === "i_owe" && x.d.currency === base).reduce((s, x) => s + x.info.remaining, 0);
   const net = owedToMe - iOwe;
-  const late = active.filter((x) => x.info.daysToDue !== null && x.info.daysToDue < 0).length;
-  const next = active.find((x) => x.info.daysToDue !== null && x.info.daysToDue >= 0);
-  const list = tab === "active" ? active : closed;
-  const m = materialOf("obsidian");
-  const share = owedToMe + iOwe > 0 ? owedToMe / (owedToMe + iOwe) : 0.5;
+  const [picked, setPicked] = useState<ID | null>(null);
+  // the one that needs attention first: overdue, then the nearest due date
+  const urgent = [...active].sort((a, b) => (a.info.daysToDue ?? 9999) - (b.info.daysToDue ?? 9999))[0];
+  const sel = active.find((x) => x.d.id === picked) ?? urgent;
+  const max = Math.max(1, ...active.map((x) => x.info.remaining));
 
   return (
-    <Screen title={tr("Долги")} large actions={<IconButton icon={Plus} label={tr("Новый долг")} onClick={() => nav.sheet("debt")} />}>
-      {debts.length > 0 && (
-        <HeroCard material={m} style={{ ["--ink" as string]: "#f5f3f0", ["--ink-2" as string]: "rgba(245,243,240,0.72)", ["--ink-3" as string]: "rgba(245,243,240,0.55)", ["--line" as string]: "rgba(255,255,255,0.12)" }}>
-          <div className="relative px-5 pb-5 pt-[18px]">
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-caption font-semibold uppercase tracking-[0.14em]" style={{ color: m.inkMuted }}>{tr("Баланс долгов")}</span>
-              <span className={cn("rounded-full px-2.5 py-0.5 text-caption font-semibold", late ? "bg-[var(--negative-soft)] text-negative" : next && next.info.daysToDue! <= 3 ? "bg-[var(--warning-soft)] text-warning" : "bg-[var(--positive-soft)] text-positive")}>
-                {late ? tr("Просрочено · {0}", late) : next ? (next.info.daysToDue === 0 ? tr("Срок сегодня") : tr("Ближайший через {0}", pluralN(next.info.daysToDue!, ["день", "дня", "дней"]))) : tr("Сроков нет")}
-              </span>
-            </div>
-            <Money value={net} currency={base} sign={net ? "always" : "never"} privacy variant="hero" className={cn("mt-2 block text-[40px] leading-none", net > 0 && "text-positive")} />
-            <div className="mt-1 text-footnote" style={{ color: m.inkMuted }}>{net > 0 ? tr("вам вернут больше, чем должны вы") : net < 0 ? tr("вы должны больше, чем вернут вам") : tr("никто никому не должен")}</div>
-            <div className="mt-4 flex h-[7px] gap-[3px] overflow-hidden rounded-full" aria-hidden="true">
-              <span className="rounded-full" style={{ width: `${share * 100}%`, background: GREEN, minWidth: owedToMe ? 8 : 0 }} />
-              <span className="flex-1 rounded-full" style={{ background: iOwe ? RED : "rgba(255,255,255,0.14)", minWidth: iOwe ? 8 : 0 }} />
-            </div>
-            <div className="mt-3 grid grid-cols-2 gap-3">
-              <div>
-                <div className="flex items-center gap-1.5 text-caption" style={{ color: m.inkMuted }}><span className="h-2 w-2 rounded-full" style={{ background: GREEN }} />{tr("Вам должны")}</div>
-                <Money value={owedToMe} currency={base} privacy className="mt-0.5 block text-headline font-semibold" />
-                <div className="text-caption" style={{ color: m.inkMuted }}>{pluralN(toMe.length, ["человек", "человека", "человек"])}</div>
-              </div>
-              <div>
-                <div className="flex items-center gap-1.5 text-caption" style={{ color: m.inkMuted }}><span className="h-2 w-2 rounded-full" style={{ background: RED }} />{tr("Вы должны")}</div>
-                <Money value={iOwe} currency={base} privacy className="mt-0.5 block text-headline font-semibold" />
-                <div className="text-caption" style={{ color: m.inkMuted }}>{pluralN(fromMe.length, ["человеку", "людям", "людям"])}</div>
-              </div>
-            </div>
-          </div>
-        </HeroCard>
-      )}
-
-      {debts.length > 0 && (
-        <div className="mt-4 grid grid-cols-2 gap-2 px-4">
-          <Button variant="secondary" icon={ArrowUpRight} onClick={() => nav.sheet("debt", { direction: "owed_to_me" })}>{tr("Дал в долг")}</Button>
-          <Button variant="secondary" icon={ArrowDownLeft} onClick={() => nav.sheet("debt", { direction: "i_owe" })}>{tr("Взял в долг")}</Button>
-        </div>
-      )}
-
-      {debts.length > 0 && (
-        <div className="mt-4 px-4">
-          <Segmented value={tab} onChange={setTab} options={[{ value: "active", label: tr("Активные · {0}", active.length) }, { value: "closed", label: tr("Закрытые · {0}", closed.length) }]} />
-        </div>
-      )}
-
-      {list.length === 0 ? (
+    <Screen title={tr("Долги")} actions={<IconButton icon={Plus} label={tr("Новый долг")} onClick={() => nav.sheet("debt")} />}>
+      {active.length === 0 ? (
         <EmptyState
           icon={HandCoins}
-          title={tab === "active" ? tr("Долгов нет") : tr("Закрытых долгов пока нет")}
-          text={tab === "active" ? tr("Записывайте, кому вы одолжили и у кого заняли, — приложение напомнит о сроках.") : undefined}
-          action={tab === "active" ? <Button size="md" icon={Plus} onClick={() => nav.sheet("debt")}>{tr("Записать долг")}</Button> : undefined}
+          title={tr("Долгов нет")}
+          text={tr("Записывайте, кому вы одолжили и у кого заняли, — приложение напомнит о сроках.")}
+          action={<Button size="md" icon={Plus} onClick={() => nav.sheet("debt")}>{tr("Записать долг")}</Button>}
         />
       ) : (
-        <div className="mt-4 flex flex-col gap-3 px-4">
-          {list.map(({ d, info }, i) => (
-            <DebtCard key={d.id} d={d} info={info} delay={i * 0.04} onOpen={() => nav.push("debt", { id: d.id })} />
-          ))}
+        <>
+          <div className="px-5 pt-2 text-center">
+            <div className="text-subhead text-ink-2">{net > 0 ? tr("В итоге вам вернут") : net < 0 ? tr("В итоге вы должны") : tr("Никто никому не должен")}</div>
+            <AnimatedMoney value={net} currency={base} sign={net ? "always" : "never"} privacy variant="hero" className={cn("mt-1 block text-[50px] leading-none", net > 0 ? "text-positive" : net < 0 ? "text-negative" : "text-ink")} />
+            <div className="mt-2 text-footnote text-ink-3">
+              {tr("вам должны")} {formatMoney(owedToMe, { currency: base })} · {tr("вы должны")} {formatMoney(iOwe, { currency: base })}
+            </div>
+          </div>
+
+          {/* everyone as a circle: green owes you, red you owe; the bigger, the larger the sum */}
+          <div className="mt-7 flex flex-wrap items-end justify-center gap-x-6 gap-y-5 px-4">
+            {active.map(({ d, info }, k) => {
+              const mine = d.direction === "owed_to_me";
+              const size = Math.round(66 + 46 * Math.sqrt(info.remaining / max));
+              const on = sel?.d.id === d.id;
+              const due = dueText(d, info);
+              const c = mine ? GREEN : RED;
+              return (
+                <motion.button
+                  key={d.id}
+                  type="button"
+                  aria-pressed={on}
+                  aria-label={`${d.counterparty}: ${mine ? "+" : "−"}${formatMoney(info.remaining, { currency: d.currency })}`}
+                  initial={{ opacity: 0, scale: 0.6 }}
+                  animate={{ opacity: on || !picked ? 1 : 0.6, scale: 1 }}
+                  transition={{ ...spring.smooth, delay: k * 0.05 }}
+                  whileTap={{ scale: 0.93 }}
+                  onClick={() => {
+                    haptic();
+                    setPicked(d.id);
+                  }}
+                  className="flex w-[118px] flex-col items-center text-center"
+                >
+                  <span
+                    className="grid place-items-center rounded-full font-bold text-white"
+                    style={{
+                      width: size,
+                      height: size,
+                      fontSize: size * 0.36,
+                      background: `radial-gradient(circle at 32% 26%, color-mix(in srgb, ${c} 55%, #fff), ${c} 55%, color-mix(in srgb, ${c} 55%, #000))`,
+                      boxShadow: `0 0 ${on ? 44 : 28}px -6px ${c}${on ? ", 0 0 0 3px var(--bg), 0 0 0 5px " + c : ""}`
+                    }}
+                  >
+                    {d.counterparty.trim().slice(0, 1).toUpperCase()}
+                  </span>
+                  <span className="mt-2.5 block max-w-full truncate text-callout font-semibold">{d.counterparty}</span>
+                  <Money value={mine ? info.remaining : -info.remaining} currency={d.currency} sign="always" privacy className={cn("text-subhead font-bold", mine ? "text-positive" : "text-negative")} />
+                  <span className={cn("text-caption", due.tone)}>{due.text}</span>
+                </motion.button>
+              );
+            })}
+          </div>
+          <div className="mt-4 text-center text-caption text-ink-3">{tr("Чем больше круг — тем больше сумма")}</div>
+
+          {sel && <Picked d={sel.d} info={sel.info} />}
+        </>
+      )}
+
+      <div className="mt-3 grid grid-cols-2 gap-2 px-4">
+        <Button variant="secondary" icon={ArrowUpRight} onClick={() => nav.sheet("debt", { direction: "owed_to_me" })}>{tr("Дал в долг")}</Button>
+        <Button variant="secondary" icon={ArrowDownLeft} onClick={() => nav.sheet("debt", { direction: "i_owe" })}>{tr("Взял в долг")}</Button>
+      </div>
+
+      {closed.length > 0 && (
+        <div className="mt-7">
+          <button type="button" onClick={() => setShowClosed((v) => !v)} className="flex w-full items-center gap-2 px-5 py-2 text-subhead font-medium text-ink-2">
+            <CircleCheck size={16} />
+            {tr("Закрытые · {0}", closed.length)}
+            <ChevronDown size={16} className={cn("transition-transform", showClosed && "rotate-180")} />
+          </button>
+          {showClosed && (
+            <Group>
+              {closed.map(({ d }) => (
+                <Row key={d.id} title={d.counterparty} subtitle={dueText(d, debtInfo(d, transactions, today)).text} value={<Money value={d.amount} currency={d.currency} className="text-ink-3" />} chevron onClick={() => nav.push("debt", { id: d.id })} />
+              ))}
+            </Group>
+          )}
         </div>
       )}
     </Screen>
+  );
+}
+
+/** The chosen person: how much is back already, and the two things to do next. */
+function Picked({ d, info }: { d: Debt; info: DebtInfo }) {
+  const mine = d.direction === "owed_to_me";
+  const c = mine ? GREEN : RED;
+  const pct = Math.round(info.progress * 100);
+  return (
+    <AnimatePresence mode="popLayout" initial={false}>
+      <motion.div key={d.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={spring.smooth} className="panel mx-4 mt-6 rounded-[24px] p-4">
+        <button type="button" onClick={() => nav.push("debt", { id: d.id })} className="flex w-full items-center gap-3 text-left">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-headline font-bold text-white" style={{ background: c }}>
+            {d.counterparty.trim().slice(0, 1).toUpperCase()}
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block truncate text-headline font-semibold">{d.counterparty}</span>
+            <span className="block text-footnote text-ink-2">
+              {info.paid > 0 ? tr("Вернули {0}%", pct) : tr("Ещё ничего не вернули")} · {formatMoney(info.paid, { currency: d.currency })} {tr("из")} {formatMoney(d.amount, { currency: d.currency })}
+            </span>
+          </span>
+          <ChevronRight size={16} className="shrink-0 text-ink-3" />
+        </button>
+        <div className="mt-3.5 h-2 overflow-hidden rounded-full bg-[var(--line)]">
+          <motion.div className="h-full rounded-full" style={{ background: c, boxShadow: `0 0 12px ${c}` }} initial={{ width: 0 }} animate={{ width: `${Math.max(2, pct)}%` }} transition={{ duration: 0.7 }} />
+        </div>
+        <div className="mt-3.5 grid grid-cols-2 gap-2">
+          <motion.button
+            type="button"
+            whileTap={{ scale: 0.97 }}
+            onClick={() => {
+              haptic();
+              nav.sheet("debtPay", { debtId: d.id });
+            }}
+            className="flex h-12 items-center justify-center gap-1.5 rounded-[16px] bg-[var(--ink)] text-callout font-bold text-[var(--bg)]"
+          >
+            <Check size={16} strokeWidth={2.6} />
+            {mine ? tr("Вернули") : tr("Вернуть")}
+          </motion.button>
+          <motion.button type="button" whileTap={{ scale: 0.97 }} onClick={() => remind(d, info.remaining)} className="tile flex h-12 items-center justify-center gap-1.5 rounded-[16px] text-callout font-semibold">
+            <CalendarCheck size={16} />
+            {tr("Напомнить")}
+          </motion.button>
+        </div>
+      </motion.div>
+    </AnimatePresence>
   );
 }
 

@@ -1,11 +1,13 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, Plus } from "../../ui/glyphs";
+import { ChevronDown, ChevronRight } from "../../ui/glyphs";
+import type { ReactNode } from "react";
+import { DayStrip } from "./DayBudget";
 import { cn } from "../../lib/cn";
 import { haptic } from "../../lib/haptics";
 import { materialOf } from "../../store/catalog";
 import { useData } from "../../store/store";
 import { nav, useUI } from "../../store/ui";
-import { AnimatedMoney, Money } from "../../ui/Money";
+import { AnimatedMoney } from "../../ui/Money";
 import { useCardModels, type CardModel } from "./WalletCarousel";
 import { tr } from "../../i18n/i18n";
 
@@ -24,7 +26,7 @@ function greeting(hour: number): string {
  * in large bold figures. Swipe it to go through the accounts; under it, on a
  * sheet that rises over the colour, every account as a tile.
  */
-export function BalanceHero() {
+export function BalanceHero({ children }: { children?: ReactNode }) {
   const cards = useCardModels();
   const index = useUI((s) => s.homeCardIndex);
   const setIndex = useUI((s) => s.setHomeCardIndex);
@@ -44,7 +46,7 @@ export function BalanceHero() {
 
   return (
     <div role="region" aria-roledescription={tr("карусель")} aria-label={tr("Кошельки")}>
-      <div className="relative overflow-hidden text-white" style={{ marginTop: "calc(-1 * (var(--safe-top) + 52px))", paddingTop: "calc(var(--safe-top) + 60px)", minHeight: "calc(var(--safe-top) + 52px + 290px)" }}>
+      <div className="relative overflow-hidden text-white" style={{ marginTop: "calc(-1 * (var(--safe-top) + 52px))", paddingTop: "calc(var(--safe-top) + 60px)", minHeight: "calc(var(--safe-top) + 52px + 330px)" }}>
         {/* the colour, crossfading between accounts, with streaks of light over it */}
         <AnimatePresence initial={false}>
           <motion.div key={card?.key ?? "none"} aria-hidden="true" className="absolute inset-0" style={{ background: bg }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5 }} />
@@ -52,7 +54,7 @@ export function BalanceHero() {
         <div aria-hidden="true" className="hero-light pointer-events-none absolute inset-0" />
 
         <motion.div
-          className="relative px-[22px] pb-14"
+          className="relative px-[22px] pb-[70px]"
           drag={cards.length > 1 ? "x" : false}
           dragConstraints={{ left: 0, right: 0 }}
           dragElastic={0.25}
@@ -81,29 +83,23 @@ export function BalanceHero() {
           </button>
           <div className="mt-4 text-subhead text-white/80">{!card || !card.walletId ? tr("Доступно на счетах") : card.subtitle ?? tr("Баланс")}</div>
           {card ? (
-            <AnimatePresence mode="popLayout" initial={false}>
-              <motion.div key={card.key} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.28 }}>
-                <AnimatedMoney value={card.amount} currency={card.currency} variant="hero" privacy className="mt-1 block text-[46px] leading-[1.05]" />
-              </motion.div>
-            </AnimatePresence>
-          ) : (
-            <div className="mt-1 text-title-2 font-semibold">{tr("Добавьте первый счёт")}</div>
-          )}
-          <div className="mt-4 flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => (card ? open(card) : nav.sheet("wallet"))}
-              className="h-9 rounded-full px-4 text-subhead font-semibold"
-              style={{ background: "rgba(255,255,255,0.14)", boxShadow: "inset 0 0 0 0.5px rgba(255,255,255,0.3)" }}
-            >
-              {card ? tr("Подробнее") : tr("Добавить")}
+            <button type="button" aria-label={tr("Подробнее")} onClick={() => open(card)} className="mt-1 flex items-center gap-1 text-left">
+              <AnimatePresence mode="popLayout" initial={false}>
+                <motion.span key={card.key} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.28 }}>
+                  <AnimatedMoney value={card.amount} currency={card.currency} variant="hero" privacy className="block text-[48px] leading-[1.05]" />
+                </motion.span>
+              </AnimatePresence>
+              <ChevronRight size={22} className="mt-1 shrink-0 opacity-60" />
             </button>
-            {hidden && <span className="text-caption text-white/70">{tr("Суммы скрыты")}</span>}
-          </div>
+          ) : (
+            <button type="button" onClick={() => nav.sheet("wallet")} className="mt-1 text-title-2 font-semibold">{tr("Добавьте первый счёт")}</button>
+          )}
+          {hidden && <div className="mt-1 text-caption text-white/70">{tr("Суммы скрыты")}</div>}
+          <DayStrip />
         </motion.div>
 
         {cards.length > 1 && (
-          <div className="absolute inset-x-0 bottom-12 flex justify-center gap-[5px]" aria-hidden="true">
+          <div className="absolute inset-x-0 bottom-[46px] flex justify-center gap-[5px]" aria-hidden="true">
             {cards.map((c, k) => (
               <motion.span key={c.key} className={cn("h-[5px] rounded-full", k === i ? "bg-white" : "bg-white/45")} animate={{ width: k === i ? 20 : 5 }} />
             ))}
@@ -111,33 +107,8 @@ export function BalanceHero() {
         )}
       </div>
 
-      {/* the sheet that rises over the colour: every account as a tile */}
-      <div className="relative -mt-8 rounded-t-[32px] bg-[var(--bg)] pt-5">
-        <div className="scroll-x flex gap-2.5 px-4 pb-1">
-          {wallets.map((c) => (
-            <motion.button
-              key={c.key}
-              type="button"
-              whileTap={{ scale: 0.96 }}
-              onClick={() => {
-                haptic();
-                open(c);
-              }}
-              className={cn("panel relative flex h-[116px] w-[158px] shrink-0 flex-col rounded-[22px] px-3.5 py-3 text-left", c.key === card?.key && "!shadow-[inset_0_0_0_1.5px_var(--ink)]")}
-            >
-              <Money value={c.amount} currency={c.currency} privacy className="num block truncate text-[19px] font-bold leading-tight" />
-              <span className="mt-1 truncate text-caption text-ink-2">
-                {c.title}
-                {c.ident ? ` ··${c.ident}` : ""}
-              </span>
-              <span aria-hidden="true" className="absolute bottom-3 right-3 h-[26px] w-[40px] rounded-[6px]" style={{ background: c.material.background, boxShadow: "0 4px 10px -4px rgba(0,0,0,0.6)" }} />
-            </motion.button>
-          ))}
-          <button type="button" onClick={() => nav.sheet("wallet")} aria-label={tr("Новый кошелёк")} className="grid h-[116px] w-[64px] shrink-0 place-items-center rounded-[22px] border border-dashed border-line-strong text-ink-2">
-            <Plus size={20} />
-          </button>
-        </div>
-      </div>
+      {/* the sheet that rises over the colour */}
+      <div className="relative -mt-8 rounded-t-[32px] bg-[var(--bg)] pt-6">{children}</div>
     </div>
   );
 }

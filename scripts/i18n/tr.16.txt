@@ -1,0 +1,23 @@
+{0} · harcanan
+Bakiye ve bugünkü tutar hep görünür, akıllı satır menünün üstündedir. Gerisi size kalmış.
+Toplamda size dönecek
+Toplam borcunuz
+Aylık
+%{0} geri ödendi
+Günün görevleri ve haftanın ödemeleri
+Değişim
+Henüz hiçbir şey ödenmedi
+Para nereye gitti
+Kimsenin borcu yok
+«{0}» hedefini aç
+Dönem: {0}
+Bugün ve yakında
+7 günlük harcama
+Daire ne kadar büyükse tutar o kadar büyük
+ulaşıldı
+{0} içinden
+karşı
+ayda {0} biriktir
+geçen yıla
+geçen çeyreğe
+geçen aya

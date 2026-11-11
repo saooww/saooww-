@@ -1,0 +1,23 @@
+{0} · gastado
+El saldo y la cantidad de hoy siempre se ven; la línea inteligente está sobre el menú. Lo demás, a tu gusto.
+En total te devolverán
+En total debes
+Al mes
+Devuelto {0}%
+Tareas del día y pagos de la semana
+Dinámica
+Aún no han devuelto nada
+A dónde fue
+Nadie debe nada
+Abrir meta «{0}»
+Periodo: {0}
+Hoy y pronto
+Gastos de 7 días
+Cuanto mayor el círculo, mayor la suma
+alcanzada
+de {0}
+vs
+ahorrar {0} al mes
+el año pasado
+el trimestre pasado
+el mes pasado

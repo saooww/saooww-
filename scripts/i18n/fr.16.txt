@@ -1,0 +1,23 @@
+{0} · dépensé
+Le solde et le montant du jour sont toujours visibles, la ligne intelligente est au-dessus du menu. Le reste, à votre guise.
+Au total, on vous rendra
+Au total, vous devez
+Par mois
+Remboursé à {0} %
+Tâches du jour et paiements de la semaine
+Évolution
+Rien de remboursé pour l'instant
+Où est passé l'argent
+Personne ne doit rien
+Ouvrir l'objectif « {0} »
+Période : {0}
+Aujourd'hui et bientôt
+Dépenses sur 7 jours
+Plus le cercle est grand, plus la somme l'est
+atteint
+sur {0}
+vs
+mettre {0} de côté par mois
+l'an dernier
+le trimestre dernier
+le mois dernier

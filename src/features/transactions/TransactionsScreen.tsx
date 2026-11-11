@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowUpDown, CalendarRange, Plus, Search, SearchX, Shapes, Wallet as WalletIcon, X, ReceiptText, ListFilter } from "../../ui/glyphs";
-import { addDays, addMonths, dayOf, endOfMonth, formatDate, formatDayHeading, startOfMonth } from "../../lib/dates";
+import { WEEKDAYS_LONG, WEEKDAYS_SHORT, addDays, addMonths, capitalize, dayOf, diffDays, endOfMonth, formatDate, monthTitle, parseDay, startOfMonth, weekdayIndex } from "../../lib/dates";
 import { toBase } from "../../lib/finance";
 import { haptic } from "../../lib/haptics";
 import { pluralN } from "../../lib/dates";
@@ -12,8 +12,12 @@ import { Screen } from "../../nav/Screen";
 import { Money } from "../../ui/Money";
 import { Button, Chip, EmptyState, IconButton } from "../../ui/primitives";
 import { TxRow, usePresentCtx } from "./TxRow";
-import { MoneySwitch } from "../../nav/MoneySwitch";
-import { useToday } from "../../store/hooks";
+import { MoneyHeader } from "../../nav/MoneySwitch";
+import { BarChart } from "../../charts/BarChart";
+import { AnimatedMoney } from "../../ui/Money";
+import { cn } from "../../lib/cn";
+import { formatMoney } from "../../lib/money";
+import { useLedger, useToday } from "../../store/hooks";
 import { tr } from "../../i18n/i18n";
 
 const PAGE = 80;
@@ -51,6 +55,7 @@ export function TransactionsScreen() {
   const [limit, setLimit] = useState(PAGE);
   const sentinel = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [searching, setSearching] = useState(false);
 
   const filtered = useMemo(() => {
     const q = filter.query.trim().toLowerCase();
@@ -121,9 +126,6 @@ export function TransactionsScreen() {
     return out;
   }, [visible, byDate]);
 
-  // each day's spending as a thin bar, measured against the biggest day shown
-  const daySpent = (items: Transaction[]) => items.reduce((s, t) => s + (t.kind === "expense" ? t.amount : 0), 0);
-  const maxDay = useMemo(() => Math.max(1, ...groups.map((g) => daySpent(g.items))), [groups]);
   const dayNet = (items: Transaction[]) => items.reduce((s, t) => s + (t.kind === "income" ? t.amount : t.kind === "expense" ? -t.amount : 0), 0);
 
   const active = filter.period !== "all" || filter.kind !== "all" || !!filter.walletId || !!filter.categoryId || filter.sort !== "date-desc";
@@ -152,19 +154,30 @@ export function TransactionsScreen() {
   return (
     <Screen
       title={tr("Деньги")}
-      large
-      subheader={<MoneySwitch current="transactions" />}
+      header={
+        <MoneyHeader
+          current="transactions"
+          actions={
+            <>
+              <IconButton icon={Search} label={tr("Поиск")} onClick={() => setSearching((v) => !v)} />
+              <IconButton icon={Plus} label={tr("Новая операция")} onClick={() => nav.sheet("composer", { kind: "expense" })} />
+            </>
+          }
+        />
+      }
       scrollRef={scrollRef}
-      actions={<IconButton icon={Plus} label={tr("Новая операция")} onClick={() => nav.sheet("composer", { kind: "expense" })} />}
     >
-      <div className="px-4">
-        <label className="flex h-10 items-center gap-2 rounded-sm tile px-3">
+      <MonthSpend />
+      {(searching || filter.query) && (
+      <div className="mt-4 px-4">
+        <label className="flex h-11 items-center gap-2 rounded-full tile px-4">
           <Search size={17} className="shrink-0 text-ink-3" />
           <input
             value={filter.query}
             onChange={(e) => setFilter({ query: e.target.value })}
             placeholder={tr("Поиск по названию, сумме, тегу")}
             enterKeyHint="search"
+            autoFocus={searching && !filter.query}
             className="h-full min-w-0 flex-1 bg-transparent text-body outline-none placeholder:text-ink-3"
           />
           {filter.query && (
@@ -174,8 +187,9 @@ export function TransactionsScreen() {
           )}
         </label>
       </div>
+      )}
 
-      <div className="scroll-x mt-3 flex gap-2 px-4 pb-1">
+      <div className="scroll-x mt-4 flex gap-2 px-4 pb-1">
         <Chip icon={CalendarRange} selected={filter.period !== "all"} onClick={pickPeriod}>
           {filter.period === "custom" && filter.from && filter.to ? `${formatDate(filter.from)} – ${formatDate(filter.to)}` : PERIOD_LABEL[filter.period]}
         </Chip>
@@ -271,21 +285,9 @@ export function TransactionsScreen() {
       ) : (
         <div className="pt-1">
           {groups.map((g) => (
-            <section key={g.day || "all"} className="mt-3">
-              {g.day && (
-                <div className="px-5 pb-2.5 pt-2">
-                  <div className="flex items-baseline justify-between">
-                    <span className="section-label">{formatDayHeading(g.day)}</span>
-                    <Money value={dayNet(g.items)} sign="always" currency={settings.baseCurrency} className="text-footnote text-ink-3" />
-                  </div>
-                  {daySpent(g.items) > 0 && (
-                    <div aria-hidden="true" className="mt-2 h-[3px] overflow-hidden rounded-full bg-[var(--chart-grid)]">
-                      <div className="h-full rounded-full bg-accent" style={{ width: `${Math.max(3, (daySpent(g.items) / maxDay) * 100)}%`, opacity: 0.85 }} />
-                    </div>
-                  )}
-                </div>
-              )}
-              <div className="mx-4 overflow-hidden panel rounded-lg [&>*+*]:hairline-t">
+            <section key={g.day || "all"} className="mt-6">
+              {g.day && <DayHeader day={g.day} net={dayNet(g.items)} today={today} currency={settings.baseCurrency} />}
+              <div className="mx-4 overflow-hidden panel rounded-[22px] [&>*+*]:hairline-t">
                 {g.items.map((t) => (
                   <TxRow key={t.id} tx={t} ctx={ctx} onOpen={(x) => { haptic(); nav.sheet("tx", { id: x.id }); }} onDelete={remove} />
                 ))}
@@ -297,5 +299,66 @@ export function TransactionsScreen() {
         </div>
       )}
     </Screen>
+  );
+}
+
+/** The day as a large figure, its name beside it and what it brought in or took. */
+function DayHeader({ day, net, today, currency }: { day: string; net: number; today: string; currency: string }) {
+  const delta = diffDays(day, today);
+  const wd = capitalize(WEEKDAYS_LONG[weekdayIndex(day)]);
+  const title = delta === 0 ? tr("Сегодня") : delta === -1 ? tr("Вчера") : wd;
+  const sub = delta === 0 || delta === -1 ? WEEKDAYS_LONG[weekdayIndex(day)] : formatDate(day, { year: "auto" });
+  return (
+    <div className="flex items-center gap-2.5 px-5 pb-2.5">
+      <span className={cn("num-display w-[42px] text-[34px] leading-none", delta === 0 ? "text-ink" : "text-ink-3")}>{parseDay(day).getDate()}</span>
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-headline font-semibold">{title}</span>
+        <span className="block truncate text-caption text-ink-2">{sub}</span>
+      </span>
+      <Money value={net} sign="always" currency={currency} tone={net > 0 ? "positive" : "muted"} className="text-subhead font-semibold" />
+    </div>
+  );
+}
+
+/** «Потрачено» this month in large figures and the last seven days as bars, today glowing. */
+function MonthSpend() {
+  const { entries } = useLedger();
+  const today = useToday();
+  const base = useData((s) => s.settings.baseCurrency);
+  const [sel, setSel] = useState<number | null>(null);
+  const { month, week } = useMemo(() => {
+    const from = startOfMonth(today);
+    const start = addDays(today, -6);
+    let month = 0;
+    const byDay = new Map<string, number>();
+    for (const e of entries) {
+      if (e.tx.kind !== "expense") continue;
+      if (e.day >= from && e.day <= today) month += e.base;
+      if (e.day >= start && e.day <= today) byDay.set(e.day, (byDay.get(e.day) ?? 0) + e.base);
+    }
+    const week = Array.from({ length: 7 }, (_, i) => {
+      const d = addDays(start, i);
+      return { day: d, label: WEEKDAYS_SHORT[weekdayIndex(d)], value: byDay.get(d) ?? 0 };
+    });
+    return { month, week };
+  }, [entries, today]);
+  const shown = sel !== null ? week[sel] : null;
+  return (
+    <section className="px-5 pt-3">
+      <div className="text-subhead text-ink-2">{shown ? capitalize(formatDate(shown.day)) : tr("{0} · потрачено", monthTitle(today))}</div>
+      <AnimatedMoney value={shown ? shown.value : month} currency={base} variant="hero" privacy className="mt-0.5 block text-[44px] leading-[1.05]" />
+      <div className="mt-3">
+        <BarChart
+          data={week.map((d) => ({ label: d.label, value: d.value }))}
+          height={120}
+          selected={sel}
+          onSelect={(i) => setSel(i === sel ? null : i)}
+          emphasis={6}
+          color="var(--ink-3)"
+          formatValue={(v) => formatMoney(v, { currency: base })}
+          ariaLabel={tr("Траты за 7 дней")}
+        />
+      </div>
+    </section>
   );
 }

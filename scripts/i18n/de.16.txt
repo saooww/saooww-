@@ -1,0 +1,23 @@
+{0} · ausgegeben
+Saldo und Tagesbetrag sind immer sichtbar, die smarte Zeile liegt über dem Menü. Der Rest nach Wunsch.
+Insgesamt bekommen Sie zurück
+Insgesamt schulden Sie
+Pro Monat
+{0} % zurückgezahlt
+Aufgaben des Tages und Zahlungen der Woche
+Verlauf
+Noch nichts zurückgezahlt
+Wohin es ging
+Niemand schuldet etwas
+Ziel „{0}“ öffnen
+Zeitraum: {0}
+Heute und bald
+Ausgaben der letzten 7 Tage
+Je größer der Kreis, desto größer die Summe
+erreicht
+von {0}
+ggü.
+{0} pro Monat sparen
+Vorjahr
+Vorquartal
+Vormonat

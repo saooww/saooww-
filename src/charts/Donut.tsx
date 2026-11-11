@@ -16,7 +16,8 @@ export function Donut({
   selected,
   onSelect,
   children,
-  animKey
+  animKey,
+  glow = false
 }: {
   slices: DonutSlice[];
   size?: number;
@@ -25,6 +26,8 @@ export function Donut({
   onSelect: (id: string | null) => void;
   children?: ReactNode;
   animKey?: string;
+  /** The ring lights the page under it in its own colours */
+  glow?: boolean;
 }) {
   const r = (size - thickness - 8) / 2;
   const c = 2 * Math.PI * r;
@@ -58,7 +61,27 @@ export function Donut({
   return (
     <div className="relative" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="-rotate-90" onPointerDown={onTap} role="img" aria-label={tr("Распределение по категориям")}>
+        {glow && (
+          <defs>
+            <filter id="donut-glow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation={thickness * 0.55} />
+            </filter>
+          </defs>
+        )}
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--line)" strokeWidth={thickness} />
+        {glow && total > 0 && (
+          <g filter="url(#donut-glow)" opacity={0.55}>
+            {(() => {
+              let o = 0;
+              return slices.map((s) => {
+                const len = Math.max(0, (s.value / total) * c - gap);
+                const start = o;
+                o += (s.value / total) * c;
+                return <circle key={s.id} cx={size / 2} cy={size / 2} r={r} fill="none" stroke={s.color} strokeWidth={thickness} strokeDasharray={`${len} ${c - len}`} strokeDashoffset={-start} />;
+              });
+            })()}
+          </g>
+        )}
         <g key={animKey}>
           {total > 0 &&
             slices.map((s, i) => {
@@ -75,6 +98,7 @@ export function Donut({
                   r={r}
                   fill="none"
                   stroke={s.color}
+                  strokeLinecap={glow && slices.length > 1 ? "round" : undefined}
                   strokeDasharray={dash}
                   initial={{ strokeDashoffset: -start + len, opacity: 0 }}
                   animate={{ strokeDashoffset: -start, opacity: dim ? 0.28 : 1, strokeWidth: selected === s.id ? thickness + 6 : thickness }}
