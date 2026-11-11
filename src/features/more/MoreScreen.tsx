@@ -1,7 +1,8 @@
 import { useMemo } from "react";
 import { CalendarDays, Palette, FlaskConical, Gauge, HandCoins, Repeat, Search, Settings, Shapes, Target } from "../../ui/glyphs";
 import { budgetStates } from "../../lib/insights";
-import { debtInfo, goalInfo, goalSaved } from "../../lib/finance";
+import { goalInfo, goalSaved } from "../../lib/finance";
+import { debtPeople } from "../../lib/debts";
 import { formatMoney } from "../../lib/money";
 import { monthlyEquivalent } from "../../lib/recurrence";
 import { MONTHS_GEN, parseDay, pluralN } from "../../lib/dates";
@@ -35,9 +36,10 @@ export function MoreScreen() {
     const near = budgets.filter((b) => b.level === "near").length;
     const subs = data.recurring.filter((r) => r.active && r.kind === "expense");
     const monthly = subs.reduce((acc, r) => acc + monthlyEquivalent(r), 0);
-    const debts = data.debts.map((d) => ({ d, info: debtInfo(d, data.transactions, today) })).filter((x) => x.info.status !== "closed");
-    const owedToMe = debts.filter((x) => x.d.direction === "owed_to_me").reduce((a, x) => a + x.info.remaining, 0);
-    const iOwe = debts.filter((x) => x.d.direction === "i_owe").reduce((a, x) => a + x.info.remaining, 0);
+    const people = debtPeople(data.debts, data.transactions, today).filter((p) => !p.closed);
+    const debts = people;
+    const owedToMe = people.reduce((a, p) => a + p.toMe, 0);
+    const iOwe = people.reduce((a, p) => a + p.fromMe, 0);
     const plans = data.plans.filter((p) => p.status === "planned" && p.date >= today).length;
     return { goals: goals.length, goalProgress, budgets: budgets.length, over, near, monthly, subs: subs.length, owedToMe, iOwe, debtCount: debts.length, plans };
   }, [data, entries, balances, env, today]);
@@ -73,30 +75,41 @@ export function MoreScreen() {
       )}
 
       <div className="mt-5 flex flex-col gap-5">
-        <Group header={tr("Деньги")}>
-          <Row icon={Target} title={tr("Цели")} subtitle={s.goals ? tr("{0} · в среднем {1}%", pluralN(s.goals, ["цель", "цели", "целей"]), Math.round(s.goalProgress * 100)) : tr("Квартира, отпуск, подушка")} chevron onClick={() => nav.push("goals")} />
-          <Row
-            icon={Gauge}
-            iconTone={s.over ? "negative" : s.near ? "warning" : undefined}
-            title={tr("Бюджеты")}
-            subtitle={s.budgets ? (s.over ? tr("{0} превышен{1}", s.over, s.over > 1 ? "о" : "") : s.near ? tr("{0} близко к лимиту", s.near) : tr("Всё в пределах лимитов")) : tr("Лимиты по категориям")}
-            chevron
-            onClick={() => nav.push("budgets")}
-          />
-          <Row icon={CalendarDays} title={tr("Планы и календарь")} subtitle={s.plans ? `${pluralN(s.plans, ["запланированная операция", "запланированные операции", "запланированных операций"])}` : tr("Крупные покупки и прогноз")} chevron onClick={() => nav.push("plans")} />
-          <Row icon={Repeat} title={tr("Подписки и платежи")} subtitle={s.subs ? tr("{0} в месяц", formatMoney(s.monthly)) : tr("Регулярные списания")} chevron onClick={() => nav.push("subscriptions")} />
-          <Row
-            icon={HandCoins}
-            title={tr("Долги")}
-            subtitle={s.debtCount ? [s.owedToMe ? tr("вам {0}", formatMoney(s.owedToMe)) : "", s.iOwe ? tr("вы {0}", formatMoney(s.iOwe)) : ""].filter(Boolean).join(" · ") : tr("Кто кому и сколько")}
-            chevron
-            onClick={() => nav.push("debts")}
-          />
-        </Group>
+        <div className="grid grid-cols-2 gap-2.5 px-4">
+          {[
+            { icon: Target, title: tr("Цели"), sub: s.goals ? tr("{0} · {1}%", s.goals, Math.round(s.goalProgress * 100)) : tr("Квартира, отпуск"), tone: "", go: () => nav.push("goals") },
+            {
+              icon: HandCoins,
+              title: tr("Долги"),
+              sub: s.debtCount ? [s.owedToMe ? tr("вам {0}", formatMoney(s.owedToMe)) : "", s.iOwe ? tr("вы {0}", formatMoney(s.iOwe)) : ""].filter(Boolean).join(" · ") : tr("Кто кому и сколько"),
+              tone: "",
+              go: () => nav.push("debts")
+            },
+            {
+              icon: Gauge,
+              title: tr("Бюджеты"),
+              sub: s.budgets ? (s.over ? tr("{0} превышен{1}", s.over, s.over > 1 ? "о" : "") : s.near ? tr("{0} близко к лимиту", s.near) : tr("всё в норме")) : tr("Лимиты"),
+              tone: s.over ? "text-negative" : s.near ? "text-warning" : "",
+              go: () => nav.push("budgets")
+            },
+            { icon: Repeat, title: tr("Подписки"), sub: s.subs ? tr("{0} в месяц", formatMoney(s.monthly)) : tr("Регулярные списания"), tone: "", go: () => nav.push("subscriptions") },
+            { icon: CalendarDays, title: tr("Планы"), sub: s.plans ? pluralN(s.plans, ["операция", "операции", "операций"]) : tr("Покупки и прогноз"), tone: "", go: () => nav.push("plans") },
+            { icon: Shapes, title: tr("Категории"), sub: tr("{0} штук", data.categories.filter((c) => !c.archived).length), tone: "", go: () => nav.push("categories") }
+          ].map((t) => (
+            <button key={t.title} type="button" onClick={t.go} className="panel relative flex h-[116px] flex-col justify-between rounded-[22px] p-3.5 text-left active:opacity-80">
+              <span className="tile grid h-10 w-10 place-items-center rounded-[14px] text-ink">
+                <t.icon size={21} />
+              </span>
+              <span>
+                <span className="block text-callout font-bold">{t.title}</span>
+                <span className={`block truncate text-caption ${t.tone || "text-ink-2"}`}>{t.sub}</span>
+              </span>
+            </button>
+          ))}
+        </div>
 
         <Group>
           <Row icon={Palette} title={tr("Оформление")} subtitle={tr("Темы, свой цвет, шрифт цифр")} chevron onClick={() => nav.push("settings")} />
-          <Row icon={Shapes} title={tr("Категории")} chevron onClick={() => nav.push("categories")} />
           <Row icon={Settings} title={tr("Настройки")} chevron onClick={() => nav.push("settings")} />
         </Group>
       </div>

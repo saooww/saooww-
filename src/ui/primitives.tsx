@@ -424,10 +424,19 @@ export function IconChip({
   color?: string;
 }) {
   // A colour (a category's, a list's) tints only the icon: the tile stays neutral, so long lists read calm.
-  const toneCls = tone ? { accent: "bg-accent-soft text-accent-ink", positive: "bg-positive-soft text-positive", warning: "bg-warning-soft text-warning", negative: "bg-negative-soft text-negative" }[tone] : "tile text-ink";
+  // A toned chip is lit from within: a gradient in the colour with a soft glow, the icon in white.
+  const LIT = { accent: ["#ff3b47", "#a8000e", "#fa0717"], positive: ["#3cc896", "#0b6a47", "#3cc896"], warning: ["#f0b14e", "#8a5a0a", "#f0b14e"], negative: ["#ff5b5f", "#a01820", "#ff5b5f"] } as const;
+  const toneCls = tone ? "text-white" : "tile text-ink";
   const iconSize = Math.round(size * 0.48);
   const style: CSSProperties = { width: size, height: size, borderRadius: Math.round(size * 0.34) };
+  if (tone) {
+    const [a, b, glow] = LIT[tone];
+    style.background = `linear-gradient(160deg, ${a}, ${b})`;
+    style.boxShadow = `inset 0 1px 0 rgba(255,255,255,0.3), 0 ${Math.round(size * 0.22)}px ${Math.round(size * 0.5)}px -${Math.round(size * 0.3)}px ${glow}`;
+  }
   if (color && !tone) style.color = `color-mix(in srgb, ${color} var(--icon-mix), black)`;
+  // a coloured or lit chip keeps its icon in one colour; only neutral tiles get the accent stroke
+  if (color || tone) Object.assign(style, { "--glyph-fill": "currentColor", "--glyph-fill-o": tone ? 0.3 : 0.25 });
   return (
     <span className={cn("inline-grid shrink-0 place-items-center", toneCls, className)} style={style}>
       {Icon ? <Icon size={iconSize} strokeWidth={1.9} /> : <NamedIcon name={name} size={iconSize} strokeWidth={1.9} />}

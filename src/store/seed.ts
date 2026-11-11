@@ -223,11 +223,14 @@ export function createDemoData(today: DayKey = todayKey()): AppData {
   // Debts
   const debts: Debt[] = [
     { id: "d-andrey", direction: "owed_to_me", counterparty: tr("Андрей"), amount: rub(25_000), currency: "RUB", date: addDays(today, -41), dueDate: addDays(today, 12), note: tr("На ремонт машины"), createdAt: created },
+    { id: "d-andrey2", direction: "owed_to_me", counterparty: tr("Андрей"), amount: rub(6_000), currency: "RUB", date: addDays(today, -20), note: tr("До зарплаты"), createdAt: created },
     { id: "d-olga", direction: "i_owe", counterparty: tr("Ольга"), amount: rub(8_000), currency: "RUB", date: addDays(today, -9), dueDate: addDays(today, 3), note: tr("Билеты на концерт"), createdAt: created },
     { id: "d-dmitry", direction: "owed_to_me", counterparty: tr("Дмитрий"), amount: rub(5_000), currency: "RUB", date: addDays(today, -70), dueDate: addDays(today, -40), createdAt: created, closedAt: `${addDays(today, -50)}T18:00` }
   ];
   push(addDays(today, -41), { kind: "debt", debtId: "d-andrey", debtRole: "open", flow: "out", amount: rub(25_000), walletId: "w-main", note: tr("Андрей"), at: `${addDays(today, -41)}T19:10` });
   push(addDays(today, -12), { kind: "debt", debtId: "d-andrey", debtRole: "payment", flow: "in", amount: rub(10_000), walletId: "w-main", note: tr("Андрей вернул часть"), at: `${addDays(today, -12)}T13:40` });
+  push(addDays(today, -20), { kind: "debt", debtId: "d-andrey2", debtRole: "open", flow: "out", amount: rub(6_000), walletId: "w-main", note: tr("Андрей"), at: `${addDays(today, -20)}T18:20` });
+  push(addDays(today, -5), { kind: "debt", debtId: "d-andrey", debtRole: "payment", flow: "in", amount: rub(6_000), walletId: "w-cash", note: tr("Андрей вернул часть"), at: `${addDays(today, -5)}T20:15` });
   push(addDays(today, -9), { kind: "debt", debtId: "d-olga", debtRole: "open", flow: "in", amount: rub(8_000), walletId: "w-cash", note: tr("Ольга"), at: `${addDays(today, -9)}T21:00` });
   push(addDays(today, -70), { kind: "debt", debtId: "d-dmitry", debtRole: "open", flow: "out", amount: rub(5_000), walletId: "w-main", note: tr("Дмитрий"), at: `${addDays(today, -70)}T15:00` });
   push(addDays(today, -50), { kind: "debt", debtId: "d-dmitry", debtRole: "payment", flow: "in", amount: rub(5_000), walletId: "w-main", note: tr("Дмитрий вернул"), at: `${addDays(today, -50)}T18:00` });
@@ -235,6 +238,9 @@ export function createDemoData(today: DayKey = todayKey()): AppData {
   // A plan that has already been carried out
   const doneTaxDay = addDays(today, -20);
   push(doneTaxDay, { kind: "expense", amount: rub(4_300), walletId: "w-main", categoryId: "c-home", note: tr("Налог на имущество"), planId: "p-tax", at: `${doneTaxDay}T12:30` });
+
+  // The first part of an expected income has come in
+  push(addDays(today, -3), { kind: "income", amount: rub(20_000), walletId: "w-main", categoryId: "i-freelance", note: tr("Фриланс-проект"), planId: "p-freelance", at: `${addDays(today, -3)}T16:05` });
 
   // A one-off sale
   push(addDays(today, -58), { kind: "income", amount: rub(18_000), walletId: "w-cash", categoryId: "i-sale", note: tr("Продажа велосипеда"), at: `${addDays(today, -58)}T17:45` });
@@ -268,6 +274,7 @@ export function createDemoData(today: DayKey = todayKey()): AppData {
   const plans: Plan[] = [
     { id: "p-osago", kind: "expense", title: tr("Страховка ОСАГО"), amount: rub(9_800), date: addDays(today, 12), walletId: "w-main", categoryId: "c-car", status: "planned", createdAt: created },
     { id: "p-service", kind: "expense", title: tr("ТО автомобиля"), amount: rub(16_500), date: addDays(today, 24), walletId: "w-main", categoryId: "c-car", status: "planned", createdAt: created },
+    { id: "p-freelance", kind: "income", title: tr("Фриланс-проект"), amount: rub(60_000), txId: txs.find((t) => t.planId === "p-freelance")?.id, date: (() => { const d = addDays(today, 8); const e = endOfMonth(today); return d > e ? (e > today ? e : today) : d; })(), walletId: "w-main", categoryId: "i-freelance", status: "planned", createdAt: created },
     { id: "p-bonus", kind: "income", title: tr("Квартальная премия"), amount: rub(60_000), date: addDays(endOfMonth(today), 10), walletId: "w-main", categoryId: "i-salary", status: "planned", createdAt: created },
     { id: "p-tickets", kind: "expense", title: tr("Авиабилеты в Токио"), amount: rub(96_000), date: addDays(today, 70), walletId: "w-main", categoryId: "c-travel", note: tr("Брать заранее — дешевле"), status: "planned", createdAt: created },
     { id: "p-tax", kind: "expense", title: tr("Налог на имущество"), amount: rub(4_300), date: doneTaxDay, walletId: "w-main", categoryId: "c-home", status: "done", txId: txs.find((t) => t.planId === "p-tax")?.id, createdAt: created }

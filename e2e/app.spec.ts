@@ -376,3 +376,41 @@ test("язык: выбор на первом экране переводит п�
   await page.getByRole("dialog").getByRole("button", { name: /Русский/ }).click();
   await expect(page.getByRole("tab", { name: "Деньги" })).toBeVisible();
 });
+
+/* ---------------- expected income in parts ---------------- */
+
+test("доход по частям: «получил часть» двигает баланс и остаток ожидаемого", async ({ page }) => {
+  await startDemo(page);
+  const incomes = page.getByRole("region", { name: "Доходы месяца" });
+  await expect(incomes).toContainText("20 000");
+  await expect(incomes).toContainText("из 60 000");
+  await incomes.getByRole("button", { name: "Получил часть" }).click();
+  const sheet = page.getByRole("dialog", { name: "Получил часть" });
+  await sheet.getByRole("textbox").first().fill("15000");
+  await sheet.getByRole("button", { name: "Готово" }).click();
+  await expect(page.getByText("Часть записана")).toBeVisible();
+  await expect(incomes).toContainText("35 000");
+  await expect(carousel(page)).toContainText("2 495 000");
+  // the forecast now waits only for what is left
+  await page.getByRole("button", { name: "Все доходы" }).click();
+  await expect(page.getByRole("dialog", { name: "Доходы месяца" })).toContainText("Осталось 25 000");
+});
+
+test("долги: займы одного человека собраны вместе, возврат части уменьшает остаток", async ({ page }) => {
+  await startDemo(page);
+  await page.getByRole("tab", { name: "Профиль" }).click();
+  const onView = page.locator('.app-canvas > [aria-hidden="false"]');
+  await onView.getByText("Долги", { exact: true }).first().click();
+  const andrey = onView.getByRole("button", { name: /^Андрей/ });
+  await expect(andrey).toHaveCount(1);
+  await expect(andrey).toContainText("2 долга");
+  await andrey.click();
+  await expect(onView).toContainText("История");
+  await onView.getByRole("button", { name: "Вернул часть" }).first().click();
+  const sheet = page.getByRole("dialog", { name: "Возврат долга" });
+  await sheet.getByRole("textbox").first().fill("10000");
+  await expect(sheet).toContainText("Распределится по займам");
+  await sheet.getByRole("button", { name: "Готово" }).click();
+  await expect(page.getByText("Платёж записан")).toBeVisible();
+  await expect(onView).toContainText("вернули 26 000");
+});

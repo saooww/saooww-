@@ -1,0 +1,83 @@
+1.º
+{0} · {1}%
+{0} · dá
+{0} por dia
+{0} devolveu uma parte
+{0} deve a você
+{0} itens
+O saldo, a previsão, a renda do mês e o valor de hoje ficam sempre visíveis. O resto, como preferir.
+Devolveu uma parte
+Devolvido {0} de {1}
+Devolveu tudo {0}
+Devolver uma parte
+Peguei emprestado
+Toda a renda
+Tudo devolvido
+Você devolveu uma parte
+Emprestei
+O dinheiro chega à conta escolhida — dinheiro ou cartão.
+O dinheiro sai da conta escolhida.
+Renda recebida
+Renda · {0}
+Renda do mês
+Mais um empréstimo
+Total no fim do mês
+Até {0} você terá
+Até {0} você terá
+Cada tipo tem sua cor
+Capital até o fim do mês
+Apartamento, férias
+Para onde o dinheiro veio
+Limites
+Pessoas
+O mês fechará com
+Renda esperada
+Renda esperada
+Renda esperada — salário, adiantamento
+Você espera {0} · recebido {1}
+Falta receber {0} de {1}
+O resto continua esperado: a previsão conta só ele.
+De onde foi devolvido
+Guardar
+Guardar em uma meta
+Pagamentos e assinaturas
+Pagamentos nas datas, gastos do dia a dia por igual, no ritmo habitual dos últimos 60 dias.
+Pagamento: {0}
+Compras e previsão
+Recebido {0}
+Recebi tudo
+Recebi uma parte
+Previsão do mês
+Previsão do fim do mês
+Será dividido entre os empréstimos: {0}
+Menor saldo
+Agora nas contas
+Quanto chegou
+Ritmo de economia
+Projeto freelance
+Parte registrada
+O que anotar?
+É todo o resto — a renda será marcada como recebida.
+sem movimento em conta
+devolvido {0} de {1}
+tudo certo
+tudo recebido
+o dinheiro não dá em {0}
+dívida quitada
+ainda não chegou
+esperado {0}
+esperado {0}
+esperado até {0}
+quitada
+em relação a hoje
+para «{0}»
+precisa de {0} por mês
+esperado {0}
+resta
+falta receber
+por valor
+recebido por completo
+sem depósitos
+de «{0}»
+hoje {0}
+agora {0} por mês

@@ -42,6 +42,8 @@ const loaders = {
   intro: () => import("../features/planner/Intro"),
   week: () => import("../features/planner/WeekReview"),
   day: () => import("../features/home/DaySheet"),
+  incomes: () => import("../features/home/Incomes"),
+  forecast: () => import("../features/home/Forecast"),
   settings: () => import("../features/settings/Settings"),
   search: () => import("../features/search/SearchSheet"),
   assistant: () => import("../features/assistant/AssistantScreen")
@@ -75,6 +77,9 @@ const BudgetSheet = named(L.budgets, "BudgetSheet");
 const PlansScreen = named(L.plans, "PlansScreen");
 const PlanSheet = named(L.plans, "PlanSheet");
 const PlanActionsSheet = named(L.plans, "PlanActionsSheet");
+const IncomesSheet = named(L.incomes, "IncomesSheet");
+const ReceiveSheet = named(L.incomes, "ReceiveSheet");
+const ForecastSheet = named(L.forecast, "ForecastSheet");
 const SubscriptionsScreen = named(L.subscriptions, "SubscriptionsScreen");
 const RecurringSheet = named(L.subscriptions, "RecurringSheet");
 const DebtsScreen = named(L.debts, "DebtsScreen");
@@ -164,5 +169,8 @@ registerSheets({
   homeLayout: HomeLayoutSheet,
   create: CreateSheet,
   day: DaySheet,
-  weekReview: WeekReviewSheet
+  weekReview: WeekReviewSheet,
+  incomes: IncomesSheet,
+  receive: ReceiveSheet,
+  forecast: ForecastSheet
 });

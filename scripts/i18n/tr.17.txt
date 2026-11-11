@@ -1,0 +1,83 @@
+1.
+{0} · %{1}
+{0} · yeter
+günde {0}
+{0} bir kısmını geri verdi
+{0} size borçlu
+{0} adet
+Bakiye, tahmin, ayın gelirleri ve bugünkü tutar hep görünür. Gerisi size kalmış.
+Bir kısmını geri verdi
+{1} içinden {0} geri verildi
+Hepsi geri verildi {0}
+Bir kısmını geri öde
+Borç aldım
+Tüm gelirler
+Hepsi geri verildi
+Bir kısmını geri ödediniz
+Borç verdim
+Para seçilen hesaba gelir — nakit ya da kart.
+Para seçilen hesaptan düşer.
+Gelir alındı
+Gelir · {0}
+Ayın gelirleri
+Bir borç daha
+Ay sonu toplamı
+{0} tarihinde elinizde olacak
+{0} tarihinde elinizde olacak
+Her türün kendi rengi var
+Ay sonuna kadar sermaye
+Daire, tatil
+Para nereye geldi
+Limitler
+Kişiler
+Ay şununla kapanacak
+Beklenen gelirler
+Beklenen gelir
+Beklenen gelir — maaş, avans
+{0} bekliyorsunuz · şimdiye kadar {1} alındı
+Alınacak: {1} içinden {0}
+Geri kalan beklemede: tahmin yalnızca onu sayar.
+Nereden geri ödendi
+Biriktir
+Hedefe biriktir
+Ödemeler ve abonelikler
+Ödemeler tarihlerinde, günlük harcamalar son 60 günün olağan temposuyla eşit dağılır.
+Ödeme: {0}
+Alışverişler ve tahmin
+Alınan {0}
+Hepsini aldım
+Bir kısmını aldım
+Ay tahmini
+Ay sonu tahmini
+Borçlara dağıtılacak: {0}
+En düşük bakiye
+Şu anda hesaplarda
+Ne kadar geldi
+Birikim hızı
+Serbest çalışma projesi
+Kısım kaydedildi
+Ne kaydedilsin?
+Geri kalanın hepsi — gelir alındı olarak işaretlenecek.
+hesapta hareket yok
+{1} içinden {0} geri verildi
+her şey yolunda
+hepsi alındı
+{0} günü para yetmeyecek
+borç kapandı
+henüz gelmedi
+beklenen {0}
+beklenen {0}
+{0} tarihine kadar bekleniyor
+kapandı
+bugüne göre
+«{0}» hesabına
+ayda {0} gerekli
+beklenen {0}
+kalan
+alınacak
+tutara göre
+tamamen alındı
+para yatırılmadı
+«{0}» hesabından
+bugün {0}
+şimdi ayda {0}
