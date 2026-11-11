@@ -496,3 +496,24 @@ export function capitalForecast(data: AppData, balances: Record<ID, Minor>, entr
   }
   return { until, now, incomeLeft, obligations, everyday, dailyRate, daysLeft, end: now + incomeLeft - obligations - everyday, path, items, cashNow, cashPath, shortfall };
 }
+
+export interface CapitalChange {
+  /** Capital at the end of the day before the month began, and now */
+  from: Minor;
+  to: Minor;
+  delta: Minor;
+  /** Change as a share of where the month began; null when it began at zero or below */
+  pct: number | null;
+}
+
+/**
+ * How capital (wallets + money set aside for goals + owed to you − what you
+ * owe) changed this month. Transfers, goal deposits and loans move money
+ * without changing it, so only real income and expense show here.
+ */
+export function capitalChange(data: AppData, balances: Record<ID, Minor>, today: DayKey): CapitalChange {
+  const series = capitalSeries(data, balances, addDays(startOfMonth(today), -1), today);
+  const from = series[0]?.value ?? 0;
+  const to = series[series.length - 1]?.value ?? from;
+  return { from, to, delta: to - from, pct: from > 0 ? (to - from) / from : null };
+}

@@ -14,9 +14,11 @@ import { pickData, useData } from "../src/store/store";
 import { createEmptyData } from "../src/store/seed";
 import type { AppData, Plan, Recurring, Wallet } from "../src/store/types";
 import { buildLedger, computeBalances, debtInfo, netWorth, periodRange, periodStats, sumWallets, toBase, totalWallets } from "../src/lib/finance";
-import { capitalForecast, freeCash, monthForecast, scheduledBetween } from "../src/lib/analytics";
+import { capitalChange, capitalForecast, freeCash, monthForecast, scheduledBetween } from "../src/lib/analytics";
 import { planLeft, planReceived } from "../src/lib/plans";
 import { debtPeople, splitRepayment } from "../src/lib/debts";
+import { goalInfo, goalSaved, goalEnvelopes } from "../src/lib/finance";
+import { goalPace, goalWhatIf, whatIfSteps } from "../src/lib/goals";
 import { amountToInput, parseAmount } from "../src/lib/money";
 import { addDays, addMonths, diffDays, endOfMonth, startOfMonth } from "../src/lib/dates";
 import { nextAfter, occurrencesInRange } from "../src/lib/recurrence";
@@ -382,6 +384,59 @@ test("нехватка денег: предупреждение появляет
   const g = capitalForecast(data(), bal(), buildLedger(data()).entries, T0);
   assert.equal(g.now, 10_000_000 + 500_000 + Math.round(100_000 * 95));
   assert.ok(g.shortfall, "обычных денег после перевода на накопительный счёт уже не хватает");
+});
+
+test("изменение капитала за месяц: только доходы и расходы, переводы, цели и займы его не двигают", () => {
+  const month0 = capitalChange(data(), bal(), T0);
+  assert.equal(month0.delta, 0);
+  st().addTransaction({ kind: "income", amount: 100_000_00, walletId: "card", date: "2027-01-05T10:00" });
+  st().addTransaction({ kind: "expense", amount: 10_000_00, walletId: "card", date: "2027-01-08T10:00" });
+  st().addTransaction({ kind: "transfer", amount: 3_000_00, walletId: "card", toWalletId: "save", date: "2027-01-09T10:00" });
+  const g = st().addGoal({ name: "Отпуск", icon: "Plane", target: 450_000_00, currency: "RUB" });
+  st().moveGoalMoney(g, "card", 20_000_00, "deposit", "2027-01-10T10:00");
+  const d = st().addDebt({ direction: "owed_to_me", counterparty: "Андрей", amount: 25_000_00, currency: "RUB", date: "2027-01-11" }, "card");
+  st().payDebt(d, 5_000_00, "cash", "2027-01-12T10:00");
+  const c = capitalChange(data(), bal(), T0);
+  assert.equal(c.delta, 90_000_00);
+  assert.equal(c.to, nw().total);
+  assert.equal(c.from, c.to - 90_000_00);
+  assert.ok(Math.abs(c.pct! - 90_000_00 / c.from) < 1e-12);
+  // the month before is not mixed in
+  const prev = capitalChange(data(), bal(), "2026-12-31");
+  assert.equal(prev.delta, 0);
+});
+
+test("«а если откладывать больше»: дата цели от темпа и добавки, только расчёт, данные не меняются", () => {
+  const g = st().addGoal({ name: "Отпуск", icon: "Plane", target: 330_000_00, currency: "RUB", deadline: "2027-12-15" });
+  // 75 000 over the last 90 days → 25 000 a month
+  for (const [day, v] of [["2026-11-20", 25_000_00], ["2026-12-20", 25_000_00], ["2027-01-10", 25_000_00]] as const) st().moveGoalMoney(g, "card", v, "deposit", `${day}T12:00`);
+  const goal = st().goals[0];
+  const pace = goalPace(goal, data(), bal(), T0);
+  assert.equal(pace, 25_000_00);
+  const info = goalInfo(goal, goalSaved(goal, goalEnvelopes(st().transactions), bal()), T0);
+  assert.equal(info.remaining, 255_000_00);
+  const before = JSON.stringify(data());
+  const base = goalWhatIf(goal, info, pace, 0, T0);
+  assert.equal(base.months, 11);
+  assert.equal(base.eta, "2027-12-15");
+  assert.equal(base.meetsDeadline, true);
+  const more = goalWhatIf(goal, info, pace, 5_000_00, T0);
+  assert.equal(more.monthly, 30_000_00);
+  assert.equal(more.months, 9);
+  assert.equal(more.earlierBy, 2);
+  assert.equal(more.eta, "2027-10-15");
+  // a slow pace misses the deadline and says by how much
+  const slow = goalWhatIf(goal, info, 10_000_00, 0, T0);
+  assert.equal(slow.months, 26);
+  assert.equal(slow.meetsDeadline, false);
+  assert.ok(slow.lateBy >= 12);
+  // no deposits at all: the extra alone sets the pace
+  const none = goalWhatIf(goal, info, 0, 20_000_00, T0);
+  assert.equal(none.months, 13);
+  assert.equal(none.earlierBy, null);
+  assert.equal(goalWhatIf(goal, info, 0, 0, T0).months, null);
+  assert.equal(JSON.stringify(data()), before);
+  assert.deepEqual(whatIfSteps(450_000_00), [200_000, 500_000, 1_000_000]);
 });
 
 /* ---------------- month helpers used by the forecast ---------------- */

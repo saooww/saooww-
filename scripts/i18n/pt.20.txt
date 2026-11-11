@@ -1,0 +1,12 @@
+E se eu guardar mais?
+Sem depósitos a meta não será atingida
+Como agora
+Capital do mês
+Depois do prazo em {0}
+Sem depósitos nos últimos 3 meses
+Você guarda {0} por mês agora
+Dentro do prazo — {0}
+neste mês
+{0} antes do que no ritmo atual ({1})
+no ritmo atual
+com este extra

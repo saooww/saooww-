@@ -1,0 +1,12 @@
+What if I save more?
+Without deposits the goal won't be reached
+As now
+Capital this month
+Later than the deadline by {0}
+No deposits in the last 3 months
+You are saving {0} a month now
+In time for the deadline — {0}
+this month
+{0} sooner than at the current pace ({1})
+at the current pace
+with this extra

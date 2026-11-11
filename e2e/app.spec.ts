@@ -438,3 +438,22 @@ test("прогноз: горизонты 7/30/90 дней и год, касан�
   await expect(sheet.getByText("ожидаемый баланс на конец дня")).toBeVisible();
   await expect(sheet.getByText("Обычные траты").first()).toBeVisible();
 });
+
+/* ---------------- what if, and the month's change ---------------- */
+
+test("цель: «а если откладывать больше» показывает новую дату и не меняет данные; на главной — изменение капитала", async ({ page }) => {
+  await startDemo(page);
+  await expect(page.getByLabel("Капитал за месяц")).toContainText("за этот месяц");
+  await page.getByRole("tab", { name: "Профиль" }).click();
+  const onView = page.locator('.app-canvas > [aria-hidden="false"]');
+  await onView.getByText("Цели", { exact: true }).first().click();
+  await onView.getByRole("button", { name: /Открыть цель/ }).click();
+  const panel = onView.getByRole("region", { name: "А если откладывать больше?" });
+  await expect(panel).toContainText("Сейчас вы откладываете");
+  const before = await panel.textContent();
+  await panel.getByRole("button", { name: /^\+/ }).last().click();
+  await expect(panel).toContainText("раньше, чем при текущем темпе");
+  expect(await panel.textContent()).not.toEqual(before);
+  // nothing was saved: the goal still shows the same amount
+  await expect(onView).toContainText("195 000");
+});

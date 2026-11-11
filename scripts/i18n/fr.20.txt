@@ -1,0 +1,12 @@
+Et si j'épargnais plus ?
+Sans versements l'objectif ne sera pas atteint
+Comme maintenant
+Capital du mois
+Après l'échéance de {0}
+Aucun versement ces 3 derniers mois
+Vous épargnez {0} par mois
+Dans les temps — {0}
+ce mois-ci
+{0} plus tôt qu'au rythme actuel ({1})
+au rythme actuel
+avec ce supplément

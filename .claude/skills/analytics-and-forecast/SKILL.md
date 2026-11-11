@@ -10,7 +10,7 @@ description: Use when adding or changing any number that looks ahead or summaris
 - `monthForecast` — everyday spending rate (60-day and month blend, regular payments excluded) and month projection.
 - `capitalForecast(data, balances, entries, today, until?)` — accounts on `until` (month end by default; the forecast sheet also uses 7/30/90/365 days): `end = now + incomeLeft − obligations − everyday`; `path` ends exactly at `end`; `items` are the dated events behind it; `cashPath` / `shortfall` = everyday wallets only (no savings/investments) and the first day they go below zero.
 - `freeCash` — the same for everyday wallets only (Plans screen, daily budget).
-- `safeToSpend` — today's allowance. Goal pace: `goalPace`, `goalHistory`.
+- `safeToSpend` — today's allowance. Goal pace: `goalPace`, `goalHistory`; «what if I save more»: `goalWhatIf` / `whatIfSteps` (pure, changes nothing). Month capital change: `capitalChange` (flows only — transfers, goal deposits and loans do not move it).
 Screens must call these; never re-sum transactions in a component.
 
 ## Procedure

@@ -1,0 +1,12 @@
+¿Y si ahorro más?
+Sin aportes la meta no se alcanzará
+Como ahora
+Capital del mes
+Pasa del plazo en {0}
+Sin aportes en los últimos 3 meses
+Ahora ahorras {0} al mes
+Llegas a tiempo — {0}
+este mes
+{0} antes que al ritmo actual ({1})
+al ritmo actual
+con este extra

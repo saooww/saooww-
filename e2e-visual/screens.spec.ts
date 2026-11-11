@@ -61,7 +61,10 @@ test("цели и долги", async ({ page }) => {
   await shot(page, "06-profile");
   await onView(page).getByText("Цели", { exact: true }).first().click();
   await shot(page, "07-goals");
-  await onView(page).getByRole("button", { name: "Назад" }).click();
+  await onView(page).getByRole("button", { name: /Открыть цель/ }).click();
+  await shot(page, "13-goal-detail");
+  await onView(page).getByRole("button", { name: "Назад" }).last().click();
+  await onView(page).getByRole("button", { name: "Назад" }).last().click();
   await onView(page).getByText("Долги", { exact: true }).first().click();
   await shot(page, "08-debts");
   await onView(page).getByRole("button", { name: /^Андрей/ }).click();
