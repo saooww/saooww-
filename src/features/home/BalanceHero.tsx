@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, ChevronRight } from "../../ui/glyphs";
 import type { ReactNode } from "react";
-import { DayStrip } from "./DayBudget";
+import { ForecastStrip } from "./Forecast";
 import { cn } from "../../lib/cn";
 import { haptic } from "../../lib/haptics";
 import { materialOf } from "../../store/catalog";
@@ -81,7 +81,7 @@ export function BalanceHero({ children }: { children?: ReactNode }) {
             {card ? (card.walletId ? card.title : tr("Все счета · {0}", wallets.length)) : tr("Счета")}
             <ChevronDown size={14} className="opacity-70" />
           </button>
-          <div className="mt-4 text-subhead text-white/80">{!card || !card.walletId ? tr("Доступно на счетах") : card.subtitle ?? tr("Баланс")}</div>
+          <div className="mt-4 text-subhead text-white/80">{!card || !card.walletId ? tr("Сейчас на счетах") : card.subtitle ?? tr("Баланс")}</div>
           {card ? (
             <button type="button" aria-label={tr("Подробнее")} onClick={() => open(card)} className="mt-1 flex items-center gap-1 text-left">
               <AnimatePresence mode="popLayout" initial={false}>
@@ -95,7 +95,7 @@ export function BalanceHero({ children }: { children?: ReactNode }) {
             <button type="button" onClick={() => nav.sheet("wallet")} className="mt-1 text-title-2 font-semibold">{tr("Добавьте первый счёт")}</button>
           )}
           {hidden && <div className="mt-1 text-caption text-white/70">{tr("Суммы скрыты")}</div>}
-          <DayStrip />
+          <ForecastStrip />
         </motion.div>
 
         {cards.length > 1 && (

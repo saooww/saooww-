@@ -1,0 +1,83 @@
+1st
+{0} · {1}%
+{0} · enough
+{0} a day
+{0} returned a part
+{0} owes you
+{0} items
+Balance, forecast, this month's income and today's amount are always shown. The rest is up to you.
+Returned a part
+Returned {0} of {1}
+Returned everything {0}
+Repay a part
+Borrowed
+All income
+Everything returned
+You returned a part
+Lent
+The money arrives on the chosen account — cash or card.
+The money is taken from the chosen account.
+Income received
+Income · {0}
+This month's income
+One more loan
+Total by month end
+By {0} you'll have
+By {0} you will have
+Each type has its own colour
+Capital until month end
+Apartment, vacation
+Where the money arrived
+Limits
+People
+The month will close at
+Expected income
+Expected income
+Expected income — salary, advance
+You expect {0} · received {1} so far
+Left to receive {0} of {1}
+The rest stays expected: the forecast counts only that.
+Where it was repaid from
+Save
+Save to a goal
+Payments and subscriptions
+Payments on their dates, everyday spending evenly by day, at the usual pace of the last 60 days.
+Payment: {0}
+Purchases and forecast
+Received {0}
+Received it all
+Received a part
+Month forecast
+Forecast for month end
+It will be split across the loans: {0}
+Lowest balance
+On the accounts now
+How much came in
+Saving pace
+Freelance project
+Part recorded
+What to record?
+That is the whole rest — the income will be marked as received.
+no movement on an account
+returned {0} of {1}
+all fine
+all received
+not enough money on {0}
+debt closed
+not here yet
+expected {0}
+expected {0}
+expected by {0}
+closed
+vs today
+to «{0}»
+need {0} a month
+expected {0}
+left
+left to receive
+by amount
+fully received
+no deposits
+from «{0}»
+today {0}
+now {0} a month

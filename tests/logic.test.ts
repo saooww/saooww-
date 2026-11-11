@@ -29,6 +29,9 @@ import { monthDots } from "../src/lib/monthRing";
 import { personalProgress } from "../src/lib/progress";
 import { answerSave, answerTop, answerWhy, intentOf } from "../src/lib/assistant";
 import { goalInfo } from "../src/lib/finance";
+import { capitalForecast } from "../src/lib/analytics";
+import { planLeft, planReceived } from "../src/lib/plans";
+import { debtHistory, debtPeople, splitRepayment } from "../src/lib/debts";
 import { switchLanguage, type Lang } from "../src/i18n/i18n";
 
 let passed = 0;
@@ -600,5 +603,66 @@ test("калькулятор суммы: порядок действий, коп
     localStorage.setItem = realSet;
   }
 }
+
+test("зарплата по частям: аванс снижает остаток, прогноз ждёт только остаток", () => {
+  const ledger = () => buildLedger(data()).entries;
+  const f0 = capitalForecast(data(), computeBalances(st().wallets, st().transactions), ledger(), today);
+  const id = st().addPlan({ kind: "income", title: "Зарплата", amount: 15_000_000, date: addDays(today, 3), walletId: "w-main" });
+  const f1 = capitalForecast(data(), computeBalances(st().wallets, st().transactions), ledger(), today);
+  const m0 = bal("w-main");
+  assert.equal(f1.incomeLeft - f0.incomeLeft, 15_000_000);
+  st().receivePlan(id, 9_000_000, { walletId: "w-main" });
+  const plan = () => st().plans.find((p) => p.id === id)!;
+  assert.equal(bal("w-main"), m0 + 9_000_000);
+  assert.equal(plan().status, "planned");
+  assert.equal(planReceived(plan(), st().transactions), 9_000_000);
+  assert.equal(planLeft(plan(), st().transactions), 6_000_000);
+  const f2 = capitalForecast(data(), computeBalances(st().wallets, st().transactions), ledger(), today);
+  assert.equal(f2.incomeLeft - f0.incomeLeft, 6_000_000);
+  // «Получил всё» берёт остаток, а не всю сумму ещё раз
+  st().completePlan(id, { walletId: "w-main" });
+  assert.equal(plan().status, "done");
+  assert.equal(bal("w-main"), m0 + 15_000_000);
+  // возврат в план убирает все полученные части
+  st().setPlanStatus(id, "planned");
+  assert.equal(bal("w-main"), m0);
+  assert.equal(planLeft(plan(), st().transactions), 15_000_000);
+});
+
+test("прогноз капитала: сейчас + ожидаемое − платежи − обычные траты, путь заканчивается в итоге", () => {
+  const f = capitalForecast(data(), computeBalances(st().wallets, st().transactions), buildLedger(data()).entries, today);
+  assert.equal(f.end, f.now + f.incomeLeft - f.obligations - f.everyday);
+  assert.equal(f.path[0].value, f.now);
+  assert.equal(f.path[f.path.length - 1].value, f.end);
+});
+
+test("долги: один человек — одна запись, возврат идёт с самого старого займа", () => {
+  const wallets = st().wallets;
+  const before = debtPeople(st().debts, st().transactions, today).length;
+  const a = st().addDebt({ direction: "owed_to_me", counterparty: "Игорь", amount: 2_500_000, currency: "RUB", date: addDays(today, -30) }, "w-main");
+  const b = st().addDebt({ direction: "owed_to_me", counterparty: " игорь ", amount: 600_000, currency: "RUB", date: addDays(today, -10) }, "w-main");
+  let people = debtPeople(st().debts, st().transactions, today);
+  assert.equal(people.length, before + 1);
+  let p = people.find((x) => x.name.toLowerCase() === "игорь")!;
+  assert.equal(p.debts.length, 2);
+  assert.equal(p.toMe, 3_100_000);
+  const { parts, rest } = splitRepayment(p, "owed_to_me", 2_800_000);
+  assert.deepEqual(parts, [{ debtId: a, amount: 2_500_000 }, { debtId: b, amount: 300_000 }]);
+  assert.equal(rest, 0);
+  const m0 = bal("w-main");
+  for (const x of parts) st().payDebt(x.debtId, x.amount, "w-main");
+  assert.equal(bal("w-main"), m0 + 2_800_000);
+  people = debtPeople(st().debts, st().transactions, today);
+  p = people.find((x) => x.name.toLowerCase() === "игорь")!;
+  assert.equal(p.toMe, 300_000);
+  assert.equal(p.paid, 2_800_000);
+  assert.ok(Math.abs(p.progress - 2_800_000 / 3_100_000) < 1e-9);
+  const hist = debtHistory(p, st().transactions, wallets);
+  assert.equal(hist.filter((h) => h.kind === "payment").length, 2);
+  assert.equal(hist.filter((h) => h.kind === "open").length, 2);
+  assert.equal(hist.reduce((s, h) => s + h.signed, 0), -300_000);
+  // лишнее сверх долга не списывается
+  assert.equal(splitRepayment(p, "owed_to_me", 1_000_000).rest, 700_000);
+});
 
 console.log(`\nВсе проверки пройдены: ${passed}`);

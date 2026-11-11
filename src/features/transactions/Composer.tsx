@@ -50,10 +50,10 @@ export interface ComposerProps {
 const KIND_ORDER: FlowKind[] = ["expense", "income", "transfer"];
 
 /** Each kind has its own colour: the switch, the light behind the amount and the button follow it. */
-const KIND_META: Record<FlowKind, { label: string; icon: LucideIcon; fill: string; on: string; shadow?: string }> = {
-  expense: { label: tr("Расход"), icon: ArrowUpRight, fill: "fill-accent", on: "text-[var(--accent-on)]" },
-  income: { label: tr("Доход"), icon: ArrowDownLeft, fill: "fill-positive", on: "text-[var(--positive-on)]", shadow: "inset 0 1px 0 rgba(255,255,255,0.22), 0 10px 24px -10px color-mix(in srgb, var(--positive) 70%, transparent)" },
-  transfer: { label: tr("Перевод"), icon: ArrowLeftRight, fill: "bg-ink", on: "text-ink-inverse" }
+const KIND_META: Record<FlowKind, { label: string; icon: LucideIcon; fill: string; on: string; tint: string; shadow?: string }> = {
+  expense: { label: tr("Расход"), icon: ArrowUpRight, fill: "fill-accent", on: "text-[var(--accent-on)]", tint: "text-accent-ink", shadow: "inset 0 1px 0 rgba(255,255,255,0.22), 0 10px 24px -10px color-mix(in srgb, var(--accent) 70%, transparent)" },
+  income: { label: tr("Доход"), icon: ArrowDownLeft, fill: "fill-positive", on: "text-[var(--positive-on)]", tint: "text-positive", shadow: "inset 0 1px 0 rgba(255,255,255,0.22), 0 10px 24px -10px color-mix(in srgb, var(--positive) 70%, transparent)" },
+  transfer: { label: tr("Перевод"), icon: ArrowLeftRight, fill: "fill-transfer", on: "text-white", tint: "text-[var(--transfer)]", shadow: "inset 0 1px 0 rgba(255,255,255,0.22), 0 10px 24px -10px color-mix(in srgb, var(--transfer) 70%, transparent)" }
 };
 
 
@@ -757,7 +757,7 @@ function KindSwitch({ value, onChange }: { value: FlowKind; onChange: (k: FlowKi
             }}
             className="relative flex h-9 min-w-0 flex-1 items-center justify-center gap-1 rounded-full text-[min(calc(14px*var(--text-scale)),15px)] font-semibold"
           >
-            <m.icon size={15} strokeWidth={2.4} className={cn("relative shrink-0 transition-colors duration-200 max-[389px]:hidden", on ? m.on : "text-ink-3")} />
+            <m.icon size={15} strokeWidth={2.4} className={cn("relative shrink-0 transition-colors duration-200 max-[389px]:hidden", on ? m.on : m.tint)} />
             <span className={cn("relative truncate transition-colors duration-200", on ? m.on : "text-ink-2")}>{m.label}</span>
           </button>
         );

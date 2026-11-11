@@ -11,6 +11,7 @@ import { nav } from "../../store/ui";
 import { confirmDelete, undoable } from "../../store/undo";
 import { Screen } from "../../nav/Screen";
 import { GoalVisual } from "./GoalVisual";
+import { GoalPaceChart } from "./GoalPace";
 import { GoalTasks } from "./GoalTasks";
 import { Money } from "../../ui/Money";
 import { Button, EmptyState, Group, IconChip, Row } from "../../ui/primitives";
@@ -50,6 +51,11 @@ export function GoalDetail({ id }: { id: ID }) {
     <Screen title={goal.name} actions={<button type="button" className="h-9 px-1 text-body text-accent-ink" onClick={() => nav.sheet("goal", { editId: goal.id })}>{tr("Изменить")}</button>}>
       <div className="px-4 pt-1">
         <GoalVisual goal={goal} info={info} status={status} big />
+      </div>
+
+      <div className="on-dark mx-4 mt-3 rounded-[24px] px-4 pb-3 pt-4 text-white" style={{ background: `linear-gradient(160deg, color-mix(in srgb, ${info.done ? "#2e9d72" : goal.color ?? "#df0714"} 38%, #0b0b0c), #0b0b0c)`, boxShadow: "inset 0 1px 0 rgba(255,255,255,0.1)" }}>
+        <div className="mb-2 text-footnote font-medium text-white/75">{tr("Темп накоплений")}</div>
+        <GoalPaceChart goal={goal} info={info} />
       </div>
 
       {!info.done && (

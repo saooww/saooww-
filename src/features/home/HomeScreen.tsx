@@ -30,6 +30,7 @@ export function HomeScreen() {
         <Reveal intro={intro} delay={0.55} y={-6} className="flex w-full items-center justify-between">
           <Wordmark />
           <div className="flex items-center gap-2">
+            <IconButton icon={Sparkles} label={tr("Спросить Ardessa")} size={36} iconSize={18} onClick={() => nav.push("assistant", {})} />
             <IconButton icon={Search} label={tr("Поиск")} size={36} iconSize={18} onClick={() => nav.sheet("search")} />
             <button type="button" aria-label={tr("Настройки и профиль")} onClick={() => nav.push("settings")} className="rounded-full active:opacity-70">
               <Avatar name={name || tr("Я")} size={36} />
@@ -80,7 +81,7 @@ export function HomeLayoutSheet() {
   const update = useData((s) => s.updateSettings);
   return (
     <Sheet title={tr("Главная")} ariaLabel={tr("Настроить главную")}>
-      <p className="px-6 pb-4 text-center text-footnote text-ink-2">{tr("Баланс и сумма на сегодня видны всегда, умная строка — над меню. Остальное — по желанию.")}</p>
+      <p className="px-6 pb-4 text-center text-footnote text-ink-2">{tr("Баланс, прогноз, доходы месяца и сумма на сегодня видны всегда. Остальное — по желанию.")}</p>
       <Group>
         {HOME_BLOCKS.map((b) => (
           <div key={b.id} className="flex min-h-[58px] items-center gap-3 px-4 py-2.5">

@@ -19,3 +19,5 @@
 человек|человека|человек = one:personne; other:personnes
 человеку|людям|людям = one:personne; other:personnes
 платёж|платежа|платежей = one:paiement; other:paiements
+Займ|Займа|Займов = one:Prêt; other:Prêts
+долг|долга|долгов = one:dette; other:dettes

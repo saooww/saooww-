@@ -19,3 +19,5 @@
 человек|человека|человек = one:kişi; other:kişi
 человеку|людям|людям = one:kişi; other:kişi
 платёж|платежа|платежей = one:ödeme; other:ödeme
+Займ|Займа|Займов = one:Borç; other:Borç
+долг|долга|долгов = one:borç; other:borç

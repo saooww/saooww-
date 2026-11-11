@@ -16,7 +16,7 @@ import { tr } from "../../i18n/i18n";
  * operation, and a bar of how much of today's norm is still free. Tapping it
  * opens the day in full. Crossing the norm brings a warning.
  */
-export function DayStrip() {
+export function DayStrip({ variant = "panel" }: { variant?: "glass" | "panel" }) {
   const data = useAppData();
   const balances = useBalances();
   const { entries } = useLedger();
@@ -35,8 +35,11 @@ export function DayStrip() {
     else if (before > s.allowance * 0.2 && s.today >= 0 && s.today <= s.allowance * 0.2) nav.toast(tr("На сегодня осталось {0} — меньше пятой части нормы", formatMoney(s.today, { currency: base })), { tone: "warning" });
   }, [s, base]);
 
-  const shell = "mt-5 flex w-full items-center gap-3 rounded-[20px] px-4 py-3 text-left text-white";
-  const glass = { background: "rgba(0,0,0,0.28)", boxShadow: "inset 0 0 0 0.5px rgba(255,255,255,0.16)", backdropFilter: "blur(12px)" } as const;
+  const onGlass = variant === "glass";
+  const shell = onGlass ? "mt-5 flex w-full items-center gap-3 rounded-[20px] px-4 py-3 text-left text-white" : "panel mx-4 mt-3 flex w-[calc(100%-32px)] items-center gap-3 rounded-[22px] px-4 py-3.5 text-left";
+  const glass = onGlass ? ({ background: "rgba(0,0,0,0.28)", boxShadow: "inset 0 0 0 0.5px rgba(255,255,255,0.16)", backdropFilter: "blur(12px)" } as const) : undefined;
+  const sub = onGlass ? "text-white/80" : "text-ink-2";
+  const trackCls = onGlass ? "bg-white/25" : "bg-[var(--line)]";
 
   if (!s || s.allowance <= 0) {
     return (
@@ -64,14 +67,14 @@ export function DayStrip() {
       style={glass}
     >
       <span className="min-w-0 flex-1">
-        <span className="block text-caption text-white/80">{over ? tr("Сегодня сверх нормы") : tr("Можно потратить сегодня")}</span>
-        <AnimatedMoney value={Math.abs(s.today)} currency={base} variant="hero" privacy className="mt-0.5 block text-[24px] leading-none" />
+        <span className={`block text-caption ${sub}`}>{over ? tr("Сегодня сверх нормы") : tr("Можно потратить сегодня")}</span>
+        <AnimatedMoney value={Math.abs(s.today)} currency={base} variant="hero" privacy className={`mt-0.5 block text-[24px] leading-none ${onGlass ? "" : over ? "text-negative" : "text-ink"}`} />
       </span>
       <span className="w-[42%] shrink-0">
-        <span className="block h-[7px] overflow-hidden rounded-full bg-white/25">
-          <motion.span className="block h-full rounded-full" style={{ background: over ? "#ffd0d0" : "#fff", boxShadow: "0 0 12px rgba(255,255,255,0.6)" }} initial={{ width: 0 }} animate={{ width: `${share * 100}%` }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} />
+        <span className={`block h-[7px] overflow-hidden rounded-full ${trackCls}`}>
+          <motion.span className="block h-full rounded-full" style={onGlass ? { background: over ? "#ffd0d0" : "#fff", boxShadow: "0 0 12px rgba(255,255,255,0.6)" } : { background: over ? "var(--negative)" : "var(--accent)", boxShadow: "0 0 12px color-mix(in srgb, var(--accent) 60%, transparent)" }} initial={{ width: 0 }} animate={{ width: `${share * 100}%` }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} />
         </span>
-        <span className="num mt-1.5 block text-right text-[11px] text-white/80">{tr("из {0}", formatMoney(s.allowance, { currency: base }))}</span>
+        <span className={`num mt-1.5 block text-right text-[11px] ${sub}`}>{tr("из {0}", formatMoney(s.allowance, { currency: base }))}</span>
       </span>
     </motion.button>
   );

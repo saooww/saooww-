@@ -1,0 +1,83 @@
+1.
+{0} · {1} %
+{0} · reicht
+{0} pro Tag
+{0} hat einen Teil zurückgezahlt
+{0} schuldet Ihnen
+{0} Stück
+Saldo, Prognose, Einnahmen des Monats und der Tagesbetrag sind immer sichtbar. Der Rest nach Wunsch.
+Teil zurückgezahlt
+{0} von {1} zurückgezahlt
+Alles zurückgezahlt {0}
+Teil zurückzahlen
+Geliehen
+Alle Einnahmen
+Alles zurückgezahlt
+Sie haben einen Teil zurückgezahlt
+Verliehen
+Das Geld kommt auf das gewählte Konto — bar oder Karte.
+Das Geld wird vom gewählten Konto abgebucht.
+Einnahme erhalten
+Einnahmen · {0}
+Einnahmen des Monats
+Noch ein Darlehen
+Gesamt zum Monatsende
+Bis zum {0} haben Sie
+Bis zum {0} haben Sie
+Jeder Typ hat seine Farbe
+Kapital bis Monatsende
+Wohnung, Urlaub
+Wohin das Geld kam
+Limits
+Personen
+Der Monat endet bei
+Erwartete Einnahmen
+Erwartete Einnahme
+Erwartete Einnahme — Gehalt, Vorschuss
+Sie erwarten {0} · bisher erhalten {1}
+Noch zu erhalten {0} von {1}
+Der Rest bleibt erwartet: die Prognose zählt nur ihn.
+Woher zurückgezahlt
+Sparen
+In ein Ziel sparen
+Zahlungen und Abos
+Zahlungen an ihren Tagen, laufende Ausgaben gleichmäßig pro Tag, im üblichen Tempo der letzten 60 Tage.
+Zahlung: {0}
+Käufe und Prognose
+Erhalten {0}
+Alles erhalten
+Teil erhalten
+Monatsprognose
+Prognose zum Monatsende
+Wird auf die Darlehen verteilt: {0}
+Niedrigster Stand
+Jetzt auf den Konten
+Wie viel kam an
+Spartempo
+Freelance-Projekt
+Teil erfasst
+Was erfassen?
+Das ist der ganze Rest — die Einnahme wird als erhalten markiert.
+keine Kontobewegung
+{0} von {1} zurückgezahlt
+alles gut
+alles erhalten
+am {0} reicht das Geld nicht
+Schuld beglichen
+noch nicht da
+erwartet {0}
+erwartet {0}
+erwartet bis {0}
+beglichen
+ggü. heute
+auf „{0}“
+{0} pro Monat nötig
+erwartet {0}
+übrig
+noch zu erhalten
+nach Betrag
+vollständig erhalten
+keine Einzahlungen
+von „{0}“
+heute {0}
+jetzt {0} pro Monat

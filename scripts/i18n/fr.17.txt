@@ -1,0 +1,83 @@
+1er
+{0} · {1} %
+{0} · suffisant
+{0} par jour
+{0} a rendu une partie
+{0} vous doit
+{0} éléments
+Le solde, la prévision, les revenus du mois et le montant du jour sont toujours visibles. Le reste, à votre guise.
+A rendu une partie
+Rendu {0} sur {1}
+Tout rendu {0}
+Rembourser une partie
+Emprunté
+Tous les revenus
+Tout est rendu
+Vous avez rendu une partie
+Prêté
+L'argent arrive sur le compte choisi : espèces ou carte.
+L'argent est prélevé du compte choisi.
+Revenu reçu
+Revenus · {0}
+Revenus du mois
+Un autre prêt
+Total en fin de mois
+Au {0}, vous aurez
+Au {0}, vous aurez
+Chaque type a sa couleur
+Capital jusqu'à la fin du mois
+Appartement, vacances
+Où l'argent est arrivé
+Limites
+Personnes
+Le mois se terminera à
+Revenus attendus
+Revenu attendu
+Revenu attendu — salaire, acompte
+Vous attendez {0} · reçu {1}
+Reste à recevoir {0} sur {1}
+Le reste reste attendu : la prévision ne compte que lui.
+D'où c'était remboursé
+Mettre de côté
+Mettre de côté pour un objectif
+Paiements et abonnements
+Paiements à leurs dates, dépenses courantes réparties par jour, au rythme habituel des 60 derniers jours.
+Paiement : {0}
+Achats et prévision
+Reçu {0}
+Tout reçu
+Une partie reçue
+Prévision du mois
+Prévision de fin de mois
+Réparti entre les prêts : {0}
+Solde le plus bas
+Maintenant sur les comptes
+Combien est arrivé
+Rythme d'épargne
+Projet freelance
+Partie enregistrée
+Que noter ?
+C'est tout le reste : le revenu sera marqué comme reçu.
+aucun mouvement sur un compte
+rendu {0} sur {1}
+tout va bien
+tout est reçu
+pas assez d'argent le {0}
+dette soldée
+pas encore arrivé
+attendu {0}
+attendu {0}
+attendu avant le {0}
+soldée
+par rapport à aujourd'hui
+vers « {0} »
+il faut {0} par mois
+attendu {0}
+reste
+reste à recevoir
+par montant
+entièrement reçu
+aucun versement
+depuis « {0} »
+aujourd'hui {0}
+maintenant {0} par mois

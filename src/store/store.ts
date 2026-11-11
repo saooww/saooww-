@@ -7,6 +7,7 @@ import { MONTHS_GEN, nowISO, parseDay, todayKey, type DayKey } from "../lib/date
 import { computeBalances, debtInfo } from "../lib/finance";
 import { uid } from "../lib/id";
 import type { Minor } from "../lib/money";
+import { planReceived } from "../lib/plans";
 import { nextAfter } from "../lib/recurrence";
 import { nextOccurrence } from "../lib/tasks";
 import { CHART_COLORS } from "./catalog";
@@ -79,6 +80,8 @@ export interface DataActions {
   updatePlan(id: ID, patch: Partial<Plan>): void;
   deletePlan(id: ID): void;
   completePlan(id: ID, opts?: { walletId?: ID; amount?: Minor }): ID | undefined;
+  /** Money that came in (or went out) against a plan, one part at a time: the plan closes when the whole sum is in */
+  receivePlan(id: ID, amount: Minor, opts?: { walletId?: ID; date?: string }): ID | undefined;
   setPlanStatus(id: ID, status: Plan["status"]): void;
   // tasks
   addTask(input: Omit<Task, "id" | "createdAt" | "done">): ID;
@@ -460,18 +463,28 @@ const useDataStore = create<DataState>()(
       completePlan(id, opts) {
         const s = get();
         const plan = s.plans.find((p) => p.id === id);
+        if (!plan) return undefined;
+        // what is still left of the plan: parts already received don't count twice
+        const left = Math.max(0, plan.amount - planReceived(plan, s.transactions));
+        return get().receivePlan(id, opts?.amount ?? (left || plan.amount), { walletId: opts?.walletId });
+      },
+
+      receivePlan(id, amount, opts) {
+        const s = get();
+        const plan = s.plans.find((p) => p.id === id);
         const walletId = opts?.walletId ?? plan?.walletId ?? s.settings.defaultWalletId;
-        if (!plan || !walletId) return undefined;
+        if (!plan || !walletId || amount <= 0) return undefined;
         const txId = s.addTransaction({
           kind: plan.kind,
-          amount: opts?.amount ?? plan.amount,
+          amount,
           walletId,
           categoryId: plan.categoryId,
           note: plan.title,
           planId: plan.id,
-          date: nowISO()
+          date: opts?.date ?? nowISO()
         });
-        get().updatePlan(id, { status: "done", txId });
+        const got = planReceived(plan, get().transactions);
+        get().updatePlan(id, got >= plan.amount ? { status: "done", txId } : { txId });
         return txId;
       },
 
@@ -479,10 +492,11 @@ const useDataStore = create<DataState>()(
         set((s) => {
           const plan = s.plans.find((p) => p.id === id);
           if (!plan) return {};
-          const removeTx = status === "planned" && plan.txId;
+          const back = status === "planned";
           return {
             plans: mapById(s.plans, id, { status, txId: status === "done" ? plan.txId : undefined }),
-            transactions: removeTx ? s.transactions.filter((t) => t.id !== plan.txId) : s.transactions
+            // back to the plan: every part that was received against it is taken away
+            transactions: back ? s.transactions.filter((t) => t.planId !== id) : s.transactions
           };
         });
       },

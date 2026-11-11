@@ -34,7 +34,7 @@ function glyph(name: string, ui: boolean): LucideIcon {
         fill="currentColor"
         aria-hidden="true"
         focusable="false"
-        className={className}
+        className={className ? `glyph ${className}` : "glyph"}
         {...rest}
         dangerouslySetInnerHTML={{ __html: markup }}
       />

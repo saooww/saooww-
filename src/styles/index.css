@@ -46,7 +46,9 @@
 }
 
 [data-num="bold"] {
-  --font-num: "Kapital Bold", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Inter, system-ui, sans-serif;
+  /* large figures in the bold display face; figures in lists and rows stay in the quiet system face, semi-bold */
+  --font-num-display: "Kapital Bold", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Inter, system-ui, sans-serif;
+  --font-num: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Inter, system-ui, sans-serif;
   --num-display-weight: 700;
   --num-display-tracking: -0.035em;
 }
@@ -154,6 +156,8 @@
   --accent-glow: rgba(250, 7, 23, 0.45);
   /* text and icons on an accent fill */
   --accent-on: #ffffff;
+  --transfer: #6f8cff;
+  --saving: #e6b45a;
   --positive: #3cc896;
   --positive-hi: #63dcb0;
   --positive-soft: rgba(60, 200, 150, 0.14);
@@ -217,6 +221,8 @@
   --accent-ink: #c80511;
   --accent-glow: rgba(227, 6, 19, 0.3);
   --accent-on: #ffffff;
+  --transfer: #3f5bd6;
+  --saving: #9a6a12;
   --positive: #117b4d;
   --positive-hi: #16915c;
   --positive-soft: rgba(17, 123, 77, 0.1);
@@ -477,7 +483,7 @@
   /* Large display figures: lighter weight, tighter tracking and
      proportional digits — tabular ones leave holes around a «1» at this size. */
   .num-display {
-    font-family: var(--font-num);
+    font-family: var(--font-num-display, var(--font-num));
     font-weight: var(--num-display-weight);
     letter-spacing: var(--num-display-tracking);
     font-variant-numeric: proportional-nums;
@@ -579,6 +585,10 @@
     background: var(--positive);
   }
 
+  .fill-transfer {
+    background: var(--transfer);
+  }
+
   /* Raised key / tile: a subtle vertical gradient like milled stone. */
   .tile {
     /* the raised face is lighter (darker in light), so faint text steps up to stay readable */
@@ -675,4 +685,29 @@
   --negative-soft: rgba(255, 91, 95, 0.16);
   --warning: #f0b14e;
   --warning-soft: rgba(240, 177, 78, 0.17);
+}
+
+/* Icons: a line and one stroke of the accent. The soft inner shape of every
+   two-tone icon takes the accent colour where the icon sits on a neutral
+   tile; on coloured chips and in running text it stays a tint of the line. */
+.glyph > [opacity="0.2"] {
+  fill: var(--glyph-fill, currentColor);
+  opacity: var(--glyph-fill-o, 0.2);
+}
+.tile,
+.panel {
+  --glyph-fill: var(--accent);
+  --glyph-fill-o: 0.8;
+}
+.on-dark,
+.fill-accent,
+.fill-positive,
+.fill-transfer,
+.text-white,
+.text-positive,
+.text-negative,
+.text-warning,
+.text-accent-ink {
+  --glyph-fill: currentColor;
+  --glyph-fill-o: 0.2;
 }

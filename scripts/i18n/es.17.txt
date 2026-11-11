@@ -1,0 +1,83 @@
+1.º
+{0} · {1}%
+{0} · alcanza
+{0} al día
+{0} devolvió una parte
+{0} te debe
+{0} elementos
+El saldo, el pronóstico, los ingresos del mes y la cantidad de hoy siempre se ven. Lo demás, a tu gusto.
+Devolvió una parte
+Devuelto {0} de {1}
+Devuelto todo {0}
+Devolver una parte
+Pedí prestado
+Todos los ingresos
+Todo devuelto
+Devolviste una parte
+Presté
+El dinero llega a la cuenta elegida: efectivo o tarjeta.
+El dinero se descuenta de la cuenta elegida.
+Ingreso recibido
+Ingresos · {0}
+Ingresos del mes
+Otro préstamo
+Total a fin de mes
+Para el {0} tendrás
+Para el {0} tendrás
+Cada tipo, de su color
+Capital hasta fin de mes
+Piso, vacaciones
+A dónde llegó el dinero
+Límites
+Personas
+El mes cerrará con
+Ingresos esperados
+Ingreso esperado
+Ingreso esperado: sueldo, anticipo
+Esperas {0} · recibido {1}
+Falta recibir {0} de {1}
+Lo demás sigue esperándose: el pronóstico cuenta solo eso.
+De dónde se devolvió
+Ahorrar
+Ahorrar en una meta
+Pagos y suscripciones
+Pagos en sus fechas, gastos diarios por igual, al ritmo habitual de los últimos 60 días.
+Pago: {0}
+Compras y pronóstico
+Recibido {0}
+Recibí todo
+Recibí una parte
+Pronóstico del mes
+Pronóstico a fin de mes
+Se repartirá entre los préstamos: {0}
+Saldo más bajo
+Ahora en las cuentas
+Cuánto llegó
+Ritmo de ahorro
+Proyecto freelance
+Parte registrada
+¿Qué anotar?
+Es todo lo que falta: el ingreso se marcará como recibido.
+sin movimiento en una cuenta
+devuelto {0} de {1}
+todo bien
+todo recibido
+no alcanzará el dinero el {0}
+deuda cerrada
+aún no llega
+esperado {0}
+esperado {0}
+esperado hasta el {0}
+cerrada
+respecto a hoy
+a «{0}»
+hacen falta {0} al mes
+se espera {0}
+queda
+falta recibir
+por importe
+recibido por completo
+sin aportes
+de «{0}»
+hoy {0}
+ahora {0} al mes

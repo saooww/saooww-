@@ -19,6 +19,7 @@ import { Button, FormRow, Group, IconButton, IconChip, Row, Segmented, inputCls 
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
 import { HeroCard } from "../../ui/HeroCard";
 import { materialOf } from "../../store/catalog";
+import { planLeft } from "../../lib/plans";
 import { tr } from "../../i18n/i18n";
 
 type EventKind = "plan" | "recurring" | "debt" | "task" | "goal";
@@ -51,7 +52,7 @@ export function useEvents(from: DayKey, to: DayKey): CalEvent[] {
         kind: "plan",
         date: p.date,
         title: p.title,
-        amount: p.amount,
+        amount: p.status === "planned" ? planLeft(p, data.transactions) || p.amount : p.amount,
         currency: cur(p.walletId),
         direction: p.kind === "income" ? "in" : "out",
         done: p.status === "done",
@@ -273,14 +274,14 @@ export function EventRow({ e, hideDate }: { e: CalEvent; hideDate?: boolean }) {
 /*  Plan sheets                                                         */
 /* ------------------------------------------------------------------ */
 
-export function PlanSheet({ editId, date: d0 }: { editId?: ID; date?: DayKey }) {
+export function PlanSheet({ editId, date: d0, kind: k0 }: { editId?: ID; date?: DayKey; kind?: Plan["kind"] }) {
   const { close } = useSheet();
   const existing = useData((s) => (editId ? s.plans.find((p) => p.id === editId) : undefined));
   const wallets = useData((s) => s.wallets);
   const categories = useData((s) => s.categories);
   const defaultWalletId = useData((s) => s.settings.defaultWalletId);
   const live = activeWallets(wallets);
-  const [kind, setKind] = useState<Plan["kind"]>(existing?.kind ?? "expense");
+  const [kind, setKind] = useState<Plan["kind"]>(existing?.kind ?? k0 ?? "expense");
   const [title, setTitle] = useState(existing?.title ?? "");
   const [amount, setAmount] = useState(existing ? amountToInput(existing.amount).replace(",", ".") : "");
   const [date, setDate] = useState(existing?.date ?? d0 ?? addDays(todayKey(), 7));

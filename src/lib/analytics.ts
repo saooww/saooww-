@@ -19,6 +19,7 @@ import {
 } from "./dates";
 import { balanceSeries, debtInfo, rateOf, toBase, totalWallets, type LedgerEntry, type Range } from "./finance";
 import type { Minor } from "./money";
+import { planLeft } from "./plans";
 import { occurrencesInRange } from "./recurrence";
 import { tr } from "../i18n/i18n";
 
@@ -219,7 +220,9 @@ export function scheduledBetween(data: AppData, from: DayKey, to: DayKey, includ
   }
   for (const p of data.plans) {
     if (p.status !== "planned" || p.date < from || p.date > to) continue;
-    const amt = toBase(p.amount, walletCurrency(data, p.walletId), data.settings);
+    const left = planLeft(p, data.transactions);
+    if (!left) continue;
+    const amt = toBase(left, walletCurrency(data, p.walletId), data.settings);
     if (amt === null) continue;
     items.push({ date: p.date, title: p.title, amount: amt, kind: p.kind, source: "plan" });
   }
@@ -396,4 +399,61 @@ export function monthlyTotals(entries: LedgerEntry[], today: DayKey, months: num
     else out[idx].expense += e.base;
   }
   return out;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Capital at the end of the month                                    */
+/* ------------------------------------------------------------------ */
+
+export interface CapitalForecast {
+  /** On the accounts now, in the base currency */
+  now: Minor;
+  /** Expected income still to come: parts of salary and the like not yet received */
+  incomeLeft: Minor;
+  /** Regular payments, plans and debts due until the end of the month */
+  obligations: Minor;
+  /** Everyday spending at the usual pace for the days left */
+  everyday: Minor;
+  daysLeft: number;
+  /** Where the accounts will be on the last day of the month */
+  end: Minor;
+  /** The way there, day by day from today: payments and income on their dates, everyday spending evenly */
+  path: Array<{ day: DayKey; value: Minor }>;
+}
+
+/**
+ * What will be on the accounts at the end of the month: what is there now,
+ * plus the income still expected (a salary received in parts counts only
+ * for what is left of it), minus payments and the usual everyday spending.
+ */
+export function capitalForecast(data: AppData, balances: Record<ID, Minor>, entries: LedgerEntry[], today: DayKey): CapitalForecast {
+  const until = endOfMonth(today);
+  let now = 0;
+  for (const w of totalWallets(data.wallets)) {
+    const r = rateOf(w.currency, data.settings);
+    if (r === null) continue;
+    now += Math.round((balances[w.id] ?? 0) * r);
+  }
+  const fc = monthForecast(data, entries, today);
+  const future = scheduledBetween(data, addDays(today, 1), until);
+  // plans dated today or earlier that are not closed yet still count: the money has not come in
+  const items = future.items.map((i) => ({ ...i }));
+  for (const p of data.plans) {
+    if (p.status !== "planned" || p.date > today) continue;
+    const left = planLeft(p, data.transactions);
+    const amt = left ? toBase(left, walletCurrency(data, p.walletId), data.settings) : null;
+    if (amt) items.push({ date: today, title: p.title, amount: amt, kind: p.kind, source: "plan" });
+  }
+  const incomeLeft = items.filter((i) => i.kind === "income").reduce((s, i) => s + i.amount, 0);
+  const obligations = items.filter((i) => i.kind === "expense").reduce((s, i) => s + i.amount, 0);
+  const everyday = fc.dailyRate * fc.daysLeft;
+
+  const path: CapitalForecast["path"] = [{ day: today, value: now }];
+  let run = now;
+  for (let d = addDays(today, 1); d <= until; d = addDays(d, 1)) {
+    for (const i of items) if (i.date === d || (d === addDays(today, 1) && i.date === today)) run += i.kind === "income" ? i.amount : -i.amount;
+    run -= fc.dailyRate;
+    path.push({ day: d, value: run });
+  }
+  return { now, incomeLeft, obligations, everyday, daysLeft: fc.daysLeft, end: now + incomeLeft - obligations - everyday, path };
 }

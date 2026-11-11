@@ -54,3 +54,25 @@ export function goalStatusText(s: GoalStatus, currency: string): { text: string;
       return { text: tr("Пополнений не было 3 месяца"), tone: "muted" };
   }
 }
+
+/** What was saved for the goal, day by day: the line the pace chart draws. */
+export function goalHistory(goal: Goal, data: AppData, balances: Record<ID, Minor>, today: DayKey): Array<{ day: DayKey; value: Minor }> {
+  const floor = addDays(today, -150);
+  if (goal.walletId) return balanceSeries(data, balances, new Set([goal.walletId]), floor, today);
+  const txs = data.transactions.filter((t: Transaction) => t.goalId === goal.id).sort((a, b) => (a.date < b.date ? -1 : 1));
+  if (!txs.length) return [{ day: today, value: 0 }];
+  let run = 0;
+  const pts: Array<{ day: DayKey; value: Minor }> = [];
+  for (const t of txs) {
+    run += t.flow === "out" ? t.amount : -t.amount;
+    const day = dayOf(t.date);
+    const last = pts[pts.length - 1];
+    if (last && last.day === day) last.value = run;
+    else pts.push({ day, value: run });
+  }
+  // the line starts from nothing a few days before the first deposit and runs on to today
+  const first = pts[0].day;
+  const out = [{ day: addDays(first, -3), value: 0 }, ...pts];
+  if (out[out.length - 1].day < today) out.push({ day: today, value: run });
+  return out;
+}

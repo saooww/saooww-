@@ -8,6 +8,7 @@ import { goalInfo, goalSaved, type GoalInfo } from "../../lib/finance";
 import { haptic } from "../../lib/haptics";
 import type { Goal } from "../../store/types";
 import { TaskCheck } from "../planner/TaskRow";
+import { GoalPaceChart } from "./GoalPace";
 import { formatMoney } from "../../lib/money";
 import { useAppData, useBalances, useEnvelopes, useToday } from "../../store/hooks";
 import { useData } from "../../store/store";
@@ -169,6 +170,9 @@ function GoalPage({ g, info, status }: { g: Goal; info: GoalInfo; status: GoalSt
           </span>
         </span>
       </button>
+      <div className="mx-auto mt-5 max-w-[340px] text-left text-white">
+        <GoalPaceChart goal={g} info={info} />
+      </div>
     </div>
   );
 }
