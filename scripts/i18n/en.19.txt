@@ -1,0 +1,11 @@
+7 days
+90 days
+{0}: on everyday accounts {1}
+Total by period end
+Capital until period end
+Touch the chart to see the balance on any day
+The period will close at
+Forecast
+In {0} money may run short
+expected balance at day end
+this is how it was on that day

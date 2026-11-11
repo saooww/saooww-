@@ -341,6 +341,49 @@ test("регулярный перевод между валютами зачис
   assert.equal(month().income + month().expense, 0);
 });
 
+test("прогноз на 7/30/90 дней и год: одна формула, путь заканчивается в итоге, месячный прогноз не меняется", () => {
+  st().addRecurring({ kind: "income", title: "Зарплата", amount: 100_000_00, walletId: "card", freq: "month", interval: 1, anchorDay: 25, nextDate: "2027-01-25", autoPost: false, isSubscription: false, active: true });
+  st().addRecurring({ kind: "expense", title: "Аренда", amount: 40_000_00, walletId: "card", freq: "month", interval: 1, anchorDay: 5, nextDate: "2027-02-05", autoPost: false, isSubscription: false, active: true });
+  for (let d = 1; d <= 14; d++) st().addTransaction({ kind: "expense", amount: 1_000_00, walletId: "card", date: `2027-01-${String(d).padStart(2, "0")}T12:00` });
+  const e = buildLedger(data()).entries;
+  const month0 = capitalForecast(data(), bal(), e, T0);
+  assert.equal(month0.until, endOfMonth(T0));
+  for (const days of [7, 30, 90, 365]) {
+    const f = capitalForecast(data(), bal(), e, T0, addDays(T0, days));
+    assert.equal(f.daysLeft, days);
+    assert.equal(f.end, f.now + f.incomeLeft - f.obligations - f.everyday, `${days} дн.`);
+    assert.equal(f.path.length, days + 1);
+    assert.equal(f.path[f.path.length - 1].value, f.end);
+    assert.equal(f.everyday, f.dailyRate * days);
+  }
+  const y = capitalForecast(data(), bal(), e, T0, addDays(T0, 365));
+  assert.equal(y.items.filter((i) => i.title === "Зарплата").length, 12);
+  assert.equal(y.items.filter((i) => i.title === "Аренда").length, 12);
+  assert.equal(y.incomeLeft, 12 * 100_000_00);
+  // a longer horizon only adds days: the 30-day path starts where the month path starts
+  const d30 = capitalForecast(data(), bal(), e, T0, addDays(T0, 30));
+  assert.deepEqual(d30.path.slice(0, month0.path.length), month0.path);
+});
+
+test("нехватка денег: предупреждение появляется в первый день, когда обычные деньги уходят в минус", () => {
+  // everyday money is 200 000 ₽ (card 100 000 + cash 5 000 + $1 000 at 95); a 250 000 ₽ payment on the 20th pushes it below zero
+  st().addPlan({ kind: "expense", title: "Крупная покупка", amount: 250_000_00, date: "2027-01-20", walletId: "card" });
+  const e = buildLedger(data()).entries;
+  const f = capitalForecast(data(), bal(), e, T0);
+  assert.equal(f.cashNow, 10_000_000 + 500_000 + Math.round(100_000 * 95));
+  assert.ok(f.shortfall);
+  assert.equal(f.shortfall!.day, "2027-01-20");
+  assert.equal(f.shortfall!.inDays, 5);
+  assert.ok(f.shortfall!.value < 0);
+  // savings are not everyday money: moving the same sum from a savings wallet gives no warning
+  fresh();
+  st().addTransaction({ kind: "transfer", amount: 9_000_000, walletId: "card", toWalletId: "save", date: "2027-01-10T10:00" });
+  st().addPlan({ kind: "expense", title: "Покупка", amount: 120_000_00, date: "2027-01-20", walletId: "card" });
+  const g = capitalForecast(data(), bal(), buildLedger(data()).entries, T0);
+  assert.equal(g.now, 10_000_000 + 500_000 + Math.round(100_000 * 95));
+  assert.ok(g.shortfall, "обычных денег после перевода на накопительный счёт уже не хватает");
+});
+
 /* ---------------- month helpers used by the forecast ---------------- */
 
 test("начало и конец месяца, включая високосный февраль", () => {

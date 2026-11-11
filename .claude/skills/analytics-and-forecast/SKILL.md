@@ -8,7 +8,7 @@ description: Use when adding or changing any number that looks ahead or summaris
 ## One engine
 - `scheduledBetween(data, from, to)` — known future payments/income (recurring, plans by what is left, debts due).
 - `monthForecast` — everyday spending rate (60-day and month blend, regular payments excluded) and month projection.
-- `capitalForecast` — accounts at month end: `end = now + incomeLeft − obligations − everyday`; `path` ends exactly at `end`.
+- `capitalForecast(data, balances, entries, today, until?)` — accounts on `until` (month end by default; the forecast sheet also uses 7/30/90/365 days): `end = now + incomeLeft − obligations − everyday`; `path` ends exactly at `end`; `items` are the dated events behind it; `cashPath` / `shortfall` = everyday wallets only (no savings/investments) and the first day they go below zero.
 - `freeCash` — the same for everyday wallets only (Plans screen, daily budget).
 - `safeToSpend` — today's allowance. Goal pace: `goalPace`, `goalHistory`.
 Screens must call these; never re-sum transactions in a component.
@@ -21,5 +21,5 @@ Screens must call these; never re-sum transactions in a component.
 
 ## Acceptance
 - Same input → same number on every screen; differences between `capitalForecast` and `freeCash` are only their documented scope (all wallets vs everyday wallets).
-- Known gap: plans dated today/overdue are counted by `capitalForecast` but not by `freeCash` (see `known()` in tests) — fix both or neither.
+- Open plans dated today or earlier come from `pendingPlans` for both `capitalForecast` and `freeCash`; keep them on that one helper.
 - Forecast tests pass; no float drift (all values integers).

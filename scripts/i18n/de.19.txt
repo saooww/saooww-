@@ -1,0 +1,11 @@
+7 Tage
+90 Tage
+{0}: auf den Alltagskonten {1}
+Gesamt zum Periodenende
+Kapital bis Periodenende
+Tippen Sie auf das Diagramm, um den Stand eines Tages zu sehen
+Die Periode endet bei
+Prognose
+In {0} könnte das Geld knapp werden
+erwarteter Stand am Tagesende
+so war es an diesem Tag

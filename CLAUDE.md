@@ -25,7 +25,7 @@ Not native, not React Native: it runs in the browser and installs as a PWA. Lang
 - In the cloud container add `launchOptions.executablePath: "/opt/pw-browsers/chromium"` via a throwaway local config, or `PW_CHROMIUM=/opt/pw-browsers/chromium` for `visual`.
 
 ## Done means
-Typecheck, `npm test`, build and the relevant e2e pass; UI changes are checked on real screenshots in both themes; the report names what was and was not verified. Known defects are listed in `tests/finance.test.ts` under `known()`.
+Typecheck, `npm test`, build and the relevant e2e pass; UI changes are checked on real screenshots in both themes; the report names what was and was not verified. Defects that are understood but not fixed go into `tests/finance.test.ts` under `known()` (none at the moment).
 
 ## Skills in this repo
 `finance-engine`, `financial-data-integrity`, `analytics-and-forecast`, `premium-app-design`, `app-visual-qa` — in `.claude/skills/`.

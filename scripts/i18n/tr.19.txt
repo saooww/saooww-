@@ -1,0 +1,11 @@
+7 gün
+90 gün
+{0}: günlük hesaplarda {1}
+Dönem sonu toplamı
+Dönem sonuna kadar sermaye
+Herhangi bir günün bakiyesini görmek için grafiğe dokunun
+Dönem şununla kapanacak
+Tahmin
+{0} sonra para yetmeyebilir
+gün sonu beklenen bakiye
+o gün böyleydi

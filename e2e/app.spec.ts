@@ -414,3 +414,27 @@ test("долги: займы одного человека собраны вме
   await expect(page.getByText("Платёж записан")).toBeVisible();
   await expect(onView).toContainText("вернули 26 000");
 });
+
+/* ---------------- forecast horizons ---------------- */
+
+test("прогноз: горизонты 7/30/90 дней и год, касание графика показывает баланс на день", async ({ page }) => {
+  await startDemo(page);
+  await page.getByRole("button", { name: "Прогноз на конец месяца" }).click();
+  const sheet = page.getByRole("dialog", { name: "Прогноз на конец месяца" });
+  const total = async () => (await sheet.getByText(/^Итого к концу/).locator("..").textContent()) ?? "";
+  const month = await total();
+  expect(month).toContain("Итого к концу месяца");
+  await sheet.getByRole("button", { name: "90 дней" }).click();
+  await expect(sheet.getByText("Итого к концу периода")).toBeVisible();
+  const d90 = await total();
+  expect(d90).not.toEqual(month);
+  await sheet.getByRole("button", { name: "Год" }).click();
+  await expect(sheet.getByText("Итого к концу периода")).toBeVisible();
+  // touching the chart picks a day and shows the balance with what moves it
+  await sheet.getByRole("button", { name: "30 дней" }).click();
+  const chart = sheet.getByRole("img", { name: "Капитал до конца периода" });
+  const box = (await chart.boundingBox())!;
+  await page.mouse.click(box.x + box.width * 0.8, box.y + box.height / 2);
+  await expect(sheet.getByText("ожидаемый баланс на конец дня")).toBeVisible();
+  await expect(sheet.getByText("Обычные траты").first()).toBeVisible();
+});

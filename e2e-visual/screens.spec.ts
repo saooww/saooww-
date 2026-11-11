@@ -75,4 +75,9 @@ test("создать и прогноз", async ({ page }) => {
   await page.keyboard.press("Escape");
   await page.getByRole("button", { name: "Прогноз на конец месяца" }).click();
   await shot(page, "11-forecast");
+  const sheet = page.getByRole("dialog", { name: "Прогноз на конец месяца" });
+  await sheet.getByRole("button", { name: "90 дней" }).click();
+  const box = (await sheet.getByRole("img", { name: "Капитал до конца периода" }).boundingBox())!;
+  await page.mouse.click(box.x + box.width * 0.6, box.y + box.height / 2);
+  await shot(page, "12-forecast-90-day-picked");
 });
