@@ -26,6 +26,8 @@ export interface BarChartProps {
   /** Highlight a bar without a selection (e.g. today) */
   emphasis?: number;
   ariaLabel?: string;
+  /** Shows the value of the highlighted bar in a small white label above it */
+  formatValue?: (v: number) => string;
 }
 
 const PAD_TOP = 14;
@@ -50,7 +52,8 @@ export function BarChart({
   formatAxis,
   animKey,
   emphasis,
-  ariaLabel
+  ariaLabel,
+  formatValue
 }: BarChartProps) {
   const [ref, width] = useWidth<HTMLDivElement>();
   const gid = useId().replace(/:/g, "");
@@ -105,9 +108,13 @@ export function BarChart({
               </linearGradient>
             ))}
             <linearGradient id={`hi-${gid}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="var(--accent)" stopOpacity={0.5} />
-              <stop offset="100%" stopColor="var(--accent)" stopOpacity={0.02} />
+              <stop offset="0%" stopColor="var(--accent)" stopOpacity={0.05} />
+              <stop offset="55%" stopColor="var(--accent)" stopOpacity={0.34} />
+              <stop offset="100%" stopColor="var(--accent)" stopOpacity={0.6} />
             </linearGradient>
+            <filter id={`glow-${gid}`} x="-200%" y="-50%" width="500%" height="200%">
+              <feGaussianBlur stdDeviation="9" />
+            </filter>
             <linearGradient id={`hibar-${gid}`} x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="var(--accent-hi)" />
               <stop offset="100%" stopColor="var(--accent)" />
@@ -130,8 +137,15 @@ export function BarChart({
           {(() => {
             const hi = selected ?? emphasis;
             if (hi === undefined || hi === null || dual) return null;
-            const w = Math.min(slot * 0.86, 44);
-            return <rect x={slot * hi + slot / 2 - w / 2} y={PAD_TOP} width={w} height={y(0) - PAD_TOP} rx={w / 2} fill={`url(#hi-${gid})`} />;
+            const w = Math.max(barW + 14, Math.min(slot * 1.5, 40));
+            const x = slot * hi + slot / 2 - w / 2;
+            const top = Math.max(PAD_TOP - 6, y(data[hi]?.value ?? 0) - 26);
+            return (
+              <g style={{ transition: "opacity 160ms" }}>
+                <rect x={x} y={top} width={w} height={y(0) - top} rx={w / 2} fill="var(--accent)" opacity={0.45} filter={`url(#glow-${gid})`} />
+                <rect x={x} y={top} width={w} height={y(0) - top} rx={Math.min(w / 2, 14)} fill={`url(#hi-${gid})`} />
+              </g>
+            );
           })()}
 
           {/* bars */}
@@ -194,6 +208,19 @@ export function BarChart({
           )}
         </svg>
       )}
+      {(() => {
+        const hi = selected ?? emphasis;
+        if (!formatValue || width <= 0 || hi === undefined || hi === null || dual || !data[hi] || data[hi].value <= 0) return null;
+        const cx = slot * hi + slot / 2;
+        return (
+          <span
+            className="num pointer-events-none absolute z-[1] -translate-x-1/2 whitespace-nowrap rounded-full bg-white px-2 py-[3px] text-[11px] font-bold leading-none text-black shadow-[0_6px_16px_-6px_rgba(0,0,0,0.6)]"
+            style={{ left: Math.max(34, Math.min(width - 34, cx)), top: Math.max(-8, y(data[hi].value) - 24) }}
+          >
+            {formatValue(data[hi].value)}
+          </span>
+        );
+      })()}
     </div>
   );
 }

@@ -1,0 +1,19 @@
+Borç dengesi
+Sıradaki {0} sonra
+Geri alındı
+Borcu öde: {0} · {1}
+Borç aldım
+Borç verdim
+Görev {0} için eklendi
+Hatırlat
+Borcu hatırlat: {0} · {1}
+Yetmez
+Yıllık abonelikler
+Gecikmiş · {0}
+Vade yok
+Bu görev zaten var
+Yeter
+Çeyreği · {0}
+size borçlu olduğunuzdan fazlası dönecek
+size dönecek olandan fazla borcunuz var
+kimsenin borcu yok

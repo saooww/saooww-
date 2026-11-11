@@ -13,8 +13,10 @@ import { nav } from "../../store/ui";
 import { confirmDelete, undoable } from "../../store/undo";
 import { Screen } from "../../nav/Screen";
 import { Money } from "../../ui/Money";
-import { Badge, Button, EmptyState, FormRow, Group, IconButton, IconChip, Row, Segmented, Toggle, inputCls } from "../../ui/primitives";
+import { ProgressBar, Badge, Button, EmptyState, FormRow, Group, IconButton, IconChip, Row, Segmented, Toggle, inputCls } from "../../ui/primitives";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
+import { HeroCard } from "../../ui/HeroCard";
+import { materialOf } from "../../store/catalog";
 import { tr } from "../../i18n/i18n";
 
 export function SubscriptionsScreen() {
@@ -71,18 +73,26 @@ export function SubscriptionsScreen() {
         <EmptyState icon={Repeat} title={tr("Нет регулярных платежей")} text={tr("Добавьте подписки, связь, кредит или зарплату — они будут записываться сами и попадут в прогнозы.")} action={<Button size="md" icon={Plus} onClick={() => nav.sheet("recurring", { isSubscription: true })}>{tr("Добавить")}</Button>} />
       ) : (
         <>
-          <div className="grid grid-cols-2 gap-2 px-4">
-            <div className="panel rounded-md px-3.5 py-3">
-              <div className="text-caption font-medium text-ink-2">{tr("Подписки в месяц")}</div>
-              <Money value={monthlySubs} currency={base} className="mt-0.5 block text-headline font-semibold" />
-              <div className="text-caption text-ink-3">{formatMoney(monthlySubs * 12, { currency: base })}{" "}{tr("в год")}</div>
+          <HeroCard material={materialOf("obsidian")} style={{ ["--ink" as string]: "#f5f3f0", ["--ink-2" as string]: "rgba(245,243,240,0.72)", ["--ink-3" as string]: "rgba(245,243,240,0.55)", ["--line" as string]: "rgba(255,255,255,0.12)" }}>
+            <div className="px-5 pb-[18px] pt-[18px]">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-3">{tr("Все регулярные списания")}</span>
+                <span className="rounded-full bg-white/10 px-2.5 py-0.5 text-caption font-semibold text-ink-2">{tr("в месяц")}</span>
+              </div>
+              <Money value={monthlyAll} currency={base} variant="hero" privacy className="mt-2 block text-[40px] leading-none" />
+              {monthlyAll > 0 && <ProgressBar value={monthlySubs / monthlyAll} height={7} className="mt-4" />}
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                <div>
+                  <div className="text-caption text-ink-3">{tr("Подписки в месяц")}</div>
+                  <Money value={monthlySubs} currency={base} className="mt-0.5 block text-headline font-semibold" />
+                </div>
+                <div>
+                  <div className="text-caption text-ink-3">{tr("Подписки в год")}</div>
+                  <Money value={monthlySubs * 12} currency={base} className="mt-0.5 block text-headline font-semibold" />
+                </div>
+              </div>
             </div>
-            <div className="panel rounded-md px-3.5 py-3">
-              <div className="text-caption font-medium text-ink-2">{tr("Все регулярные списания")}</div>
-              <Money value={monthlyAll} currency={base} className="mt-0.5 block text-headline font-semibold" />
-              <div className="text-caption text-ink-3">{tr("в месяц")}</div>
-            </div>
-          </div>
+          </HeroCard>
 
           {unused.length > 0 && (
             <div className="mx-4 mt-3 flex items-start gap-3 rounded-lg border border-line-strong px-4 py-3">

@@ -662,3 +662,17 @@
     background: var(--surface-2);
   }
 }
+
+/* Content on a dark card keeps the dark theme's inks and status colours in any theme */
+.on-dark {
+  --ink: #f5f3f0;
+  --ink-2: rgba(245, 243, 240, 0.72);
+  --ink-3: rgba(245, 243, 240, 0.55);
+  --line: rgba(255, 255, 255, 0.12);
+  --positive: #3cc896;
+  --positive-soft: rgba(60, 200, 150, 0.16);
+  --negative: #ff5b5f;
+  --negative-soft: rgba(255, 91, 95, 0.16);
+  --warning: #f0b14e;
+  --warning-soft: rgba(240, 177, 78, 0.17);
+}

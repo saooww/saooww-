@@ -1,0 +1,19 @@
+Solde des dettes
+Prochaine dans {0}
+Remboursé
+Rembourser la dette : {0} · {1}
+J'ai emprunté
+J'ai prêté
+Tâche notée pour le {0}
+Rappeler
+Rappeler la dette : {0} · {1}
+Insuffisant
+Abonnements par an
+En retard · {0}
+Pas d'échéances
+Cette tâche existe déjà
+Suffisant
+Un quart · {0}
+on vous rendra plus que vous ne devez
+vous devez plus qu'on ne vous rendra
+personne ne doit rien

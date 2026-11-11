@@ -205,6 +205,7 @@ export function AnalyticsScreen() {
                   color={metric === "income" ? "var(--positive)" : metric === "net" ? "var(--ink-2)" : "var(--ink)"}
                   average={avgLine}
                   formatAxis={(v) => formatCompact(v)}
+                  formatValue={(v) => formatMoney(v, { currency: base })}
                   animKey={animKey}
                   ariaLabel={tr("Динамика за период")}
                 />

@@ -96,11 +96,21 @@ export function DayBudget() {
         <span className="text-footnote text-ink-2">{over ? tr("сверх нормы") : tr("можно сегодня")}</span>
       </div>
 
-      <svg viewBox={`0 0 ${W} ${H}`} className="mt-3 block h-16 w-full overflow-visible" preserveAspectRatio="none" aria-hidden="true">
+      <svg viewBox={`0 0 ${W} ${H}`} className="mt-3 block h-[72px] w-full overflow-visible" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="db-area" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.42" />
+            <stop offset="100%" stopColor="var(--accent)" stopOpacity="0" />
+          </linearGradient>
+          <filter id="db-glow" x="-10%" y="-80%" width="120%" height="260%">
+            <feGaussianBlur stdDeviation="4" />
+          </filter>
+        </defs>
         <line x1="0" x2={W} y1={H - 4} y2={H - 4} stroke="var(--line)" />
+        <motion.path d={`${solid} L${x(n - 1).toFixed(1)} ${H - 4} L0 ${H - 4} Z`} fill="url(#db-area)" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.3 }} />
         <path d={`M${x(n - 1)} ${y(last)} L${W} ${y(curve.end)}`} stroke="var(--ink-3)" strokeWidth="1.6" strokeDasharray="4 5" fill="none" vectorEffect="non-scaling-stroke" />
-        <motion.path d={solid} stroke="var(--ink)" strokeWidth="2.2" fill="none" vectorEffect="non-scaling-stroke" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.9 }} />
-        <circle cx={x(n - 1)} cy={y(last)} r="3.5" fill="var(--accent)" />
+        <path d={solid} stroke="var(--accent)" strokeWidth="5" fill="none" opacity="0.7" filter="url(#db-glow)" />
+        <motion.path d={solid} stroke="var(--accent-hi, var(--accent))" strokeWidth="2.6" strokeLinecap="round" fill="none" vectorEffect="non-scaling-stroke" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.9 }} />
       </svg>
       <div className="mt-1 flex justify-between text-[10.5px] text-ink-3">
         <span>{tr("потрачено {0}", formatMoney(last, { currency: base }))}</span>
