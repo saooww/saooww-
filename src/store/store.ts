@@ -80,6 +80,8 @@ export interface DataActions {
   updatePlan(id: ID, patch: Partial<Plan>): void;
   deletePlan(id: ID): void;
   completePlan(id: ID, opts?: { walletId?: ID; amount?: Minor }): ID | undefined;
+  /** Re-reads the plan from the money received against it: closed when the whole sum is in, open again otherwise */
+  syncPlan(id: ID): void;
   /** Money that came in (or went out) against a plan, one part at a time: the plan closes when the whole sum is in */
   receivePlan(id: ID, amount: Minor, opts?: { walletId?: ID; date?: string }): ID | undefined;
   setPlanStatus(id: ID, status: Plan["status"]): void;
@@ -152,19 +154,10 @@ const useDataStore = create<DataState>()(
       },
 
       updateTransaction(id, patch) {
-        set((s) => {
-          const transactions = mapById(s.transactions, id, { ...patch, updatedAt: nowISO() });
-          const tx = transactions.find((t) => t.id === id);
-          // a part of an expected income was edited: the plan is done only while the parts add up to the whole
-          const plans = tx?.planId
-            ? s.plans.map((p) => {
-                if (p.id !== tx.planId || p.status === "skipped") return p;
-                const got = planReceived(p, transactions);
-                return got >= p.amount ? (p.status === "done" ? p : { ...p, status: "done" as const, txId: tx.id }) : p.status === "done" ? { ...p, status: "planned" as const, txId: undefined } : p;
-              })
-            : s.plans;
-          return { transactions, plans };
-        });
+        set((s) => ({ transactions: mapById(s.transactions, id, { ...patch, updatedAt: nowISO() }) }));
+        // a part of an expected income was edited: the plan is done only while the parts add up to the whole
+        const planId = get().transactions.find((t) => t.id === id)?.planId;
+        if (planId) get().syncPlan(planId);
       },
 
       deleteTransaction(id) {
@@ -511,9 +504,19 @@ const useDataStore = create<DataState>()(
           planId: plan.id,
           date: opts?.date ?? nowISO()
         });
-        const got = planReceived(plan, get().transactions);
-        get().updatePlan(id, got >= plan.amount ? { status: "done", txId } : { txId });
+        get().syncPlan(id);
         return txId;
+      },
+
+      syncPlan(id) {
+        const s = get();
+        const plan = s.plans.find((p) => p.id === id);
+        if (!plan || plan.status === "skipped") return;
+        const got = planReceived(plan, s.transactions);
+        const last = s.transactions.find((t) => t.planId === id);
+        if (got >= plan.amount) {
+          if (plan.status !== "done" || plan.txId !== last?.id) s.updatePlan(id, { status: "done", txId: last?.id });
+        } else if (plan.status === "done" || plan.txId !== last?.id) s.updatePlan(id, { status: "planned", txId: last?.id });
       },
 
       setPlanStatus(id, status) {

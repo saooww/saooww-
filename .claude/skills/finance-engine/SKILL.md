@@ -11,7 +11,7 @@ description: Use when changing how money moves in ARDESSA — transactions, tran
 - Only `income` / `expense` are flows (`isFlow`) — analytics never see transfers, goals or debts.
 - Envelope goal: `kind: "goal"` records move money out of a wallet into the goal; linked goal (`walletId`): progress = that wallet's balance. Net worth counts each once.
 - Debt: `addDebt` (optional opening record through a wallet), `payDebt` per loan; `debtPeople` groups loans by name+currency, `splitRepayment` pays the oldest first.
-- Expected income/expense: `Plan`; parts received are transactions with `planId`; `planLeft` is what is still expected. `receivePlan` / `completePlan` / `setPlanStatus`.
+- Expected income/expense: `Plan`, optionally in dated `parts` (+ `estimate`); parts received are transactions with `planId`, covering the dated parts oldest first (`planSchedule`, `planItems`, `nextSlot`); `planLeft` is what is still expected; `syncPlan` re-reads status after any change; forecasts take pieces from `planItems`. `receivePlan` / `completePlan` / `setPlanStatus`.
 - Recurring: `nextAfter` with `anchorDay` (31st → 28/29 Feb → 31st), `processRecurring(today)` catches up once.
 
 ## Procedure

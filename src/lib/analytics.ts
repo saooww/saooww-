@@ -19,7 +19,7 @@ import {
 } from "./dates";
 import { balanceSeries, debtInfo, rateOf, toBase, totalWallets, type LedgerEntry, type Range } from "./finance";
 import type { Minor } from "./money";
-import { planLeft } from "./plans";
+import { planItems } from "./plans";
 import { occurrencesInRange } from "./recurrence";
 import { tr } from "../i18n/i18n";
 
@@ -219,12 +219,12 @@ export function scheduledBetween(data: AppData, from: DayKey, to: DayKey, includ
     for (const d of occurrencesInRange(r, from, to)) items.push({ date: d, title: r.title, amount: amt, kind: r.kind, source: "recurring" });
   }
   for (const p of data.plans) {
-    if (p.status !== "planned" || p.date < from || p.date > to) continue;
-    const left = planLeft(p, data.transactions);
-    if (!left) continue;
-    const amt = toBase(left, walletCurrency(data, p.walletId), data.settings);
-    if (amt === null) continue;
-    items.push({ date: p.date, title: p.title, amount: amt, kind: p.kind, source: "plan" });
+    for (const piece of planItems(p, data.transactions)) {
+      if (piece.date < from || piece.date > to) continue;
+      const amt = toBase(piece.amount, walletCurrency(data, p.walletId), data.settings);
+      if (amt === null) continue;
+      items.push({ date: piece.date, title: p.title, amount: amt, kind: p.kind, source: "plan" });
+    }
   }
   if (includeDebts) {
     for (const d of data.debts) {
@@ -248,10 +248,11 @@ export function scheduledBetween(data: AppData, from: DayKey, to: DayKey, includ
 export function pendingPlans(data: AppData, today: DayKey): Scheduled["items"] {
   const out: Scheduled["items"] = [];
   for (const p of data.plans) {
-    if (p.status !== "planned" || p.date > today) continue;
-    const left = planLeft(p, data.transactions);
-    const amt = left ? toBase(left, walletCurrency(data, p.walletId), data.settings) : null;
-    if (amt) out.push({ date: today, title: p.title, amount: amt, kind: p.kind, source: "plan" });
+    for (const piece of planItems(p, data.transactions)) {
+      if (piece.date > today) continue;
+      const amt = toBase(piece.amount, walletCurrency(data, p.walletId), data.settings);
+      if (amt) out.push({ date: today, title: p.title, amount: amt, kind: p.kind, source: "plan" });
+    }
   }
   return out;
 }

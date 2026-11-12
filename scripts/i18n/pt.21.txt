@@ -1,0 +1,23 @@
+Mais do que o esperado: o excedente é registrado como renda comum e a espera termina.
+Pagamento {0}
+Pagamento {0}: esperado {1}
+Pagamentos
+Pagamentos por data
+Cronograma «{0}» passado para {1}
+Data do pagamento {0}
+O dinheiro que chega cobre os pagamentos em ordem — o mais antigo primeiro.
+Mais um pagamento
+Abater da renda esperada
+Já existe «{0}» para o mês seguinte
+Repetir para o mês seguinte
+Recebido
+Por ora a previsão conta com esta soma. Quando o total for conhecido, tire a marca e corrija os valores.
+Dividir em pagamentos por data
+Valor do pagamento {0}
+O valor é aproximado
+Remover o pagamento {0}
+esperado por datas
+de ≈ {0}
+esperado
+chegou {0}, faltam {1}
+o valor é aproximado

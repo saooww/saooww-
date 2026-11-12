@@ -146,12 +146,25 @@ export interface Recurring {
   createdAt: LocalISO;
 }
 
+/** One dated payment of a plan: a salary that comes in pieces (advance on the 8th, the rest on the 16th…). */
+export interface PlanPart {
+  id: ID;
+  date: DayKey;
+  amount: Minor;
+}
+
 export interface Plan {
   id: ID;
   kind: "income" | "expense";
   title: string;
+  /** The whole sum; with `parts` it is always their total */
   amount: Minor;
+  /** The first date; with `parts` the earliest of them */
   date: DayKey;
+  /** Payments by date. Money received (transactions with this plan's id) covers them oldest first. */
+  parts?: PlanPart[];
+  /** The sum is a guess until it is known (a salary that is only announced on the 8th) */
+  estimate?: boolean;
   walletId?: ID;
   categoryId?: ID;
   note?: string;

@@ -1,0 +1,23 @@
+Plus que prévu : l'excédent est noté comme un revenu ordinaire et l'attente se ferme.
+Versement {0}
+Versement {0} : attendu {1}
+Versements
+Versements par date
+Calendrier « {0} » reporté sur {1}
+Date du versement {0}
+L'argent reçu couvre les versements dans l'ordre — le plus ancien d'abord.
+Un versement de plus
+Imputer sur un revenu attendu
+« {0} » existe déjà pour le mois prochain
+Répéter pour le mois prochain
+Reçu
+La prévision compte pour l'instant sur cette somme. Quand le total sera connu, retirez la marque et corrigez les montants.
+Diviser en versements par date
+Montant du versement {0}
+Le montant est approximatif
+Retirer le versement {0}
+attendu aux dates prévues
+sur ≈ {0}
+attendu
+{0} reçu, {1} à venir
+le montant est approximatif

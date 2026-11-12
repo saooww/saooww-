@@ -6,6 +6,7 @@ import { cn } from "../../lib/cn";
 import { dayOf, formatDate, formatDayHeading, nowISO, timeOf, todayKey, addDays } from "../../lib/dates";
 import { activeWallets } from "../../lib/finance";
 import { haptic } from "../../lib/haptics";
+import { planLeft } from "../../lib/plans";
 import { amountToInput, formatMoney, parseAmount, type Minor } from "../../lib/money";
 import { anchorOf, freqLabel, nextAfter } from "../../lib/recurrence";
 import { uid } from "../../lib/id";
@@ -86,6 +87,9 @@ export function ComposerSheet(props: ComposerProps) {
   const [tags, setTags] = useState<string[]>(editing?.tags ?? []);
   const [repeat, setRepeat] = useState<"none" | Frequency>("none");
   const [saveFav, setSaveFav] = useState(false);
+  // an income that arrived by itself can be counted against an expected one (the salary), so it is not awaited twice
+  const [planId, setPlanId] = useState<string>("");
+  const plans = useData((s) => s.plans);
   const [photos, setPhotos] = useState<string[]>(editing?.photos ?? []);
   const [parts, setParts] = useState<Part[]>([]);
   const [view, setView] = useState<View>("main");
@@ -213,6 +217,7 @@ export function ComposerSheet(props: ComposerProps) {
       date,
       note: cleanNote,
       tags,
+      planId: effectiveKind === "income" && !editing && planId ? planId : editing?.planId,
       photos: photos.length ? photos : undefined
     };
 
@@ -248,7 +253,10 @@ export function ComposerSheet(props: ComposerProps) {
         const base = fields as Omit<Transaction, "id" | "createdAt">;
         if (remainder > 0) st.addTransaction({ ...base, amount: remainder, categoryId, splitId });
         for (const p of splitParts) st.addTransaction({ ...base, amount: parseAmount(p.buf), categoryId: p.categoryId, splitId });
-      } else st.addTransaction({ ...(fields as Omit<Transaction, "id" | "createdAt">), recurringId });
+      } else {
+        st.addTransaction({ ...(fields as Omit<Transaction, "id" | "createdAt">), recurringId });
+        if (fields.planId && !editing) st.syncPlan(fields.planId);
+      }
       if (saveFav && kind !== "transfer") {
         st.addFavorite({ kind, title: cleanNote || catMap.get(categoryId!)?.name || tr("Избранное"), amount, walletId, categoryId, note: cleanNote });
       }
@@ -280,6 +288,7 @@ export function ComposerSheet(props: ComposerProps) {
   }, [transactions]);
 
   const kindFavorites = favorites.filter((f) => f.kind === kind);
+  const openIncomePlans = useMemo(() => plans.filter((p) => p.kind === "income" && p.status === "planned"), [plans]);
   const quickCats = useMemo(() => {
     const ids = usage.slice(0, 8);
     if (categoryId && !ids.includes(categoryId) && catMap.get(categoryId)?.kind === kind) ids.unshift(categoryId);
@@ -431,6 +440,29 @@ export function ComposerSheet(props: ComposerProps) {
                   </QuickChip>
                 ))}
                 <QuickChip icon={<LayoutGrid size={15} strokeWidth={2} />} onClick={() => setView("categories")}>{tr("Все")}</QuickChip>
+              </div>
+            )}
+
+            {/* an income can be counted against an expected one */}
+            {kind === "income" && !editing && !lockedKind && openIncomePlans.length > 0 && (
+              <div className="mt-2.5 shrink-0">
+                <div className="px-5 pb-1.5 text-caption font-semibold uppercase tracking-[0.08em] text-ink-3">{tr("Зачесть в ожидаемый доход")}</div>
+                <div className="scroll-x flex gap-1.5 px-4" role="radiogroup" aria-label={tr("Зачесть в ожидаемый доход")}>
+                  <QuickChip selected={planId === ""} onClick={() => setPlanId("")}>{tr("Нет")}</QuickChip>
+                  {openIncomePlans.map((p) => (
+                    <QuickChip
+                      key={p.id}
+                      selected={planId === p.id}
+                      onClick={() => {
+                        haptic();
+                        setPlanId(planId === p.id ? "" : p.id);
+                      }}
+                    >
+                      {p.title}
+                      <span className="num ml-1 text-ink-3">{formatMoney(planLeft(p, transactions) || p.amount, { kopecks: "never" })}</span>
+                    </QuickChip>
+                  ))}
+                </div>
               </div>
             )}
 

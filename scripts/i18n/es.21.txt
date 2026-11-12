@@ -1,0 +1,23 @@
+Más de lo esperado: el exceso se anota como ingreso normal y la espera se cierra.
+Pago {0}
+Pago {0}: esperado {1}
+Pagos
+Pagos por fecha
+Calendario «{0}» pasado a {1}
+Fecha del pago {0}
+El dinero que llega cubre los pagos en orden: primero el más temprano.
+Un pago más
+Contar en el ingreso esperado
+Ya hay «{0}» para el mes siguiente
+Repetir para el mes siguiente
+Recibido
+Por ahora el pronóstico cuenta con esta suma. Cuando se sepa el total, quita la marca y corrige los importes.
+Dividir en pagos por fecha
+Importe del pago {0}
+El importe es aproximado
+Quitar el pago {0}
+esperado por fechas
+de ≈ {0}
+esperado
+llegó {0}, falta {1}
+el importe es aproximado

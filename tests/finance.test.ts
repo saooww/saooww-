@@ -15,7 +15,7 @@ import { createEmptyData } from "../src/store/seed";
 import type { AppData, Plan, Recurring, Wallet } from "../src/store/types";
 import { buildLedger, computeBalances, debtInfo, netWorth, periodRange, periodStats, sumWallets, toBase, totalWallets } from "../src/lib/finance";
 import { capitalChange, capitalForecast, freeCash, monthForecast, scheduledBetween } from "../src/lib/analytics";
-import { planLeft, planReceived } from "../src/lib/plans";
+import { nextMonthPlan, nextSlot, planItems, planLeft, planReceived, planSchedule } from "../src/lib/plans";
 import { debtPeople, splitRepayment } from "../src/lib/debts";
 import { goalInfo, goalSaved, goalEnvelopes } from "../src/lib/finance";
 import { goalPace, goalWhatIf, whatIfSteps } from "../src/lib/goals";
@@ -437,6 +437,92 @@ test("«а если откладывать больше»: дата цели о�
   assert.equal(goalWhatIf(goal, info, 0, 0, T0).months, null);
   assert.equal(JSON.stringify(data()), before);
   assert.deepEqual(whatIfSteps(450_000_00), [200_000, 500_000, 1_000_000]);
+});
+
+/* ---------------- salary that comes in pieces ---------------- */
+
+/** 8th: 26 000, 16th: 26 000, 18th: 18 000 — 70 000 in all, expected as an estimate. */
+const salary = () =>
+  plan({
+    title: "Зарплата",
+    amount: 70_000_00,
+    date: "2027-01-18",
+    estimate: true,
+    parts: [
+      { id: "a", date: "2027-01-18", amount: 18_000_00 },
+      { id: "b", date: "2027-01-16", amount: 26_000_00 },
+      { id: "c", date: "2027-01-08", amount: 26_000_00 }
+    ]
+  });
+
+test("зарплата по датам: деньги закрывают выплаты по порядку, остаток ждёт на своих датах", () => {
+  const id = salary();
+  const p = () => st().plans.find((x) => x.id === id)!;
+  const slots = () => planSchedule(p(), st().transactions);
+  assert.deepEqual(slots().map((x) => x.date), ["2027-01-08", "2027-01-16", "2027-01-18"]);
+  // 20 000 arrive: the 8th payment is partly in
+  st().receivePlan(id, 20_000_00, { walletId: "card", date: "2027-01-08T12:00" });
+  assert.deepEqual(slots().map((x) => [x.state, x.left]), [["partial", 6_000_00], ["open", 26_000_00], ["open", 18_000_00]]);
+  assert.deepEqual(planItems(p(), st().transactions), [
+    { date: "2027-01-08", amount: 6_000_00 },
+    { date: "2027-01-16", amount: 26_000_00 },
+    { date: "2027-01-18", amount: 18_000_00 }
+  ]);
+  assert.equal(nextSlot(p(), st().transactions)!.id, "c");
+  // the rest of the 8th payment comes in cash, the 16th on the card
+  st().receivePlan(id, 6_000_00, { walletId: "cash", date: "2027-01-09T12:00" });
+  st().receivePlan(id, 26_000_00, { walletId: "card", date: "2027-01-16T12:00" });
+  assert.deepEqual(slots().map((x) => x.state), ["done", "done", "open"]);
+  assert.equal(bal().cash, 500_000 + 6_000_00);
+  assert.equal(bal().card, 10_000_000 + 20_000_00 + 26_000_00);
+  assert.equal(p().status, "planned");
+  assert.equal(planLeft(p(), st().transactions), 18_000_00);
+  assert.equal(month("2027-01-31").income, 52_000_00);
+});
+
+test("прогноз берёт остаток зарплаты на каждую дату; просроченная выплата ждётся сегодня", () => {
+  const id = salary();
+  const e = buildLedger(data()).entries;
+  const f = capitalForecast(data(), bal(), e, "2027-01-10");
+  // the 8th payment is already late on the 10th: it waits «today», the others on their dates
+  const dates = f.items.filter((i) => i.title === "Зарплата").map((i) => [i.date, i.amount]).sort((x, y) => (x[0] < y[0] ? -1 : 1));
+  assert.deepEqual(dates, [["2027-01-10", 26_000_00], ["2027-01-16", 26_000_00], ["2027-01-18", 18_000_00]]);
+  assert.equal(f.incomeLeft, 70_000_00);
+  assert.equal(f.path[f.path.length - 1].value, f.end);
+  st().receivePlan(id, 26_000_00, { walletId: "card", date: "2027-01-10T12:00" });
+  const g = capitalForecast(data(), bal(), buildLedger(data()).entries, "2027-01-10");
+  assert.equal(g.incomeLeft, 44_000_00);
+  // the way of the balance: nothing before the 16th, +26 000 that day, +18 000 on the 18th
+  const at = (d: string) => g.path.find((x) => x.day === d)!.value;
+  assert.equal(at("2027-01-16") - at("2027-01-15") - -g.dailyRate, 26_000_00);
+  assert.equal(at("2027-01-18") - at("2027-01-17") - -g.dailyRate, 18_000_00);
+});
+
+test("неожиданный перевод на карту засчитывается в зарплату и не считается дважды", () => {
+  const id = salary();
+  // 8 000 arrive at a random moment and are counted against the salary
+  st().addTransaction({ kind: "income", amount: 8_000_00, walletId: "card", categoryId: "i-salary", date: "2027-01-12T15:00", planId: id });
+  st().syncPlan(id);
+  assert.equal(planLeft(st().plans.find((x) => x.id === id)!, st().transactions), 62_000_00);
+  assert.equal(month("2027-01-31").income, 8_000_00);
+  assert.equal(capitalForecast(data(), bal(), buildLedger(data()).entries, "2027-01-12").incomeLeft, 62_000_00);
+  // more than expected: the plan closes, the surplus is just income, nothing more is awaited
+  st().addTransaction({ kind: "income", amount: 70_000_00, walletId: "card", date: "2027-01-14T15:00", planId: id });
+  st().syncPlan(id);
+  const p = st().plans.find((x) => x.id === id)!;
+  assert.equal(p.status, "done");
+  assert.equal(planLeft(p, st().transactions), 0);
+  assert.deepEqual(planItems(p, st().transactions), []);
+  assert.equal(capitalForecast(data(), bal(), buildLedger(data()).entries, "2027-01-14").incomeLeft, 0);
+});
+
+test("график на следующий месяц: те же числа, 31-е → 28-е, ориентировочно", () => {
+  const id = plan({ title: "Зарплата", amount: 70_000_00, date: "2027-01-08", parts: [{ id: "a", date: "2027-01-31", amount: 40_000_00 }, { id: "b", date: "2027-01-08", amount: 30_000_00 }] });
+  const copy = nextMonthPlan(st().plans.find((x) => x.id === id)!, (d) => addMonths(d, 1, Number(d.slice(8))));
+  assert.equal(copy.amount, 70_000_00);
+  assert.deepEqual(copy.parts!.map((x) => x.date).sort(), ["2027-02-08", "2027-02-28"]);
+  assert.equal(copy.date, "2027-02-08");
+  assert.equal(copy.estimate, true);
 });
 
 /* ---------------- month helpers used by the forecast ---------------- */
