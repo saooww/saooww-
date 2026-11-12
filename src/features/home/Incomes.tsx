@@ -2,9 +2,9 @@ import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Check, ChevronRight, Plus } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
-import { MONTHS_NOM, dayOf, endOfMonth, formatDate, parseDay, startOfMonth, todayKey } from "../../lib/dates";
+import { MONTHS_NOM, addDays, addMonths, dayOf, endOfMonth, formatDate, parseDay, startOfMonth, todayKey } from "../../lib/dates";
 import { haptic } from "../../lib/haptics";
-import { planLeft, planReceived } from "../../lib/plans";
+import { nextMonthPlan, nextSlot, planLeft, planReceived, planSchedule, type PlanSlot } from "../../lib/plans";
 import { amountToInput, formatMoney, parseAmount } from "../../lib/money";
 import { activeWallets } from "../../lib/finance";
 import { useData } from "../../store/store";
@@ -18,7 +18,7 @@ import { Chip, FormRow, Group, inputCls } from "../../ui/primitives";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
 import { tr } from "../../i18n/i18n";
 
-/** Income plans of this month, plus any earlier ones not fully received yet. */
+/** Income plans of this month (any piece dated in it), plus earlier ones with something still to come. */
 export function useMonthIncomes() {
   const plans = useData((s) => s.plans);
   const txs = useData((s) => s.transactions);
@@ -27,12 +27,21 @@ export function useMonthIncomes() {
     const from = startOfMonth(today);
     const to = endOfMonth(today);
     const list = plans
-      .filter((p) => p.kind === "income" && p.status !== "skipped" && ((p.date >= from && p.date <= to) || (p.status === "planned" && p.date < from)))
+      .filter((p) => {
+        if (p.kind !== "income" || p.status === "skipped") return false;
+        const slots = planSchedule(p, txs);
+        return slots.some((x) => x.date >= from && x.date <= to) || (p.status === "planned" && slots.some((x) => x.left > 0 && x.date < from));
+      })
       .sort((a, b) => (a.date < b.date ? -1 : 1));
     const expected = list.reduce((s, p) => s + p.amount, 0);
     const received = list.reduce((s, p) => s + (p.status === "done" ? p.amount : Math.min(p.amount, planReceived(p, txs))), 0);
-    const next = list.find((p) => p.status === "planned");
-    return { list, expected, received, left: Math.max(0, expected - received), next, today };
+    // the piece to wait for next: the earliest one not fully in, over all plans
+    let next: { plan: Plan; slot: PlanSlot } | undefined;
+    for (const p of list) {
+      const slot = nextSlot(p, txs);
+      if (slot && (!next || slot.date < next.slot.date)) next = { plan: p, slot };
+    }
+    return { list, expected, received, left: Math.max(0, expected - received), next, estimate: list.some((p) => p.estimate && p.status === "planned"), today };
   }, [plans, txs, today]);
 }
 
@@ -40,7 +49,7 @@ const GREEN_GLOW = { background: "var(--positive)", boxShadow: "0 0 12px color-m
 
 /** «Зарплата в ноябре»: what is expected this month, what has come in, and one tap to record the next part. */
 export function IncomeCard() {
-  const { list, expected, received, next, today } = useMonthIncomes();
+  const { list, expected, received, next, estimate, today } = useMonthIncomes();
   const base = useData((s) => s.settings.baseCurrency);
   const title = list.length === 1 ? list[0].title : tr("Доходы · {0}", MONTHS_NOM[parseDay(today).getMonth()]);
   const share = expected ? Math.min(1, received / expected) : 0;
@@ -59,11 +68,11 @@ export function IncomeCard() {
       <button type="button" onClick={() => nav.sheet("incomes")} className="block w-full text-left">
         <div className="flex items-baseline justify-between gap-3">
           <span className="truncate text-headline font-semibold">{title}</span>
-          <span className="shrink-0 text-footnote text-ink-2">{next ? tr("ждём {0}", formatDate(next.date)) : tr("всё получено")}</span>
+          <span className="shrink-0 text-footnote text-ink-2">{next ? tr("ждём {0}", formatDate(next.slot.date)) : tr("всё получено")}</span>
         </div>
         <div className="mt-1.5 flex items-baseline gap-2">
           <Money value={received} currency={base} variant="hero" privacy className="text-[28px] leading-none" />
-          <span className="text-footnote text-ink-2">{tr("из {0}", formatMoney(expected, { currency: base }))}</span>
+          <span className="text-footnote text-ink-2">{estimate ? tr("из ≈ {0}", formatMoney(expected, { currency: base })) : tr("из {0}", formatMoney(expected, { currency: base }))}</span>
         </div>
         <div className="mt-3 h-[8px] overflow-hidden rounded-full bg-[var(--line)]">
           <motion.div className="h-full rounded-full" style={GREEN_GLOW} initial={{ width: 0 }} animate={{ width: `${share * 100}%` }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} />
@@ -75,7 +84,7 @@ export function IncomeCard() {
             type="button"
             onClick={() => {
               haptic();
-              nav.sheet("receive", { planId: next.id });
+              nav.sheet("receive", { planId: next.plan.id, slotId: next.slot.id });
             }}
             className="flex h-9 items-center gap-1.5 rounded-full bg-[var(--ink)] px-3.5 text-footnote font-bold text-[var(--bg)] active:opacity-80"
           >
@@ -92,22 +101,35 @@ export function IncomeCard() {
   );
 }
 
-/** All income plans of the month: each with its progress and the parts already received. */
+/** All income plans of the month: each as a schedule by date, what has come in and where, and what is still to come. */
 export function IncomesSheet() {
   const { close } = useSheet();
-  const { list, expected, received, today } = useMonthIncomes();
+  const { list, expected, received, estimate, today } = useMonthIncomes();
   const txs = useData((s) => s.transactions);
   const wallets = useData((s) => s.wallets);
   const base = useData((s) => s.settings.baseCurrency);
   const wname = (id?: ID) => wallets.find((w) => w.id === id)?.name;
+  const share = expected ? Math.min(1, received / expected) : 0;
   const data = useAppData();
   const regular = useMemo(() => scheduledBetween(data, today, endOfMonth(today), false).items.filter((i) => i.kind === "income" && i.source === "recurring"), [data, today]);
-  const share = expected ? Math.min(1, received / expected) : 0;
+
+  const nextMonth = (p: Plan) => {
+    const st = useData.getState();
+    const first = addMonths(startOfMonth(today), 1, 1);
+    const last = endOfMonth(first);
+    if (st.plans.some((x) => x.title === p.title && x.kind === "income" && x.date >= first && x.date <= last)) {
+      nav.toast(tr("На следующий месяц уже есть «{0}»", p.title), {});
+      return;
+    }
+    st.addPlan(nextMonthPlan(p, (d) => addMonths(d, 1, Number(d.slice(8)))));
+    haptic("success");
+    nav.toast(tr("График «{0}» перенесён на {1}", p.title, MONTHS_NOM[parseDay(first).getMonth()]), { tone: "positive" });
+  };
 
   return (
     <Sheet tall title={tr("Доходы · {0}", MONTHS_NOM[parseDay(today).getMonth()])} ariaLabel={tr("Доходы месяца")} right={<SheetAction strong onClick={close}>{tr("Готово")}</SheetAction>}>
       <div className="px-5 pb-1 text-footnote text-ink-2">
-        {tr("Ожидаете {0} · уже получено {1}", formatMoney(expected, { currency: base }), formatMoney(received, { currency: base }))}
+        {tr("Ожидаете {0} · уже получено {1}", `${estimate ? "≈ " : ""}${formatMoney(expected, { currency: base })}`, formatMoney(received, { currency: base }))}
       </div>
       <div className="mx-5 mt-2 h-[10px] overflow-hidden rounded-full bg-[var(--line)]">
         <div className="h-full rounded-full" style={{ ...GREEN_GLOW, width: `${share * 100}%` }} />
@@ -115,9 +137,11 @@ export function IncomesSheet() {
 
       <div className="mt-5 flex flex-col gap-3 px-4">
         {list.map((p) => {
-          const got = p.status === "done" ? p.amount : planReceived(p, txs);
+          const got = p.status === "done" ? p.amount : Math.min(p.amount, planReceived(p, txs));
           const left = planLeft(p, txs);
+          const slots = planSchedule(p, txs);
           const parts = txs.filter((t) => t.planId === p.id).sort((a, b) => (a.date < b.date ? -1 : 1));
+          const next = nextSlot(p, txs);
           return (
             <section key={p.id} className="panel rounded-[22px] p-4">
               <button type="button" onClick={() => nav.sheet("plan", { editId: p.id })} className="flex w-full items-center gap-3 text-left">
@@ -126,7 +150,7 @@ export function IncomesSheet() {
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-headline font-semibold">{p.title}</span>
-                  <span className="block text-footnote text-ink-2">{p.status === "done" ? tr("получено полностью") : p.date < today ? tr("ждали {0}", formatDate(p.date)) : tr("ждём до {0}", formatDate(p.date))}</span>
+                  <span className="block text-footnote text-ink-2">{p.status === "done" ? tr("получено полностью") : p.estimate ? tr("сумма ориентировочная") : tr("ждём по датам")}</span>
                 </span>
                 <Money value={p.amount} currency={base} className="text-callout font-semibold" />
               </button>
@@ -137,11 +161,38 @@ export function IncomesSheet() {
                 <span>{tr("Получено {0}", formatMoney(got, { currency: base }))}</span>
                 <span>{p.status === "planned" ? tr("Осталось {0}", formatMoney(left, { currency: base })) : ""}</span>
               </div>
-              {(parts.length > 0 || p.status === "planned") && (
-                <div className="mt-2.5 border-t border-[var(--line)] pt-1.5">
+
+              <div className="mt-2.5 border-t border-[var(--line)] pt-1">
+                <div className="pb-0.5 pt-1.5 text-caption font-semibold uppercase tracking-[0.08em] text-ink-3">{tr("Выплаты")}</div>
+                {slots.map((x) => {
+                  const late = x.left > 0 && x.date < today && p.status === "planned";
+                  return (
+                    <button
+                      key={x.id}
+                      type="button"
+                      disabled={x.left === 0 || p.status !== "planned"}
+                      onClick={() => nav.sheet("receive", { planId: p.id, slotId: x.id })}
+                      className="flex w-full items-center gap-2.5 py-2 text-left disabled:opacity-100"
+                      aria-label={`${formatDate(x.date)} ${formatMoney(x.amount, { currency: base })}`}
+                    >
+                      <span className={cn("h-2.5 w-2.5 shrink-0 rounded-full", x.state === "done" ? "bg-positive" : x.state === "partial" ? "bg-warning" : "border border-dashed border-current text-ink-3")} />
+                      <span className="min-w-0 flex-1">
+                        <span className={cn("block text-subhead", x.left === 0 && "text-ink-2")}>{formatDate(x.date, { year: "auto" })}</span>
+                        <span className={cn("block text-caption", late ? "text-warning" : "text-ink-3")}>
+                          {x.state === "done" ? tr("получено") : x.state === "partial" ? tr("пришло {0}, ждём ещё {1}", formatMoney(x.got, { currency: base }), formatMoney(x.left, { currency: base })) : late ? tr("ещё не пришло") : tr("ожидается")}
+                        </span>
+                      </span>
+                      <Money value={x.amount} currency={base} className={cn("text-subhead font-semibold", x.left === 0 ? "text-ink-3" : "text-ink")} />
+                    </button>
+                  );
+                })}
+              </div>
+
+              {parts.length > 0 && (
+                <div className="mt-1 border-t border-[var(--line)] pt-1">
+                  <div className="pb-0.5 pt-1.5 text-caption font-semibold uppercase tracking-[0.08em] text-ink-3">{tr("Пришло")}</div>
                   {parts.map((t) => (
                     <button key={t.id} type="button" onClick={() => nav.sheet("tx", { id: t.id })} className="flex w-full items-center gap-2.5 py-2 text-left">
-                      <span className="h-2 w-2 shrink-0 rounded-full bg-positive" />
                       <span className="min-w-0 flex-1">
                         <span className="block text-subhead">{formatDate(dayOf(t.date), { year: "auto" })}</span>
                         <span className="block truncate text-caption text-ink-2">{wname(t.walletId) ?? "—"}</span>
@@ -149,18 +200,12 @@ export function IncomesSheet() {
                       <Money value={t.amount} currency={base} sign="always" tone="positive" className="text-subhead font-semibold" />
                     </button>
                   ))}
-                  {p.status === "planned" && (
-                    <div className="flex items-center gap-2.5 py-2 text-ink-3">
-                      <span className="h-2 w-2 shrink-0 rounded-full border border-dashed border-current" />
-                      <span className="flex-1 text-subhead">{p.date < today ? tr("ещё не пришло") : tr("ожидается {0}", formatDate(p.date))}</span>
-                      <Money value={left} currency={base} className="text-subhead" />
-                    </div>
-                  )}
                 </div>
               )}
+
               {p.status === "planned" && (
                 <div className="mt-2 grid grid-cols-2 gap-2">
-                  <button type="button" onClick={() => nav.sheet("receive", { planId: p.id })} className="h-11 rounded-[14px] bg-[var(--ink)] text-subhead font-bold text-[var(--bg)] active:opacity-80">
+                  <button type="button" onClick={() => nav.sheet("receive", { planId: p.id, slotId: next?.id })} className="h-11 rounded-[14px] bg-[var(--ink)] text-subhead font-bold text-[var(--bg)] active:opacity-80">
                     {tr("Получил часть")}
                   </button>
                   <button
@@ -175,6 +220,9 @@ export function IncomesSheet() {
                   </button>
                 </div>
               )}
+              <button type="button" onClick={() => nextMonth(p)} className="mt-2 flex h-10 w-full items-center justify-center rounded-[12px] text-footnote font-semibold text-ink-2 active:bg-surface-3">
+                {tr("Повторить на следующий месяц")}
+              </button>
             </section>
           );
         })}
@@ -202,27 +250,30 @@ export function IncomesSheet() {
   );
 }
 
-/** One part of an expected income: how much came in, when, and on which account. */
-export function ReceiveSheet({ planId }: { planId: ID }) {
+/** One piece of an expected income: how much came in, when, and on which account — card, cash, anything. */
+export function ReceiveSheet({ planId, slotId }: { planId: ID; slotId?: string }) {
   const { close } = useSheet();
   const plan = useData((s) => s.plans.find((p) => p.id === planId));
   const txs = useData((s) => s.transactions);
   const wallets = useData((s) => s.wallets);
   const defaultWalletId = useData((s) => s.settings.defaultWalletId);
   const live = activeWallets(wallets);
-  const left = plan ? planLeft(plan, txs) || plan.amount : 0;
+  const slot = plan ? (planSchedule(plan, txs).find((x) => x.id === slotId && x.left > 0) ?? nextSlot(plan, txs)) : undefined;
+  const planRest = plan ? planLeft(plan, txs) : 0;
+  const left = slot?.left ?? planRest;
   const [amount, setAmount] = useState(left ? amountToInput(left).replace(/\s/g, "").replace(",", ".") : "");
   const [walletId, setWalletId] = useState(plan?.walletId ?? defaultWalletId ?? live[0]?.id);
   const [date, setDate] = useState(todayKey());
   if (!plan) return null;
   const value = parseAmount(amount);
-  const fmt = (v: number) => formatMoney(v, { currency: wallets.find((w) => w.id === walletId)?.currency });
+  const cur = wallets.find((w) => w.id === walletId)?.currency;
+  const fmt = (v: number) => formatMoney(v, { currency: cur });
   const valid = value > 0 && !!walletId;
-  const whole = value >= left;
+  const over = value > planRest;
 
   const save = () => {
     if (!valid) return;
-    undoable(whole ? tr("Доход получен") : tr("Часть записана"), () => useData.getState().receivePlan(plan.id, value, { walletId, date: date === todayKey() ? undefined : `${date}T12:00` }));
+    undoable(value >= planRest ? tr("Доход получен") : tr("Часть записана"), () => useData.getState().receivePlan(plan.id, value, { walletId, date: date === todayKey() ? undefined : `${date}T12:00` }));
     haptic("success");
     close();
   };
@@ -230,20 +281,17 @@ export function ReceiveSheet({ planId }: { planId: ID }) {
   return (
     <Sheet title={plan.title} ariaLabel={tr("Получил часть")} left={<SheetAction onClick={close}>{tr("Отмена")}</SheetAction>} right={<SheetAction strong disabled={!valid} onClick={save}>{tr("Готово")}</SheetAction>}>
       <div className="flex flex-col gap-4 pt-1">
-        <Group footer={tr("Осталось получить {0} из {1}", fmt(left), fmt(plan.amount))}>
+        <Group footer={slot ? tr("Выплата {0}: ждали {1}", formatDate(slot.date), fmt(slot.amount)) : tr("Осталось получить {0} из {1}", fmt(planRest), fmt(plan.amount))}>
           <FormRow label={tr("Сколько пришло")}>
             <input autoFocus inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value.replace(/[^\d.,]/g, ""))} placeholder="0" className={cn(inputCls, "text-right tnum")} />
           </FormRow>
           <FormRow label={tr("Когда")}>
             <input type="date" value={date} max={todayKey()} onChange={(e) => e.target.value && setDate(e.target.value)} className={cn(inputCls, "text-right")} />
           </FormRow>
-          <FormRow label={tr("Куда")}>
-            <select value={walletId} onChange={(e) => setWalletId(e.target.value)} className={cn(inputCls, "appearance-none text-right")} dir="rtl">
-              {live.map((w) => <option key={w.id} value={w.id}>{w.name}</option>)}
-            </select>
-          </FormRow>
         </Group>
         <div className="scroll-x -mt-1 flex gap-2 px-4">
+          <Chip selected={date === todayKey()} onClick={() => setDate(todayKey())}>{tr("Сегодня")}</Chip>
+          <Chip selected={date === addDays(todayKey(), -1)} onClick={() => setDate(addDays(todayKey(), -1))}>{tr("Вчера")}</Chip>
           {[
             { label: tr("Всё · {0}", fmt(left)), v: left },
             ...(left >= 200_000 ? [{ label: tr("Половину · {0}", fmt(Math.round(left / 200) * 100)), v: Math.round(left / 200) * 100 }] : [])
@@ -253,7 +301,19 @@ export function ReceiveSheet({ planId }: { planId: ID }) {
             </Chip>
           ))}
         </div>
-        <p className="px-6 text-center text-footnote text-ink-3">{whole ? tr("Это весь остаток — доход будет отмечен полученным.") : tr("Остальное останется в ожидании: прогноз учтёт только его.")}</p>
+        <div>
+          <div className="section-label px-5 pb-2">{tr("Куда пришли деньги")}</div>
+          <div className="scroll-x flex gap-2 px-4" role="radiogroup" aria-label={tr("Куда пришли деньги")}>
+            {live.map((w) => (
+              <Chip key={w.id} selected={walletId === w.id} onClick={() => setWalletId(w.id)}>
+                {w.name}
+              </Chip>
+            ))}
+          </div>
+        </div>
+        <p className="px-6 text-center text-footnote text-ink-3">
+          {over ? tr("Больше, чем ждали: лишнее запишется как обычный доход, ожидание закроется.") : value >= planRest && value > 0 ? tr("Это весь остаток — доход будет отмечен полученным.") : tr("Остальное останется в ожидании: прогноз учтёт только его.")}
+        </p>
       </div>
     </Sheet>
   );

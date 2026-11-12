@@ -15,11 +15,13 @@ import { nav } from "../../store/ui";
 import { undoable } from "../../store/undo";
 import { Screen } from "../../nav/Screen";
 import { Money } from "../../ui/Money";
-import { Button, FormRow, Group, IconButton, IconChip, Row, Segmented, inputCls } from "../../ui/primitives";
+import { Button, FormRow, Group, IconButton, IconChip, Row, Segmented, Toggle, inputCls } from "../../ui/primitives";
+import { uid } from "../../lib/id";
+import { X } from "../../ui/glyphs";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
 import { HeroCard } from "../../ui/HeroCard";
 import { materialOf } from "../../store/catalog";
-import { planLeft } from "../../lib/plans";
+import { planLeft, planSchedule } from "../../lib/plans";
 import { tr } from "../../i18n/i18n";
 
 type EventKind = "plan" | "recurring" | "debt" | "task" | "goal";
@@ -46,19 +48,25 @@ export function useEvents(from: DayKey, to: DayKey): CalEvent[] {
     const out: CalEvent[] = [];
     const cur = (walletId?: ID) => data.wallets.find((w) => w.id === walletId)?.currency ?? data.settings.baseCurrency;
     for (const p of data.plans) {
-      if (p.date < from || p.date > to || p.status === "skipped") continue;
-      out.push({
-        key: `p-${p.id}`,
-        kind: "plan",
-        date: p.date,
-        title: p.title,
-        amount: p.status === "planned" ? planLeft(p, data.transactions) || p.amount : p.amount,
-        currency: cur(p.walletId),
-        direction: p.kind === "income" ? "in" : "out",
-        done: p.status === "done",
-        overdue: p.status === "planned" && p.date < today,
-        onOpen: () => nav.sheet("planActions", { id: p.id })
-      });
+      if (p.status === "skipped") continue;
+      const curr = cur(p.walletId);
+      // an income in pieces shows each piece still to come on its own date
+      const pieces = p.status === "planned" && p.parts?.length ? planSchedule(p, data.transactions).filter((x) => x.left > 0).map((x) => ({ key: x.id, date: x.date, amount: x.left })) : [{ key: "", date: p.date, amount: p.status === "planned" ? planLeft(p, data.transactions) || p.amount : p.amount }];
+      for (const piece of pieces) {
+        if (piece.date < from || piece.date > to) continue;
+        out.push({
+          key: `p-${p.id}${piece.key ? `-${piece.key}` : ""}`,
+          kind: "plan",
+          date: piece.date,
+          title: p.estimate && p.status === "planned" ? `${p.title} ≈` : p.title,
+          amount: piece.amount,
+          currency: curr,
+          direction: p.kind === "income" ? "in" : "out",
+          done: p.status === "done",
+          overdue: p.status === "planned" && piece.date < today,
+          onOpen: () => nav.sheet("planActions", { id: p.id })
+        });
+      }
     }
     for (const r of data.recurring) {
       if (!r.active) continue;
@@ -288,15 +296,35 @@ export function PlanSheet({ editId, date: d0, kind: k0 }: { editId?: ID; date?: 
   const [walletId, setWalletId] = useState(existing?.walletId ?? defaultWalletId ?? live[0]?.id);
   const [categoryId, setCategoryId] = useState(existing?.categoryId ?? "");
   const [note, setNote] = useState(existing?.note ?? "");
-  const value = parseAmount(amount);
-  const valid = title.trim().length > 0 && value > 0 && !!date;
+  // an income that comes in pieces: each with its own date (the advance on the 8th, the rest on the 16th…)
+  const [parts, setParts] = useState<Array<{ id: string; date: DayKey; buf: string }>>(existing?.parts?.map((p) => ({ id: p.id, date: p.date, buf: amountToInput(p.amount).replace(",", ".") })) ?? []);
+  const [estimate, setEstimate] = useState(existing?.estimate ?? false);
+  const split = parts.length > 0;
+  const partsTotal = parts.reduce((s, p) => s + parseAmount(p.buf), 0);
+  const value = split ? partsTotal : parseAmount(amount);
+  const valid = title.trim().length > 0 && value > 0 && !!date && parts.every((p) => !!p.date && parseAmount(p.buf) > 0);
+  const setPart = (id: string, patch: Partial<{ date: DayKey; buf: string }>) => setParts((l) => l.map((p) => (p.id === id ? { ...p, ...patch } : p)));
+  const startSplit = () => setParts([{ id: uid("pp-"), date, buf: amount }, { id: uid("pp-"), date: addDays(date, 8), buf: "" }]);
+  const addPart = () => setParts((l) => [...l, { id: uid("pp-"), date: addDays([...l].map((p) => p.date).sort().pop() ?? date, 8), buf: "" }]);
+  const dropPart = (id: string) => {
+    const rest = parts.filter((p) => p.id !== id);
+    if (rest.length === 1) {
+      // a single piece is just the plan itself
+      setAmount(rest[0].buf);
+      setDate(rest[0].date);
+      setParts([]);
+    } else setParts(rest);
+  };
 
   const save = () => {
     if (!valid) return;
-    const fields = { kind, title: title.trim(), amount: value, date, walletId, categoryId: categoryId || undefined, note: note.trim() || undefined };
+    const list = split && parts.length >= 2 ? parts.map((p) => ({ id: p.id, date: p.date, amount: parseAmount(p.buf) })).sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0)) : undefined;
+    const fields = { kind, title: title.trim(), amount: value, date: list ? list[0].date : date, parts: list, estimate: kind === "income" && estimate ? true : undefined, walletId, categoryId: categoryId || undefined, note: note.trim() || undefined };
     const st = useData.getState();
-    if (existing) st.updatePlan(existing.id, fields);
-    else st.addPlan(fields);
+    if (existing) {
+      st.updatePlan(existing.id, fields);
+      st.syncPlan(existing.id);
+    } else st.addPlan(fields);
     haptic("success");
     nav.toast(existing ? tr("План сохранён") : tr("Добавлено в план"), { tone: "positive" });
     close();
@@ -312,13 +340,50 @@ export function PlanSheet({ editId, date: d0, kind: k0 }: { editId?: ID; date?: 
           <FormRow label={tr("Название")}>
             <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={kind === "expense" ? tr("Например, ремонт") : tr("Например, премия")} maxLength={60} className={cn(inputCls, "text-right")} />
           </FormRow>
-          <FormRow label={tr("Сумма")}>
-            <input inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value.replace(/[^\d.,]/g, ""))} placeholder="0" className={cn(inputCls, "text-right tnum")} />
+          <FormRow label={split ? tr("Всего") : tr("Сумма")}>
+            {split ? (
+              <span className="tnum text-right text-body font-semibold">{partsTotal ? formatMoney(partsTotal) : "—"}</span>
+            ) : (
+              <input inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value.replace(/[^\d.,]/g, ""))} placeholder="0" className={cn(inputCls, "text-right tnum")} />
+            )}
           </FormRow>
-          <FormRow label={tr("Дата")}>
-            <input type="date" value={date} onChange={(e) => e.target.value && setDate(e.target.value)} className={cn(inputCls, "text-right")} />
-          </FormRow>
+          {!split && (
+            <FormRow label={tr("Дата")}>
+              <input type="date" value={date} onChange={(e) => e.target.value && setDate(e.target.value)} className={cn(inputCls, "text-right")} />
+            </FormRow>
+          )}
         </Group>
+        {kind === "income" && (
+          <>
+            {split ? (
+              <Group header={tr("Выплаты по датам")} footer={tr("Деньги, которые придут, закрывают выплаты по порядку — с самой ранней.")}>
+                {parts.map((p, i) => (
+                  <div key={p.id} className="grid grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)_32px] items-center gap-2 px-4 py-2.5" role="group" aria-label={tr("Выплата {0}", i + 1)}>
+                    <input type="date" aria-label={tr("Дата выплаты {0}", i + 1)} value={p.date} onChange={(e) => e.target.value && setPart(p.id, { date: e.target.value })} className={inputCls} />
+                    <input inputMode="decimal" aria-label={tr("Сумма выплаты {0}", i + 1)} value={p.buf} onChange={(e) => setPart(p.id, { buf: e.target.value.replace(/[^\d.,]/g, "") })} placeholder="0" className={cn(inputCls, "text-right tnum")} />
+                    <button type="button" aria-label={tr("Убрать выплату {0}", i + 1)} onClick={() => dropPart(p.id)} className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-ink-3 active:bg-surface-3">
+                      <X size={16} />
+                    </button>
+                  </div>
+                ))}
+                <button type="button" onClick={addPart} className="flex h-12 w-full items-center gap-2 px-4 text-subhead font-semibold text-accent-ink active:bg-surface-3">
+                  <Plus size={16} strokeWidth={2.4} />
+                  {tr("Ещё выплата")}
+                </button>
+              </Group>
+            ) : (
+              <button type="button" onClick={startSplit} className="mx-4 flex h-12 items-center justify-center gap-2 rounded-[16px] border border-dashed border-line-strong text-subhead font-semibold text-ink-2 active:bg-surface-press">
+                <CalendarDays size={16} />
+                {tr("Разбить на выплаты по датам")}
+              </button>
+            )}
+            <Group footer={estimate ? tr("Прогноз пока считает по этой сумме. Когда итог станет известен, снимите отметку и поправьте суммы.") : undefined}>
+              <FormRow label={tr("Сумма ориентировочная")}>
+                <Toggle checked={estimate} onChange={setEstimate} label={tr("Сумма ориентировочная")} />
+              </FormRow>
+            </Group>
+          </>
+        )}
         <Group>
           <FormRow label={tr("Кошелёк")}>
             <select value={walletId} onChange={(e) => setWalletId(e.target.value)} className={cn(inputCls, "appearance-none text-right")} dir="rtl">

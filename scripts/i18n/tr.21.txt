@@ -1,0 +1,23 @@
+Beklenenden fazla: fazlası olağan gelir olarak kaydedilir, bekleme kapanır.
+Ödeme {0}
+Ödeme {0}: beklenen {1}
+Ödemeler
+Tarihe göre ödemeler
+«{0}» takvimi {1} ayına taşındı
+{0}. ödemenin tarihi
+Gelen para ödemeleri sırayla kapatır — en erken olandan başlayarak.
+Bir ödeme daha
+Beklenen gelire say
+Gelecek ay için «{0}» zaten var
+Gelecek ay için tekrarla
+Alındı
+Tahmin şimdilik bu tutara dayanır. Toplam belli olunca işareti kaldırıp tutarları düzeltin.
+Tarihe göre ödemelere böl
+{0}. ödemenin tutarı
+Tutar yaklaşıktır
+{0}. ödemeyi kaldır
+tarihlere göre bekleniyor
+≈ {0} içinden
+bekleniyor
+{0} geldi, {1} daha gelecek
+tutar yaklaşıktır

@@ -1,0 +1,23 @@
+Mehr als erwartet: der Überschuss wird als normale Einnahme erfasst, das Erwarten endet.
+Zahlung {0}
+Zahlung {0}: erwartet {1}
+Zahlungen
+Zahlungen nach Datum
+Plan „{0}“ auf {1} übertragen
+Datum der Zahlung {0}
+Eingehendes Geld deckt die Zahlungen der Reihe nach — die früheste zuerst.
+Noch eine Zahlung
+Auf erwartete Einnahme anrechnen
+Für den nächsten Monat gibt es „{0}“ schon
+Für den nächsten Monat wiederholen
+Erhalten
+Die Prognose rechnet vorerst mit dieser Summe. Wenn der Betrag feststeht, Markierung entfernen und Beträge korrigieren.
+In Zahlungen nach Datum aufteilen
+Betrag der Zahlung {0}
+Der Betrag ist ungefähr
+Zahlung {0} entfernen
+erwartet nach Datum
+von ≈ {0}
+erwartet
+{0} eingegangen, {1} noch offen
+der Betrag ist ungefähr

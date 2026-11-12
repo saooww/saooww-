@@ -1,0 +1,23 @@
+More than expected: the surplus is recorded as ordinary income and the wait closes.
+Payment {0}
+Payment {0}: expected {1}
+Payments
+Payments by date
+Schedule «{0}» moved to {1}
+Date of payment {0}
+Money that arrives covers the payments in order — the earliest first.
+One more payment
+Count against expected income
+There is already «{0}» for next month
+Repeat for next month
+Received
+The forecast counts on this sum for now. When the total is known, clear the mark and correct the amounts.
+Split into payments by date
+Amount of payment {0}
+The amount is approximate
+Remove payment {0}
+expected by date
+of ≈ {0}
+expected
+{0} arrived, {1} still to come
+the amount is approximate

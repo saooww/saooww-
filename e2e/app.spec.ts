@@ -125,6 +125,7 @@ test("код-пароль закрывает приложение после п�
   await page.reload();
   const lock = page.getByRole("dialog", { name: "Приложение заблокировано" });
   await expect(lock).toBeVisible();
+  await page.waitForTimeout(400); // the keypad starts listening a moment after the lock shows
   await page.keyboard.type("1111");
   await expect(lock).toContainText("Неверный код");
   await page.waitForTimeout(600); // the dots shake and clear
@@ -456,4 +457,60 @@ test("цель: «а если откладывать больше» показы
   expect(await panel.textContent()).not.toEqual(before);
   // nothing was saved: the goal still shows the same amount
   await expect(onView).toContainText("195 000");
+});
+
+/* ---------------- a salary that comes in pieces ---------------- */
+
+test("зарплата кусками: выплаты по датам, наличные и карта, неожиданный перевод засчитывается", async ({ page }) => {
+  test.setTimeout(90_000);
+  await startDemo(page);
+  const d = new Date();
+  const ym = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+  await page.getByRole("button", { name: "Создать" }).click();
+  await page.getByRole("dialog", { name: "Создать" }).getByRole("button", { name: "Ожидаемый доход" }).click();
+  const sheet = page.getByRole("dialog", { name: "Запланировать" });
+  await sheet.getByPlaceholder("Например, премия").fill("Зарплата");
+  await sheet.getByPlaceholder("0").first().fill("26000");
+  await sheet.getByRole("button", { name: "Разбить на выплаты по датам" }).click();
+  await sheet.getByLabel("Дата выплаты 1").fill(`${ym}-08`);
+  await sheet.getByLabel("Дата выплаты 2").fill(`${ym}-16`);
+  await sheet.getByLabel("Сумма выплаты 2").fill("26000");
+  await sheet.getByRole("button", { name: "Ещё выплата" }).click();
+  await sheet.getByLabel("Дата выплаты 3").fill(`${ym}-18`);
+  await sheet.getByLabel("Сумма выплаты 3").fill("18000");
+  await expect(sheet).toContainText("70 000");
+  await sheet.getByRole("switch", { name: "Сумма ориентировочная" }).click();
+  await sheet.getByRole("button", { name: "Готово" }).click();
+  await expect(page.getByText("Добавлено в план")).toBeVisible();
+
+  // the card counts both expected incomes; the salary is marked as an estimate
+  const incomes = page.getByRole("region", { name: "Доходы месяца" });
+  await expect(incomes).toContainText("≈");
+  await page.getByRole("button", { name: "Все доходы" }).click();
+  const all = page.getByRole("dialog", { name: "Доходы месяца" });
+  const salary = all.locator("section.panel", { hasText: "Зарплата" });
+  await expect(salary).toContainText("сумма ориентировочная");
+  await expect(salary.getByRole("button", { name: /26 000/ })).toHaveCount(2);
+  // 20 000 of the first payment arrive in cash
+  await salary.getByRole("button", { name: "Получил часть" }).click();
+  const receive = page.getByRole("dialog", { name: "Получил часть" });
+  await receive.getByRole("radiogroup", { name: "Куда пришли деньги" }).getByRole("button", { name: "Наличные" }).click();
+  await receive.getByRole("textbox").first().fill("20000");
+  await receive.getByRole("button", { name: "Готово" }).click();
+  await expect(page.getByText("Часть записана")).toBeVisible();
+  await expect(salary).toContainText("пришло 20 000");
+  await expect(salary).toContainText("ждём ещё 6 000");
+  await expect(salary).toContainText("Наличные");
+  await page.keyboard.press("Escape");
+
+  // 8 000 land on the card at a random moment: counted against the salary, not awaited twice
+  await page.getByRole("button", { name: "Создать" }).click();
+  await page.getByRole("dialog", { name: "Создать" }).getByRole("button", { name: "Доход", exact: true }).click();
+  await page.keyboard.type("8000");
+  await page.getByRole("dialog").locator('button[aria-pressed="false"]', { hasText: /^Зарплата$/ }).first().click();
+  await page.getByRole("radiogroup", { name: "Зачесть в ожидаемый доход" }).getByRole("button", { name: /Зарплата/ }).click();
+  await page.getByRole("button", { name: /Добавить доход/ }).click();
+  await expect(page.getByText("Доход добавлен")).toBeVisible();
+  await page.getByRole("button", { name: "Все доходы" }).click();
+  await expect(page.getByRole("dialog", { name: "Доходы месяца" }).locator("section.panel", { hasText: "Зарплата" })).toContainText("Получено 28 000");
 });
