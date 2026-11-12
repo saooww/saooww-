@@ -58,6 +58,7 @@ const KIND_META: Record<FlowKind, { label: string; icon: LucideIcon; fill: strin
 };
 
 
+const KIND_COLOR: Record<FlowKind, string> = { expense: "var(--accent)", income: "var(--positive)", transfer: "var(--transfer)" };
 const SAVE_LABEL: Record<FlowKind, string> = { expense: tr("Добавить расход"), income: tr("Добавить доход"), transfer: tr("Перевести") };
 
 export function ComposerSheet(props: ComposerProps) {
@@ -504,8 +505,8 @@ export function ComposerSheet(props: ComposerProps) {
                 onClick={save}
                 whileTap={{ scale: 0.97 }}
                 transition={spring.press}
-                className={cn("flex h-[54px] w-full items-center justify-center gap-2 rounded-[16px] text-headline font-semibold transition-colors duration-300", KIND_META[lockedKind ? "transfer" : kind].fill, KIND_META[lockedKind ? "transfer" : kind].on)}
-                style={{ boxShadow: KIND_META[lockedKind ? "transfer" : kind].shadow }}
+                className={cn("flex h-12 w-full items-center justify-center gap-2 rounded-[15px] text-callout font-semibold transition-[background-color,color,box-shadow] duration-300", amount > 0 || editing ? cn(KIND_META[lockedKind ? "transfer" : kind].fill, KIND_META[lockedKind ? "transfer" : kind].on) : KIND_META[lockedKind ? "transfer" : kind].tint)}
+                style={amount > 0 || editing ? { boxShadow: KIND_META[lockedKind ? "transfer" : kind].shadow } : { background: `color-mix(in srgb, ${KIND_COLOR[lockedKind ? "transfer" : kind]} 13%, transparent)`, boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${KIND_COLOR[lockedKind ? "transfer" : kind]} 30%, transparent)` }}
               >
                 {editing || lockedKind ? tr("Сохранить") : SAVE_LABEL[kind]}
                 {amount > 0 && !cross && <span className="num font-medium opacity-75">· {formatMoney(amount, { currency })}</span>}
