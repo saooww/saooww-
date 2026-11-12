@@ -74,14 +74,14 @@ export function SubscriptionsScreen() {
       ) : (
         <>
           <HeroCard material={materialOf("obsidian")} style={{ ["--ink" as string]: "#f5f3f0", ["--ink-2" as string]: "rgba(245,243,240,0.72)", ["--ink-3" as string]: "rgba(245,243,240,0.55)", ["--line" as string]: "rgba(255,255,255,0.12)" }}>
-            <div className="px-5 pb-[18px] pt-[18px]">
+            <div className="px-5 pb-4 pt-4">
               <div className="flex items-center justify-between gap-2">
                 <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-3">{tr("Все регулярные списания")}</span>
                 <span className="rounded-full bg-white/10 px-2.5 py-0.5 text-caption font-semibold text-ink-2">{tr("в месяц")}</span>
               </div>
-              <Money value={monthlyAll} currency={base} variant="hero" privacy className="mt-2 block text-[40px] leading-none" />
-              {monthlyAll > 0 && <ProgressBar value={monthlySubs / monthlyAll} height={7} className="mt-4" />}
-              <div className="mt-3 grid grid-cols-2 gap-3">
+              <Money value={monthlyAll} currency={base} variant="hero" privacy className="mt-2 block text-[34px] leading-none" />
+              {monthlyAll > 0 && monthlySubs < monthlyAll && <ProgressBar value={monthlySubs / monthlyAll} height={3} className="mt-3.5" />}
+              <div className="mt-3.5 grid grid-cols-2 gap-3 border-t border-white/10 pt-3">
                 <div>
                   <div className="text-caption text-ink-3">{tr("Подписки в месяц")}</div>
                   <Money value={monthlySubs} currency={base} className="mt-0.5 block text-headline font-semibold" />

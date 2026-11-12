@@ -59,7 +59,7 @@ export function Keypad<K extends string = KeypadKey>({ onKey, compact, ops, acti
   };
 
   return (
-    <div className={cn("grid gap-x-2 gap-y-1 px-3", ops ? "grid-cols-[1fr_1fr_1fr_0.72fr]" : "grid-cols-3")} role="group" aria-label={tr("Клавиатура суммы")}>
+    <div className={cn("grid gap-x-2 gap-y-1 px-3", ops ? "grid-cols-[1fr_1fr_1fr_0.62fr]" : "grid-cols-3")} role="group" aria-label={tr("Клавиатура суммы")}>
       {keys.map((k) => {
         const op = isOpKey(k);
         return (
@@ -83,7 +83,7 @@ export function Keypad<K extends string = KeypadKey>({ onKey, compact, ops, acti
             className={cn(
               "num flex items-center justify-center rounded-[14px]",
               compact ? "h-[clamp(42px,6.1vh,52px)]" : "h-[56px]",
-              op ? cn("text-[24px] font-light", activeOp === k ? "bg-accent-soft text-accent-ink" : "tile text-ink-2", k === "=" && "text-accent-ink") : "text-[27px] font-normal text-ink"
+              op ? cn("text-[24px] font-light", activeOp === k ? "bg-accent-soft text-accent-ink" : "text-ink-2 shadow-[inset_0_0_0_0.5px_var(--line)]", k === "=" && "text-accent-ink") : "text-[27px] font-normal text-ink"
             )}
           >
             {k === "back" ? <Delete size={24} strokeWidth={1.7} /> : k === "," ? decimal : op ? OP_LABEL[k] : k}
