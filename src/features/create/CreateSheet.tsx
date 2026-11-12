@@ -1,30 +1,30 @@
+import type { CSSProperties } from "react";
 import { motion } from "framer-motion";
 import { ArrowDownLeft, ArrowLeftRight, ArrowUpRight, CircleCheckBig, HandCoins, NotebookPen, PiggyBank, Target, type LucideIcon } from "../../ui/glyphs";
 import { haptic } from "../../lib/haptics";
 import { useData } from "../../store/store";
 import { nav } from "../../store/ui";
 import { spring } from "../../ui/motion";
+import { Group, Row } from "../../ui/primitives";
 import { Sheet, useSheet } from "../../ui/Sheet";
 import { tr } from "../../i18n/i18n";
 
 interface Big {
   label: string;
   icon: LucideIcon;
-  /** the card's own colour: expense red, income green, transfer blue, saving gold */
-  bg: string;
-  glow: string;
+  /** the kind's own colour (a token, so the light theme gets its darker twin): expense, income, transfer, saving */
+  color: string;
   run: () => void;
 }
 
 const BIG: Big[] = [
-  { label: tr("Расход"), icon: ArrowUpRight, bg: "radial-gradient(70% 60% at 85% 10%, rgba(255,140,140,0.5), transparent 70%), linear-gradient(145deg, #ff2a2a, #a8000e 62%, #4a0008)", glow: "#fa0717", run: () => nav.sheet("composer", { kind: "expense" }) },
-  { label: tr("Доход"), icon: ArrowDownLeft, bg: "radial-gradient(70% 60% at 85% 10%, rgba(255,255,255,0.28), transparent 70%), linear-gradient(145deg, #2eb57f, #0b3a28)", glow: "#3cc896", run: () => nav.sheet("composer", { kind: "income" }) },
-  { label: tr("Перевод"), icon: ArrowLeftRight, bg: "radial-gradient(70% 60% at 85% 10%, rgba(255,255,255,0.25), transparent 70%), linear-gradient(145deg, #5a78ff, #1a2566)", glow: "#6f8cff", run: () => nav.sheet("composer", { kind: "transfer" }) },
+  { label: tr("Расход"), icon: ArrowUpRight, color: "var(--accent)", run: () => nav.sheet("composer", { kind: "expense" }) },
+  { label: tr("Доход"), icon: ArrowDownLeft, color: "var(--positive)", run: () => nav.sheet("composer", { kind: "income" }) },
+  { label: tr("Перевод"), icon: ArrowLeftRight, color: "var(--transfer)", run: () => nav.sheet("composer", { kind: "transfer" }) },
   {
     label: tr("Отложить в цель"),
     icon: PiggyBank,
-    bg: "radial-gradient(70% 60% at 85% 10%, rgba(255,255,255,0.25), transparent 70%), linear-gradient(145deg, #d9a24a, #5a3b10)",
-    glow: "#e6b45a",
+    color: "var(--saving)",
     run: () => {
       const goals = useData.getState().goals.filter((g) => !g.archived);
       const goal = goals.find((g) => g.primary) ?? goals[0];
@@ -34,12 +34,9 @@ const BIG: Big[] = [
   }
 ];
 
-const SMALL: Array<{ label: string; icon: LucideIcon; run: () => void }> = [
+const MORE: Array<{ label: string; icon: LucideIcon; run: () => void }> = [
   { label: tr("Долг"), icon: HandCoins, run: () => nav.sheet("debt", {}) },
-  { label: tr("Дело"), icon: CircleCheckBig, run: () => nav.sheet("quickAdd", {}) }
-];
-
-const CHIPS: Array<{ label: string; icon: LucideIcon; run: () => void }> = [
+  { label: tr("Дело"), icon: CircleCheckBig, run: () => nav.sheet("quickAdd", {}) },
   { label: tr("Ожидаемый доход"), icon: ArrowDownLeft, run: () => nav.sheet("plan", { kind: "income" }) },
   {
     label: tr("Заметка"),
@@ -75,34 +72,26 @@ export function CreateSheet() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ ...spring.smooth, delay: 0.03 * i }}
-            whileTap={{ scale: 0.96 }}
+            whileTap={{ scale: 0.97 }}
             onClick={go(a.run)}
-            className="relative flex h-[104px] flex-col justify-between overflow-hidden rounded-[22px] p-3.5 text-left text-white"
-            style={{ background: a.bg, boxShadow: `inset 0 1px 0 rgba(255,255,255,0.22), 0 14px 26px -16px ${a.glow}` }}
+            className="panel relative flex h-[64px] items-center gap-3 overflow-hidden rounded-[20px] pl-3 pr-2 text-left"
+            style={{ "--k": a.color, "--glyph-fill": "currentColor", "--glyph-fill-o": 0.25 } as CSSProperties}
           >
-            <span className="grid h-9 w-9 place-items-center rounded-[12px] bg-black/25">
+            {/* the kind's colour is only a soft light from the corner and the icon — the card itself stays dark */}
+            <span aria-hidden className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(90% 120% at 0% 0%, color-mix(in srgb, var(--k) 15%, transparent), transparent 62%)" }} />
+            <span className="relative grid h-10 w-10 shrink-0 place-items-center rounded-[13px]" style={{ color: "var(--k)", background: "color-mix(in srgb, var(--k) 14%, transparent)", boxShadow: "inset 0 0 0 1px color-mix(in srgb, var(--k) 32%, transparent)" }}>
               <a.icon size={19} />
             </span>
-            <span className="text-callout font-bold">{a.label}</span>
+            <span className="relative min-w-0 text-[15px] font-semibold leading-[18px] text-ink">{a.label}</span>
           </motion.button>
         ))}
       </div>
-      <div className="mt-2.5 grid grid-cols-2 gap-2.5 px-4">
-        {SMALL.map((a, i) => (
-          <motion.button key={a.label} type="button" aria-label={a.label} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.smooth, delay: 0.12 + 0.03 * i }} whileTap={{ scale: 0.96 }} onClick={go(a.run)} className="panel flex h-[84px] flex-col justify-between rounded-[22px] p-3.5 text-left">
-            <span className="tile grid h-9 w-9 place-items-center rounded-[12px] text-ink">
-              <a.icon size={19} />
-            </span>
-            <span className="text-callout font-semibold">{a.label}</span>
-          </motion.button>
-        ))}
-      </div>
-      <div className="mt-2.5 grid grid-cols-3 gap-2 px-4 pb-2">
-        {CHIPS.map((a) => (
-          <button key={a.label} type="button" aria-label={a.label} onClick={go(a.run)} className="tile flex h-11 items-center justify-center gap-1.5 rounded-[16px] px-2 text-footnote font-semibold active:opacity-70">
-            {a.label}
-          </button>
-        ))}
+      <div className="mt-3.5">
+        <Group>
+          {MORE.map((a) => (
+            <Row key={a.label} icon={a.icon} className="!min-h-[48px] !py-2" title={a.label} chevron onClick={go(a.run)} ariaLabel={a.label} />
+          ))}
+        </Group>
       </div>
     </Sheet>
   );

@@ -44,8 +44,8 @@ function PersonAvatar({ p, size = 46 }: { p: DebtPerson; size?: number }) {
   const c = personColor(p);
   return (
     <span
-      className="grid shrink-0 place-items-center rounded-full font-bold text-white"
-      style={{ width: size, height: size, fontSize: size * 0.4, background: `radial-gradient(circle at 30% 25%, color-mix(in srgb, ${c} 55%, #fff), ${c} 55%, color-mix(in srgb, ${c} 55%, #000))`, boxShadow: p.closed ? undefined : `0 0 ${size / 2}px -6px ${c}` }}
+      className="grid shrink-0 place-items-center rounded-full font-semibold"
+      style={{ width: size, height: size, fontSize: size * 0.4, color: c, background: `color-mix(in srgb, ${c} 15%, transparent)`, boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${c} 34%, transparent)` }}
     >
       {p.name.slice(0, 1).toUpperCase()}
     </span>
@@ -87,18 +87,33 @@ export function DebtsScreen() {
         />
       ) : (
         <>
-          <div className="grid grid-cols-2 gap-2.5 px-4">
-            <div className="rounded-[22px] p-3.5 text-white" style={{ background: "radial-gradient(80% 70% at 10% 0%, rgba(255,255,255,0.2), transparent 60%), linear-gradient(150deg, #2eb57f, #0b3a28)" }}>
-              <div className="text-caption text-white/80">{tr("Вам должны")}</div>
-              <Money value={owedToMe} currency={base} privacy variant="hero" className="mt-1 block text-[24px] leading-none" />
-              <div className="mt-1.5 text-caption text-white/75">{pluralN(toMeCount, ["человек", "человека", "человек"])}</div>
+          <section className="panel relative mx-4 overflow-hidden rounded-[22px]" aria-label={tr("Долги")}>
+            <span aria-hidden className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(70% 120% at 0% 0%, color-mix(in srgb, var(--positive) 13%, transparent), transparent 60%), radial-gradient(70% 120% at 100% 0%, color-mix(in srgb, var(--negative) 12%, transparent), transparent 60%)" }} />
+            <div className="relative grid grid-cols-2">
+              <div className="p-4">
+                <div className="flex items-center gap-1.5 text-footnote text-ink-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-positive" />
+                  {tr("Вам должны")}
+                </div>
+                <Money value={owedToMe} currency={base} privacy variant="hero" className="mt-1.5 block text-[26px] leading-none text-positive" />
+                <div className="mt-1.5 text-caption text-ink-3">{pluralN(toMeCount, ["человек", "человека", "человек"])}</div>
+              </div>
+              <div className="hairline-l p-4">
+                <div className="flex items-center gap-1.5 text-footnote text-ink-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-negative" />
+                  {tr("Вы должны")}
+                </div>
+                <Money value={iOwe} currency={base} privacy variant="hero" className="mt-1.5 block text-[26px] leading-none text-negative" />
+                <div className="mt-1.5 text-caption text-ink-3">{pluralN(fromMeCount, ["человеку", "людям", "людям"])}</div>
+              </div>
             </div>
-            <div className="rounded-[22px] p-3.5 text-white" style={{ background: "radial-gradient(80% 70% at 10% 0%, rgba(255,255,255,0.2), transparent 60%), linear-gradient(150deg, #ff2a2a, #6a0008)" }}>
-              <div className="text-caption text-white/80">{tr("Вы должны")}</div>
-              <Money value={iOwe} currency={base} privacy variant="hero" className="mt-1 block text-[24px] leading-none" />
-              <div className="mt-1.5 text-caption text-white/75">{pluralN(fromMeCount, ["человеку", "людям", "людям"])}</div>
-            </div>
-          </div>
+            {owedToMe + iOwe > 0 && (
+              <div className="relative flex h-[3px] gap-[2px] px-4 pb-0 pt-0" aria-hidden>
+                <div className="h-full rounded-full bg-positive" style={{ flex: Math.max(owedToMe, 1) }} />
+                <div className="h-full rounded-full bg-negative" style={{ flex: Math.max(iOwe, 1) }} />
+              </div>
+            )}
+          </section>
 
           <div className="flex items-baseline justify-between px-5 pb-2.5 pt-6">
             <h2 className="text-title-3 font-semibold">{tr("Люди")}</h2>
@@ -113,8 +128,8 @@ export function DebtsScreen() {
       )}
 
       <div className="mt-3 grid grid-cols-2 gap-2 px-4">
-        <Button variant="secondary" icon={ArrowUpRight} onClick={() => nav.sheet("debt", { direction: "owed_to_me" })}>{tr("Дал в долг")}</Button>
-        <Button variant="secondary" icon={ArrowDownLeft} onClick={() => nav.sheet("debt", { direction: "i_owe" })}>{tr("Взял в долг")}</Button>
+        <Button variant="secondary" size="md" icon={ArrowUpRight} onClick={() => nav.sheet("debt", { direction: "owed_to_me" })}>{tr("Дал в долг")}</Button>
+        <Button variant="secondary" size="md" icon={ArrowDownLeft} onClick={() => nav.sheet("debt", { direction: "i_owe" })}>{tr("Взял в долг")}</Button>
       </div>
 
       {closed.length > 0 && (
@@ -150,10 +165,10 @@ function PersonRow({ p, delay = 0 }: { p: DebtPerson; delay?: number }) {
       transition={{ ...spring.smooth, delay }}
       whileTap={{ scale: 0.985 }}
       onClick={() => nav.push("debt", { id: p.debts[p.debts.length - 1].debt.id })}
-      className="panel rounded-[22px] p-3.5 text-left"
+      className="panel rounded-[20px] p-3.5 text-left"
     >
       <div className="flex items-center gap-3">
-        <PersonAvatar p={p} />
+        <PersonAvatar p={p} size={40} />
         <div className="min-w-0 flex-1">
           <div className="truncate text-headline font-semibold">{p.name}</div>
           <div className="truncate text-footnote text-ink-2">
@@ -165,8 +180,8 @@ function PersonRow({ p, delay = 0 }: { p: DebtPerson; delay?: number }) {
           <div className="text-caption text-ink-3">{tr("осталось")}</div>
         </div>
       </div>
-      <div className="mt-3 h-[7px] overflow-hidden rounded-full bg-[var(--line)]">
-        <div className="h-full rounded-full" style={{ width: `${Math.max(p.progress > 0 ? 3 : 0, p.progress * 100)}%`, background: c, boxShadow: p.closed ? undefined : `0 0 10px ${c}` }} />
+      <div className="mt-3 h-[4px] overflow-hidden rounded-full bg-[var(--line)]">
+        <div className="h-full rounded-full" style={{ width: `${Math.max(p.progress > 0 ? 3 : 0, p.progress * 100)}%`, background: c }} />
       </div>
       <div className="mt-1.5 flex justify-between text-caption text-ink-3">
         <span>
