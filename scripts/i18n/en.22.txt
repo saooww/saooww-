@@ -1,0 +1,36 @@
++{0} extra
+«{0}» will repeat every month
+«{0}» will repeat every month — the next one is already planned
+Advance, salary, bonus…
+More than expected ({0}): the surplus is recorded as ordinary income and the wait closes.
+Date received
+One more account
+Expected {0}, {1} left
+Edit «{0}»
+Total coming in
+The same income with the same dates will be created every month — as approximate, so it can be corrected.
+Which payment
+Where the money arrived {0}
+Name of payment {0}
+Expected income does not change balances: the money appears on an account when you mark it as received.
+Expected income deleted
+The rest ({0}) stays expected: the forecast counts only that.
+The monthly repeat will be turned off
+Repeat every month
+Approximate amount
+Receipt {0}
+The forecast counts on this sum for now. When the total is known, clear the mark and correct the amounts — more or less, it will all be counted.
+Split across accounts — part to the card, part in cash
+How much and where
+Next
+The following months stay
+Amount of receipt {0}
+What has already arrived stays as ordinary income.
+Only this month
+Remove receipt {0}
+Delete «{0}»
+Delete expected income
+This one and all following
+This month skipped
+every month
+approximate

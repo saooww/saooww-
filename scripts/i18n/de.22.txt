@@ -1,0 +1,36 @@
++{0} mehr
+„{0}“ wiederholt sich jeden Monat
+„{0}“ wiederholt sich jeden Monat — der nächste ist schon geplant
+Vorschuss, Gehalt, Prämie…
+Mehr als erwartet ({0}): der Überschuss wird als normale Einnahme erfasst, das Erwarten endet.
+Eingangsdatum
+Noch ein Konto
+Erwartet {0}, noch {1}
+„{0}“ bearbeiten
+Insgesamt kommt
+Jeden Monat wird dieselbe Einnahme mit denselben Tagen angelegt — als ungefähr, damit sie korrigiert werden kann.
+Welche Zahlung
+Wohin das Geld kam {0}
+Name der Zahlung {0}
+Eine erwartete Einnahme ändert keine Salden: das Geld erscheint auf dem Konto, wenn Sie den Eingang markieren.
+Erwartete Einnahme gelöscht
+Der Rest ({0}) bleibt erwartet: die Prognose zählt nur ihn.
+Die monatliche Wiederholung wird ausgeschaltet
+Jeden Monat wiederholen
+Ungefährer Betrag
+Eingang {0}
+Die Prognose rechnet vorerst mit dieser Summe. Wenn der Betrag feststeht, Markierung entfernen und Beträge korrigieren — mehr oder weniger, alles wird berücksichtigt.
+Auf Konten aufteilen — ein Teil auf die Karte, ein Teil bar
+Wie viel und wohin
+Nächste
+Die folgenden Monate bleiben
+Betrag des Eingangs {0}
+Was schon eingegangen ist, bleibt normale Einnahme.
+Nur diesen Monat
+Eingang {0} entfernen
+„{0}“ löschen
+Erwartete Einnahme löschen
+Diesen und alle folgenden
+Dieser Monat übersprungen
+jeden Monat
+ungefähr

@@ -1,0 +1,36 @@
++{0} a mais
+«{0}» vai se repetir todo mês
+«{0}» vai se repetir todo mês — o próximo já está no plano
+Adiantamento, salário, bônus…
+Mais do que o esperado ({0}): o excedente vira renda comum e a espera termina.
+Data de chegada
+Mais uma conta
+Esperado {0}, faltam {1}
+Editar «{0}»
+Total que chega
+Todo mês será criada a mesma renda com as mesmas datas — como aproximada, para poder corrigir.
+Qual pagamento
+Para onde o dinheiro veio {0}
+Nome do pagamento {0}
+A renda esperada não muda os saldos: o dinheiro aparece na conta quando você marca que chegou.
+Renda esperada excluída
+O resto ({0}) continua esperado: a previsão conta só ele.
+A repetição mensal será desligada
+Repetir todo mês
+Valor aproximado
+Entrada {0}
+Por ora a previsão conta com esta soma. Quando souber o total, tire a marca e corrija os valores — mais ou menos, tudo será considerado.
+Dividir entre contas — parte no cartão, parte em dinheiro
+Quanto e para onde
+Próximo
+Os meses seguintes ficam
+Valor da entrada {0}
+O que já chegou fica como renda comum.
+Só este mês
+Remover a entrada {0}
+Excluir «{0}»
+Excluir renda esperada
+Este e todos os seguintes
+Este mês foi pulado
+todo mês
+aproximado

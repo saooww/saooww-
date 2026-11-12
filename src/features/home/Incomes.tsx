@@ -2,9 +2,9 @@ import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Check, ChevronRight, Plus } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
-import { MONTHS_NOM, addDays, addMonths, dayOf, endOfMonth, formatDate, parseDay, startOfMonth, todayKey } from "../../lib/dates";
+import { MONTHS_NOM, addDays, dayOf, diffDays, endOfMonth, formatDate, parseDay, startOfMonth, todayKey } from "../../lib/dates";
 import { haptic } from "../../lib/haptics";
-import { nextMonthPlan, nextSlot, planLeft, planReceived, planSchedule, type PlanSlot } from "../../lib/plans";
+import { nextSlot, planLeft, planReceived, planSchedule, planSurplus, type PlanSlot } from "../../lib/plans";
 import { amountToInput, formatMoney, parseAmount } from "../../lib/money";
 import { activeWallets } from "../../lib/finance";
 import { useData } from "../../store/store";
@@ -14,7 +14,11 @@ import type { ID, Plan } from "../../store/types";
 import { nav } from "../../store/ui";
 import { undoable } from "../../store/undo";
 import { Money } from "../../ui/Money";
-import { Chip, FormRow, Group, inputCls } from "../../ui/primitives";
+import { Chip, Group, inputCls } from "../../ui/primitives";
+import { DateField } from "../../ui/DateField";
+import { uid } from "../../lib/id";
+import { X, Pencil, Trash2, Repeat } from "../../ui/glyphs";
+import { askRemovePlan } from "../plans/removePlan";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
 import { tr } from "../../i18n/i18n";
 
@@ -43,6 +47,40 @@ export function useMonthIncomes() {
     }
     return { list, expected, received, left: Math.max(0, expected - received), next, estimate: list.some((p) => p.estimate && p.status === "planned"), today };
   }, [plans, txs, today]);
+}
+
+/**
+ * The month as a line with every payment on its day: filled — in, half — part
+ * of it in, ring — still to come; a red mark for today. One look shows what
+ * is behind and what is ahead.
+ */
+function IncomeTimeline({ list, today }: { list: Plan[]; today: string }) {
+  const txs = useData((s) => s.transactions);
+  const from = startOfMonth(today);
+  const to = endOfMonth(today);
+  const span = Math.max(1, diffDays(to, from));
+  const x = (d: string) => `${(Math.max(0, Math.min(span, diffDays(d < from ? from : d > to ? to : d, from))) / span) * 100}%`;
+  const marks = list.flatMap((p) => planSchedule(p, txs).filter((s) => s.date >= from && s.date <= to).map((s) => ({ key: `${p.id}-${s.id}`, s })));
+  if (!marks.length) return null;
+  return (
+    <div className="relative mt-3.5 h-[30px]" aria-hidden="true">
+      <div className="absolute inset-x-0 top-[9px] h-[3px] rounded-full bg-[var(--line)]" />
+      <div className="absolute left-0 top-[9px] h-[3px] rounded-full" style={{ width: x(today), background: "color-mix(in srgb, var(--positive) 55%, transparent)" }} />
+      <div className="absolute top-[3px] h-[15px] w-[2px] -translate-x-1/2 rounded-full bg-accent" style={{ left: x(today) }} />
+      {marks.map(({ key, s }) => (
+        <span key={key} className="absolute top-[4px] -translate-x-1/2" style={{ left: x(s.date) }}>
+          <span
+            className={cn("block h-[13px] w-[13px] rounded-full", s.state === "open" && "border-2 border-[var(--ink-3)] bg-[var(--bg)]")}
+            style={s.state === "done" ? { background: "var(--positive)", boxShadow: "0 0 10px color-mix(in srgb, var(--positive) 70%, transparent)" } : s.state === "partial" ? { background: "linear-gradient(90deg, var(--positive) 50%, var(--line) 50%)", boxShadow: "0 0 0 2px var(--positive) inset" } : undefined}
+          />
+        </span>
+      ))}
+      <div className="absolute inset-x-0 top-[19px] flex justify-between text-[10px] text-ink-3">
+        <span>1</span>
+        <span>{parseDay(to).getDate()}</span>
+      </div>
+    </div>
+  );
 }
 
 const GREEN_GLOW = { background: "var(--positive)", boxShadow: "0 0 12px color-mix(in srgb, var(--positive) 70%, transparent)" } as const;
@@ -77,6 +115,16 @@ export function IncomeCard() {
         <div className="mt-3 h-[8px] overflow-hidden rounded-full bg-[var(--line)]">
           <motion.div className="h-full rounded-full" style={GREEN_GLOW} initial={{ width: 0 }} animate={{ width: `${share * 100}%` }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} />
         </div>
+        <IncomeTimeline list={list} today={today} />
+        {next && (
+          <div className="mt-1 flex items-center justify-between text-caption text-ink-2">
+            <span>
+              {tr("Следующая")}: {next.slot.label ? `${next.slot.label} · ` : ""}
+              {formatDate(next.slot.date)}
+            </span>
+            <span className="num font-semibold text-ink">{formatMoney(next.slot.left, { currency: base })}</span>
+          </div>
+        )}
       </button>
       <div className="mt-3 flex items-center gap-2">
         {next && (
@@ -113,17 +161,12 @@ export function IncomesSheet() {
   const data = useAppData();
   const regular = useMemo(() => scheduledBetween(data, today, endOfMonth(today), false).items.filter((i) => i.kind === "income" && i.source === "recurring"), [data, today]);
 
-  const nextMonth = (p: Plan) => {
+  const makeMonthly = (p: Plan) => {
     const st = useData.getState();
-    const first = addMonths(startOfMonth(today), 1, 1);
-    const last = endOfMonth(first);
-    if (st.plans.some((x) => x.title === p.title && x.kind === "income" && x.date >= first && x.date <= last)) {
-      nav.toast(tr("На следующий месяц уже есть «{0}»", p.title), {});
-      return;
-    }
-    st.addPlan(nextMonthPlan(p, (d) => addMonths(d, 1, Number(d.slice(8)))));
+    st.updatePlan(p.id, { repeat: "month", seriesId: p.seriesId ?? p.id });
+    const made = st.rollPlans(today);
     haptic("success");
-    nav.toast(tr("График «{0}» перенесён на {1}", p.title, MONTHS_NOM[parseDay(first).getMonth()]), { tone: "positive" });
+    nav.toast(made.length ? tr("«{0}» будет каждый месяц — следующий уже в плане", p.title) : tr("«{0}» будет каждый месяц", p.title), { tone: "positive" });
   };
 
   return (
@@ -142,18 +185,36 @@ export function IncomesSheet() {
           const slots = planSchedule(p, txs);
           const parts = txs.filter((t) => t.planId === p.id).sort((a, b) => (a.date < b.date ? -1 : 1));
           const next = nextSlot(p, txs);
+          const surplus = planSurplus(p, txs);
           return (
             <section key={p.id} className="panel rounded-[22px] p-4">
-              <button type="button" onClick={() => nav.sheet("plan", { editId: p.id })} className="flex w-full items-center gap-3 text-left">
+              <div className="flex items-center gap-3">
                 <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[14px] bg-positive-soft text-positive">
                   <Check size={18} strokeWidth={2.4} />
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-headline font-semibold">{p.title}</span>
-                  <span className="block text-footnote text-ink-2">{p.status === "done" ? tr("получено полностью") : p.estimate ? tr("сумма ориентировочная") : tr("ждём по датам")}</span>
+                  <span className="mt-0.5 flex flex-wrap gap-1">
+                    {p.status === "done" && <span className="rounded-full bg-positive-soft px-2 py-0.5 text-caption font-semibold text-positive">{tr("получено")}</span>}
+                    {p.estimate && p.status === "planned" && <span className="rounded-full bg-warning-soft px-2 py-0.5 text-caption font-semibold text-warning">≈ {tr("приблизительно")}</span>}
+                    {p.repeat === "month" && <span className="tile rounded-full px-2 py-0.5 text-caption font-semibold text-ink-2">{tr("каждый месяц")}</span>}
+                  </span>
                 </span>
-                <Money value={p.amount} currency={base} className="text-callout font-semibold" />
-              </button>
+                <span className="text-right">
+                  <Money value={p.amount} currency={base} className="block text-callout font-semibold" />
+                  {surplus > 0 && <span className="block text-caption font-semibold text-positive">{tr("+{0} сверх", formatMoney(surplus, { currency: base }))}</span>}
+                </span>
+              </div>
+              <div className="mt-2 flex gap-1.5">
+                <button type="button" onClick={() => nav.sheet("plan", { editId: p.id })} className="tile flex h-8 items-center gap-1.5 rounded-full px-3 text-footnote font-semibold" aria-label={tr("Изменить «{0}»", p.title)}>
+                  <Pencil size={13} />
+                  {tr("Изменить")}
+                </button>
+                <button type="button" onClick={() => askRemovePlan(p)} className="tile flex h-8 items-center gap-1.5 rounded-full px-3 text-footnote font-semibold text-negative" aria-label={tr("Удалить «{0}»", p.title)}>
+                  <Trash2 size={13} />
+                  {tr("Удалить")}
+                </button>
+              </div>
               <div className="mt-3 h-[7px] overflow-hidden rounded-full bg-[var(--line)]">
                 <div className="h-full rounded-full" style={{ ...GREEN_GLOW, width: `${Math.min(100, (got / p.amount) * 100)}%` }} />
               </div>
@@ -177,7 +238,10 @@ export function IncomesSheet() {
                     >
                       <span className={cn("h-2.5 w-2.5 shrink-0 rounded-full", x.state === "done" ? "bg-positive" : x.state === "partial" ? "bg-warning" : "border border-dashed border-current text-ink-3")} />
                       <span className="min-w-0 flex-1">
-                        <span className={cn("block text-subhead", x.left === 0 && "text-ink-2")}>{formatDate(x.date, { year: "auto" })}</span>
+                        <span className={cn("block text-subhead", x.left === 0 && "text-ink-2")}>
+                          {x.label ? <span className="font-semibold">{x.label} · </span> : null}
+                          {formatDate(x.date, { year: "auto" })}
+                        </span>
                         <span className={cn("block text-caption", late ? "text-warning" : "text-ink-3")}>
                           {x.state === "done" ? tr("получено") : x.state === "partial" ? tr("пришло {0}, ждём ещё {1}", formatMoney(x.got, { currency: base }), formatMoney(x.left, { currency: base })) : late ? tr("ещё не пришло") : tr("ожидается")}
                         </span>
@@ -220,9 +284,12 @@ export function IncomesSheet() {
                   </button>
                 </div>
               )}
-              <button type="button" onClick={() => nextMonth(p)} className="mt-2 flex h-10 w-full items-center justify-center rounded-[12px] text-footnote font-semibold text-ink-2 active:bg-surface-3">
-                {tr("Повторить на следующий месяц")}
-              </button>
+              {p.repeat !== "month" && (
+                <button type="button" onClick={() => makeMonthly(p)} className="mt-2 flex h-10 w-full items-center justify-center gap-1.5 rounded-[12px] text-footnote font-semibold text-ink-2 active:bg-surface-3">
+                  <Repeat size={14} />
+                  {tr("Повторять каждый месяц")}
+                </button>
+              )}
             </section>
           );
         })}
@@ -250,7 +317,11 @@ export function IncomesSheet() {
   );
 }
 
-/** One piece of an expected income: how much came in, when, and on which account — card, cash, anything. */
+/**
+ * Money for an expected income came in: which payment it is (an advance can
+ * come early), how much, when, and where — one account, or split across
+ * several (388 ₽ on the card and 4 000 ₽ in cash).
+ */
 export function ReceiveSheet({ planId, slotId }: { planId: ID; slotId?: string }) {
   const { close } = useSheet();
   const plan = useData((s) => s.plans.find((p) => p.id === planId));
@@ -258,61 +329,110 @@ export function ReceiveSheet({ planId, slotId }: { planId: ID; slotId?: string }
   const wallets = useData((s) => s.wallets);
   const defaultWalletId = useData((s) => s.settings.defaultWalletId);
   const live = activeWallets(wallets);
-  const slot = plan ? (planSchedule(plan, txs).find((x) => x.id === slotId && x.left > 0) ?? nextSlot(plan, txs)) : undefined;
+  const slots = plan ? planSchedule(plan, txs) : [];
+  const open = slots.filter((x) => x.left > 0);
+  const first = open.find((x) => x.id === slotId) ?? open[0];
+  const [partId, setPartId] = useState<string | undefined>(first?.id);
+  const slot = slots.find((x) => x.id === partId);
   const planRest = plan ? planLeft(plan, txs) : 0;
-  const left = slot?.left ?? planRest;
-  const [amount, setAmount] = useState(left ? amountToInput(left).replace(/\s/g, "").replace(",", ".") : "");
-  const [walletId, setWalletId] = useState(plan?.walletId ?? defaultWalletId ?? live[0]?.id);
+  const startWallet = plan?.walletId ?? defaultWalletId ?? live[0]?.id ?? "";
+  const toBuf = (v: number) => (v ? amountToInput(v).replace(/\s/g, "").replace(",", ".") : "");
+  const [lines, setLines] = useState<Array<{ key: string; walletId: ID; buf: string }>>([{ key: "l0", walletId: startWallet, buf: toBuf(first?.left ?? planRest) }]);
   const [date, setDate] = useState(todayKey());
   if (!plan) return null;
-  const value = parseAmount(amount);
-  const cur = wallets.find((w) => w.id === walletId)?.currency;
+  const total = lines.reduce((s, l) => s + parseAmount(l.buf), 0);
+  const cur = wallets.find((w) => w.id === lines[0]?.walletId)?.currency;
   const fmt = (v: number) => formatMoney(v, { currency: cur });
-  const valid = value > 0 && !!walletId;
-  const over = value > planRest;
+  const valid = total > 0 && lines.every((l) => !!l.walletId && (parseAmount(l.buf) > 0 || lines.length === 1));
+  const over = total > planRest;
+  const setLine = (key: string, patch: Partial<{ walletId: ID; buf: string }>) => setLines((l) => l.map((x) => (x.key === key ? { ...x, ...patch } : x)));
+  const pick = (id: string) => {
+    setPartId(id);
+    const x = slots.find((y) => y.id === id);
+    if (x && lines.length === 1) setLine(lines[0].key, { buf: toBuf(x.left) });
+  };
+  const splitAccounts = () => {
+    const other = live.find((w) => w.id !== lines[0].walletId)?.id ?? lines[0].walletId;
+    setLines((l) => [...l, { key: uid("l"), walletId: other, buf: "" }]);
+  };
 
   const save = () => {
     if (!valid) return;
-    undoable(value >= planRest ? tr("Доход получен") : tr("Часть записана"), () => useData.getState().receivePlan(plan.id, value, { walletId, date: date === todayKey() ? undefined : `${date}T12:00` }));
+    const when = date === todayKey() ? undefined : `${date}T12:00`;
+    undoable(total >= planRest ? tr("Доход получен") : tr("Часть записана"), () => {
+      for (const l of lines) {
+        const v = parseAmount(l.buf);
+        if (v > 0) useData.getState().receivePlan(plan.id, v, { walletId: l.walletId, date: when, partId: plan.parts?.length ? partId : undefined });
+      }
+    });
     haptic("success");
     close();
   };
 
   return (
-    <Sheet title={plan.title} ariaLabel={tr("Получил часть")} left={<SheetAction onClick={close}>{tr("Отмена")}</SheetAction>} right={<SheetAction strong disabled={!valid} onClick={save}>{tr("Готово")}</SheetAction>}>
+    <Sheet tall title={plan.title} ariaLabel={tr("Получил часть")} left={<SheetAction onClick={close}>{tr("Отмена")}</SheetAction>} right={<SheetAction strong disabled={!valid} onClick={save}>{tr("Готово")}</SheetAction>}>
       <div className="flex flex-col gap-4 pt-1">
-        <Group footer={slot ? tr("Выплата {0}: ждали {1}", formatDate(slot.date), fmt(slot.amount)) : tr("Осталось получить {0} из {1}", fmt(planRest), fmt(plan.amount))}>
-          <FormRow label={tr("Сколько пришло")}>
-            <input autoFocus inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value.replace(/[^\d.,]/g, ""))} placeholder="0" className={cn(inputCls, "text-right tnum")} />
-          </FormRow>
-          <FormRow label={tr("Когда")}>
-            <input type="date" value={date} max={todayKey()} onChange={(e) => e.target.value && setDate(e.target.value)} className={cn(inputCls, "text-right")} />
-          </FormRow>
-        </Group>
-        <div className="scroll-x -mt-1 flex gap-2 px-4">
-          <Chip selected={date === todayKey()} onClick={() => setDate(todayKey())}>{tr("Сегодня")}</Chip>
-          <Chip selected={date === addDays(todayKey(), -1)} onClick={() => setDate(addDays(todayKey(), -1))}>{tr("Вчера")}</Chip>
-          {[
-            { label: tr("Всё · {0}", fmt(left)), v: left },
-            ...(left >= 200_000 ? [{ label: tr("Половину · {0}", fmt(Math.round(left / 200) * 100)), v: Math.round(left / 200) * 100 }] : [])
-          ].map((q) => (
-            <Chip key={q.label} selected={value === q.v} onClick={() => setAmount(amountToInput(q.v).replace(/\s/g, "").replace(",", "."))}>
-              {q.label}
-            </Chip>
-          ))}
-        </div>
+        {plan.parts?.length && open.length > 1 ? (
+          <div>
+            <div className="section-label px-5 pb-2">{tr("Какая выплата")}</div>
+            <div className="scroll-x flex gap-2 px-4" role="radiogroup" aria-label={tr("Какая выплата")}>
+              {open.map((x) => (
+                <Chip key={x.id} selected={partId === x.id} onClick={() => pick(x.id)}>
+                  {x.label ? `${x.label} · ` : ""}
+                  {formatDate(x.date)}
+                </Chip>
+              ))}
+            </div>
+            {slot && <div className="px-5 pt-1.5 text-caption text-ink-3">{tr("Ждали {0}, осталось {1}", fmt(slot.amount), fmt(slot.left))}</div>}
+          </div>
+        ) : null}
+
         <div>
-          <div className="section-label px-5 pb-2">{tr("Куда пришли деньги")}</div>
-          <div className="scroll-x flex gap-2 px-4" role="radiogroup" aria-label={tr("Куда пришли деньги")}>
-            {live.map((w) => (
-              <Chip key={w.id} selected={walletId === w.id} onClick={() => setWalletId(w.id)}>
-                {w.name}
-              </Chip>
+          <div className="section-label px-5 pb-2">{lines.length > 1 ? tr("Сколько и куда") : tr("Сколько пришло")}</div>
+          <div className="flex flex-col gap-2 px-4">
+            {lines.map((l, i) => (
+              <div key={l.key} className="panel rounded-[18px] p-3" role="group" aria-label={tr("Приход {0}", i + 1)}>
+                <div className="flex items-center gap-2">
+                  <span className="tile flex h-11 min-w-0 flex-1 items-center rounded-[14px] px-3">
+                    <input autoFocus={i === 0} inputMode="decimal" aria-label={tr("Сумма прихода {0}", i + 1)} value={l.buf} onChange={(e) => setLine(l.key, { buf: e.target.value.replace(/[^\d.,]/g, "") })} placeholder="0" className={cn(inputCls, "text-right text-title-3 font-bold tnum")} />
+                  </span>
+                  {lines.length > 1 && (
+                    <button type="button" aria-label={tr("Убрать приход {0}", i + 1)} onClick={() => setLines((x) => x.filter((y) => y.key !== l.key))} className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-ink-3 active:bg-surface-3">
+                      <X size={16} />
+                    </button>
+                  )}
+                </div>
+                <div className="scroll-x mt-2 flex gap-1.5" role="radiogroup" aria-label={i === 0 ? tr("Куда пришли деньги") : tr("Куда пришли деньги {0}", i + 1)}>
+                  {live.map((w) => (
+                    <Chip key={w.id} selected={l.walletId === w.id} onClick={() => setLine(l.key, { walletId: w.id })}>
+                      {w.name}
+                    </Chip>
+                  ))}
+                </div>
+              </div>
             ))}
+            <button type="button" onClick={splitAccounts} className="flex h-11 items-center justify-center gap-2 rounded-[14px] border border-dashed border-line-strong text-subhead font-semibold text-ink-2 active:bg-surface-press">
+              <Plus size={15} strokeWidth={2.4} />
+              {lines.length > 1 ? tr("Ещё счёт") : tr("Разделить по счетам — часть на карту, часть наличными")}
+            </button>
           </div>
         </div>
-        <p className="px-6 text-center text-footnote text-ink-3">
-          {over ? tr("Больше, чем ждали: лишнее запишется как обычный доход, ожидание закроется.") : value >= planRest && value > 0 ? tr("Это весь остаток — доход будет отмечен полученным.") : tr("Остальное останется в ожидании: прогноз учтёт только его.")}
+
+        <div className="px-4">
+          <div className="section-label px-1 pb-2">{tr("Когда")}</div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Chip selected={date === todayKey()} onClick={() => setDate(todayKey())}>{tr("Сегодня")}</Chip>
+            <Chip selected={date === addDays(todayKey(), -1)} onClick={() => setDate(addDays(todayKey(), -1))}>{tr("Вчера")}</Chip>
+            <DateField label={tr("Дата прихода")} value={date} max={todayKey()} onChange={setDate} />
+          </div>
+        </div>
+
+        <div className="mx-4 flex items-center justify-between rounded-[16px] px-4 py-3" style={{ background: "color-mix(in srgb, var(--positive) 12%, transparent)" }}>
+          <span className="text-subhead text-ink-2">{tr("Итого придёт")}</span>
+          <span className="num text-headline font-bold text-positive">+{fmt(total)}</span>
+        </div>
+        <p className="-mt-1 px-6 text-center text-footnote text-ink-3">
+          {over ? tr("Больше, чем ждали ({0}): лишнее запишется обычным доходом, ожидание закроется.", fmt(planRest)) : total >= planRest && total > 0 ? tr("Это весь остаток — доход будет отмечен полученным.") : tr("Остальное ({0}) останется в ожидании: прогноз учтёт только его.", fmt(Math.max(0, planRest - total)))}
         </p>
       </div>
     </Sheet>

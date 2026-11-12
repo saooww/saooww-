@@ -157,6 +157,7 @@ function Main({ formatKey }: { formatKey: string }) {
   /* regular payments that came due */
   useEffect(() => {
     const created = useData.getState().processRecurring(today);
+    useData.getState().rollPlans(today);
     if (created.length) {
       nav.toast(tr("Записано {0}", pluralN(created.length, ["регулярная операция", "регулярные операции", "регулярных операций"])), { tone: "positive" });
     }

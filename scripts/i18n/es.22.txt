@@ -1,0 +1,36 @@
++{0} de más
+«{0}» se repetirá cada mes
+«{0}» se repetirá cada mes; el siguiente ya está planificado
+Anticipo, sueldo, prima…
+Más de lo esperado ({0}): el exceso se anota como ingreso normal y la espera se cierra.
+Fecha de llegada
+Otra cuenta
+Esperado {0}, faltan {1}
+Editar «{0}»
+Total que llega
+Cada mes se creará el mismo ingreso con las mismas fechas, como aproximado, para poder corregirlo.
+Qué pago
+A dónde llegó el dinero {0}
+Nombre del pago {0}
+El ingreso esperado no cambia los saldos: el dinero aparece en la cuenta cuando marcas que llegó.
+Ingreso esperado eliminado
+El resto ({0}) sigue esperado: el pronóstico cuenta solo eso.
+La repetición mensual se desactivará
+Repetir cada mes
+Importe aproximado
+Llegada {0}
+Por ahora el pronóstico cuenta con esta suma. Cuando sepas el total, quita la marca y corrige los importes: llegue más o menos, todo se tendrá en cuenta.
+Dividir entre cuentas: parte a la tarjeta, parte en efectivo
+Cuánto y a dónde
+Siguiente
+Los meses siguientes se quedan
+Importe de la llegada {0}
+Lo que ya llegó queda como ingreso normal.
+Solo este mes
+Quitar la llegada {0}
+Eliminar «{0}»
+Eliminar ingreso esperado
+Este y todos los siguientes
+Este mes omitido
+cada mes
+aproximado

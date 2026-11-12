@@ -461,8 +461,8 @@ test("цель: «а если откладывать больше» показы
 
 /* ---------------- a salary that comes in pieces ---------------- */
 
-test("зарплата кусками: выплаты по датам, наличные и карта, неожиданный перевод засчитывается", async ({ page }) => {
-  test.setTimeout(90_000);
+test("зарплата кусками: выплаты с названиями и датами, приблизительно и каждый месяц, приход на карту и наличные, правка и удаление", async ({ page }) => {
+  test.setTimeout(120_000);
   await startDemo(page);
   const d = new Date();
   const ym = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
@@ -472,45 +472,67 @@ test("зарплата кусками: выплаты по датам, нали�
   await sheet.getByPlaceholder("Например, премия").fill("Зарплата");
   await sheet.getByPlaceholder("0").first().fill("26000");
   await sheet.getByRole("button", { name: "Разбить на выплаты по датам" }).click();
+  await sheet.getByLabel("Название выплаты 1").fill("Зарплата");
   await sheet.getByLabel("Дата выплаты 1").fill(`${ym}-08`);
+  await sheet.getByLabel("Название выплаты 2").fill("Вторая часть");
   await sheet.getByLabel("Дата выплаты 2").fill(`${ym}-16`);
   await sheet.getByLabel("Сумма выплаты 2").fill("26000");
   await sheet.getByRole("button", { name: "Ещё выплата" }).click();
+  await sheet.getByLabel("Название выплаты 3").fill("Аванс");
   await sheet.getByLabel("Дата выплаты 3").fill(`${ym}-18`);
   await sheet.getByLabel("Сумма выплаты 3").fill("18000");
   await expect(sheet).toContainText("70 000");
-  await sheet.getByRole("switch", { name: "Сумма ориентировочная" }).click();
+  await sheet.getByRole("switch", { name: "Приблизительная сумма" }).click();
+  await sheet.getByRole("switch", { name: "Каждый месяц" }).click();
   await sheet.getByRole("button", { name: "Готово" }).click();
   await expect(page.getByText("Добавлено в план")).toBeVisible();
 
-  // the card counts both expected incomes; the salary is marked as an estimate
   const incomes = page.getByRole("region", { name: "Доходы месяца" });
   await expect(incomes).toContainText("≈");
   await page.getByRole("button", { name: "Все доходы" }).click();
   const all = page.getByRole("dialog", { name: "Доходы месяца" });
-  const salary = all.locator("section.panel", { hasText: "Зарплата" });
-  await expect(salary).toContainText("сумма ориентировочная");
-  await expect(salary.getByRole("button", { name: /26 000/ })).toHaveCount(2);
-  // 20 000 of the first payment arrive in cash
+  const salary = all.locator("section.panel", { hasText: "Вторая часть" });
+  await expect(salary).toContainText("приблизительно");
+  await expect(salary).toContainText("каждый месяц");
+  await expect(salary).toContainText("Аванс");
+
+  // the advance came early, 388 on the card and 4 000 in cash
   await salary.getByRole("button", { name: "Получил часть" }).click();
   const receive = page.getByRole("dialog", { name: "Получил часть" });
-  await receive.getByRole("radiogroup", { name: "Куда пришли деньги" }).getByRole("button", { name: "Наличные" }).click();
-  await receive.getByRole("textbox").first().fill("20000");
+  await receive.getByRole("radiogroup", { name: "Какая выплата" }).getByRole("button", { name: /Аванс/ }).click();
+  await receive.getByLabel("Сумма прихода 1").fill("388");
+  await receive.getByRole("button", { name: /Разделить по счетам/ }).click();
+  await receive.getByLabel("Сумма прихода 2").fill("4000");
+  await receive.getByRole("radiogroup", { name: "Куда пришли деньги 2" }).getByRole("button", { name: "Наличные" }).click();
+  await expect(receive).toContainText("+4 388");
   await receive.getByRole("button", { name: "Готово" }).click();
   await expect(page.getByText("Часть записана")).toBeVisible();
-  await expect(salary).toContainText("пришло 20 000");
-  await expect(salary).toContainText("ждём ещё 6 000");
+  await expect(salary).toContainText("пришло 4 388");
   await expect(salary).toContainText("Наличные");
+  await expect(salary).toContainText("Основная карта");
+
+  // edit: the advance turned out bigger — total becomes 71 000
+  await salary.getByRole("button", { name: "Изменить «Зарплата»" }).click();
+  const edit = page.getByRole("dialog", { name: "План" });
+  await edit.getByLabel("Сумма выплаты 3").fill("19000");
+  await edit.getByRole("button", { name: "Готово" }).click();
+  await expect(salary).toContainText("71 000");
+
+  // delete only this month: the card is gone, money received stays
+  await salary.getByRole("button", { name: "Удалить «Зарплата»" }).click();
+  await page.getByRole("dialog").getByText("Только этот месяц").click();
+  await expect(page.getByText("Этот месяц пропущен")).toBeVisible();
+  await expect(all.locator("section.panel", { hasText: "Вторая часть" })).toHaveCount(0);
   await page.keyboard.press("Escape");
 
-  // 8 000 land on the card at a random moment: counted against the salary, not awaited twice
+  // an unexpected 8 000 counted against the other expected income
   await page.getByRole("button", { name: "Создать" }).click();
   await page.getByRole("dialog", { name: "Создать" }).getByRole("button", { name: "Доход", exact: true }).click();
   await page.keyboard.type("8000");
   await page.getByRole("dialog").locator('button[aria-pressed="false"]', { hasText: /^Зарплата$/ }).first().click();
-  await page.getByRole("radiogroup", { name: "Зачесть в ожидаемый доход" }).getByRole("button", { name: /Зарплата/ }).click();
+  await page.getByRole("radiogroup", { name: "Зачесть в ожидаемый доход" }).getByRole("button", { name: /Фриланс/ }).click();
   await page.getByRole("button", { name: /Добавить доход/ }).click();
   await expect(page.getByText("Доход добавлен")).toBeVisible();
   await page.getByRole("button", { name: "Все доходы" }).click();
-  await expect(page.getByRole("dialog", { name: "Доходы месяца" }).locator("section.panel", { hasText: "Зарплата" })).toContainText("Получено 28 000");
+  await expect(page.getByRole("dialog", { name: "Доходы месяца" }).locator("section.panel", { hasText: "Фриланс" })).toContainText("Получено 28 000");
 });

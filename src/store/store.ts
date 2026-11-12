@@ -3,11 +3,11 @@ import { persist } from "zustand/middleware";
 import { useCallback, useContext, useRef, useSyncExternalStore } from "react";
 import { kvDel, kvGet, kvSet, persistStorage } from "./storage";
 import { FreezeContext } from "./freeze";
-import { MONTHS_GEN, nowISO, parseDay, todayKey, type DayKey } from "../lib/dates";
+import { MONTHS_GEN, addMonths, nowISO, parseDay, startOfMonth, todayKey, type DayKey } from "../lib/dates";
 import { computeBalances, crossAmount, debtInfo } from "../lib/finance";
 import { uid } from "../lib/id";
 import type { Minor } from "../lib/money";
-import { planReceived } from "../lib/plans";
+import { nextMonthPlan, planReceived } from "../lib/plans";
 import { nextAfter } from "../lib/recurrence";
 import { nextOccurrence } from "../lib/tasks";
 import { CHART_COLORS } from "./catalog";
@@ -83,7 +83,11 @@ export interface DataActions {
   /** Re-reads the plan from the money received against it: closed when the whole sum is in, open again otherwise */
   syncPlan(id: ID): void;
   /** Money that came in (or went out) against a plan, one part at a time: the plan closes when the whole sum is in */
-  receivePlan(id: ID, amount: Minor, opts?: { walletId?: ID; date?: string }): ID | undefined;
+  receivePlan(id: ID, amount: Minor, opts?: { walletId?: ID; date?: string; partId?: ID }): ID | undefined;
+  /** Keeps every monthly expected income one month ahead: creates the copies that are due, once */
+  rollPlans(today: DayKey): ID[];
+  /** Removes a plan; for a monthly one, `series: true` also stops the repeat (otherwise only this month is skipped) */
+  removePlan(id: ID, series: boolean): void;
   setPlanStatus(id: ID, status: Plan["status"]): void;
   // tasks
   addTask(input: Omit<Task, "id" | "createdAt" | "done">): ID;
@@ -129,6 +133,11 @@ function crossAmountOf(s: DataState, amount: Minor, fromId: ID, toId?: ID): Mino
   const from = s.wallets.find((w) => w.id === fromId)?.currency;
   const to = toId ? s.wallets.find((w) => w.id === toId)?.currency : undefined;
   return from && to && from !== to ? crossAmount(amount, from, to, s.settings) ?? undefined : undefined;
+}
+
+/** Whole months between the months of two days. */
+function monthsApart(a: DayKey, b: DayKey): number {
+  return (Number(b.slice(0, 4)) - Number(a.slice(0, 4))) * 12 + Number(b.slice(5, 7)) - Number(a.slice(5, 7));
 }
 
 export function pickData(s: AppData): AppData {
@@ -502,10 +511,61 @@ const useDataStore = create<DataState>()(
           categoryId: plan.categoryId,
           note: plan.title,
           planId: plan.id,
+          planPartId: opts?.partId && plan.parts?.some((p) => p.id === opts.partId) ? opts.partId : undefined,
           date: opts?.date ?? nowISO()
         });
         get().syncPlan(id);
         return txId;
+      },
+
+      rollPlans(today) {
+        const s = get();
+        const created: ID[] = [];
+        const ahead = startOfMonth(addMonths(startOfMonth(today), 1, 1));
+        const series = new Map<ID, Plan[]>();
+        for (const p of s.plans) if (p.repeat === "month") series.set(p.seriesId ?? p.id, [...(series.get(p.seriesId ?? p.id) ?? []), p]);
+        // a skipped month still counts as «there»: skipping must not bring it back
+        const all = (key: ID) => s.plans.filter((p) => (p.seriesId ?? p.id) === key);
+        for (const [key, list] of series) {
+          const members = all(key).sort((a, b) => (a.date < b.date ? -1 : 1));
+          // dates follow the first month of the series (a payment on the 31st stays on the last day, not the 28th after February);
+          // sums and names follow the latest month, since that is the one the owner last corrected
+          const base = members[0] ?? list[0];
+          let latest = members[members.length - 1] ?? list[0];
+          let guard = 0;
+          while (startOfMonth(latest.date) < ahead && guard++ < 24) {
+            const k = monthsApart(base.date, latest.date) + 1;
+            const onBase = (d: DayKey) => addMonths(d, k, Number(d.slice(8)));
+            const copy = nextMonthPlan({ ...latest, repeat: "month", seriesId: key }, (d) => addMonths(d, 1, Number(d.slice(8))));
+            const baseParts = base.parts ? [...base.parts].sort((a, b) => (a.date < b.date ? -1 : 1)) : undefined;
+            const parts = copy.parts?.map((x, i) => ({ ...x, id: uid("pp-"), date: baseParts && baseParts.length === copy.parts!.length ? onBase(baseParts[i].date) : x.date }));
+            const date = parts ? parts.map((x) => x.date).sort()[0] : onBase(base.date);
+            const id = get().addPlan({ ...copy, parts, date });
+            created.push(id);
+            latest = get().plans.find((p) => p.id === id)!;
+          }
+          if (!list[0].seriesId) get().updatePlan(list[0].id, { seriesId: key });
+        }
+        return created;
+      },
+
+      removePlan(id, series) {
+        const plan = get().plans.find((p) => p.id === id);
+        if (!plan) return;
+        if (plan.repeat === "month" && !series) {
+          // only this month: it stays as «skipped», so the repeat does not create it again
+          set((s) => ({
+            plans: mapById(s.plans, id, { status: "skipped", txId: undefined }),
+            transactions: s.transactions.map((t) => (t.planId === id ? { ...t, planId: undefined, planPartId: undefined } : t))
+          }));
+          return;
+        }
+        const key = plan.seriesId ?? plan.id;
+        set((s) => ({
+          plans: s.plans.filter((p) => p.id !== id).map((p) => ((p.seriesId ?? p.id) === key && series ? { ...p, repeat: undefined } : p)),
+          transactions: s.transactions.map((t) => (t.planId === id ? { ...t, planId: undefined, planPartId: undefined } : t)),
+          notes: s.notes.map((n) => ({ ...n, links: n.links.filter((l) => !(l.type === "plan" && l.id === id)) }))
+        }));
       },
 
       syncPlan(id) {
