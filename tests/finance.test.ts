@@ -15,7 +15,7 @@ import { createEmptyData } from "../src/store/seed";
 import type { AppData, Plan, Recurring, Wallet } from "../src/store/types";
 import { buildLedger, computeBalances, debtInfo, netWorth, periodRange, periodStats, sumWallets, toBase, totalWallets } from "../src/lib/finance";
 import { capitalChange, capitalForecast, freeCash, monthForecast, scheduledBetween } from "../src/lib/analytics";
-import { nextMonthPlan, nextSlot, planItems, planLeft, planReceived, planSchedule } from "../src/lib/plans";
+import { nextMonthPlan, nextSlot, planItems, planLeft, planReceived, planSchedule, planSurplus } from "../src/lib/plans";
 import { debtPeople, splitRepayment } from "../src/lib/debts";
 import { goalInfo, goalSaved, goalEnvelopes } from "../src/lib/finance";
 import { goalPace, goalWhatIf, whatIfSteps } from "../src/lib/goals";
@@ -523,6 +523,70 @@ test("график на следующий месяц: те же числа, 31-
   assert.deepEqual(copy.parts!.map((x) => x.date).sort(), ["2027-02-08", "2027-02-28"]);
   assert.equal(copy.date, "2027-02-08");
   assert.equal(copy.estimate, true);
+});
+
+test("аванс пришёл заранее: деньги идут в выбранную выплату, а не в самую раннюю", () => {
+  const id = plan({
+    title: "Зарплата",
+    amount: 70_000_00,
+    date: "2027-01-08",
+    parts: [
+      { id: "s8", date: "2027-01-08", amount: 26_000_00, label: "Зарплата" },
+      { id: "s16", date: "2027-01-16", amount: 26_000_00 },
+      { id: "adv", date: "2027-01-18", amount: 18_000_00, label: "Аванс" }
+    ]
+  });
+  st().receivePlan(id, 18_000_00, { walletId: "card", date: "2027-01-05T10:00", partId: "adv" });
+  const slots = planSchedule(st().plans.find((x) => x.id === id)!, st().transactions);
+  assert.deepEqual(slots.map((x) => [x.id, x.state]), [["s8", "open"], ["s16", "open"], ["adv", "done"]]);
+  assert.equal(slots[2].label, "Аванс");
+  // a tied payment larger than its part spills over to the earliest
+  st().receivePlan(id, 30_000_00, { walletId: "card", date: "2027-01-08T10:00", partId: "s16" });
+  const again = planSchedule(st().plans.find((x) => x.id === id)!, st().transactions);
+  assert.deepEqual(again.map((x) => [x.id, x.left]), [["s8", 22_000_00], ["s16", 0], ["adv", 0]]);
+});
+
+test("один приход на два счёта: 388 ₽ на карту и 4 000 ₽ наличными закрывают одну выплату", () => {
+  const id = plan({ title: "Подработка", amount: 4_388_00, date: "2027-01-12" });
+  st().receivePlan(id, 388_00, { walletId: "card", date: "2027-01-12T10:00" });
+  st().receivePlan(id, 4_000_00, { walletId: "cash", date: "2027-01-12T10:00" });
+  assert.equal(bal().card, 10_000_000 + 388_00);
+  assert.equal(bal().cash, 500_000 + 4_000_00);
+  const p = st().plans.find((x) => x.id === id)!;
+  assert.equal(p.status, "done");
+  assert.equal(month().income, 4_388_00);
+});
+
+test("пришло больше ожидаемого: доход закрыт, лишнее видно, прогноз ничего не ждёт", () => {
+  const id = plan({ amount: 70_000_00, estimate: true });
+  st().receivePlan(id, 71_000_00, { walletId: "card", date: "2027-01-25T10:00" });
+  const p = st().plans.find((x) => x.id === id)!;
+  assert.equal(p.status, "done");
+  assert.equal(planSurplus(p, st().transactions), 1_000_00);
+  assert.equal(month("2027-01-31").income, 71_000_00);
+  assert.equal(capitalForecast(data(), bal(), buildLedger(data()).entries, "2027-01-25").incomeLeft, 0);
+});
+
+test("доход каждый месяц: копия на следующий месяц создаётся один раз, пропуск и отмена повтора работают", () => {
+  const id = plan({ title: "Зарплата", amount: 70_000_00, date: "2027-01-08", repeat: "month", parts: [{ id: "a", date: "2027-01-08", amount: 52_000_00, label: "Зарплата" }, { id: "b", date: "2027-01-31", amount: 18_000_00, label: "Аванс" }] });
+  assert.equal(st().rollPlans("2027-01-15").length, 1);
+  assert.equal(st().rollPlans("2027-01-15").length, 0, "повторный запуск ничего не добавляет");
+  const feb = st().plans.find((p) => p.date.startsWith("2027-02"))!;
+  assert.equal(feb.estimate, true);
+  assert.equal(feb.seriesId, st().plans.find((p) => p.id === id)!.seriesId ?? id);
+  assert.deepEqual(feb.parts!.map((x) => [x.date, x.amount, x.label]), [["2027-02-08", 52_000_00, "Зарплата"], ["2027-02-28", 18_000_00, "Аванс"]]);
+  // February is skipped: it does not come back, March is still created
+  st().removePlan(feb.id, false);
+  assert.equal(st().plans.find((p) => p.id === feb.id)!.status, "skipped");
+  st().rollPlans("2027-02-10");
+  assert.equal(st().plans.filter((p) => p.date.startsWith("2027-02")).length, 1);
+  const mar = st().plans.find((p) => p.date.startsWith("2027-03"))!;
+  assert.ok(mar);
+  assert.equal(mar.parts![1].date, "2027-03-31");
+  // stop the repeat: nothing new from now on
+  st().removePlan(mar.id, true);
+  assert.equal(st().rollPlans("2027-04-10").length, 0);
+  assert.ok(st().plans.every((p) => p.repeat !== "month"));
 });
 
 /* ---------------- month helpers used by the forecast ---------------- */

@@ -1,0 +1,36 @@
++{0} fazla
+«{0}» her ay tekrarlanacak
+«{0}» her ay tekrarlanacak — bir sonraki zaten planda
+Avans, maaş, prim…
+Beklenenden fazla ({0}): fazlası olağan gelir olarak kaydedilir, bekleme kapanır.
+Geliş tarihi
+Bir hesap daha
+Beklenen {0}, kalan {1}
+«{0}» düzenle
+Toplam gelecek
+Her ay aynı tarihlerle aynı gelir oluşturulur — yaklaşık olarak, düzeltilebilir.
+Hangi ödeme
+Para nereye geldi {0}
+{0}. ödemenin adı
+Beklenen gelir bakiyeleri değiştirmez: geldi diye işaretlediğinizde para hesapta görünür.
+Beklenen gelir silindi
+Geri kalan ({0}) beklemede kalır: tahmin yalnızca onu sayar.
+Aylık tekrar kapatılacak
+Her ay tekrarla
+Yaklaşık tutar
+Geliş {0}
+Tahmin şimdilik bu tutara dayanır. Toplam belli olunca işareti kaldırın ve tutarları düzeltin — fazla da gelse az da, hepsi hesaba katılır.
+Hesaplara böl — bir kısmı karta, bir kısmı nakit
+Ne kadar ve nereye
+Sıradaki
+Sonraki aylar kalır
+{0}. gelişin tutarı
+Gelmiş olanlar olağan gelir olarak kalır.
+Yalnızca bu ay
+{0}. gelişi kaldır
+«{0}» sil
+Beklenen geliri sil
+Bu ve sonrakilerin hepsi
+Bu ay atlandı
+her ay
+yaklaşık

@@ -72,6 +72,8 @@ export interface Transaction {
   goalId?: ID;
   recurringId?: ID;
   planId?: ID;
+  /** The dated payment of the plan this money is for (an advance that came early); otherwise it covers the earliest */
+  planPartId?: ID;
   /** Parts of one receipt split across categories share this id */
   splitId?: ID;
   /** Receipt photos (ids in the photo store) */
@@ -151,6 +153,8 @@ export interface PlanPart {
   id: ID;
   date: DayKey;
   amount: Minor;
+  /** «Аванс», «Зарплата», «Премия»… */
+  label?: string;
 }
 
 export interface Plan {
@@ -165,6 +169,10 @@ export interface Plan {
   parts?: PlanPart[];
   /** The sum is a guess until it is known (a salary that is only announced on the 8th) */
   estimate?: boolean;
+  /** Expected again every month: next month's copy is created ahead, as an estimate */
+  repeat?: "month";
+  /** Plans of one repeating income share this id */
+  seriesId?: ID;
   walletId?: ID;
   categoryId?: ID;
   note?: string;

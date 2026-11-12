@@ -1,0 +1,36 @@
++{0} en plus
+« {0} » se répétera chaque mois
+« {0} » se répétera chaque mois — le suivant est déjà prévu
+Acompte, salaire, prime…
+Plus que prévu ({0}) : l'excédent est noté comme revenu ordinaire et l'attente se ferme.
+Date de réception
+Un autre compte
+Attendu {0}, reste {1}
+Modifier « {0} »
+Total qui arrive
+Le même revenu aux mêmes dates sera créé chaque mois, en approximatif, pour pouvoir le corriger.
+Quel versement
+Où l'argent est arrivé {0}
+Nom du versement {0}
+Un revenu attendu ne change pas les soldes : l'argent apparaît sur un compte quand vous indiquez qu'il est arrivé.
+Revenu attendu supprimé
+Le reste ({0}) reste attendu : la prévision ne compte que lui.
+La répétition mensuelle sera désactivée
+Répéter chaque mois
+Montant approximatif
+Réception {0}
+La prévision compte pour l'instant sur cette somme. Quand le total sera connu, retirez la marque et corrigez les montants — plus ou moins, tout sera pris en compte.
+Répartir sur des comptes — une partie sur la carte, une partie en espèces
+Combien et où
+Suivant
+Les mois suivants restent
+Montant de la réception {0}
+Ce qui est déjà arrivé reste un revenu ordinaire.
+Seulement ce mois
+Retirer la réception {0}
+Supprimer « {0} »
+Supprimer le revenu attendu
+Celui-ci et tous les suivants
+Ce mois est sauté
+chaque mois
+approximatif

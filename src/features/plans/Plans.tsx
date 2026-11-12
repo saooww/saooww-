@@ -17,6 +17,8 @@ import { Screen } from "../../nav/Screen";
 import { Money } from "../../ui/Money";
 import { Button, FormRow, Group, IconButton, IconChip, Row, Segmented, Toggle, inputCls } from "../../ui/primitives";
 import { uid } from "../../lib/id";
+import { DateField } from "../../ui/DateField";
+import { askRemovePlan } from "./removePlan";
 import { X } from "../../ui/glyphs";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
 import { HeroCard } from "../../ui/HeroCard";
@@ -297,15 +299,16 @@ export function PlanSheet({ editId, date: d0, kind: k0 }: { editId?: ID; date?: 
   const [categoryId, setCategoryId] = useState(existing?.categoryId ?? "");
   const [note, setNote] = useState(existing?.note ?? "");
   // an income that comes in pieces: each with its own date (the advance on the 8th, the rest on the 16th…)
-  const [parts, setParts] = useState<Array<{ id: string; date: DayKey; buf: string }>>(existing?.parts?.map((p) => ({ id: p.id, date: p.date, buf: amountToInput(p.amount).replace(",", ".") })) ?? []);
+  const [parts, setParts] = useState<Array<{ id: string; date: DayKey; buf: string; label: string }>>(existing?.parts?.map((p) => ({ id: p.id, date: p.date, buf: amountToInput(p.amount).replace(",", "."), label: p.label ?? "" })) ?? []);
   const [estimate, setEstimate] = useState(existing?.estimate ?? false);
+  const [monthly, setMonthly] = useState(existing?.repeat === "month");
   const split = parts.length > 0;
   const partsTotal = parts.reduce((s, p) => s + parseAmount(p.buf), 0);
   const value = split ? partsTotal : parseAmount(amount);
   const valid = title.trim().length > 0 && value > 0 && !!date && parts.every((p) => !!p.date && parseAmount(p.buf) > 0);
-  const setPart = (id: string, patch: Partial<{ date: DayKey; buf: string }>) => setParts((l) => l.map((p) => (p.id === id ? { ...p, ...patch } : p)));
-  const startSplit = () => setParts([{ id: uid("pp-"), date, buf: amount }, { id: uid("pp-"), date: addDays(date, 8), buf: "" }]);
-  const addPart = () => setParts((l) => [...l, { id: uid("pp-"), date: addDays([...l].map((p) => p.date).sort().pop() ?? date, 8), buf: "" }]);
+  const setPart = (id: string, patch: Partial<{ date: DayKey; buf: string; label: string }>) => setParts((l) => l.map((p) => (p.id === id ? { ...p, ...patch } : p)));
+  const startSplit = () => setParts([{ id: uid("pp-"), date, buf: amount, label: "" }, { id: uid("pp-"), date: addDays(date, 8), buf: "", label: tr("Аванс") }]);
+  const addPart = () => setParts((l) => [...l, { id: uid("pp-"), date: addDays([...l].map((p) => p.date).sort().pop() ?? date, 8), buf: "", label: "" }]);
   const dropPart = (id: string) => {
     const rest = parts.filter((p) => p.id !== id);
     if (rest.length === 1) {
@@ -318,13 +321,18 @@ export function PlanSheet({ editId, date: d0, kind: k0 }: { editId?: ID; date?: 
 
   const save = () => {
     if (!valid) return;
-    const list = split && parts.length >= 2 ? parts.map((p) => ({ id: p.id, date: p.date, amount: parseAmount(p.buf) })).sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0)) : undefined;
-    const fields = { kind, title: title.trim(), amount: value, date: list ? list[0].date : date, parts: list, estimate: kind === "income" && estimate ? true : undefined, walletId, categoryId: categoryId || undefined, note: note.trim() || undefined };
+    const list = split && parts.length >= 2 ? parts.map((p) => ({ id: p.id, date: p.date, amount: parseAmount(p.buf), label: p.label.trim() || undefined })).sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0)) : undefined;
+    const repeat = kind === "income" && monthly ? ("month" as const) : undefined;
+    const fields = { kind, title: title.trim(), amount: value, date: list ? list[0].date : date, parts: list, estimate: kind === "income" && estimate ? true : undefined, repeat, walletId, categoryId: categoryId || undefined, note: note.trim() || undefined };
     const st = useData.getState();
     if (existing) {
-      st.updatePlan(existing.id, fields);
+      st.updatePlan(existing.id, { ...fields, seriesId: repeat ? existing.seriesId ?? existing.id : existing.seriesId });
       st.syncPlan(existing.id);
-    } else st.addPlan(fields);
+    } else {
+      const id = st.addPlan(fields);
+      if (repeat) st.updatePlan(id, { seriesId: id });
+    }
+    if (repeat) st.rollPlans(todayKey());
     haptic("success");
     nav.toast(existing ? tr("План сохранён") : tr("Добавлено в план"), { tone: "positive" });
     close();
@@ -349,7 +357,7 @@ export function PlanSheet({ editId, date: d0, kind: k0 }: { editId?: ID; date?: 
           </FormRow>
           {!split && (
             <FormRow label={tr("Дата")}>
-              <input type="date" value={date} onChange={(e) => e.target.value && setDate(e.target.value)} className={cn(inputCls, "text-right")} />
+              <DateField label={tr("Дата")} value={date} onChange={setDate} />
             </FormRow>
           )}
         </Group>
@@ -358,12 +366,19 @@ export function PlanSheet({ editId, date: d0, kind: k0 }: { editId?: ID; date?: 
             {split ? (
               <Group header={tr("Выплаты по датам")} footer={tr("Деньги, которые придут, закрывают выплаты по порядку — с самой ранней.")}>
                 {parts.map((p, i) => (
-                  <div key={p.id} className="grid grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)_32px] items-center gap-2 px-4 py-2.5" role="group" aria-label={tr("Выплата {0}", i + 1)}>
-                    <input type="date" aria-label={tr("Дата выплаты {0}", i + 1)} value={p.date} onChange={(e) => e.target.value && setPart(p.id, { date: e.target.value })} className={inputCls} />
-                    <input inputMode="decimal" aria-label={tr("Сумма выплаты {0}", i + 1)} value={p.buf} onChange={(e) => setPart(p.id, { buf: e.target.value.replace(/[^\d.,]/g, "") })} placeholder="0" className={cn(inputCls, "text-right tnum")} />
-                    <button type="button" aria-label={tr("Убрать выплату {0}", i + 1)} onClick={() => dropPart(p.id)} className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-ink-3 active:bg-surface-3">
-                      <X size={16} />
-                    </button>
+                  <div key={p.id} className="px-4 py-2.5" role="group" aria-label={tr("Выплата {0}", i + 1)}>
+                    <div className="flex items-center gap-2">
+                      <input aria-label={tr("Название выплаты {0}", i + 1)} value={p.label} onChange={(e) => setPart(p.id, { label: e.target.value })} placeholder={tr("Аванс, зарплата, премия…")} maxLength={24} className={cn(inputCls, "min-w-0 flex-1 text-subhead")} />
+                      <button type="button" aria-label={tr("Убрать выплату {0}", i + 1)} onClick={() => dropPart(p.id)} className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-ink-3 active:bg-surface-3">
+                        <X size={16} />
+                      </button>
+                    </div>
+                    <div className="mt-2 grid grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] items-center gap-2">
+                      <DateField label={tr("Дата выплаты {0}", i + 1)} value={p.date} onChange={(d) => setPart(p.id, { date: d })} />
+                      <span className="tile flex h-9 items-center rounded-[12px] px-2.5">
+                        <input inputMode="decimal" aria-label={tr("Сумма выплаты {0}", i + 1)} value={p.buf} onChange={(e) => setPart(p.id, { buf: e.target.value.replace(/[^\d.,]/g, "") })} placeholder="0" className={cn(inputCls, "text-right tnum font-semibold")} />
+                      </span>
+                    </div>
                   </div>
                 ))}
                 <button type="button" onClick={addPart} className="flex h-12 w-full items-center gap-2 px-4 text-subhead font-semibold text-accent-ink active:bg-surface-3">
@@ -377,9 +392,12 @@ export function PlanSheet({ editId, date: d0, kind: k0 }: { editId?: ID; date?: 
                 {tr("Разбить на выплаты по датам")}
               </button>
             )}
-            <Group footer={estimate ? tr("Прогноз пока считает по этой сумме. Когда итог станет известен, снимите отметку и поправьте суммы.") : undefined}>
-              <FormRow label={tr("Сумма ориентировочная")}>
-                <Toggle checked={estimate} onChange={setEstimate} label={tr("Сумма ориентировочная")} />
+            <Group footer={estimate ? tr("Прогноз пока считает по этой сумме. Когда итог станет известен, снимите отметку и поправьте суммы — придёт больше или меньше, всё учтётся.") : monthly ? tr("Каждый месяц будет создаваться такой же доход с теми же числами — как приблизительный, его можно поправить.") : undefined}>
+              <FormRow label={tr("Приблизительная сумма")}>
+                <Toggle checked={estimate} onChange={setEstimate} label={tr("Приблизительная сумма")} />
+              </FormRow>
+              <FormRow label={tr("Каждый месяц")}>
+                <Toggle checked={monthly} onChange={setMonthly} label={tr("Каждый месяц")} />
               </FormRow>
             </Group>
           </>
@@ -404,7 +422,12 @@ export function PlanSheet({ editId, date: d0, kind: k0 }: { editId?: ID; date?: 
             <input value={note} onChange={(e) => setNote(e.target.value)} placeholder={tr("Комментарий")} maxLength={120} className={inputCls} />
           </div>
         </Group>
-        <p className="px-8 text-footnote text-ink-3">{tr("План не меняет балансы, пока вы его не проведёте. Нужен повтор каждый месяц? Добавьте регулярный платёж в «Подписках и платежах».")}</p>
+        {existing && (
+          <Group>
+            <Row icon={Trash2} iconTone="negative" destructive title={kind === "income" ? tr("Удалить ожидаемый доход") : tr("Удалить план")} onClick={() => askRemovePlan(existing, close)} />
+          </Group>
+        )}
+        <p className="px-8 text-footnote text-ink-3">{kind === "income" ? tr("Ожидаемый доход не меняет балансы: деньги появятся на счёте, когда вы отметите, что они пришли.") : tr("План не меняет балансы, пока вы его не проведёте. Нужен повтор каждый месяц? Добавьте регулярный платёж в «Подписках и платежах».")}</p>
       </div>
     </Sheet>
   );
