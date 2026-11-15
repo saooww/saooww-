@@ -33,7 +33,7 @@ export function PlannerScreen() {
   return (
     <div className="absolute inset-0">
       <IntroOnFirstVisit />
-      <Screen title={tr("Дела")} large actions={
+      <Screen title={tr("Дела")} large wide actions={
           <>
             <IconButton icon={Search} label={tr("Поиск")} onClick={() => nav.sheet("search")} />
             <IconButton icon={Plus} label={view === "notes" ? tr("Новая заметка") : tr("Новое дело")} onClick={add} />

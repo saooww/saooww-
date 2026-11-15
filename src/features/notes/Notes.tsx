@@ -127,7 +127,7 @@ export function NotesView() {
       ) : filtered.length === 0 ? (
         <EmptyState icon={Search} title={tr("Ничего не найдено")} />
       ) : (
-        <div className="mt-4 columns-2 gap-2.5 px-4">
+        <div className="mt-4 columns-2 gap-2.5 px-4 lg:columns-3">
           {filtered.map((n, i) => (
             <NoteCard key={n.id} note={n} index={i} />
           ))}

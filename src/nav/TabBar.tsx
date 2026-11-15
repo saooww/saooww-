@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { CircleCheckBig, House, Plus, User, WalletCards, type LucideIcon } from "../ui/glyphs";
+import { CircleCheckBig, House, Plus, Search, User, WalletCards, type LucideIcon } from "../ui/glyphs";
+import { FullLogo } from "../ui/Brand";
 import { cn } from "../lib/cn";
 import { haptic } from "../lib/haptics";
 import { MONEY_TABS, nav, useUI, type Tab } from "../store/ui";
@@ -30,7 +31,30 @@ export function TabBar() {
   const slot = ITEMS.find((i) => i.id === current)?.slot ?? 0;
 
   return (
-    <nav aria-label={tr("Разделы")} className="pointer-events-none fixed inset-x-0 z-40 px-3 max-[389px]:px-2" style={{ bottom: "var(--tabbar-bottom)" }}>
+    <>
+    {/* wide screens: a rail on the left instead of the floating capsule */}
+    <aside aria-label={tr("Разделы")} className="desk-rail hidden">
+      <div className="px-3 pb-6 pt-1"><FullLogo size={26} layout="row" /></div>
+      <button type="button" onClick={() => { haptic("medium"); nav.sheet("create"); }} className="fill-accent mb-5 flex h-11 items-center justify-center gap-2 rounded-[14px] text-callout font-semibold text-[var(--accent-on)] shadow-[0_10px_24px_-12px_var(--accent)] transition-transform active:scale-[0.98]">
+        <Plus size={19} />{tr("Создать")}
+      </button>
+      <div role="tablist" aria-orientation="vertical" className="flex flex-col gap-1">
+        {ITEMS.map(({ id, label, icon: Icon }) => {
+          const active = id === current;
+          const target: Tab = id === "money" ? moneyTab : id;
+          return (
+            <button key={id} type="button" role="tab" aria-selected={active} aria-label={label} onClick={() => setTab(active ? tab : target)} className={cn("flex h-11 items-center gap-3 rounded-[13px] px-3 text-callout font-medium transition-colors", active ? "bg-[color-mix(in_srgb,var(--ink)_8%,transparent)] text-ink" : "text-ink-2 hover:bg-[color-mix(in_srgb,var(--ink)_5%,transparent)]")}>
+              <Icon size={21} weight={active ? "fill" : "regular"} className={active ? "text-accent-ink" : undefined} />
+              {label}
+            </button>
+          );
+        })}
+      </div>
+      <button type="button" onClick={() => nav.sheet("search")} className="mt-auto flex h-11 items-center gap-3 rounded-[13px] px-3 text-callout text-ink-2 hover:bg-[color-mix(in_srgb,var(--ink)_5%,transparent)]">
+        <Search size={20} />{tr("Поиск")}
+      </button>
+    </aside>
+    <nav aria-label={tr("Разделы")} className="desk-hide pointer-events-none fixed inset-x-0 z-40 px-3 max-[389px]:px-2" style={{ bottom: "var(--tabbar-bottom)" }}>
       <motion.div
         role="tablist"
         className="glass pointer-events-auto relative mx-auto grid max-w-[480px] grid-cols-5 rounded-[26px] p-[5px]"
@@ -90,5 +114,6 @@ export function TabBar() {
         </div>
       </motion.div>
     </nav>
+    </>
   );
 }

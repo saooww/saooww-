@@ -583,3 +583,24 @@ test("зарплата кусками: выплаты с названиями и
   await page.getByRole("button", { name: "Все доходы" }).click();
   await expect(page.getByRole("dialog", { name: "Доходы месяца" }).locator("section.panel", { hasText: "Фриланс" })).toContainText("Получено 28 000");
 });
+
+test.describe("компьютер", () => {
+  test.use({ viewport: { width: 1440, height: 900 }, isMobile: false, hasTouch: false });
+  test("боковая панель вместо нижней капсулы, разделы переключаются, окно создания по центру", async ({ page }) => {
+    await startDemo(page);
+    const rail = page.locator("aside.desk-rail");
+    await expect(rail).toBeVisible();
+    await expect(page.locator("nav.desk-hide")).toBeHidden();
+    // the content sits right of the rail
+    const box = await page.locator(".app-main").boundingBox();
+    expect(box!.x).toBeGreaterThanOrEqual(240);
+    await rail.getByRole("tab", { name: "Дела" }).click();
+    await expect(page.getByRole("button", { name: "Начать" })).toBeVisible();
+    await page.getByRole("button", { name: "Начать" }).click();
+    await rail.getByRole("button", { name: "Создать" }).click();
+    const dlg = page.getByRole("dialog", { name: "Создать" });
+    await expect(dlg).toBeVisible();
+    const d = await dlg.boundingBox();
+    expect(d!.width).toBeLessThanOrEqual(580);
+  });
+});

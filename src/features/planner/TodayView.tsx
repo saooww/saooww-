@@ -28,7 +28,7 @@ export function TodayView() {
   const empty = !plan.focus.length && !plan.rest.length;
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 lg:block lg:columns-2 lg:gap-x-2 [&>*]:lg:mb-6 [&>*]:lg:break-inside-avoid">
       <SleepPrompt />
       <DayCard total={plan.total} completed={plan.completed} focus={plan.focus.length} inbox={inbox} />
       <MonthCalendar />
