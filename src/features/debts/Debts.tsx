@@ -165,7 +165,7 @@ function PersonRow({ p, delay = 0 }: { p: DebtPerson; delay?: number }) {
       transition={{ ...spring.smooth, delay }}
       whileTap={{ scale: 0.985 }}
       onClick={() => nav.push("debt", { id: p.debts[p.debts.length - 1].debt.id })}
-      className="panel rounded-[20px] p-3.5 text-left"
+      className="panel rounded-[22px] p-3.5 text-left"
     >
       <div className="flex items-center gap-3">
         <PersonAvatar p={p} size={40} />

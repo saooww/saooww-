@@ -87,12 +87,12 @@ export function WeekView() {
             >
               <span className={cn("text-caption font-medium", deep ? "text-white/80" : "text-ink-3")}>{WEEKDAYS_SHORT[i]}</span>
               <span className={cn("num text-headline", deep ? "text-white" : d < today ? "text-ink-3" : "text-ink")}>{parseDay(d).getDate()}</span>
-              <span className={cn("num text-[10.5px] font-semibold", deep ? "text-white/85" : "text-ink-3")}>{n || "·"}</span>
+              <span className={cn("num text-[11px] font-semibold", deep ? "text-white/85" : "text-ink-3")}>{n || "·"}</span>
             </button>
           );
         })}
       </div>
-      <div className="mt-2 flex items-center justify-end gap-1.5 px-5 text-[10.5px] text-ink-3">
+      <div className="mt-2 flex items-center justify-end gap-1.5 px-5 text-[11px] text-ink-3">
         {tr("свободно")}
         {[0, 25, 45, 70].map((h) => (
           <span key={h} className="h-2.5 w-2.5 rounded-[3px]" style={{ background: h ? `color-mix(in srgb, var(--accent) ${h}%, var(--surface))` : "var(--surface)", boxShadow: "inset 0 0 0 0.5px var(--line)" }} />

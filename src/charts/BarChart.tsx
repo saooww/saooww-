@@ -200,7 +200,7 @@ export function BarChart({
                 x={slot * i + slot / 2}
                 y={height - 5}
                 textAnchor="middle"
-                className={i === selected ? "fill-[var(--ink)] text-[10.5px] font-semibold" : "fill-[var(--ink-3)] text-[10.5px] font-medium"}
+                className={i === selected ? "fill-[var(--ink)] text-[11px] font-semibold" : "fill-[var(--ink-3)] text-[11px] font-medium"}
               >
                 {d.label}
               </text>

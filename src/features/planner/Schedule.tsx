@@ -57,10 +57,10 @@ export function Schedule() {
   return (
     <section>
       <Heading title={tr("Расписание")} aside={tr("перетащите, чтобы перенести")} />
-      <div className="panel relative mx-4 overflow-hidden rounded-[20px]" style={{ height: y(to) + 12 }}>
+      <div className="panel relative mx-4 overflow-hidden rounded-[22px]" style={{ height: y(to) + 12 }}>
         {Array.from({ length: (to - from) / 60 + 1 }, (_, i) => from / 60 + i).map((h) => (
           <div key={h} className="absolute inset-x-0 flex items-center gap-2 pl-3 pr-3" style={{ top: y(h * 60) + 6 }}>
-            <span className="w-8 -translate-y-[1px] text-[10.5px] font-medium tabular-nums text-ink-3">{String(h % 24).padStart(2, "0")}:00</span>
+            <span className="w-8 -translate-y-[1px] text-[11px] font-medium tabular-nums text-ink-3">{String(h % 24).padStart(2, "0")}:00</span>
             <span className="h-px flex-1 bg-[var(--line)]" />
           </div>
         ))}

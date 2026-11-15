@@ -54,7 +54,7 @@ export function GoalDetail({ id }: { id: ID }) {
         <GoalVisual goal={goal} info={info} status={status} big />
       </div>
 
-      <div className="on-dark mx-4 mt-3 rounded-[24px] px-4 pb-3 pt-4 text-white" style={{ background: `linear-gradient(160deg, color-mix(in srgb, ${info.done ? "#2e9d72" : goal.color ?? "#df0714"} 38%, #0b0b0c), #0b0b0c)`, boxShadow: "inset 0 1px 0 rgba(255,255,255,0.1)" }}>
+      <div className="on-dark mx-4 mt-3 rounded-[22px] px-4 pb-3 pt-4 text-white" style={{ background: `linear-gradient(160deg, color-mix(in srgb, ${info.done ? "#2e9d72" : goal.color ?? "#df0714"} 38%, #0b0b0c), #0b0b0c)`, boxShadow: "inset 0 1px 0 rgba(255,255,255,0.1)" }}>
         <div className="mb-2 text-footnote font-medium text-white/75">{tr("Темп накоплений")}</div>
         <GoalPaceChart goal={goal} info={info} />
       </div>

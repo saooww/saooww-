@@ -42,7 +42,7 @@ export function SpendingCalendar({ entries, from, to, today, categories, currenc
     <div>
       <div className="grid grid-cols-7 gap-1.5">
         {WEEKDAYS_SHORT.map((w) => (
-          <div key={w} className="pb-1 text-center text-[10.5px] font-medium uppercase tracking-[0.06em] text-ink-3">
+          <div key={w} className="pb-1 text-center text-[11px] font-medium uppercase tracking-[0.06em] text-ink-3">
             {w}
           </div>
         ))}
@@ -68,7 +68,7 @@ export function SpendingCalendar({ entries, from, to, today, categories, currenc
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: Math.min(0.5, i * 0.012), duration: 0.3 }}
-              className={cn("num relative grid aspect-square place-items-center rounded-[9px] text-[12px] font-medium", future ? "text-ink-4" : strong ? "text-ink-inverse" : "text-ink-2")}
+              className={cn("num relative grid aspect-square place-items-center rounded-[8px] text-[12px] font-medium", future ? "text-ink-4" : strong ? "text-ink-inverse" : "text-ink-2")}
               style={{
                 background: future ? "transparent" : v ? `color-mix(in srgb, var(--ink) ${Math.round(10 + 80 * k)}%, transparent)` : "color-mix(in srgb, var(--ink) 4.5%, transparent)",
                 outline: sel === d ? "2px solid var(--ink)" : d === today ? "1px solid var(--ink-3)" : undefined,
@@ -91,7 +91,7 @@ export function SpendingCalendar({ entries, from, to, today, categories, currenc
             <span className="text-ink-3">{tr("Коснитесь дня")}</span>
           )}
         </div>
-        <div className="flex shrink-0 items-center gap-1 text-[10.5px] text-ink-3" aria-hidden="true">{tr("меньше")}{[0.2, 0.45, 0.7, 1].map((k) => (
+        <div className="flex shrink-0 items-center gap-1 text-[11px] text-ink-3" aria-hidden="true">{tr("меньше")}{[0.2, 0.45, 0.7, 1].map((k) => (
             <span key={k} className="h-2.5 w-2.5 rounded-[3px]" style={{ background: `color-mix(in srgb, var(--ink) ${Math.round(10 + 80 * k)}%, transparent)` }} />
           ))}{" "}{tr("больше")}</div>
       </div>

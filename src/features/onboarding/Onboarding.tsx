@@ -119,7 +119,7 @@ export function Onboarding() {
           <motion.div
             role="radiogroup"
             aria-label={tr("Язык")}
-            className="panel absolute inset-x-4 z-10 grid grid-cols-2 gap-1 rounded-[20px] p-2"
+            className="panel absolute inset-x-4 z-10 grid grid-cols-2 gap-1 rounded-[22px] p-2"
             style={{ top: "calc(var(--safe-top) + 64px)" }}
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -168,7 +168,7 @@ export function Onboarding() {
                 <div className="mt-10 flex flex-col gap-5">
                   {FEATURES.map((f, i) => (
                     <motion.div key={f.text} className="flex items-start gap-3.5" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 + i * 0.08, duration: 0.5, ease: ease.out }}>
-                      <span className="tile grid h-10 w-10 shrink-0 place-items-center rounded-[13px] text-accent-ink">
+                      <span className="tile grid h-10 w-10 shrink-0 place-items-center rounded-[12px] text-accent-ink">
                         <f.icon size={19} strokeWidth={1.9} />
                       </span>
                       <span className="pt-2 text-callout text-ink">{f.text}</span>
@@ -227,7 +227,7 @@ export function Onboarding() {
                       >
                         {w.on && <Check size={16} strokeWidth={3} />}
                       </button>
-                      <span className="tile grid h-10 w-10 shrink-0 place-items-center rounded-[13px] text-ink">
+                      <span className="tile grid h-10 w-10 shrink-0 place-items-center rounded-[12px] text-ink">
                         <w.icon size={18} strokeWidth={1.9} />
                       </span>
                       <span className="min-w-0 flex-1 truncate text-body text-ink">{w.name}</span>

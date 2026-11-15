@@ -78,7 +78,7 @@ export function HomeToday() {
             const Icon = { plan: CalendarCheck, recurring: Repeat, debt: HandCoins, task: ListTodo, goal: CalendarCheck }[e.kind];
             return (
               <button key={e.key} type="button" onClick={e.onOpen} className="flex w-full items-center gap-3 py-2.5 text-left active:opacity-70">
-                <span className="tile grid h-[30px] w-[30px] shrink-0 place-items-center rounded-[10px] text-ink-2">
+                <span className="tile grid h-[30px] w-[30px] shrink-0 place-items-center rounded-[8px] text-ink-2">
                   <Icon size={15} />
                 </span>
                 <span className="min-w-0 flex-1">

@@ -89,10 +89,10 @@ export function NotesView() {
         whileTap={{ scale: 0.98 }}
         transition={spring.press}
         onClick={() => openJournal(today)}
-        className="panel relative mx-4 mt-3 flex w-[calc(100%-32px)] items-center gap-3 overflow-hidden rounded-[20px] px-3.5 py-3 text-left"
+        className="panel relative mx-4 mt-3 flex w-[calc(100%-32px)] items-center gap-3 overflow-hidden rounded-[22px] px-3.5 py-3 text-left"
       >
         <span aria-hidden className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(80% 140% at 0% 0%, var(--plan-soft), transparent 65%)" }} />
-        <span className="relative grid h-10 w-10 shrink-0 place-items-center rounded-[13px] text-[var(--plan)]" style={{ background: "var(--plan-soft)", boxShadow: "inset 0 0 0 1px color-mix(in srgb, var(--plan) 34%, transparent)", ["--glyph-fill" as string]: "currentColor", ["--glyph-fill-o" as string]: 0.25 }}>
+        <span className="relative grid h-10 w-10 shrink-0 place-items-center rounded-[12px] text-[var(--plan)]" style={{ background: "var(--plan-soft)", boxShadow: "inset 0 0 0 1px color-mix(in srgb, var(--plan) 34%, transparent)", ["--glyph-fill" as string]: "currentColor", ["--glyph-fill-o" as string]: 0.25 }}>
           <BookOpen size={19} />
         </span>
         <span className="relative min-w-0 flex-1">
@@ -163,7 +163,7 @@ function NoteCard({ note: n, index }: { note: Note; index: number }) {
       transition={{ delay: Math.min(index, 10) * 0.025, duration: 0.24 }}
       whileTap={{ scale: 0.97 }}
       onClick={() => nav.push("note", { id: n.id })}
-      className="panel relative mb-2.5 block w-full break-inside-avoid overflow-hidden rounded-[20px] p-3.5 text-left"
+      className="panel relative mb-2.5 block w-full break-inside-avoid overflow-hidden rounded-[22px] p-3.5 text-left"
       style={tint ? ({ ["--k" as string]: tint } as React.CSSProperties) : undefined}
     >
       {tint && <span aria-hidden className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(110% 80% at 0% 0%, color-mix(in srgb, var(--k) 16%, transparent), transparent 70%)" }} />}
@@ -339,7 +339,7 @@ export function NoteEditor({ id, isNew }: { id: ID; isNew?: boolean }) {
             ))}
             <span aria-hidden className="mx-1 h-5 w-px bg-[var(--line)]" />
             {FONTS.map((f) => (
-              <button key={f.id} type="button" aria-label={{ sans: tr("Обычный шрифт"), serif: tr("Шрифт с засечками"), mono: tr("Моноширинный шрифт") }[f.id]} aria-pressed={(note.font ?? "sans") === f.id} onClick={() => { haptic(); update({ font: f.id === "sans" ? undefined : f.id }); }} className={cn("h-7 w-9 rounded-[9px] text-[14px] font-semibold", f.cls, (note.font ?? "sans") === f.id ? "bg-[var(--plan-soft)] text-[var(--plan)]" : "text-ink-3")}>
+              <button key={f.id} type="button" aria-label={{ sans: tr("Обычный шрифт"), serif: tr("Шрифт с засечками"), mono: tr("Моноширинный шрифт") }[f.id]} aria-pressed={(note.font ?? "sans") === f.id} onClick={() => { haptic(); update({ font: f.id === "sans" ? undefined : f.id }); }} className={cn("h-7 w-9 rounded-[8px] text-[14px] font-semibold", f.cls, (note.font ?? "sans") === f.id ? "bg-[var(--plan-soft)] text-[var(--plan)]" : "text-ink-3")}>
                 {f.label}
               </button>
             ))}

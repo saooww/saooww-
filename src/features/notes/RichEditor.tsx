@@ -184,7 +184,7 @@ export function RichEditor({
       // keep the selection in the text while a tool is pressed
       onPointerDown={(e) => e.preventDefault()}
       onClick={onClick}
-      className={cn("grid h-9 shrink-0 place-items-center rounded-[11px] text-[15px] transition-colors", wide ? "min-w-[44px] px-2" : "w-9", on ? "bg-[var(--plan-soft)] text-[var(--plan)]" : "text-ink-2 active:bg-surface-3")}
+      className={cn("grid h-9 shrink-0 place-items-center rounded-[12px] text-[15px] transition-colors", wide ? "min-w-[44px] px-2" : "w-9", on ? "bg-[var(--plan-soft)] text-[var(--plan)]" : "text-ink-2 active:bg-surface-3")}
     >
       {children}
     </button>

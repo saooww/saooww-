@@ -327,7 +327,7 @@ function SaveFlight({ flight, target }: { flight: Flight; target: React.RefObjec
   return (
     <motion.div
       aria-hidden="true"
-      className="glass num pointer-events-none fixed left-1/2 z-[80] -ml-[90px] flex h-11 w-[180px] items-center justify-center rounded-full text-[19px] font-semibold"
+      className="glass num pointer-events-none fixed left-1/2 z-[80] -ml-[90px] flex h-11 w-[180px] items-center justify-center rounded-full text-[20px] font-semibold"
       style={{ top: 0, color: flight.kind === "income" ? "var(--positive)" : "var(--ink)" }}
       initial={{ y: startY, opacity: 0, scale: 0.9 }}
       animate={{ y: [startY, startY - 40, endY], opacity: [0, 1, 0], scale: [0.9, 1, 0.55] }}

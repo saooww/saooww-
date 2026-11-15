@@ -40,7 +40,7 @@ export function GoalVisual({ goal, info, status, onOpen, big, delay = 0 }: { goa
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, type: "spring", stiffness: 300, damping: 30 }}
       whileTap={onOpen ? { scale: 0.985 } : undefined}
-      className={cn("relative overflow-hidden rounded-[24px] text-white", onOpen && "cursor-pointer", big ? "px-5 pb-5 pt-5" : "px-[18px] pb-4 pt-4")}
+      className={cn("relative overflow-hidden rounded-[22px] text-white", onOpen && "cursor-pointer", big ? "px-5 pb-5 pt-5" : "px-[18px] pb-4 pt-4")}
       style={{
         background: `radial-gradient(120% 90% at 0% 0%, rgba(255,255,255,0.18), transparent 50%), radial-gradient(90% 70% at 100% 100%, rgba(0,0,0,0.35), transparent 70%), linear-gradient(150deg, ${color}, color-mix(in srgb, ${color} 34%, #050505))`,
         boxShadow: `0 1px 0 rgba(255,255,255,0.12) inset, 0 24px 44px -26px color-mix(in srgb, ${color} 70%, transparent)`
@@ -87,7 +87,7 @@ export function GoalVisual({ goal, info, status, onOpen, big, delay = 0 }: { goa
                 haptic();
                 nav.push("project", { id: project!.id }, "planner");
               }}
-              className="flex min-w-0 flex-1 items-center gap-1.5 rounded-[10px] bg-black/25 px-2.5 py-1.5 text-left text-caption"
+              className="flex min-w-0 flex-1 items-center gap-1.5 rounded-[8px] bg-black/25 px-2.5 py-1.5 text-left text-caption"
             >
               <ListChecks size={13} className="shrink-0" />
               <span className="truncate">

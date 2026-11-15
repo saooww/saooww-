@@ -105,7 +105,7 @@ export function BudgetsScreen() {
                 transition={{ ...spring.smooth, delay: i * 0.03 }}
                 whileTap={{ scale: 0.985 }}
                 onClick={() => nav.sheet("budget", { editId: b.id })}
-                className="panel rounded-[20px] px-4 py-3.5 text-left"
+                className="panel rounded-[22px] px-4 py-3.5 text-left"
               >
                 <div className="flex items-center gap-3">
                   <IconChip name={c?.icon} color={c?.color} size={34} />

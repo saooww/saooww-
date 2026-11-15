@@ -58,7 +58,7 @@ const BUTTON_VARIANTS: Record<ButtonVariant, string> = {
 const BUTTON_SIZES: Record<ButtonSize, string> = {
   lg: "h-[54px] px-5 text-headline font-semibold rounded-[16px] gap-2",
   md: "h-11 px-4 text-callout font-semibold rounded-[14px] gap-2",
-  sm: "h-[34px] px-3.5 text-subhead font-semibold rounded-[11px] gap-1.5"
+  sm: "h-[34px] px-3.5 text-subhead font-semibold rounded-[12px] gap-1.5"
 };
 
 export type ButtonProps = PressableProps & {
@@ -216,7 +216,7 @@ export function Segmented<T extends string>({
       {index >= 0 && (
         <motion.span
           aria-hidden="true"
-          className="pointer-events-none absolute inset-y-[3px] left-[3px] rounded-[9px]"
+          className="pointer-events-none absolute inset-y-[3px] left-[3px] rounded-[8px]"
           style={{
             width: `calc((100% - 6px) / ${options.length})`,
             background: "linear-gradient(180deg, var(--panel-highlight), transparent 70%), var(--seg-thumb)",
@@ -240,7 +240,7 @@ export function Segmented<T extends string>({
               onChange(o.value);
             }}
             className={cn(
-              "relative min-w-0 flex-1 rounded-[9px] px-1 font-semibold transition-colors duration-200",
+              "relative min-w-0 flex-1 rounded-[8px] px-1 font-semibold transition-colors duration-200",
               size === "md" ? "h-8 text-subhead" : "h-7 text-footnote",
               active ? "text-ink" : "text-ink-2"
             )}
@@ -505,7 +505,7 @@ export function EmptyState({ icon: Icon, title, text, action, className }: { ico
         <svg viewBox={`0 0 ${MARK.w} ${MARK.h}`} className="absolute inset-0 h-full w-full" aria-hidden="true">
           <path d={MARK.d} fill="none" stroke="var(--accent)" strokeOpacity={0.35} strokeWidth={0.8} />
         </svg>
-        <span className="tile relative grid h-14 w-14 place-items-center rounded-[20px] text-ink-2">
+        <span className="tile relative grid h-14 w-14 place-items-center rounded-[22px] text-ink-2">
           <Icon size={24} strokeWidth={1.7} />
         </span>
       </span>

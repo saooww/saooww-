@@ -62,7 +62,7 @@ function QuickActions() {
           whileTap={{ scale: 0.92 }}
           className="flex flex-col items-center gap-1.5"
         >
-          <span className="grid h-[54px] w-[54px] place-items-center rounded-[19px] text-white" style={{ background: KIND_FILL[a.id].bg, boxShadow: `0 10px 22px -10px ${KIND_FILL[a.id].glow}, inset 0 1px 0 rgba(255,255,255,0.28)` }}>
+          <span className="grid h-[54px] w-[54px] place-items-center rounded-[18px] text-white" style={{ background: KIND_FILL[a.id].bg, boxShadow: `0 10px 22px -10px ${KIND_FILL[a.id].glow}, inset 0 1px 0 rgba(255,255,255,0.28)` }}>
             <a.icon size={22} />
           </span>
           <span className="text-caption font-medium text-ink-2">{a.label}</span>

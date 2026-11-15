@@ -133,7 +133,7 @@ function WeekBars({ days, goal }: { days: Array<{ day: DayKey; entry: SleepEntry
       {weeks.map((w, i) => (
         <div key={i} className="relative flex h-full flex-1 flex-col items-center justify-end">
           <div className="w-full rounded-t-[7px]" style={{ height: w.avg ? (w.avg / max) * 130 : 3, background: w.avg ? "linear-gradient(var(--sleep), color-mix(in srgb, var(--sleep) 50%, transparent))" : "var(--line)" }} />
-          <span className="absolute -bottom-5 text-[9.5px] text-ink-3">{w.label}</span>
+          <span className="absolute -bottom-5 text-[10px] text-ink-3">{w.label}</span>
         </div>
       ))}
     </div>
@@ -300,7 +300,7 @@ function Scale({ label, value, onChange, hints }: { label: string; value?: numbe
       </div>
       <div className="mt-2.5 flex gap-1.5" role="radiogroup" aria-label={label}>
         {([1, 2, 3, 4, 5] as const).map((i) => (
-          <button key={i} type="button" role="radio" aria-checked={value === i} aria-label={`${i}`} onClick={() => { haptic(); onChange(i); }} className={cn("h-11 flex-1 rounded-[13px] text-[15px] font-semibold transition-colors", value && i <= value ? "bg-[color-mix(in_srgb,var(--sleep)_26%,transparent)] text-ink shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--sleep)_55%,transparent)]" : "tile text-ink-3")}>
+          <button key={i} type="button" role="radio" aria-checked={value === i} aria-label={`${i}`} onClick={() => { haptic(); onChange(i); }} className={cn("h-11 flex-1 rounded-[12px] text-[15px] font-semibold transition-colors", value && i <= value ? "bg-[color-mix(in_srgb,var(--sleep)_26%,transparent)] text-ink shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--sleep)_55%,transparent)]" : "tile text-ink-3")}>
             {i}
           </button>
         ))}

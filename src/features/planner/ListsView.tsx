@@ -82,7 +82,7 @@ export function ListsView() {
 
 function Tile({ icon, label, count, onClick, tone }: { icon: LucideIcon; label: string; count: number; onClick: () => void; tone?: "accent" | "positive" | "warning" }) {
   return (
-    <motion.button type="button" whileTap={{ scale: 0.96 }} transition={spring.press} onClick={onClick} className="panel flex flex-col gap-3 rounded-[20px] p-3.5 text-left" aria-label={`${label}: ${count}`}>
+    <motion.button type="button" whileTap={{ scale: 0.96 }} transition={spring.press} onClick={onClick} className="panel flex flex-col gap-3 rounded-[22px] p-3.5 text-left" aria-label={`${label}: ${count}`}>
       <div className="flex w-full items-center justify-between">
         <IconChip icon={icon} tone={tone} size={34} />
         <span className={cn("num-display text-[26px] leading-none", count ? "text-ink" : "text-ink-4")}>{count}</span>

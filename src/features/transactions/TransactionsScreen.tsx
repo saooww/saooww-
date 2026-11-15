@@ -126,7 +126,14 @@ export function TransactionsScreen() {
     return out;
   }, [visible, byDate]);
 
-  const dayNet = (items: Transaction[]) => items.reduce((s, t) => s + (t.kind === "income" ? t.amount : t.kind === "expense" ? -t.amount : 0), 0);
+  // the day's total is shown in the base currency: every operation is converted from its own wallet's currency
+  const dayNet = (items: Transaction[]) =>
+    items.reduce((s, t) => {
+      if (t.kind !== "income" && t.kind !== "expense") return s;
+      const cur = wallets.find((w) => w.id === t.walletId)?.currency ?? settings.baseCurrency;
+      const v = toBase(t.amount, cur, settings) ?? 0;
+      return s + (t.kind === "income" ? v : -v);
+    }, 0);
 
   const active = filter.period !== "all" || filter.kind !== "all" || !!filter.walletId || !!filter.categoryId || filter.sort !== "date-desc";
   const cat = filter.categoryId ? categories.find((c) => c.id === filter.categoryId) : undefined;
