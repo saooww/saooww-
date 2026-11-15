@@ -1,0 +1,3 @@
+Abrir foto
+Mostrar mes
+Contraer mes

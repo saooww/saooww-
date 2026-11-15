@@ -155,7 +155,7 @@ test("фото чека сохраняется вместе с операцие�
   // a tiny red PNG stands in for the camera
   const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAFklEQVR4nGP8z8DAwMDAxMDAwMDAAAANHQEDasKb6QAAAABJRU5ErkJggg==", "base64");
   await page.getByRole("dialog").locator('input[type="file"]').setInputFiles({ name: "receipt.png", mimeType: "image/png", buffer: png });
-  await expect(page.getByRole("button", { name: "Открыть фото чека" })).toHaveCount(1);
+  await expect(page.getByRole("button", { name: "Открыть фото" })).toHaveCount(1);
   await page.getByRole("button", { name: "Назад" }).click();
   await page.getByRole("button", { name: "Добавить расход" }).click();
 

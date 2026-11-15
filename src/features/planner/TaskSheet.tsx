@@ -14,6 +14,7 @@ import { nav } from "../../store/ui";
 import { spring } from "../../ui/motion";
 import { Button, Chip, FormRow, Group, IconChip, Row, Segmented, Toggle } from "../../ui/primitives";
 import { Sheet, SheetAction, useSheet } from "../../ui/Sheet";
+import { PhotoStrip } from "../transactions/Photos";
 import { deleteTask, toggleFocus } from "./actions";
 import { QuickAddSheet } from "./QuickAdd";
 import { TaskCheck } from "./TaskRow";
@@ -128,6 +129,11 @@ function TaskDetails({ task }: { task: Task }) {
         </div>
 
         <Checklist items={subs} onChange={(subtasks) => update({ subtasks })} />
+
+        <section>
+          <div className="section-label px-5 pb-0.5">{tr("Фото")}</div>
+          <PhotoStrip ids={task.photos ?? []} onChange={(photos) => update({ photos: photos.length ? photos : undefined })} />
+        </section>
 
         <Group header={tr("Когда")}>
           <Row icon={CalendarDays} iconTone={task.due && task.due < today && !task.done ? "negative" : undefined} title={tr("Дата")} value={task.due ? `${dueLabel(task.due, today)}${task.time ? `, ${task.time}` : ""}` : tr("Без даты")} chevron onClick={pickDate} />

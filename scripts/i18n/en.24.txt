@@ -1,0 +1,3 @@
+Open photo
+Show month
+Collapse month

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "../../ui/glyphs";
+import { ChevronDown, ChevronLeft, ChevronRight } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { MONTHS_NOM, WEEKDAYS_SHORT, addDays, addMonths, capitalize, endOfMonth, formatDayHeading, parseDay, startOfMonth, startOfWeek, type DayKey } from "../../lib/dates";
 import { haptic } from "../../lib/haptics";
@@ -20,6 +20,7 @@ export function MonthCalendar() {
   const tasks = useData((s) => s.tasks);
   const [month, setMonth] = useState(startOfMonth(today));
   const [picked, setPicked] = useState<DayKey | null>(null);
+  const [open, setOpen] = useState(false);
 
   const counts = useMemo(() => {
     const m = new Map<DayKey, number>();
@@ -27,30 +28,44 @@ export function MonthCalendar() {
     return m;
   }, [tasks]);
   const days = useMemo(() => {
+    if (!open) {
+      const w = startOfWeek(today);
+      return Array.from({ length: 7 }, (_, i) => addDays(w, i));
+    }
     const from = startOfWeek(month);
     const to = addDays(startOfWeek(endOfMonth(month)), 6);
     const out: DayKey[] = [];
     for (let d = from; d <= to; d = addDays(d, 1)) out.push(d);
     return out;
-  }, [month]);
+  }, [month, open, today]);
   const list = useMemo(() => (picked ? tasks.filter((t) => t.due === picked && !t.done).sort(compareTasks) : []), [tasks, picked]);
   const m = parseDay(month);
 
   return (
     <section className="px-4">
-      <div className="panel rounded-[24px] px-3 pb-3 pt-3">
+      <div className="panel rounded-[22px] px-3 pb-2 pt-2.5">
         <div className="flex items-center justify-between px-1">
-          <button type="button" aria-label={tr("Предыдущий месяц")} onClick={() => setMonth((x) => addMonths(x, -1, 1))} className="grid h-8 w-8 place-items-center rounded-full text-ink-2 active:bg-surface-press">
-            <ChevronLeft size={18} />
-          </button>
+          {open ? (
+            <button type="button" aria-label={tr("Предыдущий месяц")} onClick={() => setMonth((x) => addMonths(x, -1, 1))} className="grid h-8 w-8 place-items-center rounded-full text-ink-2 active:bg-surface-press">
+              <ChevronLeft size={18} />
+            </button>
+          ) : (
+            <span className="h-8 w-8" />
+          )}
           <button type="button" onClick={() => setMonth(startOfMonth(today))} className="text-headline font-semibold">
             {capitalize(MONTHS_NOM[m.getMonth()])} {m.getFullYear() !== parseDay(today).getFullYear() ? m.getFullYear() : ""}
           </button>
-          <button type="button" aria-label={tr("Следующий месяц")} onClick={() => setMonth((x) => addMonths(x, 1, 1))} className="grid h-8 w-8 place-items-center rounded-full text-ink-2 active:bg-surface-press">
-            <ChevronRight size={18} />
-          </button>
+          {open ? (
+            <button type="button" aria-label={tr("Следующий месяц")} onClick={() => setMonth((x) => addMonths(x, 1, 1))} className="grid h-8 w-8 place-items-center rounded-full text-ink-2 active:bg-surface-press">
+              <ChevronRight size={18} />
+            </button>
+          ) : (
+            <button type="button" aria-label={tr("Показать месяц")} aria-expanded={false} onClick={() => setOpen(true)} className="grid h-8 w-8 place-items-center rounded-full text-ink-2 active:bg-surface-press">
+              <ChevronDown size={18} />
+            </button>
+          )}
         </div>
-        <div className="mt-2 grid grid-cols-7 text-center">
+        <div className="mt-1.5 grid grid-cols-7 text-center">
           {WEEKDAYS_SHORT.map((w) => (
             <span key={w} className="pb-1 text-[11px] font-medium capitalize text-ink-3">
               {w}
@@ -75,18 +90,23 @@ export function MonthCalendar() {
                 <span
                   className={cn(
                     "grid h-9 w-9 place-items-center rounded-full text-callout tabular-nums transition-colors",
-                    isToday ? "fill-accent font-bold text-[var(--accent-on)]" : isPicked ? "bg-[color-mix(in_srgb,var(--ink)_14%,transparent)] font-semibold" : "",
+                    isToday ? "bg-[var(--plan)] font-bold text-white shadow-[0_6px_16px_-6px_var(--plan)]" : isPicked ? "bg-[color-mix(in_srgb,var(--ink)_14%,transparent)] font-semibold" : "",
                     !inMonth && "opacity-30",
                     d < today && !isToday && inMonth && "text-ink-2"
                   )}
                 >
                   {parseDay(d).getDate()}
                 </span>
-                {n > 0 && !isToday && <span className="absolute bottom-0.5 h-1 w-1 rounded-full bg-accent" />}
+                {n > 0 && !isToday && <span className="absolute bottom-0.5 h-1 w-1 rounded-full bg-[var(--plan)]" />}
               </button>
             );
           })}
         </div>
+        {open && (
+          <button type="button" aria-label={tr("Свернуть месяц")} onClick={() => { setOpen(false); setMonth(startOfMonth(today)); }} className="mx-auto mt-1 grid h-6 w-12 place-items-center rounded-full text-ink-3 active:bg-surface-press">
+            <ChevronDown size={16} className="rotate-180" />
+          </button>
+        )}
       </div>
       <AnimatePresence initial={false}>
         {picked && (

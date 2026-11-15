@@ -1,0 +1,3 @@
+Ouvrir la photo
+Afficher le mois
+Réduire le mois

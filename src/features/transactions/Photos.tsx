@@ -24,7 +24,7 @@ export function PhotoThumb({ id, size = 64, onOpen, onRemove }: { id: string; si
   const url = usePhotoUrl(id);
   return (
     <div className="relative shrink-0" style={{ width: size, height: size }}>
-      <button type="button" aria-label={tr("Открыть фото чека")} onClick={onOpen} className="tile block h-full w-full overflow-hidden rounded-[14px]">
+      <button type="button" aria-label={tr("Открыть фото")} onClick={onOpen} className="tile block h-full w-full overflow-hidden rounded-[14px]">
         {url && <img src={url} alt="" className="h-full w-full object-cover" draggable={false} />}
       </button>
       {onRemove && (
@@ -48,7 +48,7 @@ export function AddPhotoButton({ onAdded, size = 64, label = tr("Фото") }: {
         onClick={() => input.current?.click()}
         className="tile flex shrink-0 flex-col items-center justify-center gap-1 rounded-[14px] text-ink-2"
         style={{ width: size, height: size }}
-        aria-label={tr("Добавить фото чека")}
+        aria-label={tr("Добавить фото")}
       >
         <Camera size={20} strokeWidth={1.8} />
         <span className="text-[11px] font-medium">{busy ? "…" : label}</span>
