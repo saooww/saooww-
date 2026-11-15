@@ -75,7 +75,7 @@ function WindowChart({ days, onPick }: { days: Array<{ day: DayKey; entry: Sleep
   const y = (m: number) => ((Math.max(top, Math.min(bottom, m)) - top) / (bottom - top)) * H;
   const ticks = [1320, 1440, 1560, 1680, 1800, 1920, 2040];
   return (
-    <svg viewBox={`0 0 ${W} ${H + 22}`} className="w-full" role="img" aria-label={tr("Когда вы спали по дням")}>
+    <svg viewBox={`0 0 ${W} ${H + 22}`} className="mx-auto w-full lg:max-h-[240px]" role="img" aria-label={tr("Когда вы спали по дням")}>
       <defs>
         <linearGradient id="slg" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="var(--sleep)" />
