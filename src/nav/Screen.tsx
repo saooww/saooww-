@@ -36,6 +36,8 @@ export interface ScreenProps {
   onBack?: () => void;
   /** No canvas background (the screen draws its own) */
   bare?: boolean;
+  /** Wider column on big screens (lists that flow into two columns) */
+  wide?: boolean;
   /** Fades the top bar together with custom transitions */
   chromeOpacity?: MotionValue<number>;
 }
@@ -46,7 +48,7 @@ export const BAR_H = 52;
  * A screen: scroll container + top bar. With `large`, the title lives in the
  * content and fades into the bar as you scroll, the way iOS does it.
  */
-export function Screen({ title, large, ownTitle, actions, header, children, className, subheader, scrollRef, onBack, bare, chromeOpacity }: ScreenProps) {
+export function Screen({ title, large, ownTitle, actions, header, children, className, subheader, scrollRef, onBack, bare, wide, chromeOpacity }: ScreenProps) {
   const { tab, isRoot } = useRoute();
   const ownRef = useRef<HTMLDivElement>(null);
   const ref = scrollRef ?? ownRef;
@@ -69,15 +71,17 @@ export function Screen({ title, large, ownTitle, actions, header, children, clas
   return (
     <div className={cn("absolute inset-0 overflow-hidden", !bare && "app-canvas")}>
       <div ref={ref} className={cn("scroll-y absolute inset-0", className)} style={{ paddingTop: `calc(var(--safe-top) + ${BAR_H}px)`, paddingBottom: "calc(var(--tabbar-space) + var(--dock) + 32px)" }}>
-        {large && title && <h1 className="px-5 pb-4 pt-1 text-title-1 font-display">{title}</h1>}
-        {subheader}
-        {children}
+        <div className={cn("desk-col", wide && "desk-wide")}>
+          {large && title && <h1 className="px-5 pb-4 pt-1 text-title-1 font-display">{title}</h1>}
+          {subheader}
+          {children}
+        </div>
       </div>
 
       {/* Top bar */}
       <motion.div className="absolute inset-x-0 top-0 z-20" style={{ height: `calc(var(--safe-top) + ${BAR_H}px)`, opacity: chromeOpacity }}>
         <motion.div className="blur-bar absolute inset-0 hairline-b" style={{ opacity: barBg, background: "var(--header-bg)" }} />
-        <div className="absolute inset-x-0 bottom-0 flex items-center gap-2 px-4" style={{ height: BAR_H }}>
+        <div className={cn("desk-col absolute inset-x-0 bottom-0 flex items-center gap-2 px-4", wide && "desk-wide")} style={{ height: BAR_H }}>
           {header ?? (
             <>
               <div className="flex min-w-[40px] items-center">

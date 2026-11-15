@@ -21,3 +21,4 @@
 платёж|платежа|платежей = one:ödeme; other:ödeme
 Займ|Займа|Займов = one:Borç; other:Borç
 долг|долга|долгов = one:borç; other:borç
+ночь|ночи|ночей = other:gece

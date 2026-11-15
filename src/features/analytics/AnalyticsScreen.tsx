@@ -531,7 +531,7 @@ function WeekdayProfile({ values, peak }: { values: number[]; peak: number | nul
               transition={{ type: "spring", stiffness: 160, damping: 22, delay: i * 0.03 }}
             />
           </div>
-          <span className={cn("text-[10.5px] font-medium", i === peak ? "text-ink" : "text-ink-3")}>{WEEKDAYS_SHORT[i]}</span>
+          <span className={cn("text-[11px] font-medium", i === peak ? "text-ink" : "text-ink-3")}>{WEEKDAYS_SHORT[i]}</span>
         </div>
       ))}
     </div>

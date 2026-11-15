@@ -118,7 +118,7 @@ function CardPager({ wallets, base, hidden }: { wallets: Wallet[]; base: string;
 
   return (
     <section className="mt-5">
-      <div ref={ref} className="relative mx-5" style={{ height: cardH ? cardH + behind.length * 14 : undefined }}>
+      <div ref={ref} className="relative mx-5 lg:mx-auto lg:max-w-[520px]" style={{ height: cardH ? cardH + behind.length * 14 : undefined }}>
         {width > 0 &&
           behind
             .map((b, k) => (

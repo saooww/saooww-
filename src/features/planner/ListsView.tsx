@@ -80,14 +80,16 @@ export function ListsView() {
   );
 }
 
-function Tile({ icon, label, count, onClick, tone }: { icon: LucideIcon; label: string; count: number; onClick: () => void; tone?: "accent" | "positive" | "warning" }) {
+function Tile({ icon: Icon, label, count, onClick, tone }: { icon: LucideIcon; label: string; count: number; onClick: () => void; tone?: "accent" | "positive" | "warning" }) {
+  const k = tone === "accent" ? "var(--accent)" : tone === "positive" ? "var(--positive)" : tone === "warning" ? "var(--warning)" : "var(--ink-2)";
   return (
-    <motion.button type="button" whileTap={{ scale: 0.96 }} transition={spring.press} onClick={onClick} className="panel flex flex-col gap-3 rounded-[20px] p-3.5 text-left" aria-label={`${label}: ${count}`}>
-      <div className="flex w-full items-center justify-between">
-        <IconChip icon={icon} tone={tone} size={34} />
-        <span className={cn("num-display text-[26px] leading-none", count ? "text-ink" : "text-ink-4")}>{count}</span>
-      </div>
-      <span className="text-subhead font-semibold text-ink">{label}</span>
+    <motion.button type="button" whileTap={{ scale: 0.97 }} transition={spring.press} onClick={onClick} className="panel relative flex h-[60px] items-center gap-3 overflow-hidden rounded-[18px] pl-3 pr-3.5 text-left" aria-label={`${label}: ${count}`} style={{ ["--k" as string]: k, ["--glyph-fill" as string]: "currentColor", ["--glyph-fill-o" as string]: 0.25 }}>
+      <span aria-hidden className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(90% 130% at 0% 0%, color-mix(in srgb, var(--k) 13%, transparent), transparent 62%)" }} />
+      <span className="relative grid h-9 w-9 shrink-0 place-items-center rounded-[12px]" style={{ color: "var(--k)", background: "color-mix(in srgb, var(--k) 14%, transparent)", boxShadow: "inset 0 0 0 1px color-mix(in srgb, var(--k) 30%, transparent)" }}>
+        <Icon size={18} />
+      </span>
+      <span className="relative min-w-0 flex-1 truncate text-subhead font-semibold text-ink">{label}</span>
+      <span className={cn("num relative text-[18px] font-semibold leading-none", count ? "text-ink" : "text-ink-4")}>{count}</span>
     </motion.button>
   );
 }

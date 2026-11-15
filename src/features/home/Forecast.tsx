@@ -42,7 +42,7 @@ export function ForecastStrip() {
       onPointerDownCapture={(e) => e.stopPropagation()}
       whileTap={{ scale: 0.98 }}
       transition={spring.press}
-      className="mt-4 block w-full rounded-[20px] px-4 py-3 text-left text-white"
+      className="mt-4 block w-full rounded-[22px] px-4 py-3 text-left text-white"
       style={glass}
     >
       <span className="flex items-center justify-between text-caption text-white/80">
@@ -246,7 +246,7 @@ export function ForecastSheet() {
         ))}
         <div className="flex items-center gap-2 px-4 py-3.5">
           <span className="flex-1 text-headline font-semibold">{horizon === "month" ? tr("Итого к концу месяца") : tr("Итого к концу периода")}</span>
-          <Money value={f.end} currency={base} privacy variant="hero" className="text-[19px]" />
+          <Money value={f.end} currency={base} privacy variant="hero" className="text-[20px]" />
         </div>
       </div>
 

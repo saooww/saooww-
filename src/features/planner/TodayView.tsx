@@ -28,7 +28,8 @@ export function TodayView() {
   const empty = !plan.focus.length && !plan.rest.length;
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 lg:block lg:columns-2 lg:gap-x-2 [&>*]:lg:mb-6 [&>*]:lg:break-inside-avoid">
+      <SleepPrompt />
       <DayCard total={plan.total} completed={plan.completed} focus={plan.focus.length} inbox={inbox} />
       <MonthCalendar />
 
@@ -95,6 +96,25 @@ export function TodayView() {
   );
 }
 
+/** One quiet line in the morning: the night is not recorded yet. */
+function SleepPrompt() {
+  const today = useToday();
+  const has = useData((s) => s.sleep.some((e) => e.day === today));
+  const any = useData((s) => s.sleep.length > 0);
+  if (has || new Date().getHours() >= 15) return null;
+  return (
+    <button type="button" onClick={() => nav.sheet("sleep", { day: today })} className="panel -mb-2 mx-4 flex items-center gap-3 rounded-[18px] px-3.5 py-2.5 text-left active:opacity-80">
+      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[12px] text-[var(--sleep)]" style={{ background: "color-mix(in srgb, var(--sleep) 15%, transparent)", boxShadow: "inset 0 0 0 1px color-mix(in srgb, var(--sleep) 32%, transparent)" }}>
+        <Moon size={17} />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-callout font-semibold">{tr("Как вы спали?")}</span>
+        <span className="block truncate text-footnote text-ink-2">{any ? tr("Запишите ночь за минуту") : tr("Следите за сном и самочувствием")}</span>
+      </span>
+    </button>
+  );
+}
+
 function DayCard({ total, completed, focus, inbox }: { total: number; completed: number; focus: number; inbox: number }) {
   const today = useToday();
   const name = useData((s) => s.settings.name);
@@ -109,43 +129,47 @@ function DayCard({ total, completed, focus, inbox }: { total: number; completed:
   const first = name.trim().split(/\s+/)[0];
   const title = total === 0 ? tr("Дел на сегодня пока нет") : allDone ? tr("Всё сделано. Можно выдохнуть") : tr("{0} на сегодня", pluralN(left, ["дело", "дела", "дел"]));
 
-  const tiles: Array<{ n: number; label: string; aria?: string; onClick?: () => void; accent?: boolean }> = [
-    { n: completed, label: tr("Сделано") },
-    { n: left, label: tr("Осталось"), accent: left > 0 && evening },
+  const ratio = total ? completed / total : 0;
+  const R = 30;
+  const C = 2 * Math.PI * R;
+  const chips: Array<{ n: number; label: string; aria?: string; onClick?: () => void }> = [
     { n: focus, label: tr("Главных"), onClick: () => nav.sheet("planDay", { start: "focus" }) },
     { n: inbox, label: tr("Во входящих"), aria: tr("Во входящих {0}", pluralN(inbox, ["дело", "дела", "дел"])), onClick: inbox ? () => nav.sheet("planDay", { start: "inbox" }) : undefined }
   ];
 
   return (
     <section className="px-4">
-      <div className="px-1">
-        <div className="text-subhead text-ink-2">{first ? tr("Привет, {0}", first) : capitalize(WEEKDAYS_LONG[weekdayIndex(today)])}</div>
-        <h2 className="font-display mt-0.5 text-title-2">{title}</h2>
-      </div>
-      <div className="mt-3 grid grid-cols-2 gap-2.5">
-        {tiles.map((t, i) => (
-          <motion.button
-            key={t.label}
-            type="button"
-            disabled={!t.onClick}
-            aria-label={t.aria}
-            onClick={t.onClick}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.04 }}
-            whileTap={t.onClick ? { scale: 0.96 } : undefined}
-            className="panel flex h-[92px] flex-col items-center justify-center rounded-[22px]"
-          >
-            <span className={cn("num-display text-[32px] leading-none", t.accent ? "text-accent-ink" : "text-ink")}>{t.n}</span>
-            <span className="mt-1.5 text-caption text-ink-2">{t.label}</span>
-          </motion.button>
-        ))}
+      <div className="panel relative overflow-hidden rounded-[22px] p-4">
+        <span aria-hidden className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(80% 120% at 0% 0%, var(--plan-soft), transparent 65%)" }} />
+        <div className="relative flex items-center gap-4">
+          <div className="relative h-[72px] w-[72px] shrink-0" role="img" aria-label={tr("{0} из {1}", completed, total)}>
+            <svg viewBox="0 0 72 72" className="-rotate-90">
+              <circle cx="36" cy="36" r={R} fill="none" stroke="var(--line)" strokeWidth="6" />
+              <motion.circle cx="36" cy="36" r={R} fill="none" stroke="var(--plan)" strokeWidth="6" strokeLinecap="round" strokeDasharray={C} initial={{ strokeDashoffset: C }} animate={{ strokeDashoffset: C * (1 - ratio) }} transition={spring.smooth} style={{ filter: "drop-shadow(0 0 6px var(--plan))" }} />
+            </svg>
+            <span className="absolute inset-0 grid place-items-center text-[17px] font-bold tabular-nums">
+              {completed}<span className="text-[12px] font-medium text-ink-3">/{total}</span>
+            </span>
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="text-footnote text-ink-2">{first ? tr("Привет, {0}", first) : capitalize(WEEKDAYS_LONG[weekdayIndex(today)])}</div>
+            <h2 className="font-display mt-0.5 text-[20px] leading-[26px] tracking-[-0.01em]">{title}</h2>
+          </div>
+        </div>
+        <div className="relative mt-3.5 flex gap-2">
+          {chips.map((t) => (
+            <button key={t.label} type="button" disabled={!t.onClick} aria-label={t.aria} onClick={t.onClick} className="tile flex h-9 items-center gap-2 rounded-[12px] px-3 text-footnote text-ink-2 enabled:active:opacity-70">
+              <span className="num text-[15px] font-semibold text-ink">{t.n}</span>
+              {t.label}
+            </button>
+          ))}
+        </div>
       </div>
       {cta === "plan" && (
-        <Button size="md" variant="tinted" block icon={Sunrise} className="mt-3" onClick={() => nav.sheet("planDay", {})}>{tr("Спланировать день")}</Button>
+        <Button size="md" variant="secondary" block icon={Sunrise} className="mt-2.5" onClick={() => nav.sheet("planDay", {})}>{tr("Спланировать день")}</Button>
       )}
       {cta === "review" && (
-        <Button size="md" variant="tinted" block icon={Moon} className="mt-3" onClick={() => nav.sheet("reviewDay", {})}>{tr("Подвести итоги")}</Button>
+        <Button size="md" variant="secondary" block icon={Moon} className="mt-2.5" onClick={() => nav.sheet("reviewDay", {})}>{tr("Подвести итоги")}</Button>
       )}
     </section>
   );

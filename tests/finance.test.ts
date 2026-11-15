@@ -17,6 +17,7 @@ import { buildLedger, computeBalances, debtInfo, netWorth, periodRange, periodSt
 import { capitalChange, capitalForecast, freeCash, monthForecast, scheduledBetween } from "../src/lib/analytics";
 import { nextMonthPlan, nextSlot, planItems, planLeft, planReceived, planSchedule, planSurplus } from "../src/lib/plans";
 import { debtPeople, splitRepayment } from "../src/lib/debts";
+import { budgetStates } from "../src/lib/insights";
 import { goalInfo, goalSaved, goalEnvelopes } from "../src/lib/finance";
 import { goalPace, goalWhatIf, whatIfSteps } from "../src/lib/goals";
 import { amountToInput, parseAmount } from "../src/lib/money";
@@ -66,6 +67,83 @@ function known(name: string, fn: () => void) {
 }
 
 console.log("Ardessa — финансовая корректность (фиксированная книга)");
+
+/* ---------------- random operations against an independent oracle ---------------- */
+
+test("случайные 400 операций: баланс каждого кошелька, капитал и доходы/расходы совпадают с независимым пересчётом", () => {
+  let seed = 424242;
+  const rnd = () => ((seed = (seed * 1664525 + 1013904223) % 4294967296) / 4294967296);
+  const pick = <T,>(a: T[]) => a[Math.floor(rnd() * a.length)];
+  const ids = ["card", "cash", "usd", "save"];
+  const cur: Record<string, string> = { card: "RUB", cash: "RUB", usd: "USD", save: "RUB" };
+  const made: string[] = [];
+  for (let i = 0; i < 400; i++) {
+    const r = rnd();
+    const day = String(1 + Math.floor(rnd() * 28)).padStart(2, "0");
+    const date = `2027-0${1 + Math.floor(rnd() * 3)}-${day}T${String(Math.floor(rnd() * 24)).padStart(2, "0")}:${String(Math.floor(rnd() * 60)).padStart(2, "0")}`;
+    const amount = 1 + Math.floor(rnd() * 500_000);
+    if (r < 0.4) made.push(st().addTransaction({ kind: "expense", amount, walletId: pick(ids), date }));
+    else if (r < 0.65) made.push(st().addTransaction({ kind: "income", amount, walletId: pick(ids), date }));
+    else if (r < 0.85) {
+      const from = pick(ids);
+      const to = pick(ids.filter((x) => x !== from));
+      const cross = cur[from] !== cur[to];
+      made.push(st().addTransaction({ kind: "transfer", amount, walletId: from, toWalletId: to, toAmount: cross ? 1 + Math.floor(rnd() * 400_000) : undefined, date }));
+    } else if (r < 0.93 && made.length) st().deleteTransaction(made.splice(Math.floor(rnd() * made.length), 1)[0]);
+    else if (made.length) st().updateTransaction(pick(made), { amount });
+  }
+  // the oracle: walk the records by hand
+  const exp: Record<string, number> = {};
+  for (const w of st().wallets) exp[w.id] = w.openingBalance;
+  let flowBase = 0;
+  const settings = st().settings;
+  for (const t of st().transactions) {
+    const w = st().wallets.find((x) => x.id === t.walletId)!;
+    if (t.kind === "expense") {
+      exp[t.walletId!] -= t.amount;
+      if (t.date.slice(0, 10) <= T0) flowBase -= toBase(t.amount, w.currency, settings)!;
+    } else if (t.kind === "income") {
+      exp[t.walletId!] += t.amount;
+      if (t.date.slice(0, 10) <= T0) flowBase += toBase(t.amount, w.currency, settings)!;
+    } else if (t.kind === "transfer") {
+      exp[t.walletId!] -= t.amount;
+      exp[t.toWalletId!] += t.toAmount ?? t.amount;
+    }
+  }
+  const b = bal();
+  for (const id of ids) assert.equal(b[id], exp[id], `кошелёк ${id}`);
+  // net worth = sum of the wallets in the base currency
+  const total = st().wallets.reduce((s, w) => s + toBase(b[w.id], w.currency, settings)!, 0);
+  assert.equal(sumWallets(st().wallets, b, settings).total, total);
+  // income − expense up to today = the flows the oracle summed (transfers never count, later dates have not happened)
+  const all = periodStats(buildLedger(data()).entries, { period: "month", offset: 0, from: "2000-01-01", to: "2100-01-01", label: "", days: 36500 }, T0);
+  assert.equal(all.income - all.expense, flowBase);
+});
+
+test("бюджеты и аналитика считают траты месяца одинаково: валюты, будущие даты, категории", () => {
+  st().addTransaction({ kind: "expense", amount: 300_00, walletId: "card", categoryId: "c-food", date: "2027-01-03T10:00" });
+  st().addTransaction({ kind: "expense", amount: 10_00, walletId: "usd", categoryId: "c-food", date: "2027-01-05T10:00" }); // 10 $ = 950 ₽
+  st().addTransaction({ kind: "expense", amount: 700_00, walletId: "cash", categoryId: "c-cafe", date: "2027-01-10T10:00" });
+  st().addTransaction({ kind: "expense", amount: 999_00, walletId: "card", categoryId: "c-food", date: "2027-01-20T10:00" }); // впереди — не считается
+  st().addTransaction({ kind: "expense", amount: 111_00, walletId: "card", categoryId: "c-food", date: "2026-12-31T23:59" }); // прошлый месяц
+  const d = data();
+  d.budgets = [
+    { id: "b-all", categoryId: null, limit: 5_000_00, createdAt: "2026-12-01T10:00" },
+    { id: "b-food", categoryId: "c-food", limit: 2_000_00, createdAt: "2026-12-01T10:00" }
+  ];
+  st().replaceAll(d);
+  const entries = buildLedger(data()).entries;
+  const stats = periodStats(entries, periodRange("month", 0, T0), T0);
+  const bs = budgetStates(data(), entries, T0);
+  const all = bs.find((b) => b.id === "b-all")!;
+  const food = bs.find((b) => b.id === "b-food")!;
+  assert.equal(stats.expense, 300_00 + 950_00 + 700_00);
+  assert.equal(all.spent, stats.expense);
+  assert.equal(food.spent, stats.expenseByCategory.get("c-food"));
+  assert.equal(food.spent, 300_00 + 950_00);
+  assert.equal(food.remaining, 2_000_00 - food.spent);
+  assert.equal(food.level, "ok");
+});
 
 /* ---------------- balances ---------------- */
 

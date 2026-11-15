@@ -95,14 +95,14 @@ export function IncomeCard() {
 
   if (!list.length) {
     return (
-      <button type="button" onClick={addIncome} className="mx-4 mt-4 flex h-[58px] w-[calc(100%-32px)] items-center justify-center gap-2 rounded-[20px] border border-dashed border-line-strong text-subhead font-semibold text-ink-2 active:bg-surface-press">
+      <button type="button" onClick={addIncome} className="mx-4 mt-4 flex h-[58px] w-[calc(100%-32px)] items-center justify-center gap-2 rounded-[22px] border border-dashed border-line-strong text-subhead font-semibold text-ink-2 active:bg-surface-press">
         <Plus size={16} />
         {tr("Ожидаемый доход — зарплата, аванс")}
       </button>
     );
   }
   return (
-    <section className="panel mx-4 mt-4 rounded-[24px] px-4 pb-3.5 pt-4" aria-label={tr("Доходы месяца")}>
+    <section className="panel mx-4 mt-4 rounded-[22px] px-4 pb-3.5 pt-4" aria-label={tr("Доходы месяца")}>
       <button type="button" onClick={() => nav.sheet("incomes")} className="block w-full text-left">
         <div className="flex items-baseline justify-between gap-3">
           <span className="truncate text-headline font-semibold">{title}</span>

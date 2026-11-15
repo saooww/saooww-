@@ -74,12 +74,12 @@ export function CreateSheet() {
             transition={{ ...spring.smooth, delay: 0.03 * i }}
             whileTap={{ scale: 0.97 }}
             onClick={go(a.run)}
-            className="panel relative flex h-[64px] items-center gap-3 overflow-hidden rounded-[20px] pl-3 pr-2 text-left"
+            className="panel relative flex h-[64px] items-center gap-3 overflow-hidden rounded-[22px] pl-3 pr-2 text-left"
             style={{ "--k": a.color, "--glyph-fill": "currentColor", "--glyph-fill-o": 0.25 } as CSSProperties}
           >
             {/* the kind's colour is only a soft light from the corner and the icon — the card itself stays dark */}
             <span aria-hidden className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(90% 120% at 0% 0%, color-mix(in srgb, var(--k) 15%, transparent), transparent 62%)" }} />
-            <span className="relative grid h-10 w-10 shrink-0 place-items-center rounded-[13px]" style={{ color: "var(--k)", background: "color-mix(in srgb, var(--k) 14%, transparent)", boxShadow: "inset 0 0 0 1px color-mix(in srgb, var(--k) 32%, transparent)" }}>
+            <span className="relative grid h-10 w-10 shrink-0 place-items-center rounded-[12px]" style={{ color: "var(--k)", background: "color-mix(in srgb, var(--k) 14%, transparent)", boxShadow: "inset 0 0 0 1px color-mix(in srgb, var(--k) 32%, transparent)" }}>
               <a.icon size={19} />
             </span>
             <span className="relative min-w-0 text-[15px] font-semibold leading-[18px] text-ink">{a.label}</span>

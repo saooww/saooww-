@@ -370,7 +370,8 @@ export function periodStats(entries: LedgerEntry[], range: Range, today: DayKey)
   const expenseByCategory = new Map<string, Minor>();
   const incomeByCategory = new Map<string, Minor>();
   for (const e of entries) {
-    if (e.day < range.from || e.day > range.to) continue;
+    // an operation dated later than today has not happened yet: budgets, the daily allowance and the forecast already leave it out
+    if (e.day < range.from || e.day > range.to || e.day > today) continue;
     count++;
     const key = e.tx.categoryId ?? "none";
     if (e.tx.kind === "income") {

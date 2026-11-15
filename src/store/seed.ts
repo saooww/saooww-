@@ -3,7 +3,7 @@ import { mulberry32 } from "../lib/id";
 import { computeBalances } from "../lib/finance";
 import { nextAfter } from "../lib/recurrence";
 import { defaultCategories } from "./catalog";
-import type { AppData, Budget, Debt, Favorite, Goal, Note, Plan, Project, Recurring, Settings, Task, Transaction, Wallet } from "./types";
+import type { AppData, Budget, Debt, Favorite, Goal, Note, Plan, Project, Recurring, Settings, SleepEntry, Task, Transaction, Wallet } from "./types";
 import { tr } from "../i18n/i18n";
 
 export function defaultSettings(): Settings {
@@ -57,6 +57,7 @@ export function createEmptyData(): AppData {
     tasks: [],
     projects: [],
     notes: [],
+    sleep: [],
     favorites: [],
     settings: { ...defaultSettings(), defaultWalletId: "w-main" },
     meta: { demo: false, createdAt: now }
@@ -70,6 +71,28 @@ const rub = (major: number) => Math.round(major * 100);
  * relative to today. Wallet balances are then pinned to round targets by
  * solving for each wallet's opening balance.
  */
+/** Two months of nights for the demo: later and longer at weekends, mood follows sleep. */
+function demoSleep(today: DayKey): SleepEntry[] {
+  const rnd = mulberry32(777);
+  const hhmm = (min: number) => {
+    const m = ((Math.round(min) % 1440) + 1440) % 1440;
+    return `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+  };
+  const out: SleepEntry[] = [];
+  for (let i = 60; i >= 1; i--) {
+    const day = addDays(today, -i);
+    const wd = (parseDay(day).getDay() + 6) % 7; // 0 = Monday
+    const weekend = wd >= 5;
+    const bed = (weekend ? 24 * 60 + 20 : 23 * 60 + 5) + (rnd() - 0.4) * 110;
+    const dur = (weekend ? 8.4 : 7.0) * 60 + (rnd() - 0.5) * 120;
+    const q = Math.max(1, Math.min(5, Math.round(1.2 + (dur / 60 - 5) * 0.9 + (rnd() - 0.5) * 1.2))) as 1 | 2 | 3 | 4 | 5;
+    const mood = Math.max(1, Math.min(5, Math.round(q + (rnd() - 0.5) * 1.6))) as 1 | 2 | 3 | 4 | 5;
+    const energy = Math.max(1, Math.min(5, Math.round(q + (rnd() - 0.5) * 1.4))) as 1 | 2 | 3 | 4 | 5;
+    out.push({ id: `sl-${day}`, day, bed: hhmm(bed), wake: hhmm(bed + dur), quality: q, mood, energy, updatedAt: nowISO() });
+  }
+  return out;
+}
+
 export function createDemoData(today: DayKey = todayKey()): AppData {
   const rnd = mulberry32(20261021);
   const between = (a: number, b: number, step = 10) => Math.round((a + rnd() * (b - a)) / step) * step;
@@ -426,6 +449,7 @@ export function createDemoData(today: DayKey = todayKey()): AppData {
     tasks,
     projects,
     notes,
+    sleep: demoSleep(today),
     favorites,
     settings: { ...defaultSettings(), name: tr("Алекс"), defaultWalletId: "w-main" },
     meta: { demo: true, createdAt: now }

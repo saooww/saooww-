@@ -184,7 +184,7 @@ function Big({ value, currency, className }: { value: number; currency: string; 
 
 function Line({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <motion.p variants={item} className={cn("mt-4 text-[19px] leading-[26px] text-white/80", className)}>
+    <motion.p variants={item} className={cn("mt-4 text-[20px] leading-[26px] text-white/80", className)}>
       {children}
     </motion.p>
   );
@@ -265,8 +265,8 @@ function buildSlides(s: MonthSummary, cur: string): Slide[] {
                   <span className="grid h-11 w-11 shrink-0 place-items-center rounded-[14px]" style={{ background: c.color }}>
                     <NamedIcon name={c.icon} size={21} strokeWidth={2} />
                   </span>
-                  <span className="min-w-0 flex-1 truncate text-[19px] font-semibold">{c.name}</span>
-                  <span className="num text-[19px]">{money(c.amount)}</span>
+                  <span className="min-w-0 flex-1 truncate text-[20px] font-semibold">{c.name}</span>
+                  <span className="num text-[20px]">{money(c.amount)}</span>
                 </div>
                 <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-white/15">
                   <motion.div className="h-full rounded-full" style={{ background: c.color }} initial={{ width: 0 }} animate={{ width: `${Math.max(3, c.share * 100)}%` }} transition={{ delay: 0.35 + k * 0.12, duration: 0.9, ease: ease.out }} />
@@ -287,7 +287,7 @@ function buildSlides(s: MonthSummary, cur: string): Slide[] {
       body: (
         <div className="flex flex-1 flex-col justify-center">
           <Eyebrow>{tr("Самая крупная трата")}</Eyebrow>
-          <motion.div variants={item} className="mt-6 grid h-16 w-16 place-items-center rounded-[20px]" style={{ background: s.biggest.color }}>
+          <motion.div variants={item} className="mt-6 grid h-16 w-16 place-items-center rounded-[22px]" style={{ background: s.biggest.color }}>
             <NamedIcon name={s.biggest.icon} size={30} strokeWidth={1.9} />
           </motion.div>
           <motion.div variants={item} className="mt-5 text-[26px] font-semibold leading-tight">

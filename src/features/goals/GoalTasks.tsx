@@ -20,7 +20,7 @@ export function GoalTasks({ goal }: { goal: Goal }) {
 
   if (!project) {
     return (
-      <section className="mx-4 rounded-[20px] border border-dashed border-line-strong px-4 py-4">
+      <section className="mx-4 rounded-[22px] border border-dashed border-line-strong px-4 py-4">
         <div className="text-subhead font-semibold">{tr("Дела к цели")}</div>
         <p className="mt-1 text-footnote text-ink-2">{tr("Запланируйте, что сделать ради цели — список будет рядом с деньгами.")}</p>
         <Button

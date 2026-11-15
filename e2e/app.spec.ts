@@ -155,7 +155,7 @@ test("фото чека сохраняется вместе с операцие�
   // a tiny red PNG stands in for the camera
   const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAFklEQVR4nGP8z8DAwMDAxMDAwMDAAAANHQEDasKb6QAAAABJRU5ErkJggg==", "base64");
   await page.getByRole("dialog").locator('input[type="file"]').setInputFiles({ name: "receipt.png", mimeType: "image/png", buffer: png });
-  await expect(page.getByRole("button", { name: "Открыть фото чека" })).toHaveCount(1);
+  await expect(page.getByRole("button", { name: "Открыть фото" })).toHaveCount(1);
   await page.getByRole("button", { name: "Назад" }).click();
   await page.getByRole("button", { name: "Добавить расход" }).click();
 
@@ -253,6 +253,53 @@ test("пункты заметки превращаются в дела", async (
   await page.getByRole("tab", { name: "Списки" }).click();
   await page.getByRole("button", { name: /^Дом/ }).click();
   await expect(page.getByRole("button", { name: /Корм для кота/ })).toBeVisible();
+});
+
+test("заметка с оформлением и фото: сохраняется после перезапуска, фото не удаляется при очистке", async ({ page }) => {
+  await startDemo(page);
+  await openPlanner(page);
+  await page.getByRole("tab", { name: "Заметки" }).click();
+  await page.getByRole("button", { name: "Новая заметка" }).first().click();
+  await page.getByPlaceholder("Заголовок").fill("Поездка");
+  const ed = page.getByRole("textbox", { name: "Текст заметки" });
+  await ed.click();
+  await page.keyboard.type("Важный пункт");
+  await page.keyboard.press("Shift+Home");
+  await page.getByRole("button", { name: "Жирный" }).click();
+  await page.keyboard.press("End");
+  // 1×1 png
+  const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==", "base64");
+  await page.setInputFiles('input[type=file][accept="image/*"]', { name: "a.png", mimeType: "image/png", buffer: png });
+  await expect(ed.locator("figure img")).toHaveCount(1);
+  await page.waitForTimeout(700);
+  await page.reload();
+  await page.waitForTimeout(500);
+  await page.getByRole("tab", { name: "Дела" }).click();
+  await page.getByRole("tab", { name: "Заметки" }).click();
+  await page.getByRole("button", { name: /Поездка/ }).click();
+  await expect(page.getByRole("textbox", { name: "Текст заметки" }).locator("b, strong")).toHaveText("Важный пункт");
+  await expect(page.getByRole("textbox", { name: "Текст заметки" }).locator("figure img")).toHaveCount(1);
+  // the picture itself loads from the photo store
+  await expect.poll(() => page.locator("figure img").evaluate((i: HTMLImageElement) => i.naturalWidth)).toBeGreaterThan(0);
+});
+
+test("сон: запись ночи считает длительность через полночь и сохраняется после перезапуска", async ({ page }) => {
+  await startDemo(page);
+  await page.getByRole("tab", { name: "Профиль" }).click();
+  await page.locator('.app-canvas > [aria-hidden="false"]').getByText("Сон", { exact: true }).first().click();
+  await page.getByRole("button", { name: "Записать эту ночь" }).click();
+  const sheet = page.getByRole("dialog", { name: "Как вы спали?" });
+  await sheet.getByLabel("Лёг").fill("23:30");
+  await sheet.getByLabel("Встал").fill("06:45");
+  await expect(sheet.getByText("7 ч 15 мин")).toBeVisible();
+  await sheet.getByRole("radiogroup", { name: "Настроение" }).getByRole("radio", { name: "4" }).click();
+  await sheet.getByRole("button", { name: "Готово" }).click();
+  await expect(page.getByText("23:30 → 06:45")).toBeVisible();
+  await page.waitForTimeout(700);
+  await page.reload();
+  await page.waitForTimeout(500);
+  await page.getByRole("tab", { name: "Профиль" }).click();
+  await expect(page.getByText(/7 ч 15 мин/).first()).toBeVisible();
 });
 
 test("калькулятор в сумме: 1200 + 350 записывается как 1 550", async ({ page }) => {
@@ -535,4 +582,25 @@ test("зарплата кусками: выплаты с названиями и
   await expect(page.getByText("Доход добавлен")).toBeVisible();
   await page.getByRole("button", { name: "Все доходы" }).click();
   await expect(page.getByRole("dialog", { name: "Доходы месяца" }).locator("section.panel", { hasText: "Фриланс" })).toContainText("Получено 28 000");
+});
+
+test.describe("компьютер", () => {
+  test.use({ viewport: { width: 1440, height: 900 }, isMobile: false, hasTouch: false });
+  test("боковая панель вместо нижней капсулы, разделы переключаются, окно создания по центру", async ({ page }) => {
+    await startDemo(page);
+    const rail = page.locator("aside.desk-rail");
+    await expect(rail).toBeVisible();
+    await expect(page.locator("nav.desk-hide")).toBeHidden();
+    // the content sits right of the rail
+    const box = await page.locator(".app-main").boundingBox();
+    expect(box!.x).toBeGreaterThanOrEqual(240);
+    await rail.getByRole("tab", { name: "Дела" }).click();
+    await expect(page.getByRole("button", { name: "Начать" })).toBeVisible();
+    await page.getByRole("button", { name: "Начать" }).click();
+    await rail.getByRole("button", { name: "Создать" }).click();
+    const dlg = page.getByRole("dialog", { name: "Создать" });
+    await expect(dlg).toBeVisible();
+    const d = await dlg.boundingBox();
+    expect(d!.width).toBeLessThanOrEqual(580);
+  });
 });

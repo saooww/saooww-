@@ -36,7 +36,7 @@ export function DayStrip({ variant = "panel" }: { variant?: "glass" | "panel" })
   }, [s, base]);
 
   const onGlass = variant === "glass";
-  const shell = onGlass ? "mt-5 flex w-full items-center gap-3 rounded-[20px] px-4 py-3 text-left text-white" : "panel mx-4 mt-3 flex w-[calc(100%-32px)] items-center gap-3 rounded-[22px] px-4 py-3.5 text-left";
+  const shell = onGlass ? "mt-5 flex w-full items-center gap-3 rounded-[22px] px-4 py-3 text-left text-white" : "panel mx-4 mt-3 flex w-[calc(100%-32px)] items-center gap-3 rounded-[22px] px-4 py-3.5 text-left";
   const glass = onGlass ? ({ background: "rgba(0,0,0,0.28)", boxShadow: "inset 0 0 0 0.5px rgba(255,255,255,0.16)", backdropFilter: "blur(12px)" } as const) : undefined;
   const sub = onGlass ? "text-white/80" : "text-ink-2";
   const trackCls = onGlass ? "bg-white/25" : "bg-[var(--line)]";

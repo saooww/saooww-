@@ -175,7 +175,7 @@ export const WalletCard = memo(function WalletCard({
   const balanceBlock = (
     <div>
       <div className="flex items-center justify-between">
-        <span className="text-[10.5px] font-semibold uppercase leading-none tracking-[0.16em]" style={{ color: material.inkMuted }}>
+        <span className="text-[11px] font-semibold uppercase leading-none tracking-[0.16em]" style={{ color: material.inkMuted }}>
           {label}
         </span>
         {!stacked && (
@@ -218,7 +218,7 @@ export const WalletCard = memo(function WalletCard({
     <div className="flex items-center gap-3">
       {Icon && (
         <span
-          className="grid h-[34px] w-[34px] shrink-0 place-items-center rounded-[11px]"
+          className="grid h-[34px] w-[34px] shrink-0 place-items-center rounded-[12px]"
           style={{ background: chip, boxShadow: material.light ? "inset 0 0 0 0.5px rgba(0,0,0,0.06)" : "inset 0 0.5px 0 rgba(255,255,255,0.16)" }}
         >
           <Icon size={16} strokeWidth={1.9} />

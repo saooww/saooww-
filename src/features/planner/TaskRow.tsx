@@ -1,6 +1,6 @@
 import { memo, useRef, useState } from "react";
 import { AnimatePresence, animate, motion, useMotionValue, useTransform } from "framer-motion";
-import { AlignLeft, CalendarDays, ListChecks, Repeat, Sunrise, Trash2 } from "../../ui/glyphs";
+import { AlignLeft, CalendarDays, Camera, ListChecks, Repeat, Sunrise, Trash2 } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { dueLabel } from "../../lib/tasks";
 import { useToday } from "../../store/hooks";
@@ -36,7 +36,7 @@ export function TaskCheck({ task, seal, size = 24, onToggle }: { task: Task; sea
         className={cn(
           "grid place-items-center border-[1.6px] transition-[background,border-color,box-shadow] duration-200",
           seal ? "rounded-[7px]" : "rounded-full",
-          done ? (seal ? "fill-accent border-transparent" : "fill-positive border-transparent") : seal || urgent ? "border-accent" : task.priority === 1 ? "border-warning" : "border-ink-3"
+          done ? (seal ? "border-transparent bg-[var(--plan)]" : "fill-positive border-transparent") : seal ? "border-[var(--plan)]" : urgent ? "border-accent" : task.priority === 1 ? "border-warning" : "border-ink-3"
         )}
         style={{ width: size, height: size, transform: seal ? "rotate(-4deg)" : undefined }}
       >
@@ -89,7 +89,8 @@ export const TaskRow = memo(function TaskRow({ task, showDate = true, showList =
   const subs = task.subtasks ?? [];
   const subsDone = subs.filter((s) => s.done).length;
   const showDue = showDate && task.due && !(task.due === today && !overdue);
-  const meta = showDue || (showList && project) || subs.length > 0 || task.repeat !== "none" || !!task.note;
+  const photos = task.photos?.length ?? 0;
+  const meta = showDue || (showList && project) || subs.length > 0 || task.repeat !== "none" || !!task.note || photos > 0;
 
   const body = (
     <div className={cn("flex min-h-[58px] w-full items-center gap-3 px-4", meta ? "py-2.5" : "py-2")}>
@@ -129,6 +130,12 @@ export const TaskRow = memo(function TaskRow({ task, showDate = true, showList =
                 </span>
               )}
               {task.repeat !== "none" && <Repeat size={12} strokeWidth={2.1} className="shrink-0" aria-label={tr("Повторяется")} />}
+              {photos > 0 && (
+                <span className="flex shrink-0 items-center gap-1 tnum">
+                  <Camera size={12} strokeWidth={2.1} />
+                  {photos}
+                </span>
+              )}
               {task.note && <AlignLeft size={12} strokeWidth={2.1} className="shrink-0" aria-label={tr("Есть заметка")} />}
             </span>
           )}

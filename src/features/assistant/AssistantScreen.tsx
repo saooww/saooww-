@@ -134,13 +134,13 @@ export function AssistantScreen({ ask }: { ask?: number }) {
 function AnswerCard({ a }: { a: Answer }) {
   const [how, setHow] = useState(false);
   return (
-    <div className="panel max-w-[94%] rounded-[20px] rounded-bl-[6px] p-4">
+    <div className="panel max-w-[94%] rounded-[22px] rounded-bl-[6px] p-4">
       <p className="text-callout leading-snug text-ink">{a.text}</p>
       {a.rows.length > 0 && (
         <div className="mt-3 flex flex-col gap-2.5">
           {a.rows.map((r, i) => (
             <div key={i} className="flex items-center gap-3">
-              <span className="tile grid h-9 w-9 shrink-0 place-items-center rounded-[11px]" style={r.color ? { color: r.color } : undefined}>
+              <span className="tile grid h-9 w-9 shrink-0 place-items-center rounded-[12px]" style={r.color ? { color: r.color } : undefined}>
                 <NamedIcon name={r.icon} size={17} />
               </span>
               <span className="min-w-0 flex-1">
@@ -174,7 +174,7 @@ function AnswerCard({ a }: { a: Answer }) {
 
 function NotUnderstood({ onPick }: { onPick: (i: number) => void }) {
   return (
-    <div className="panel max-w-[94%] rounded-[20px] rounded-bl-[6px] p-4">
+    <div className="panel max-w-[94%] rounded-[22px] rounded-bl-[6px] p-4">
       <p className="text-callout text-ink">{tr("Пока я отвечаю на такие вопросы — выберите один:")}</p>
       <div className="mt-3 flex flex-wrap gap-1.5">
         {QUESTIONS.map((q, i) => (

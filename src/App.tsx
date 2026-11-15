@@ -181,7 +181,7 @@ function Main({ formatKey }: { formatKey: string }) {
 
   return (
     <>
-      <div className="app-canvas fixed inset-0 overflow-hidden" key={formatKey}>
+      <div className="app-canvas app-main fixed inset-0 overflow-hidden" key={formatKey}>
         {TABS.map((t) => (visited.has(t) ? <TabLayer key={t} tab={t} active={t === tab} /> : null))}
       </div>
       <TabBar />

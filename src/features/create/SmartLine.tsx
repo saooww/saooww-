@@ -121,7 +121,7 @@ export function SmartLine({ autoFocus, onDone, compact, docked }: { autoFocus?: 
           e.preventDefault();
           save();
         }}
-        className={cn("flex items-center gap-2 pl-4 pr-1.5", docked ? "glass h-[50px] rounded-[22px]" : "panel rounded-[20px]", !docked && (compact ? "h-12" : "h-14"))}
+        className={cn("flex items-center gap-2 pl-4 pr-1.5", docked ? "glass h-[50px] rounded-[22px]" : "panel rounded-[22px]", !docked && (compact ? "h-12" : "h-14"))}
       >
         <Sparkles size={19} className="shrink-0 text-accent-ink" />
         <input

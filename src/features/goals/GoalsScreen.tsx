@@ -185,11 +185,11 @@ function GoalActions({ g, info }: { g: Goal; info: GoalInfo }) {
   return (
     <div className="on-dark relative mx-4 mt-5">
       <div className="grid grid-cols-2 gap-2.5">
-        <div className="rounded-[20px] px-4 py-3" style={glass}>
+        <div className="rounded-[22px] px-4 py-3" style={glass}>
           <div className="text-caption text-white/70">{tr("Осталось")}</div>
           <Money value={info.remaining} currency={g.currency} privacy variant="hero" className="mt-0.5 block text-[20px] leading-tight" />
         </div>
-        <div className="rounded-[20px] px-4 py-3" style={glass}>
+        <div className="rounded-[22px] px-4 py-3" style={glass}>
           <div className="text-caption text-white/70">{tr("В месяц")}</div>
           <div className="num-display mt-0.5 text-[20px] leading-tight">{info.monthly && !info.done ? formatMoney(info.monthly, { currency: g.currency }) : "—"}</div>
         </div>
@@ -202,14 +202,14 @@ function GoalActions({ g, info }: { g: Goal; info: GoalInfo }) {
             haptic();
             nav.sheet("goalMoney", { goalId: g.id, direction: "deposit" });
           }}
-          className="mt-2.5 flex h-[54px] w-full items-center justify-center gap-1.5 rounded-[20px] bg-white text-headline font-bold text-black"
+          className="mt-2.5 flex h-[54px] w-full items-center justify-center gap-1.5 rounded-[22px] bg-white text-headline font-bold text-black"
         >
           <Plus size={18} strokeWidth={2.6} />
           {tr("Пополнить")}
         </motion.button>
       )}
       {open.length > 0 && (
-        <div className="mt-2.5 flex items-center gap-3 rounded-[20px] px-4 py-3" style={glass}>
+        <div className="mt-2.5 flex items-center gap-3 rounded-[22px] px-4 py-3" style={glass}>
           <TaskCheck task={open[0]} size={22} />
           <button type="button" onClick={() => nav.sheet("task", { editId: open[0].id })} className="min-w-0 flex-1 truncate text-left text-callout">
             {open[0].title}

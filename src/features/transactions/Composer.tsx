@@ -505,7 +505,7 @@ export function ComposerSheet(props: ComposerProps) {
                 onClick={save}
                 whileTap={{ scale: 0.97 }}
                 transition={spring.press}
-                className={cn("flex h-12 w-full items-center justify-center gap-2 rounded-[15px] text-callout font-semibold transition-[background-color,color,box-shadow] duration-300", amount > 0 || editing ? cn(KIND_META[lockedKind ? "transfer" : kind].fill, KIND_META[lockedKind ? "transfer" : kind].on) : KIND_META[lockedKind ? "transfer" : kind].tint)}
+                className={cn("flex h-12 w-full items-center justify-center gap-2 rounded-[14px] text-callout font-semibold transition-[background-color,color,box-shadow] duration-300", amount > 0 || editing ? cn(KIND_META[lockedKind ? "transfer" : kind].fill, KIND_META[lockedKind ? "transfer" : kind].on) : KIND_META[lockedKind ? "transfer" : kind].tint)}
                 style={amount > 0 || editing ? { boxShadow: KIND_META[lockedKind ? "transfer" : kind].shadow } : { background: `color-mix(in srgb, ${KIND_COLOR[lockedKind ? "transfer" : kind]} 13%, transparent)`, boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${KIND_COLOR[lockedKind ? "transfer" : kind]} 30%, transparent)` }}
               >
                 {editing || lockedKind ? tr("Сохранить") : SAVE_LABEL[kind]}

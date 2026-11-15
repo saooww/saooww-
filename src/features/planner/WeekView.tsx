@@ -81,21 +81,21 @@ export function WeekView() {
               aria-label={tr("{0}: {1} дел", capitalize(WEEKDAYS_LONG[i]), n)}
               className="flex flex-col items-center gap-1 rounded-[14px] pb-2 pt-2 transition-colors active:opacity-80"
               style={{
-                background: n ? `color-mix(in srgb, var(--accent) ${heat}%, var(--surface))` : "var(--surface)",
-                boxShadow: isToday ? "inset 0 0 0 1.5px var(--ink)" : "inset 0 0 0 0.5px var(--line)"
+                background: n ? `color-mix(in srgb, var(--plan) ${heat}%, var(--surface))` : "var(--surface)",
+                boxShadow: isToday ? "inset 0 0 0 1.5px var(--plan)" : "inset 0 0 0 0.5px var(--line)"
               }}
             >
               <span className={cn("text-caption font-medium", deep ? "text-white/80" : "text-ink-3")}>{WEEKDAYS_SHORT[i]}</span>
               <span className={cn("num text-headline", deep ? "text-white" : d < today ? "text-ink-3" : "text-ink")}>{parseDay(d).getDate()}</span>
-              <span className={cn("num text-[10.5px] font-semibold", deep ? "text-white/85" : "text-ink-3")}>{n || "·"}</span>
+              <span className={cn("num text-[11px] font-semibold", deep ? "text-white/85" : "text-ink-3")}>{n || "·"}</span>
             </button>
           );
         })}
       </div>
-      <div className="mt-2 flex items-center justify-end gap-1.5 px-5 text-[10.5px] text-ink-3">
+      <div className="mt-2 flex items-center justify-end gap-1.5 px-5 text-[11px] text-ink-3">
         {tr("свободно")}
         {[0, 25, 45, 70].map((h) => (
-          <span key={h} className="h-2.5 w-2.5 rounded-[3px]" style={{ background: h ? `color-mix(in srgb, var(--accent) ${h}%, var(--surface))` : "var(--surface)", boxShadow: "inset 0 0 0 0.5px var(--line)" }} />
+          <span key={h} className="h-2.5 w-2.5 rounded-[3px]" style={{ background: h ? `color-mix(in srgb, var(--plan) ${h}%, var(--surface))` : "var(--surface)", boxShadow: "inset 0 0 0 0.5px var(--line)" }} />
         ))}
         {tr("загружено")}
       </div>
@@ -104,16 +104,32 @@ export function WeekView() {
       {from <= today && (
         <div className="mt-3 px-4">
           <button type="button" onClick={() => nav.sheet("weekReview", { from })} className="tile flex h-11 w-full items-center justify-center gap-2 rounded-[14px] text-subhead font-semibold text-ink active:opacity-80">
-            <CalendarCheck size={17} strokeWidth={2} className="text-accent-ink" />{tr("Итоги недели")}</button>
+            <CalendarCheck size={17} strokeWidth={2} className="text-[var(--plan)]" />{tr("Итоги недели")}</button>
         </div>
       )}
 
-      <div className="mt-6 flex flex-col gap-6">
+      <div className="mt-6 flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-2">
         {days.map((d) => {
           const slot = byDay.get(d)!;
           const past = d < today;
           const isToday = d === today;
           const dd = parseDay(d);
+          const empty = slot.open.length + slot.done.length === 0 && slot.money.length === 0;
+          if (empty)
+            return (
+              <section key={d} id={`wk-${d}`} className="-my-2.5 flex items-center justify-between px-5" style={{ scrollMarginTop: "calc(var(--safe-top) + 64px)" }}>
+                <span className={cn("text-subhead", past ? "text-ink-3" : "text-ink-2")}>
+                  {isToday ? tr("Сегодня") : capitalize(WEEKDAYS_LONG[weekdayIndex(d)])} <span className="text-ink-3">{dd.getDate()} {MONTHS_GEN[dd.getMonth()]}</span>
+                </span>
+                {past ? (
+                  <span className="text-footnote text-ink-3">{tr("Ничего не было")}</span>
+                ) : (
+                  <button type="button" onClick={() => nav.sheet("quickAdd", { due: d })} className="flex h-9 items-center gap-1 text-footnote font-medium text-[var(--plan)] active:opacity-60" aria-label={tr("Дело на {0} {1}", dd.getDate(), MONTHS_GEN[dd.getMonth()])}>
+                    <Plus size={14} strokeWidth={2.4} />{tr("Свободно")}
+                  </button>
+                )}
+              </section>
+            );
           return (
             <section key={d} id={`wk-${d}`} style={{ scrollMarginTop: "calc(var(--safe-top) + 64px)" }}>
               <div className="flex items-center justify-between px-5 pb-2.5">
