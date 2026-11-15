@@ -348,7 +348,7 @@ export function SleepSheet({ day: dayProp }: { day?: DayKey }) {
             ].map((t) => (
               <label key={t.id} className="tile flex h-[68px] flex-col justify-center rounded-[16px] px-3.5">
                 <span className="flex items-center gap-1.5 text-caption text-ink-3"><t.icon size={13} />{t.label}</span>
-                <input type="time" value={t.v} onChange={(e) => e.target.value && t.set(e.target.value)} aria-label={t.label} className="num mt-0.5 w-full bg-transparent text-[24px] font-semibold outline-none [color-scheme:dark]" />
+                <input type="time" value={t.v} onChange={(e) => e.target.value && t.set(e.target.value)} aria-label={t.label} className="num mt-0.5 w-full min-w-0 bg-transparent text-[22px] font-semibold outline-none [color-scheme:dark] [&::-webkit-calendar-picker-indicator]:hidden" />
               </label>
             ))}
           </div>
