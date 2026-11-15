@@ -1,11 +1,12 @@
 import { useMemo } from "react";
-import { CalendarDays, Palette, FlaskConical, Gauge, HandCoins, Repeat, Search, Settings, Shapes, Target } from "../../ui/glyphs";
+import { entriesBetween, sleepStats } from "../../lib/sleep";
+import { CalendarDays, Moon, Palette, FlaskConical, Gauge, HandCoins, Repeat, Search, Settings, Shapes, Target } from "../../ui/glyphs";
 import { budgetStates } from "../../lib/insights";
 import { goalInfo, goalSaved } from "../../lib/finance";
 import { debtPeople } from "../../lib/debts";
 import { formatMoney } from "../../lib/money";
 import { monthlyEquivalent } from "../../lib/recurrence";
-import { MONTHS_GEN, parseDay, pluralN } from "../../lib/dates";
+import { MONTHS_GEN, addDays, parseDay, pluralN } from "../../lib/dates";
 import { useAppData, useBalances, useEnvelopes, useLedger, useToday } from "../../store/hooks";
 import { useData } from "../../store/store";
 import { nav } from "../../store/ui";
@@ -24,6 +25,7 @@ export function MoreScreen() {
   const env = useEnvelopes();
   const today = useToday();
   const demo = useData((s) => s.meta.demo);
+  const sleep = useData((s) => s.sleep);
   const name = useData((s) => s.settings.name);
   const createdAt = useData((s) => s.meta.createdAt);
   const since = !createdAt ? "" : getLang() === "ru" ? `${MONTHS_GEN[parseDay(createdAt.slice(0, 10)).getMonth()]} ${createdAt.slice(0, 4)}` : new Intl.DateTimeFormat(locale(), { month: "long", year: "numeric" }).format(parseDay(createdAt.slice(0, 10)));
@@ -43,6 +45,13 @@ export function MoreScreen() {
     const plans = data.plans.filter((p) => p.status === "planned" && p.date >= today).length;
     return { goals: goals.length, goalProgress, budgets: budgets.length, over, near, monthly, subs: subs.length, owedToMe, iOwe, debtCount: debts.length, plans };
   }, [data, entries, balances, env, today]);
+
+  const sleepSub = useMemo(() => {
+    const week = entriesBetween(sleep, addDays(today, -6), today);
+    if (!week.length) return tr("Режим и самочувствие");
+    const m = Math.round(sleepStats(week).avgMin);
+    return tr("{0} ч {1} мин в среднем", Math.floor(m / 60), m % 60);
+  }, [sleep, today]);
 
   return (
     <Screen title={tr("Профиль")} large actions={<IconButton icon={Search} label={tr("Поиск")} onClick={() => nav.sheet("search")} />}>
@@ -92,6 +101,7 @@ export function MoreScreen() {
               tone: s.over ? "text-negative" : s.near ? "text-warning" : "",
               go: () => nav.push("budgets")
             },
+            { icon: Moon, title: tr("Сон"), sub: sleepSub, tone: "", go: () => nav.push("sleep") },
             { icon: Repeat, title: tr("Подписки"), sub: s.subs ? tr("{0} в месяц", formatMoney(s.monthly)) : tr("Регулярные списания"), tone: "", go: () => nav.push("subscriptions") },
             { icon: CalendarDays, title: tr("Планы"), sub: s.plans ? pluralN(s.plans, ["операция", "операции", "операций"]) : tr("Покупки и прогноз"), tone: "", go: () => nav.push("plans") },
             { icon: Shapes, title: tr("Категории"), sub: tr("{0} штук", data.categories.filter((c) => !c.archived).length), tone: "", go: () => nav.push("categories") }

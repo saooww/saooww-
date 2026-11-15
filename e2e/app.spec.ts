@@ -283,6 +283,25 @@ test("заметка с оформлением и фото: сохраняетс
   await expect.poll(() => page.locator("figure img").evaluate((i: HTMLImageElement) => i.naturalWidth)).toBeGreaterThan(0);
 });
 
+test("сон: запись ночи считает длительность через полночь и сохраняется после перезапуска", async ({ page }) => {
+  await startDemo(page);
+  await page.getByRole("tab", { name: "Профиль" }).click();
+  await page.locator('.app-canvas > [aria-hidden="false"]').getByText("Сон", { exact: true }).first().click();
+  await page.getByRole("button", { name: "Записать эту ночь" }).click();
+  const sheet = page.getByRole("dialog", { name: "Как вы спали?" });
+  await sheet.getByLabel("Лёг").fill("23:30");
+  await sheet.getByLabel("Встал").fill("06:45");
+  await expect(sheet.getByText("7 ч 15 мин")).toBeVisible();
+  await sheet.getByRole("radiogroup", { name: "Настроение" }).getByRole("radio", { name: "4" }).click();
+  await sheet.getByRole("button", { name: "Готово" }).click();
+  await expect(page.getByText("23:30 → 06:45")).toBeVisible();
+  await page.waitForTimeout(700);
+  await page.reload();
+  await page.waitForTimeout(500);
+  await page.getByRole("tab", { name: "Профиль" }).click();
+  await expect(page.getByText(/7 ч 15 мин/).first()).toBeVisible();
+});
+
 test("калькулятор в сумме: 1200 + 350 записывается как 1 550", async ({ page }) => {
   await startDemo(page);
   await createNew(page, "Расход");

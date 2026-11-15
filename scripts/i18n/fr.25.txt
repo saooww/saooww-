@@ -1,0 +1,47 @@
+3 mois
+{0} h
+{0} h {1} min
+{0} h {1} min en moyenne
+{0} : {1}, score {2}
+{0} : pas d’entrée
+{0} de plus que l’objectif
+En moyenne
+En moyenne, il vous manque {0} min de sommeil par nuit.
+Votre heure de coucher varie d’environ {0} min : une routine régulière aide à se sentir reposé.
+Réveil
+Reposé
+Note : café tardif, bruit, dîner copieux…
+Saisir une nuit
+Saisir votre première nuit
+Saisir cette nuit
+Notez l’heure du coucher et du réveil et comment vous vous sentez : l’appli montre votre rythme, votre dette de sommeil et l’effet du sommeil sur votre humeur.
+Saisissez la nuit en une minute
+Comment avez-vous dormi ?
+Comment dormez-vous ?
+Calendrier du sommeil
+Quand vous avez dormi
+Quand vous avez dormi, par jour
+Coucher
+Coucher
+Humeur
+Il manquait {0}
+Dette de sommeil par nuit
+Correct
+Excellent
+Score de sommeil : {0} sur 100
+Mauvais
+Après une nuit complète, l’humeur est de {0} sur 5, après une courte — {1}.
+Dernière entrée · {0}
+Vérifiez les heures
+Rythme et bien-être
+Pile dans l’objectif
+Bien-être sur la période
+Suivez votre sommeil et votre forme
+Sommeil
+Sommeil moyen par semaine
+Moyen
+Supprimer l’entrée
+Bien
+Énergie
+Cette nuit
+objectif {0}

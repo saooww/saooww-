@@ -159,6 +159,7 @@
   --transfer: #6f8cff;
   --saving: #e6b45a;
   /* the planner's own light: neon magenta */
+  --sleep: #8f7cff;
   --plan: #e440d4;
   --plan-soft: rgba(228, 64, 212, 0.16);
   --positive: #3cc896;
@@ -226,6 +227,7 @@
   --accent-on: #ffffff;
   --transfer: #3f5bd6;
   --saving: #9a6a12;
+  --sleep: #5b45d6;
   --plan: #a5148f;
   --plan-soft: rgba(165, 20, 143, 0.11);
   --positive: #117b4d;

@@ -270,6 +270,25 @@ export interface Note {
   updatedAt: LocalISO;
 }
 
+/** One night: recorded on the day you woke up. */
+export interface SleepEntry {
+  id: ID;
+  /** Day of waking up */
+  day: DayKey;
+  /** "HH:mm" — went to bed (the evening before, or after midnight) */
+  bed: string;
+  /** "HH:mm" — woke up */
+  wake: string;
+  /** How rested, 1–5 */
+  quality: 1 | 2 | 3 | 4 | 5;
+  /** Mood of the day, 1–5 */
+  mood?: 1 | 2 | 3 | 4 | 5;
+  /** Energy of the day, 1–5 */
+  energy?: 1 | 2 | 3 | 4 | 5;
+  note?: string;
+  updatedAt: LocalISO;
+}
+
 export interface Favorite {
   id: ID;
   kind: "income" | "expense";
@@ -286,6 +305,8 @@ export interface Favorite {
 
 export interface Settings {
   name: string;
+  /** Wanted sleep, minutes (default 8 h) */
+  sleepGoal?: number;
   baseCurrency: string;
   /** Units of base currency for one unit of the given currency */
   rates: Record<string, number>;
@@ -359,6 +380,7 @@ export interface AppData {
   tasks: Task[];
   projects: Project[];
   notes: Note[];
+  sleep: SleepEntry[];
   favorites: Favorite[];
   settings: Settings;
   meta: { demo: boolean; createdAt: LocalISO; importedFromV1?: boolean };
@@ -376,6 +398,7 @@ export const DATA_KEYS = [
   "tasks",
   "projects",
   "notes",
+  "sleep",
   "favorites",
   "settings",
   "meta"

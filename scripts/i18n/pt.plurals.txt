@@ -21,3 +21,4 @@
 платёж|платежа|платежей = one:pagamento; other:pagamentos
 Займ|Займа|Займов = one:Empréstimo; other:Empréstimos
 долг|долга|долгов = one:dívida; other:dívidas
+ночь|ночи|ночей = one:noite; other:noites

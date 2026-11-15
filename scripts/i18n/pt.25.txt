@@ -1,0 +1,47 @@
+3 meses
+{0} h
+{0} h {1} min
+{0} h {1} min em média
+{0}: {1}, nota {2}
+{0}: sem registro
+{0} acima da meta
+Em média
+Em média faltam {0} min de sono por noite.
+Seu horário de dormir varia cerca de {0} min: uma rotina estável ajuda a descansar.
+Acordei
+Descansado
+Nota: café tarde, barulho, jantar pesado…
+Registrar uma noite
+Registre sua primeira noite
+Registrar esta noite
+Anote quando foi dormir e acordou e como se sente: o app mostra sua rotina, déficit de sono e como o sono afeta o humor.
+Registre a noite em um minuto
+Como você dormiu?
+Como você dorme?
+Calendário do sono
+Quando você dormiu
+Quando você dormiu, por dia
+Hora de dormir
+Fui dormir
+Humor
+Faltaram {0}
+Déficit de sono por noite
+Normal
+Ótimo
+Nota do sono: {0} de 100
+Ruim
+Após uma noite completa o humor é {0} de 5, após uma curta — {1}.
+Último registro · {0}
+Confira os horários
+Rotina e bem-estar
+Exatamente na meta
+Bem-estar no período
+Acompanhe seu sono e como se sente
+Sono
+Sono médio por semana
+Mais ou menos
+Excluir registro
+Bom
+Energia
+Esta noite
+meta {0}

@@ -18,6 +18,7 @@ export type RouteName =
   | "budgets"
   | "plans"
   | "subscriptions"
+  | "sleep"
   | "debts"
   | "debt"
   | "tasks"

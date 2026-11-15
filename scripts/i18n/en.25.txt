@@ -1,0 +1,47 @@
+3 months
+{0} h
+{0} h {1} min
+{0} h {1} min on average
+{0}: {1}, score {2}
+{0}: no entry
+{0} over the goal
+On average
+On average you are short by {0} min of sleep a night.
+Your bedtime drifts by about {0} min: a steady routine helps you feel rested.
+Woke up
+Rested
+Note: late coffee, noise, heavy dinner…
+Log a night
+Log your first night
+Log this night
+Record when you went to bed and woke up and how you feel: the app shows your routine, sleep debt and how sleep affects your mood.
+Log last night in a minute
+How did you sleep?
+How do you sleep?
+Sleep calendar
+When you slept
+When you slept, by day
+Bedtime
+Went to bed
+Mood
+Short by {0}
+Sleep debt per night
+Okay
+Great
+Sleep score: {0} of 100
+Poor
+After a full night your mood is {0} of 5, after a short one — {1}.
+Last entry · {0}
+Check the times
+Routine and wellbeing
+Right on the goal
+Wellbeing for the period
+Track your sleep and how you feel
+Sleep
+Average sleep by week
+So-so
+Delete entry
+Good
+Energy
+Last night
+goal {0}

@@ -24,6 +24,7 @@ import {
   type Goal,
   type ID,
   type Note,
+  type SleepEntry,
   type Plan,
   type Project,
   type Recurring,
@@ -110,6 +111,9 @@ export interface DataActions {
   deleteNote(id: ID): void;
   /** The diary entry of a day, created when missing */
   journalNote(day: DayKey): ID;
+  // sleep
+  saveSleep(day: DayKey, patch: Partial<Omit<SleepEntry, "id" | "day" | "updatedAt">>): void;
+  deleteSleep(day: DayKey): void;
   // favorites
   addFavorite(input: Omit<Favorite, "id">): ID;
   deleteFavorite(id: ID): void;
@@ -697,6 +701,20 @@ const useDataStore = create<DataState>()(
         if (existing) return existing.id;
         const d = parseDay(day);
         return get().addNote({ title: `${d.getDate()} ${MONTHS_GEN[d.getMonth()]}`, journal: day });
+      },
+
+      /* ---------------- sleep ---------------- */
+
+      saveSleep(day, patch) {
+        set((s) => {
+          const old = s.sleep.find((e) => e.day === day);
+          const entry: SleepEntry = { id: old?.id ?? `sl-${day}`, bed: "23:00", wake: "07:00", quality: 3, ...old, ...patch, day, updatedAt: nowISO() };
+          return { sleep: old ? s.sleep.map((e) => (e.day === day ? entry : e)) : [...s.sleep, entry] };
+        });
+      },
+
+      deleteSleep(day) {
+        set((s) => ({ sleep: s.sleep.filter((e) => e.day !== day) }));
       },
 
       /* ---------------- favorites ---------------- */

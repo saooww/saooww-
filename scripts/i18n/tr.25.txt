@@ -1,0 +1,47 @@
+3 ay
+{0} sa
+{0} sa {1} dk
+ortalama {0} sa {1} dk
+{0}: {1}, puan {2}
+{0}: kayıt yok
+Hedefin {0} üstünde
+Ortalama
+Ortalama olarak her gece {0} dk uykun eksik.
+Yatış saatin yaklaşık {0} dk oynuyor: düzenli bir ritim dinlenmene yardımcı olur.
+Kalktım
+Dinlendim
+Not: geç kahve, gürültü, ağır akşam yemeği…
+Bir gece kaydet
+İlk gecenizi kaydedin
+Bu geceyi kaydet
+Ne zaman yattığını, kalktığını ve nasıl hissettiğini yaz: uygulama düzenini, uyku borcunu ve uykunun ruh haline etkisini gösterir.
+Geceyi bir dakikada kaydet
+Nasıl uyudun?
+Nasıl uyuyorsun?
+Uyku takvimi
+Ne zaman uyudun
+Ne zaman uyudun, günlere göre
+Yatış saati
+Yattım
+Ruh hali
+{0} eksik kaldı
+Gece başına uyku borcu
+İdare eder
+Harika
+Uyku puanı: 100 üzerinden {0}
+Kötü
+Tam bir uykudan sonra ruh halin 5 üzerinden {0}, kısa uykudan sonra — {1}.
+Son kayıt · {0}
+Saatleri kontrol et
+Düzen ve iyi oluş
+Tam hedefte
+Dönemin iyi oluşu
+Uykunu ve nasıl hissettiğini takip et
+Uyku
+Haftalık ortalama uyku
+Fena değil
+Kaydı sil
+İyi
+Enerji
+Bu gece
+hedef {0}

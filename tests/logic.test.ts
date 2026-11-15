@@ -17,6 +17,7 @@ import { monthSummary } from "../src/lib/story";
 import { parseTask, splitLines } from "../src/lib/quickParse";
 import { dayPlan, nextOccurrence, nextRepeatDate } from "../src/lib/tasks";
 import { taskToICS } from "../src/lib/ics";
+import { lastDays, meanBed, sleepMinutes, sleepScore, sleepStats, sleepStreak } from "../src/lib/sleep";
 import { htmlToText, photoIdsOf, textToHtml } from "../src/lib/richText";
 import { parseImport } from "../src/store/store";
 import { applyCalcKey, evaluate, formatExpression } from "../src/lib/calc";
@@ -677,6 +678,27 @@ test("заметка: обычный текст в абзацы и обратн�
   const n = useData.getState().notes.find((x) => x.id === id)!;
   assert.equal(n.body, "новый");
   assert.equal(n.html, undefined);
+});
+
+test("сон: длительность через полночь, средний отход ко сну, долг и оценка", () => {
+  assert.equal(sleepMinutes("23:30", "07:00"), 450);
+  assert.equal(sleepMinutes("00:30", "07:30"), 420);
+  assert.equal(sleepMinutes("22:00", "22:00"), 1440);
+  const mk = (day: string, bed: string, wake: string, quality: 1 | 2 | 3 | 4 | 5, mood?: 1 | 2 | 3 | 4 | 5) => ({ id: day, day, bed, wake, quality, mood, updatedAt: "2026-01-01T00:00:00" });
+  const es = [mk("2026-03-01", "23:30", "07:30", 4, 4), mk("2026-03-02", "00:30", "07:30", 3, 3)];
+  // 23:30 и 00:30 — в среднем 00:00, а не полдень
+  assert.equal(meanBed(es), "00:00");
+  const st = sleepStats(es, 480);
+  assert.equal(st.nights, 2);
+  assert.equal(st.avgMin, 450);
+  assert.equal(st.debt, 60);
+  assert.equal(st.avgMood, 3.5);
+  assert.equal(sleepScore(mk("d", "23:00", "07:00", 5), 480), 100);
+  assert.equal(sleepScore(mk("d", "23:00", "05:00", 1), 480), 49);
+  // лишний сон оценку не повышает
+  assert.equal(sleepScore(mk("d", "22:00", "08:00", 5), 480), 100);
+  assert.equal(sleepStreak([mk("2026-03-05", "23:00", "07:00", 3), mk("2026-03-04", "23:00", "07:00", 3), mk("2026-03-02", "23:00", "07:00", 3)], "2026-03-06"), 2);
+  assert.equal(lastDays(es, "2026-03-02", 3).filter((x) => x.entry).length, 2);
 });
 
 console.log(`\nВсе проверки пройдены: ${passed}`);

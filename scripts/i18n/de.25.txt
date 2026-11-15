@@ -1,0 +1,47 @@
+3 Monate
+{0} Std
+{0} Std {1} Min
+{0} Std {1} Min im Schnitt
+{0}: {1}, Wert {2}
+{0}: kein Eintrag
+{0} über dem Ziel
+Im Schnitt
+Im Schnitt fehlen dir {0} Min Schlaf pro Nacht.
+Deine Zubettgehzeit schwankt um etwa {0} Min: ein fester Rhythmus hilft, sich erholt zu fühlen.
+Aufgewacht
+Ausgeruht
+Notiz: später Kaffee, Lärm, spätes Essen…
+Nacht eintragen
+Erste Nacht eintragen
+Diese Nacht eintragen
+Trage ein, wann du ins Bett gegangen und aufgewacht bist und wie du dich fühlst: Die App zeigt deinen Rhythmus, Schlafdefizit und den Einfluss auf deine Stimmung.
+Nacht in einer Minute eintragen
+Wie hast du geschlafen?
+Wie schläfst du?
+Schlafkalender
+Wann du geschlafen hast
+Wann du geschlafen hast, pro Tag
+Zubettgehzeit
+Ins Bett
+Stimmung
+Es fehlten {0}
+Schlafdefizit pro Nacht
+Okay
+Super
+Schlafwert: {0} von 100
+Schlecht
+Nach einer vollen Nacht ist die Stimmung {0} von 5, nach einer kurzen — {1}.
+Letzter Eintrag · {0}
+Zeiten prüfen
+Rhythmus und Wohlbefinden
+Genau im Ziel
+Wohlbefinden im Zeitraum
+Verfolge Schlaf und Befinden
+Schlaf
+Durchschnittsschlaf pro Woche
+Mäßig
+Eintrag löschen
+Gut
+Energie
+Diese Nacht
+Ziel {0}

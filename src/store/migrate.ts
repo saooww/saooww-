@@ -174,6 +174,7 @@ export function migrateFromV1(raw: string): AppData | null {
     tasks: [],
     projects: [],
     notes: [],
+    sleep: [],
     favorites: [],
     settings: { ...defaultSettings(), theme: p.isDark === false ? "light" : "dark", defaultWalletId: wallets[0]?.id },
     meta: { demo: false, createdAt: now, importedFromV1: true }

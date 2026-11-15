@@ -29,6 +29,7 @@ export function TodayView() {
 
   return (
     <div className="flex flex-col gap-6">
+      <SleepPrompt />
       <DayCard total={plan.total} completed={plan.completed} focus={plan.focus.length} inbox={inbox} />
       <MonthCalendar />
 
@@ -92,6 +93,25 @@ export function TodayView() {
         </section>
       )}
     </div>
+  );
+}
+
+/** One quiet line in the morning: the night is not recorded yet. */
+function SleepPrompt() {
+  const today = useToday();
+  const has = useData((s) => s.sleep.some((e) => e.day === today));
+  const any = useData((s) => s.sleep.length > 0);
+  if (has || new Date().getHours() >= 15) return null;
+  return (
+    <button type="button" onClick={() => nav.sheet("sleep", { day: today })} className="panel -mb-2 mx-4 flex items-center gap-3 rounded-[18px] px-3.5 py-2.5 text-left active:opacity-80">
+      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[12px] text-[var(--sleep)]" style={{ background: "color-mix(in srgb, var(--sleep) 15%, transparent)", boxShadow: "inset 0 0 0 1px color-mix(in srgb, var(--sleep) 32%, transparent)" }}>
+        <Moon size={17} />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-callout font-semibold">{tr("Как вы спали?")}</span>
+        <span className="block truncate text-footnote text-ink-2">{any ? tr("Запишите ночь за минуту") : tr("Следите за сном и самочувствием")}</span>
+      </span>
+    </button>
   );
 }
 

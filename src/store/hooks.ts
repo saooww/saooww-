@@ -35,7 +35,7 @@ export function useEnvelopes() {
 
 // The planner's lists change on every keystroke while a task or note is typed;
 // money screens don't read them, so they don't wake those screens up.
-const MONEY_KEYS = DATA_KEYS.filter((k) => k !== "tasks" && k !== "projects" && k !== "notes");
+const MONEY_KEYS = DATA_KEYS.filter((k) => k !== "tasks" && k !== "projects" && k !== "notes" && k !== "sleep");
 
 /**
  * Snapshot of the data for money screens. It changes only when a money

@@ -1,0 +1,47 @@
+3 meses
+{0} h
+{0} h {1} min
+{0} h {1} min de media
+{0}: {1}, puntuación {2}
+{0}: sin registro
+{0} más que la meta
+De media
+De media te faltan {0} min de sueño por noche.
+Tu hora de acostarte varía unos {0} min: una rutina estable ayuda a descansar.
+Me levanté
+Descansado
+Nota: café tarde, ruido, cena pesada…
+Registrar una noche
+Registra tu primera noche
+Registrar esta noche
+Anota cuándo te acostaste y te levantaste y cómo te sientes: la app muestra tu rutina, el sueño atrasado y cómo influye el sueño en tu ánimo.
+Registra la noche en un minuto
+¿Cómo dormiste?
+¿Cómo duermes?
+Calendario de sueño
+Cuándo dormiste
+Cuándo dormiste, por días
+Hora de acostarse
+Me acosté
+Ánimo
+Faltaron {0}
+Déficit de sueño por noche
+Normal
+Genial
+Puntuación del sueño: {0} de 100
+Mal
+Tras una noche completa tu ánimo es {0} de 5, tras una corta — {1}.
+Último registro · {0}
+Revisa las horas
+Rutina y bienestar
+Justo en la meta
+Bienestar del período
+Sigue tu sueño y cómo te sientes
+Sueño
+Sueño medio por semana
+Regular
+Eliminar registro
+Bien
+Energía
+Esta noche
+meta {0}
