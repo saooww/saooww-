@@ -683,7 +683,9 @@ const useDataStore = create<DataState>()(
       },
 
       updateNote(id, patch) {
-        set((s) => ({ notes: mapById(s.notes, id, { ...patch, updatedAt: nowISO() }) }));
+        // a plain-text edit (the diary ritual) makes the old rich text stale
+        const next = "body" in patch && !("html" in patch) ? { ...patch, html: undefined } : patch;
+        set((s) => ({ notes: mapById(s.notes, id, { ...next, updatedAt: nowISO() }) }));
       },
 
       deleteNote(id) {

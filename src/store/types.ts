@@ -239,6 +239,8 @@ export interface Task {
   focus?: DayKey;
   /** The next occurrence a repeating task created when it was completed */
   nextId?: ID;
+  /** Attached photos (ids in the photo store) */
+  photos?: ID[];
 }
 
 export type LinkType = "goal" | "task" | "plan" | "debt" | "project";
@@ -259,6 +261,11 @@ export interface Note {
   checklist?: Subtask[];
   /** Diary entry of this day */
   journal?: DayKey;
+  /** Rich text (sanitized HTML subset); `body` stays its plain-text twin */
+  html?: string;
+  /** Card and header tint, "#rrggbb" */
+  color?: string;
+  font?: "sans" | "serif" | "mono";
   createdAt: LocalISO;
   updatedAt: LocalISO;
 }

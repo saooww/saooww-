@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { BookOpen, ListChecks, ListPlus, NotebookPen, Pin, PinOff, Plus, Search, Trash2, X } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
@@ -11,10 +11,13 @@ import { nav } from "../../store/ui";
 import { undoable } from "../../store/undo";
 import { Screen } from "../../nav/Screen";
 import { spring } from "../../ui/motion";
-import { EmptyState, IconButton, Button, IconChip } from "../../ui/primitives";
+import { EmptyState, IconButton, Button } from "../../ui/primitives";
 import { TagInput } from "../../ui/TagInput";
 import { Sheet, useSheet } from "../../ui/Sheet";
 import { Checklist } from "../planner/TaskSheet";
+import { usePhotoUrl } from "../transactions/Photos";
+import { RichEditor } from "./RichEditor";
+import { photoIdsOf } from "../../lib/richText";
 import { tr } from "../../i18n/i18n";
 
 function stamp(iso: string) {
@@ -39,6 +42,14 @@ export function openJournal(day: string) {
   const id = useData.getState().journalNote(day);
   nav.push("note", { id, isNew: !existed });
 }
+
+/** Card and header tints: the planner's magenta first, then the app's own colours */
+export const NOTE_COLORS = ["#e440d4", "#a678ff", "#fa0717", "#4f8cff", "#3cc896", "#f0b14e"] as const;
+const FONTS: Array<{ id: NonNullable<Note["font"]>; label: string; cls: string }> = [
+  { id: "sans", label: "Aa", cls: "" },
+  { id: "serif", label: "Aa", cls: "font-serif" },
+  { id: "mono", label: "Aa", cls: "font-mono" }
+];
 
 type Filter = { kind: "all" } | { kind: "journal" } | { kind: "tag"; tag: string };
 
@@ -78,10 +89,13 @@ export function NotesView() {
         whileTap={{ scale: 0.98 }}
         transition={spring.press}
         onClick={() => openJournal(today)}
-        className="panel mx-4 mt-3 flex w-[calc(100%-32px)] items-center gap-3 rounded-lg px-3.5 py-3 text-left"
+        className="panel relative mx-4 mt-3 flex w-[calc(100%-32px)] items-center gap-3 overflow-hidden rounded-[20px] px-3.5 py-3 text-left"
       >
-        <IconChip icon={BookOpen} tone="accent" size={36} />
-        <span className="min-w-0 flex-1">
+        <span aria-hidden className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(80% 140% at 0% 0%, var(--plan-soft), transparent 65%)" }} />
+        <span className="relative grid h-10 w-10 shrink-0 place-items-center rounded-[13px] text-[var(--plan)]" style={{ background: "var(--plan-soft)", boxShadow: "inset 0 0 0 1px color-mix(in srgb, var(--plan) 34%, transparent)", ["--glyph-fill" as string]: "currentColor", ["--glyph-fill-o" as string]: 0.25 }}>
+          <BookOpen size={19} />
+        </span>
+        <span className="relative min-w-0 flex-1">
           <span className="block text-callout font-semibold">{tr("Дневник")}</span>
           <span className="block truncate text-footnote text-ink-2">{todayEntry?.body ? todayEntry.body.split("\n")[0] : tr("Пара строк о сегодняшнем дне")}</span>
         </span>
@@ -125,15 +139,22 @@ export function NotesView() {
 
 function FilterChip({ on, children, onClick }: { on: boolean; children: React.ReactNode; onClick: () => void }) {
   return (
-    <button type="button" aria-pressed={on} onClick={onClick} className={cn("h-8 shrink-0 rounded-full px-3 text-subhead font-medium transition-colors", on ? "bg-ink text-ink-inverse" : "tile text-ink-2")}>
+    <button type="button" aria-pressed={on} onClick={onClick} className={cn("h-8 shrink-0 rounded-full px-3 text-subhead font-medium transition-colors", on ? "bg-[var(--plan)] text-white shadow-[0_6px_18px_-8px_var(--plan)]" : "tile text-ink-2")}>
       {children}
     </button>
   );
 }
 
+function NoteCover({ id }: { id: string }) {
+  const url = usePhotoUrl(id);
+  return <div className="-mx-3.5 -mt-3.5 mb-2.5 h-[104px] overflow-hidden rounded-t-[20px] bg-surface-3">{url && <img src={url} alt="" className="h-full w-full object-cover" draggable={false} />}</div>;
+}
+
 function NoteCard({ note: n, index }: { note: Note; index: number }) {
   const list = n.checklist ?? [];
   const done = list.filter((c) => c.done).length;
+  const cover = photoIdsOf(n.html)[0];
+  const tint = n.color ?? (n.journal ? "var(--plan)" : undefined);
   return (
     <motion.button
       type="button"
@@ -142,41 +163,46 @@ function NoteCard({ note: n, index }: { note: Note; index: number }) {
       transition={{ delay: Math.min(index, 10) * 0.025, duration: 0.24 }}
       whileTap={{ scale: 0.97 }}
       onClick={() => nav.push("note", { id: n.id })}
-      className="panel mb-2.5 block w-full break-inside-avoid rounded-[18px] p-3.5 text-left"
+      className="panel relative mb-2.5 block w-full break-inside-avoid overflow-hidden rounded-[20px] p-3.5 text-left"
+      style={tint ? ({ ["--k" as string]: tint } as React.CSSProperties) : undefined}
     >
-      {n.journal && (
-        <div className="mb-1 flex items-center gap-1.5 text-caption font-medium text-accent-ink">
-          <BookOpen size={12} strokeWidth={2.2} />{tr("Дневник")}</div>
-      )}
-      <div className="flex items-start gap-1.5">
-        <span className="line-clamp-2 min-w-0 flex-1 text-callout font-semibold text-ink">{n.journal ? journalTitle(n.journal) : n.title || tr("Без названия")}</span>
-        {n.pinned && <Pin size={13} className="mt-0.5 shrink-0 fill-current text-accent-ink" />}
-      </div>
-      {n.body && <p className="mt-1 line-clamp-6 whitespace-pre-line text-footnote text-ink-2">{n.body}</p>}
-      {list.length > 0 && (
-        <div className="mt-2 flex flex-col gap-1">
-          {list.slice(0, 4).map((c) => (
-            <div key={c.id} className="flex items-center gap-1.5 text-footnote">
-              <span className={cn("h-3 w-3 shrink-0 rounded-[4px] border", c.done ? "border-positive bg-positive" : "border-ink-3")} />
-              <span className={cn("truncate", c.done ? "text-ink-3 line-through" : "text-ink-2")}>{c.title}</span>
-            </div>
-          ))}
-          {list.length > 4 && <div className="text-caption text-ink-3">{tr("и ещё")}{" "}{list.length - 4}</div>}
-        </div>
-      )}
-      <div className="mt-2.5 flex items-center gap-2 text-caption text-ink-3">
-        <span>{stamp(n.updatedAt)}</span>
-        {list.length > 0 && (
-          <span className="flex items-center gap-1">
-            <ListChecks size={11} />
-            {done}/{list.length}
-          </span>
+      {tint && <span aria-hidden className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(110% 80% at 0% 0%, color-mix(in srgb, var(--k) 16%, transparent), transparent 70%)" }} />}
+      <div className="relative">
+        {cover && <NoteCover id={cover} />}
+        {n.journal && (
+          <div className="mb-1 flex items-center gap-1.5 text-caption font-medium text-[var(--plan)]">
+            <BookOpen size={12} strokeWidth={2.2} />{tr("Дневник")}</div>
         )}
-        {n.tags.slice(0, 2).map((t) => (
-          <span key={t} className="truncate">
-            #{t}
-          </span>
-        ))}
+        <div className="flex items-start gap-1.5">
+          <span className="line-clamp-2 min-w-0 flex-1 text-callout font-semibold text-ink">{n.journal ? journalTitle(n.journal) : n.title || tr("Без названия")}</span>
+          {n.pinned && <Pin size={13} className="mt-0.5 shrink-0 fill-current text-[var(--plan)]" />}
+        </div>
+        {n.body && <p className={cn("mt-1 whitespace-pre-line text-footnote text-ink-2", cover ? "line-clamp-3" : "line-clamp-6", n.font === "serif" && "font-serif", n.font === "mono" && "font-mono")}>{n.body}</p>}
+        {list.length > 0 && (
+          <div className="mt-2 flex flex-col gap-1">
+            {list.slice(0, 4).map((c) => (
+              <div key={c.id} className="flex items-center gap-1.5 text-footnote">
+                <span className={cn("h-3 w-3 shrink-0 rounded-[4px] border", c.done ? "border-positive bg-positive" : "border-ink-3")} />
+                <span className={cn("truncate", c.done ? "text-ink-3 line-through" : "text-ink-2")}>{c.title}</span>
+              </div>
+            ))}
+            {list.length > 4 && <div className="text-caption text-ink-3">{tr("и ещё")}{" "}{list.length - 4}</div>}
+          </div>
+        )}
+        <div className="mt-2.5 flex items-center gap-2 text-caption text-ink-3">
+          <span>{stamp(n.updatedAt)}</span>
+          {list.length > 0 && (
+            <span className="flex items-center gap-1">
+              <ListChecks size={11} />
+              {done}/{list.length}
+            </span>
+          )}
+          {n.tags.slice(0, 2).map((t) => (
+            <span key={t} className="truncate">
+              #{t}
+            </span>
+          ))}
+        </div>
       </div>
     </motion.button>
   );
@@ -217,15 +243,6 @@ export function NoteEditor({ id, isNew }: { id: ID; isNew?: boolean }) {
   const projects = useData((s) => s.projects);
   const label = useLinkLabel();
   const allTags = useData((s) => [...new Set(s.notes.flatMap((n) => n.tags))]);
-  const body = useRef<HTMLTextAreaElement>(null);
-
-  // Auto-grow the text area
-  useEffect(() => {
-    const el = body.current;
-    if (!el) return;
-    el.style.height = "0px";
-    el.style.height = `${Math.max(note?.checklist ? 80 : 200, el.scrollHeight)}px`;
-  }, [note?.body, note?.checklist]);
 
   // Discard empty new notes when leaving
   useEffect(
@@ -293,35 +310,51 @@ export function NoteEditor({ id, isNew }: { id: ID; isNew?: boolean }) {
         </>
       }
     >
-      <div className="px-5">
-        {note.journal ? (
-          <>
-            <div className="flex items-center gap-1.5 text-footnote font-medium text-accent-ink">
-              <BookOpen size={14} />{tr("Дневник")}</div>
-            <h1 className="mt-1 text-title-2 font-semibold">{formatDayHeading(note.journal) === tr("Сегодня") ? tr("Сегодня, {0} {1}", parseDay(note.journal).getDate(), MONTHS_GEN[parseDay(note.journal).getMonth()]) : journalTitle(note.journal)}</h1>
-          </>
-        ) : (
-          <>
-            <div className="text-caption text-ink-3">
-              {formatDayHeading(dayOf(note.updatedAt))}, {timeOf(note.updatedAt)}
-            </div>
-            <input
-              autoFocus={isNew}
-              value={note.title}
-              onChange={(e) => update({ title: e.target.value })}
-              placeholder={tr("Заголовок")}
-              className="mt-1 w-full bg-transparent text-title-2 font-semibold outline-none placeholder:text-ink-4"
+      <div className={cn("relative px-5", note.font === "serif" && "font-note-serif", note.font === "mono" && "font-note-mono")}>
+        <span aria-hidden className="pointer-events-none absolute -top-24 left-0 right-0 h-56" style={{ background: `radial-gradient(70% 100% at 20% 0%, color-mix(in srgb, ${note.color ?? "var(--plan)"} 20%, transparent), transparent 70%)` }} />
+        <div className="relative">
+          {note.journal ? (
+            <>
+              <div className="flex items-center gap-1.5 text-footnote font-medium text-[var(--plan)]">
+                <BookOpen size={14} />{tr("Дневник")}</div>
+              <h1 className="mt-1 text-title-2 font-semibold">{formatDayHeading(note.journal) === tr("Сегодня") ? tr("Сегодня, {0} {1}", parseDay(note.journal).getDate(), MONTHS_GEN[parseDay(note.journal).getMonth()]) : journalTitle(note.journal)}</h1>
+            </>
+          ) : (
+            <>
+              <div className="text-caption text-ink-3">
+                {formatDayHeading(dayOf(note.updatedAt))}, {timeOf(note.updatedAt)}
+              </div>
+              <input
+                autoFocus={isNew}
+                value={note.title}
+                onChange={(e) => update({ title: e.target.value })}
+                placeholder={tr("Заголовок")}
+                className="mt-1 w-full bg-transparent text-[28px] font-bold leading-[34px] tracking-[-0.02em] outline-none placeholder:text-ink-4"
+              />
+            </>
+          )}
+          <div className="mt-3 flex items-center gap-2" role="group" aria-label={tr("Оформление заметки")}>
+            {NOTE_COLORS.map((c) => (
+              <button key={c} type="button" aria-label={c} aria-pressed={note.color === c} onClick={() => { haptic(); update({ color: note.color === c ? undefined : c }); }} className="grid h-6 w-6 place-items-center rounded-full transition-transform active:scale-90" style={{ background: c, boxShadow: note.color === c ? `0 0 0 2px var(--bg), 0 0 0 3.5px ${c}` : "inset 0 0 0 1px rgba(255,255,255,0.18)" }} />
+            ))}
+            <span aria-hidden className="mx-1 h-5 w-px bg-[var(--line)]" />
+            {FONTS.map((f) => (
+              <button key={f.id} type="button" aria-label={{ sans: tr("Обычный шрифт"), serif: tr("Шрифт с засечками"), mono: tr("Моноширинный шрифт") }[f.id]} aria-pressed={(note.font ?? "sans") === f.id} onClick={() => { haptic(); update({ font: f.id === "sans" ? undefined : f.id }); }} className={cn("h-7 w-9 rounded-[9px] text-[14px] font-semibold", f.cls, (note.font ?? "sans") === f.id ? "bg-[var(--plan-soft)] text-[var(--plan)]" : "text-ink-3")}>
+                {f.label}
+              </button>
+            ))}
+          </div>
+          <div className="mt-3">
+            <RichEditor
+              noteId={note.id}
+              html={note.html}
+              body={note.body}
+              autoFocus={isNew && !!note.journal}
+              placeholder={note.journal ? tr("Что получилось? Что мешало? Что важно завтра?") : tr("Текст заметки")}
+              onChange={(html, text) => update({ html, body: text })}
             />
-          </>
-        )}
-        <textarea
-          ref={body}
-          autoFocus={isNew && !!note.journal}
-          value={note.body}
-          onChange={(e) => update({ body: e.target.value })}
-          placeholder={note.journal ? tr("Что получилось? Что мешало? Что важно завтра?") : tr("Текст заметки")}
-          className="mt-3 w-full resize-none bg-transparent text-body leading-[24px] outline-none placeholder:text-ink-4"
-        />
+          </div>
+        </div>
       </div>
 
       <div className="mt-2 flex flex-col gap-5">

@@ -17,6 +17,7 @@ import { monthSummary } from "../src/lib/story";
 import { parseTask, splitLines } from "../src/lib/quickParse";
 import { dayPlan, nextOccurrence, nextRepeatDate } from "../src/lib/tasks";
 import { taskToICS } from "../src/lib/ics";
+import { htmlToText, photoIdsOf, textToHtml } from "../src/lib/richText";
 import { parseImport } from "../src/store/store";
 import { applyCalcKey, evaluate, formatExpression } from "../src/lib/calc";
 import { SAVE_EVERY, flushPersist } from "../src/store/storage";
@@ -663,6 +664,19 @@ test("долги: один человек — одна запись, возвр�
   assert.equal(hist.reduce((s, h) => s + h.signed, 0), -300_000);
   // лишнее сверх долга не списывается
   assert.equal(splitRepayment(p, "owed_to_me", 1_000_000).rest, 700_000);
+});
+
+test("заметка: обычный текст в абзацы и обратно, фото не попадает в текст", () => {
+  assert.equal(htmlToText(textToHtml("первая\n\nвторая")), "первая\n\nвторая");
+  assert.equal(htmlToText("<h2>Заголовок</h2><p>текст <b>жирный</b></p><figure data-photo=\"p-1\"></figure><ul><li>один</li></ul>"), "Заголовок\nтекст жирный\n\n• один");
+  assert.deepEqual(photoIdsOf('<p>a</p><figure data-photo="p-ab1"></figure><figure data-photo="p-z9"></figure>'), ["p-ab1", "p-z9"]);
+  assert.deepEqual(photoIdsOf(undefined), []);
+  // правка обычного текста (дневник) сбрасывает устаревший html
+  const id = useData.getState().addNote({ title: "t", body: "старый", html: "<p>старый</p>" });
+  useData.getState().updateNote(id, { body: "новый" });
+  const n = useData.getState().notes.find((x) => x.id === id)!;
+  assert.equal(n.body, "новый");
+  assert.equal(n.html, undefined);
 });
 
 console.log(`\nВсе проверки пройдены: ${passed}`);

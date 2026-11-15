@@ -1,5 +1,6 @@
 import { nowISO } from "../lib/dates";
 import { migrateFromV1, V1_KEY } from "./migrate";
+import { photoIdsOf } from "../lib/richText";
 import { prunePhotos } from "./photos";
 import { hadStoredData, onStorageFailure, requestPersistence } from "./storage";
 import { useData } from "./store";
@@ -66,7 +67,10 @@ export function startBoot() {
     // Photos of operations that no longer exist (deleted, or a draft never saved).
     window.setTimeout(() => {
       const refs = new Set<string>();
-      for (const t of useData.getState().transactions) for (const p of t.photos ?? []) refs.add(p);
+      const st = useData.getState();
+      for (const t of st.transactions) for (const p of t.photos ?? []) refs.add(p);
+      for (const t of st.tasks) for (const p of t.photos ?? []) refs.add(p);
+      for (const n of st.notes) for (const p of photoIdsOf(n.html)) refs.add(p);
       void prunePhotos(refs);
     }, 4000);
   };

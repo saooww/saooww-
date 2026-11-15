@@ -1,0 +1,16 @@
+Surligner
+Ajouter une photo
+Gras
+Barré
+Italique
+Police à chasse fixe
+Liste numérotée
+Police standard
+Style de la note
+Mise en forme
+Centrer
+Sous-titre
+Souligné
+Couleur du texte
+Citation
+Police à empattement

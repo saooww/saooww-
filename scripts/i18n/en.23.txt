@@ -1,0 +1,16 @@
+Highlight
+Add photo
+Bold
+Strikethrough
+Italic
+Monospace font
+Numbered list
+Default font
+Note style
+Text formatting
+Center
+Subheading
+Underline
+Text colour
+Quote
+Serif font

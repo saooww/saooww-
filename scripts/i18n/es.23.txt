@@ -1,0 +1,16 @@
+Resaltar
+Añadir foto
+Negrita
+Tachado
+Cursiva
+Fuente monoespaciada
+Lista numerada
+Fuente normal
+Estilo de la nota
+Formato de texto
+Centrar
+Subtítulo
+Subrayado
+Color del texto
+Cita
+Fuente con serifa

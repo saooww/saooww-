@@ -1,0 +1,16 @@
+Vurgula
+Fotoğraf ekle
+Kalın
+Üstü çizili
+İtalik
+Sabit genişlikli yazı tipi
+Numaralı liste
+Varsayılan yazı tipi
+Not stili
+Metin biçimi
+Ortala
+Alt başlık
+Altı çizili
+Metin rengi
+Alıntı
+Serifli yazı tipi

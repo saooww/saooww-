@@ -1,0 +1,16 @@
+Markieren
+Foto hinzufügen
+Fett
+Durchgestrichen
+Kursiv
+Festbreitenschrift
+Nummerierte Liste
+Standardschrift
+Notizstil
+Textformat
+Zentrieren
+Zwischenüberschrift
+Unterstrichen
+Textfarbe
+Zitat
+Serifenschrift

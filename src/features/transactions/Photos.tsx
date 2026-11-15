@@ -8,7 +8,7 @@ import { nav } from "../../store/ui";
 import { ease } from "../../ui/motion";
 import { tr } from "../../i18n/i18n";
 
-function usePhotoUrl(id: string): string | null {
+export function usePhotoUrl(id: string): string | null {
   const [url, setUrl] = useState<string | null>(null);
   useEffect(() => {
     let alive = true;
@@ -102,7 +102,7 @@ export function PhotoViewer({ ids, index, onClose }: { ids: string[]; index: num
       dragElastic={0.5}
       onDragEnd={(_, info) => Math.abs(info.offset.y) > 100 && onClose()}
       role="dialog"
-      aria-label={tr("Фото чека")}
+      aria-label={tr("Фото")}
     >
       <div className="flex items-center justify-between px-4" style={{ paddingTop: "calc(var(--safe-top) + 8px)" }}>
         <span className="text-footnote text-white/60">{ids.length > 1 ? tr("{0} из {1}", i + 1, ids.length) : ""}</span>
@@ -112,7 +112,7 @@ export function PhotoViewer({ ids, index, onClose }: { ids: string[]; index: num
       </div>
       <div className="flex min-h-0 flex-1 items-center justify-center p-4" onClick={() => ids.length > 1 && setI((n) => (n + 1) % ids.length)}>
         <AnimatePresence mode="wait">
-          {url && <motion.img key={ids[i]} src={url} alt={tr("Фото чека")} className="max-h-full max-w-full rounded-[12px] object-contain" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} draggable={false} />}
+          {url && <motion.img key={ids[i]} src={url} alt="" className="max-h-full max-w-full rounded-[12px] object-contain" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} draggable={false} />}
         </AnimatePresence>
       </div>
     </motion.div>,

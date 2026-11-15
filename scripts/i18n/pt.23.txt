@@ -1,0 +1,16 @@
+Destacar
+Adicionar foto
+Negrito
+Riscado
+Itálico
+Fonte monoespaçada
+Lista numerada
+Fonte padrão
+Estilo da nota
+Formatação do texto
+Centralizar
+Subtítulo
+Sublinhado
+Cor do texto
+Citação
+Fonte com serifa

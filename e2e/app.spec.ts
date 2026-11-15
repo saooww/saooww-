@@ -255,6 +255,34 @@ test("пункты заметки превращаются в дела", async (
   await expect(page.getByRole("button", { name: /Корм для кота/ })).toBeVisible();
 });
 
+test("заметка с оформлением и фото: сохраняется после перезапуска, фото не удаляется при очистке", async ({ page }) => {
+  await startDemo(page);
+  await openPlanner(page);
+  await page.getByRole("tab", { name: "Заметки" }).click();
+  await page.getByRole("button", { name: "Новая заметка" }).first().click();
+  await page.getByPlaceholder("Заголовок").fill("Поездка");
+  const ed = page.getByRole("textbox", { name: "Текст заметки" });
+  await ed.click();
+  await page.keyboard.type("Важный пункт");
+  await page.keyboard.press("Shift+Home");
+  await page.getByRole("button", { name: "Жирный" }).click();
+  await page.keyboard.press("End");
+  // 1×1 png
+  const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==", "base64");
+  await page.setInputFiles('input[type=file][accept="image/*"]', { name: "a.png", mimeType: "image/png", buffer: png });
+  await expect(ed.locator("figure img")).toHaveCount(1);
+  await page.waitForTimeout(700);
+  await page.reload();
+  await page.waitForTimeout(500);
+  await page.getByRole("tab", { name: "Дела" }).click();
+  await page.getByRole("tab", { name: "Заметки" }).click();
+  await page.getByRole("button", { name: /Поездка/ }).click();
+  await expect(page.getByRole("textbox", { name: "Текст заметки" }).locator("b, strong")).toHaveText("Важный пункт");
+  await expect(page.getByRole("textbox", { name: "Текст заметки" }).locator("figure img")).toHaveCount(1);
+  // the picture itself loads from the photo store
+  await expect.poll(() => page.locator("figure img").evaluate((i: HTMLImageElement) => i.naturalWidth)).toBeGreaterThan(0);
+});
+
 test("калькулятор в сумме: 1200 + 350 записывается как 1 550", async ({ page }) => {
   await startDemo(page);
   await createNew(page, "Расход");
