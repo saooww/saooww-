@@ -15,6 +15,7 @@ import { Sheet } from "../../ui/Sheet";
 import type { HomeBlock } from "../../store/types";
 import { TxRow, usePresentCtx } from "../transactions/TxRow";
 import { HomeHero } from "./HomeHero";
+import { IncomeCard } from "./Incomes";
 import { HomeFeed } from "./HomeCards";
 import { HomeToday } from "../planner/HomeToday";
 import { tr } from "../../i18n/i18n";
@@ -60,6 +61,7 @@ function HomeBlocks() {
       {shown("feed") && <HomeFeed />}
       {shown("recent") && <RecentOperations />}
       {shown("goal") && <PrimaryGoal />}
+      <IncomeCard />
       <div className="mt-8 flex justify-center">
         <button type="button" onClick={() => nav.sheet("homeLayout")} className="flex h-10 items-center gap-2 rounded-full px-4 text-footnote font-medium text-ink-2 active:bg-surface-press">
           <SlidersHorizontal size={15} strokeWidth={2} />{tr("Настроить главную")}</button>

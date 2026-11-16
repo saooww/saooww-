@@ -630,9 +630,12 @@
   }
 }
 
-/* A static, soft reflection above the balance. */
+/* The card brightens at the edge and stays quiet behind the number. */
 .hero-light {
-  background: radial-gradient(62% 48% at 87% 6%, rgba(255, 255, 255, 0.15), transparent 75%);
+  background:
+    radial-gradient(75% 65% at 98% 0%, rgba(255, 214, 208, 0.30), transparent 73%),
+    linear-gradient(146deg, transparent 38%, rgba(255, 219, 211, 0.13) 43%, transparent 61%),
+    linear-gradient(180deg, rgba(45, 5, 11, 0.05), rgba(45, 5, 11, 0.42));
 }
 
 @keyframes caret {
