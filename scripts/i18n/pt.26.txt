@@ -1,1 +1,11 @@
 {0} min
+Fotos que já faltavam no dispositivo de origem: {0}.
+Os dados mudaram durante a preparação. Abra a cópia novamente.
+Data da cópia: {0}. Fotos no ficheiro: {1}.
+Escolha «Importar de ficheiro» para esta cópia
+Não foi possível concluir a operação de cópia
+Não foi possível guardar os dados atuais
+A preparar a cópia…
+A cópia está danificada ou tem um formato incompatível
+Dados atuais: {0}, {1}.{2} O ficheiro inclui as fotos disponíveis. A cópia de texto contém apenas registos.
+As cópias de texto e os ficheiros antigos contêm registos sem anexos.

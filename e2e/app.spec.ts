@@ -604,3 +604,57 @@ test.describe("компьютер", () => {
     expect(d!.width).toBeLessThanOrEqual(580);
   });
 });
+
+test("полная копия переносит заметку с фото в чистый профиль и отклоняет повреждённый файл", async ({ page, browser, baseURL }) => {
+  test.setTimeout(75_000);
+  await startDemo(page);
+  await openPlanner(page);
+  await page.getByRole("tab", { name: "Заметки" }).click();
+  await page.getByRole("button", { name: "Новая заметка" }).first().click();
+  await page.getByPlaceholder("Заголовок").fill("Фото для переноса");
+  const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==", "base64");
+  await page.setInputFiles('input[type=file][accept="image/*"]', { name: "photo.png", mimeType: "image/png", buffer: png });
+  await expect(page.locator("figure img")).toHaveCount(1);
+
+  const openData = async (target: Page) => {
+    await target.getByRole("tab", { name: "Профиль" }).click();
+    const view = target.locator('.app-canvas > [aria-hidden="false"]');
+    await view.getByRole("button", { name: "Настройки", exact: true }).click();
+    await view.getByRole("button", { name: "Резервные копии и данные" }).click();
+  };
+
+  await openData(page);
+  const downloading = page.waitForEvent("download");
+  await page.getByRole("button", { name: /Сохранить копию в Файлы/ }).click();
+  const download = await downloading;
+  const stream = await download.createReadStream();
+  if (!stream) throw new Error("Backup download unavailable");
+  const chunks: Buffer[] = [];
+  for await (const chunk of stream) chunks.push(chunk);
+  const buffer = Buffer.concat(chunks);
+
+  const clean = await browser.newContext({ baseURL, locale: "ru-RU", viewport: { width: 402, height: 874 }, serviceWorkers: "block" });
+  try {
+    await clean.route(CBR, (route) => route.abort());
+    const target = await clean.newPage();
+    await startDemo(target);
+    await openData(target);
+    const importInput = target.locator('input[type=file][accept="application/json,.json"]');
+    const broken = JSON.parse(buffer.toString());
+    broken.photos = [];
+    await importInput.setInputFiles({ name: "broken.json", mimeType: "application/json", buffer: Buffer.from(JSON.stringify(broken)) });
+    await expect(target.getByText("Резервная копия повреждена или имеет неподдерживаемый формат", { exact: true })).toBeVisible();
+    await importInput.setInputFiles({ name: download.suggestedFilename(), mimeType: "application/json", buffer });
+    const dialog = target.getByRole("dialog", { name: /Заменить данные/ });
+    await expect(dialog).toContainText("Фото в файле: 1.");
+    await dialog.getByRole("button", { name: "Заменить", exact: true }).click();
+    await expect(target.getByText("Данные загружены", { exact: true })).toBeVisible();
+    await target.reload();
+    await openPlanner(target);
+    await target.getByRole("tab", { name: "Заметки" }).click();
+    await target.getByRole("button", { name: /Фото для переноса/ }).click();
+    await expect.poll(() => target.locator("figure img").evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
+  } finally {
+    await clean.close();
+  }
+});

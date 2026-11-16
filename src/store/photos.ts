@@ -1,9 +1,9 @@
 import { uid } from "../lib/id";
-import { hasIDB, idb, PHOTOS } from "./storage";
+import { hasIDB, idb, openDB, PHOTOS } from "./storage";
 
 /**
  * Receipt photos live in IndexedDB as compressed JPEG blobs; transactions
- * keep only their ids. They are not part of JSON backups.
+ * keep only their ids. Full file backups can include the original blobs.
  */
 
 const MAX_SIDE = 1600;
@@ -40,6 +40,23 @@ export async function savePhoto(file: Blob): Promise<string> {
   await idb.set(PHOTOS, id, blob);
   sessionPhotos.add(id);
   return id;
+}
+
+export function readBackupPhoto(id: string): Promise<Blob | undefined> {
+  return hasIDB() ? idb.get<Blob>(PHOTOS, id) : Promise.resolve(undefined);
+}
+
+export async function importBackupPhotos(photos: Map<string, Blob>): Promise<void> {
+  if (!photos.size) return;
+  const db = await openDB();
+  await new Promise<void>((resolve, reject) => {
+    const tx = db.transaction(PHOTOS, "readwrite");
+    tx.oncomplete = () => resolve();
+    tx.onabort = () => reject(tx.error ?? new Error("Photo import aborted"));
+    const store = tx.objectStore(PHOTOS);
+    for (const [id, blob] of photos) store.add(blob, id);
+  });
+  for (const id of photos.keys()) sessionPhotos.add(id);
 }
 
 export async function photoUrl(id: string): Promise<string | null> {

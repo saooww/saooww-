@@ -811,6 +811,7 @@ export function exportJSON(): string {
 
 export function parseImport(text: string): AppData {
   const raw = JSON.parse(text);
+  if (raw?.app === "kapital" && raw.version >= 3) throw new Error(tr("Для этой копии выберите «Импорт из файла»"));
   const data = raw && raw.data ? raw.data : raw;
   if (!data || !Array.isArray(data.wallets) || !Array.isArray(data.transactions)) {
     // Maybe a file from the first version of the app
@@ -845,7 +846,7 @@ export async function listBackups(): Promise<BackupEntry[]> {
 }
 
 /** Keeps one automatic copy per day, the three most recent. */
-export async function autoBackup(force = false): Promise<void> {
+export async function autoBackup(force = false, requireSave = false): Promise<void> {
   try {
     const list = await listBackups();
     const today = todayKey();
@@ -854,7 +855,7 @@ export async function autoBackup(force = false): Promise<void> {
     const next = [{ at, data: pickData(useData.getState()) }, ...list.filter((b) => b.at !== at && (force || b.at.slice(0, 10) !== today))].slice(0, 3);
     await kvSet(BACKUP_KEY, JSON.stringify(next));
   } catch {
-    /* storage full or unavailable — backups are best effort */
+    if (requireSave) throw new Error(tr("Не удалось сохранить текущую резервную копию"));
   }
 }
 

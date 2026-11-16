@@ -5,8 +5,10 @@ import { formatDate, formatDateTime, pluralN } from "../../lib/dates";
 import { refreshRatesIfStale } from "../../lib/rates";
 import { haptic } from "../../lib/haptics";
 import { CURRENCIES, currencySymbol } from "../../lib/money";
-import { useData, exportJSON, parseImport, listBackups, autoBackup, freshData, wipeDevice, type BackupEntry } from "../../store/store";
-import { storageStatus, type StorageStatus } from "../../store/storage";
+import { useData, exportJSON, parseImport, listBackups, autoBackup, pickData, freshData, wipeDevice, type BackupEntry } from "../../store/store";
+import { flushPersist, storageHealthy, storageStatus, type StorageStatus } from "../../store/storage";
+import { decodeBackup, remapBackupPhotos, type BackupArchive } from "../../lib/backupArchive";
+import { importBackupPhotos } from "../../store/photos";
 import { isEmbedded, saveBackupFile } from "../../lib/backupFile";
 import type { AppData, Settings } from "../../store/types";
 import { nav, useUI } from "../../store/ui";
@@ -307,6 +309,8 @@ export function DataScreen() {
   const autoOn = useData((s) => s.settings.autoBackup);
   const lastExternal = useData((s) => s.settings.lastExternalBackup);
   const file = useRef<HTMLInputElement>(null);
+  const busy = useRef(false);
+  const [backupBusy, setBackupBusy] = useState(false);
   const [backups, setBackups] = useState<BackupEntry[]>([]);
   const [status, setStatus] = useState<StorageStatus | null>(null);
   const embedded = isEmbedded();
@@ -317,36 +321,87 @@ export function DataScreen() {
   };
   useEffect(refresh, []);
 
-  const saveToFiles = async () => {
+  const runBackupAction = async (action: () => Promise<void>) => {
+    if (busy.current) return;
+    busy.current = true;
+    setBackupBusy(true);
+    try {
+      await action();
+    } catch {
+      nav.toast(tr("Не удалось завершить работу с резервной копией"), { tone: "warning" });
+    } finally {
+      busy.current = false;
+      setBackupBusy(false);
+    }
+  };
+
+  const saveToFiles = () => runBackupAction(async () => {
     const r = await saveBackupFile();
     if (r === "shared" || r === "downloaded") {
       haptic("success");
       nav.toast(r === "shared" ? tr("Копия сохранена") : tr("Файл резервной копии сохранён"), { tone: "positive" });
     } else if (r === "failed") nav.toast(tr("Не получилось сохранить файл — скопируйте копию как текст"), { tone: "warning" });
-  };
+  });
 
-  const confirmReplace = (data: AppData, from: string) =>
+  const confirmReplace = (data: AppData, from: string, archive?: BackupArchive) => {
+    const detail = archive
+      ? tr("Дата копии: {0}. Фото в файле: {1}.", formatDateTime(archive.exportedAt), archive.photos.size)
+      : tr("Текстовые копии и старые файлы содержат записи без вложений.");
+    const missing = archive?.missingPhotos ? tr(" Фото, которых уже не было на устройстве: {0}.", archive.missingPhotos) : "";
     nav.sheet("confirm", {
       title: tr("Заменить данные {0}?", from),
-      message: tr("Там {0} и {1}. Текущие данные будут заменены — до этого мы сохраним их резервную копию.", pluralN(data.transactions.length, ["операция", "операции", "операций"]), pluralN(data.wallets.length, ["кошелёк", "кошелька", "кошельков"])),
+      message: `${tr("Там {0} и {1}. Текущие данные будут заменены — до этого мы сохраним их резервную копию.", pluralN(data.transactions.length, ["операция", "операции", "операций"]), pluralN(data.wallets.length, ["кошелёк", "кошелька", "кошельков"]))} ${detail}${missing}`,
       confirmLabel: tr("Заменить"),
-      onConfirm: async () => {
-        await autoBackup(true);
-        undoable(tr("Данные загружены"), () => useData.getState().replaceAll(data));
+      onConfirm: () => void runBackupAction(async () => {
+        const before = useData.getState();
+        const staged = archive ? remapBackupPhotos(archive) : { data, photos: new Map<string, Blob>() };
+        await autoBackup(true, true);
+        await importBackupPhotos(staged.photos);
+        if (useData.getState() !== before) {
+          nav.toast(tr("Данные изменились во время подготовки. Откройте копию ещё раз."), { tone: "warning" });
+          return;
+        }
+        const restoredData = archive ? {
+          ...staged.data,
+          settings: {
+            ...staged.data.settings,
+            lockEnabled: before.settings.lockEnabled,
+            lockPinHash: before.settings.lockPinHash,
+            lockSalt: before.settings.lockSalt,
+            lockCredentialId: before.settings.lockCredentialId,
+            lockAfter: before.settings.lockAfter
+          }
+        } : staged.data;
+        before.replaceAll(restoredData);
+        await flushPersist();
+        if (!storageHealthy()) {
+          before.replaceAll(pickData(before));
+          await flushPersist();
+          throw new Error("Restore could not be persisted");
+        }
+        nav.toast(tr("Данные загружены"), {
+          tone: "positive",
+          action: { label: tr("Отменить"), run: () => useData.getState().replaceAll(pickData(before)) }
+        });
         useUI.getState().popToRoot("more");
         refresh();
+      })
+    });
+  };
+
+  const onFile = (f: File | undefined) => {
+    if (!f || busy.current) return;
+    void runBackupAction(async () => {
+      try {
+        const text = await f.text();
+        const archive = decodeBackup(JSON.parse(text));
+        confirmReplace(archive?.data ?? parseImport(text), tr("из файла"), archive ?? undefined);
+      } catch {
+        nav.toast(tr("Резервная копия повреждена или имеет неподдерживаемый формат"), { tone: "warning" });
+      } finally {
+        if (file.current) file.current.value = "";
       }
     });
-
-  const onFile = async (f: File | undefined) => {
-    if (!f) return;
-    try {
-      confirmReplace(parseImport(await f.text()), tr("из файла"));
-    } catch (e) {
-      nav.toast(e instanceof Error ? e.message : tr("Не удалось прочитать файл"), { tone: "warning" });
-    } finally {
-      if (file.current) file.current.value = "";
-    }
   };
 
   // Works everywhere, including where file downloads are blocked: paste the text into a note or a chat with yourself.
@@ -393,13 +448,13 @@ export function DataScreen() {
               icon={Share}
               iconTone="accent"
               title={tr("Сохранить копию в Файлы")}
-              subtitle={lastExternal ? tr("Последняя: {0}", formatDateTime(lastExternal)) : tr("Ещё ни разу")}
+              subtitle={backupBusy ? tr("Подготавливаем резервную копию…") : lastExternal ? tr("Последняя: {0}", formatDateTime(lastExternal)) : tr("Ещё ни разу")}
               onClick={saveToFiles}
             />
           </Group>
         )}
 
-        <Group footer={tr("Сейчас: {0}, {1}.{2} Фото чеков в копию не входят.", pluralN(counts.tx, ["операция", "операции", "операций"]), pluralN(counts.wallets, ["кошелёк", "кошелька", "кошельков"]), meta.importedFromV1 ? " Данные перенесены из прошлой версии приложения." : "")}>
+        <Group footer={tr("Сейчас: {0}, {1}.{2} Файл включает доступные фото. Текстовая копия содержит только записи.", pluralN(counts.tx, ["операция", "операции", "операций"]), pluralN(counts.wallets, ["кошелёк", "кошелька", "кошельков"]), meta.importedFromV1 ? " Данные перенесены из прошлой версии приложения." : "")}>
           <Row icon={Upload} title={tr("Импорт из файла")} subtitle={tr("Из резервной копии Ardessa или Капитала")} onClick={() => file.current?.click()} />
           <Row icon={Copy} title={tr("Скопировать как текст")} subtitle={tr("Если сохранить файл не получается")} onClick={copyText} />
           <Row icon={ClipboardPaste} title={tr("Вставить из текста")} subtitle={tr("Восстановить из скопированной копии")} onClick={() => nav.sheet("backupText", { onImport: (data: AppData) => confirmReplace(data, tr("из текста")) })} />
