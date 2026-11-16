@@ -1,1 +1,11 @@
 {0} Min
+Fotos, die bereits auf dem Quellgerät fehlten: {0}.
+Die Daten wurden während der Vorbereitung geändert. Öffne die Sicherung erneut.
+Sicherungsdatum: {0}. Fotos in der Datei: {1}.
+Wähle für diese Sicherung „Aus Datei importieren“
+Die Sicherung konnte nicht abgeschlossen werden
+Die aktuellen Daten konnten nicht gesichert werden
+Sicherung wird vorbereitet…
+Die Sicherung ist beschädigt oder ihr Format wird nicht unterstützt
+Aktuelle Daten: {0}, {1}.{2} Die Datei enthält verfügbare Fotos. Die Textkopie enthält nur Einträge.
+Textkopien und ältere Dateien enthalten Einträge ohne Anhänge.

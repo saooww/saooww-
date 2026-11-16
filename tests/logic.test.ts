@@ -19,6 +19,7 @@ import { dayPlan, nextOccurrence, nextRepeatDate } from "../src/lib/tasks";
 import { taskToICS } from "../src/lib/ics";
 import { lastDays, meanBed, sleepMinutes, sleepScore, sleepStats, sleepStreak } from "../src/lib/sleep";
 import { htmlToText, photoIdsOf, textToHtml } from "../src/lib/richText";
+import { decodeBackup, encodeBackup, remapBackupPhotos } from "../src/lib/backupArchive";
 import { parseImport } from "../src/store/store";
 import { applyCalcKey, evaluate, formatExpression } from "../src/lib/calc";
 import { SAVE_EVERY, flushPersist } from "../src/store/storage";
@@ -702,3 +703,34 @@ test("сон: длительность через полночь, средний
 });
 
 console.log(`\nВсе проверки пройдены: ${passed}`);
+
+const portable = createDemoData();
+portable.settings.lockEnabled = true;
+portable.settings.lockPinHash = "local-only";
+portable.transactions[0] = { ...portable.transactions[0], photos: ["p-shared"] };
+portable.tasks[0] = { ...portable.tasks[0], photos: ["p-shared", "p-missing"] };
+portable.notes[0] = { ...portable.notes[0], html: '<p>Фото</p><figure data-photo="p-shared"></figure>' };
+const exported = await encodeBackup(portable, "2026-11-16T12:00:00", async (id) =>
+  id === "p-shared" ? new Blob([new Uint8Array([0, 1, 255])], { type: "image/png" }) : undefined
+);
+const archive = decodeBackup(JSON.parse(exported));
+assert.ok(archive);
+assert.equal(archive.photos.size, 1);
+assert.equal(archive.missingPhotos, 1);
+assert.equal(archive.data.settings.lockPinHash, undefined);
+assert.equal(archive.data.settings.lockEnabled, false);
+const restored = remapBackupPhotos(archive);
+const restoredId = restored.data.transactions[0].photos![0];
+assert.notEqual(restoredId, "p-shared");
+assert.equal(restored.data.tasks[0].photos![0], restoredId);
+assert.deepEqual(photoIdsOf(restored.data.notes[0].html), [restoredId]);
+assert.deepEqual(new Uint8Array(await restored.photos.get(restoredId)!.arrayBuffer()), new Uint8Array([0, 1, 255]));
+assert.deepEqual(computeBalances(restored.data.wallets, restored.data.transactions), computeBalances(portable.wallets, portable.transactions));
+assert.deepEqual(restored.data.sleep, portable.sleep);
+assert.throws(() => parseImport(exported));
+assert.throws(() => decodeBackup({ ...JSON.parse(exported), missing: [] }));
+assert.throws(() => decodeBackup({ ...JSON.parse(exported), photos: [{ id: "p-shared", type: "image/png", base64: "!!!!" }] }));
+const damaged = JSON.parse(exported);
+damaged.data.transactions[0].walletId = "nonexistent-wallet";
+assert.throws(() => decodeBackup(damaged));
+console.log("  ✓ полная копия: остатки, сон, фото чеков, дел, заметок и проверка повреждений");

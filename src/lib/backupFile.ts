@@ -1,5 +1,7 @@
 import { nowISO } from "./dates";
-import { exportJSON, useData } from "../store/store";
+import { pickData, useData } from "../store/store";
+import { readBackupPhoto } from "../store/photos";
+import { encodeBackup } from "./backupArchive";
 import { tr } from "../i18n/i18n";
 
 /** Inside an embedding frame (e.g. a Claude artifact) file saving and sharing are blocked. */
@@ -34,7 +36,12 @@ function download(file: File) {
  * `raw` lets the crash screen save what is in storage without the store.
  */
 export async function saveBackupFile(raw?: string): Promise<SaveResult> {
-  const file = backupFile(raw ?? exportJSON());
+  let file: File;
+  try {
+    file = backupFile(raw ?? await encodeBackup(pickData(useData.getState()), nowISO(), readBackupPhoto));
+  } catch {
+    return "failed";
+  }
   try {
     if (navigator.canShare?.({ files: [file] })) {
       await navigator.share({ files: [file], title: tr("Ardessa — резервная копия") });

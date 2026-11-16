@@ -1,1 +1,11 @@
 {0} min
+Photos déjà absentes de l’appareil source : {0}.
+Les données ont changé pendant la préparation. Rouvrez la sauvegarde.
+Date de la sauvegarde : {0}. Photos dans le fichier : {1}.
+Choisissez « Importer un fichier » pour cette sauvegarde
+Impossible de terminer l’opération de sauvegarde
+Impossible de sauvegarder les données actuelles
+Préparation de la sauvegarde…
+La sauvegarde est endommagée ou son format est incompatible
+Données actuelles : {0}, {1}.{2} Le fichier contient les photos disponibles. La copie texte contient uniquement les données.
+Les copies texte et les anciens fichiers contiennent les données sans pièces jointes.

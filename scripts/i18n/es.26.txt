@@ -1,1 +1,11 @@
 {0} min
+Fotos que ya faltaban en el dispositivo de origen: {0}.
+Los datos cambiaron durante la preparación. Abre la copia otra vez.
+Fecha de la copia: {0}. Fotos en el archivo: {1}.
+Elige «Importar desde archivo» para esta copia
+No se pudo completar la operación de copia
+No se pudieron guardar los datos actuales
+Preparando la copia…
+La copia está dañada o tiene un formato incompatible
+Datos actuales: {0}, {1}.{2} El archivo incluye las fotos disponibles. La copia de texto solo contiene registros.
+Las copias de texto y los archivos antiguos contienen registros sin adjuntos.

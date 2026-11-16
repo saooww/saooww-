@@ -1,1 +1,11 @@
 {0} dk
+Kaynak cihazda zaten eksik olan fotoğraflar: {0}.
+Hazırlık sırasında veriler değişti. Yedeği yeniden açın.
+Yedek tarihi: {0}. Dosyadaki fotoğraf sayısı: {1}.
+Bu yedek için “Dosyadan içe aktar” seçeneğini kullanın
+Yedekleme işlemi tamamlanamadı
+Mevcut veriler yedeklenemedi
+Yedek hazırlanıyor…
+Yedek bozuk veya biçimi desteklenmiyor
+Mevcut veriler: {0}, {1}.{2} Dosya mevcut fotoğrafları içerir. Metin kopyası yalnızca kayıtları içerir.
+Metin kopyaları ve eski dosyalar ekleri içermez.

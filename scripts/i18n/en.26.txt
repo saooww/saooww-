@@ -1,1 +1,11 @@
 {0} min
+Photos already missing on the source device: {0}.
+Data changed during preparation. Open the backup again.
+Backup date: {0}. Photos in file: {1}.
+Choose “Import from file” for this backup
+Could not complete the backup operation
+Could not back up the current data
+Preparing backup…
+The backup is damaged or uses an unsupported format
+Current data: {0}, {1}.{2} The file includes available photos. The text copy includes records only.
+Text copies and older files contain records without attachments.

@@ -1,9 +1,9 @@
 import { nowISO } from "../lib/dates";
 import { migrateFromV1, V1_KEY } from "./migrate";
-import { photoIdsOf } from "../lib/richText";
+import { backupPhotoIds } from "../lib/backupArchive";
 import { prunePhotos } from "./photos";
 import { hadStoredData, onStorageFailure, requestPersistence } from "./storage";
-import { useData } from "./store";
+import { listBackups, useData } from "./store";
 import type { Settings } from "./types";
 import { nav, useUI } from "./ui";
 import { tr } from "../i18n/i18n";
@@ -66,12 +66,11 @@ export function startBoot() {
 
     // Photos of operations that no longer exist (deleted, or a draft never saved).
     window.setTimeout(() => {
-      const refs = new Set<string>();
-      const st = useData.getState();
-      for (const t of st.transactions) for (const p of t.photos ?? []) refs.add(p);
-      for (const t of st.tasks) for (const p of t.photos ?? []) refs.add(p);
-      for (const n of st.notes) for (const p of photoIdsOf(n.html)) refs.add(p);
-      void prunePhotos(refs);
+      void listBackups().then((backups) => {
+        const refs = backupPhotoIds(useData.getState());
+        for (const { data } of backups) for (const id of backupPhotoIds(data)) refs.add(id);
+        return prunePhotos(refs);
+      });
     }, 4000);
   };
 
