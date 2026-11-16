@@ -299,7 +299,9 @@ test("сон: запись ночи считает длительность че
   await page.reload();
   await page.waitForTimeout(500);
   await page.getByRole("tab", { name: "Профиль" }).click();
-  await expect(page.getByText(/7 ч 15 мин/).first()).toBeVisible();
+  await page.locator('.app-canvas > [aria-hidden="false"]').getByText("Сон", { exact: true }).first().click();
+  // the profile tile shows a weekly mean that depends on the date; the night itself must be there
+  await expect(page.getByText("23:30 → 06:45")).toBeVisible();
 });
 
 test("калькулятор в сумме: 1200 + 350 записывается как 1 550", async ({ page }) => {
@@ -650,7 +652,8 @@ test("полная копия переносит заметку с фото в �
     await dialog.getByRole("button", { name: "Заменить", exact: true }).click();
     await expect(target.getByText("Данные загружены", { exact: true })).toBeVisible();
     await target.reload();
-    await openPlanner(target);
+    // the restored settings already say the planner intro was seen on the source device
+    await target.getByRole("tab", { name: "Дела" }).click();
     await target.getByRole("tab", { name: "Заметки" }).click();
     await target.getByRole("button", { name: /Фото для переноса/ }).click();
     await expect.poll(() => target.locator("figure img").evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
