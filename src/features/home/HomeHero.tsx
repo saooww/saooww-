@@ -5,7 +5,6 @@ import { nav } from "../../store/ui";
 import { BalanceHero } from "./BalanceHero";
 import { ForecastStrip } from "./Forecast";
 import { DayStrip } from "./DayBudget";
-import { IncomeCard } from "./Incomes";
 import { tr } from "../../i18n/i18n";
 
 /**
@@ -17,7 +16,6 @@ export function HomeHero() {
       <QuickActions />
       <DayStrip />
       <ForecastStrip />
-      <IncomeCard />
     </BalanceHero>
   );
 }
@@ -30,7 +28,7 @@ const ACTIONS: Array<{ kind: "expense" | "income" | "transfer"; label: string; i
 
 function QuickActions() {
   return (
-    <div className="mx-4 grid grid-cols-3 gap-2">
+    <div className="panel mx-4 grid grid-cols-3 overflow-hidden rounded-[22px]">
       {ACTIONS.map(({ kind, label, icon: Icon, color }) => (
         <motion.button
           key={kind}
@@ -40,7 +38,7 @@ function QuickActions() {
             nav.sheet("composer", { kind });
           }}
           whileTap={{ scale: 0.96 }}
-          className="panel flex min-h-[60px] min-w-0 flex-col items-center justify-center gap-1 rounded-[16px] px-1 py-2 text-center"
+          className="flex min-h-[68px] min-w-0 flex-col items-center justify-center gap-1 border-l border-[var(--line)] px-1 py-2 text-center first:border-l-0 active:bg-surface-press"
         >
           <Icon size={20} strokeWidth={2.2} style={{ color }} />
           <span className="text-footnote font-semibold leading-tight text-ink [overflow-wrap:anywhere]">{label}</span>
