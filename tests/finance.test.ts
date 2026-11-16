@@ -18,7 +18,7 @@ import { capitalChange, capitalForecast, freeCash, monthForecast, scheduledBetwe
 import { nextMonthPlan, nextSlot, planItems, planLeft, planReceived, planSchedule, planSurplus } from "../src/lib/plans";
 import { debtPeople, splitRepayment } from "../src/lib/debts";
 import { budgetStates } from "../src/lib/insights";
-import { goalInfo, goalSaved, goalEnvelopes } from "../src/lib/finance";
+import { categoryExpenseEntries, goalInfo, goalSaved, goalEnvelopes } from "../src/lib/finance";
 import { goalPace, goalWhatIf, whatIfSteps } from "../src/lib/goals";
 import { amountToInput, parseAmount } from "../src/lib/money";
 import { addDays, addMonths, diffDays, endOfMonth, startOfMonth } from "../src/lib/dates";
@@ -143,6 +143,10 @@ test("бюджеты и аналитика считают траты месяц�
   assert.equal(food.spent, 300_00 + 950_00);
   assert.equal(food.remaining, 2_000_00 - food.spent);
   assert.equal(food.level, "ok");
+  const range = periodRange("month", 0, T0);
+  const detail = categoryExpenseEntries(entries, "c-food", range.from, range.to, T0);
+  assert.deepEqual(detail.map(({ base }) => base), [300_00, 950_00]);
+  assert.equal(detail.reduce((sum, { base }) => sum + base, 0), stats.expenseByCategory.get("c-food"));
 });
 
 /* ---------------- balances ---------------- */
