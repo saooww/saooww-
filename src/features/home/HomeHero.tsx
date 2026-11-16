@@ -1,71 +1,49 @@
 import { motion } from "framer-motion";
-import { ArrowDownLeft, ArrowLeftRight, ArrowUpRight, PiggyBank, type LucideIcon } from "../../ui/glyphs";
+import { ArrowDownLeft, ArrowLeftRight, ArrowUpRight, type LucideIcon } from "../../ui/glyphs";
 import { haptic } from "../../lib/haptics";
-import { useData } from "../../store/store";
 import { nav } from "../../store/ui";
 import { BalanceHero } from "./BalanceHero";
+import { ForecastStrip } from "./Forecast";
 import { DayStrip } from "./DayBudget";
 import { IncomeCard } from "./Incomes";
 import { tr } from "../../i18n/i18n";
 
 /**
- * The top of the home screen: the red block with the balance and today's
- * allowance, and the sheet rising over it with four round actions.
+ * Balance and frequently used actions, followed by the daily allowance and forecast.
  */
 export function HomeHero() {
   return (
     <BalanceHero>
       <QuickActions />
-      <IncomeCard />
       <DayStrip />
+      <ForecastStrip />
+      <IncomeCard />
     </BalanceHero>
   );
 }
 
-const KIND_FILL = {
-  expense: { bg: "linear-gradient(160deg, #ff3b47, #a8000e)", glow: "#fa0717" },
-  income: { bg: "linear-gradient(160deg, #3cc896, #0b6a47)", glow: "#3cc896" },
-  transfer: { bg: "linear-gradient(160deg, #6f8cff, #2b3a9a)", glow: "#6f8cff" },
-  saving: { bg: "linear-gradient(160deg, #e6b45a, #7a4f12)", glow: "#e6b45a" }
-} as const;
-
-/** Save to the main goal; without goals, open the goals to set one. */
-function saveToGoal() {
-  const goals = useData.getState().goals.filter((g) => !g.archived);
-  const goal = goals.find((g) => g.primary) ?? goals[0];
-  if (goal) nav.sheet("goalMoney", { goalId: goal.id, direction: "deposit" });
-  else nav.sheet("goal");
-}
-
-const ACTIONS: Array<{ id: keyof typeof KIND_FILL; label: string; icon: LucideIcon; run: () => void }> = [
-  { id: "expense", label: tr("Расход"), icon: ArrowUpRight, run: () => nav.sheet("composer", { kind: "expense" }) },
-  { id: "income", label: tr("Доход"), icon: ArrowDownLeft, run: () => nav.sheet("composer", { kind: "income" }) },
-  { id: "transfer", label: tr("Перевод"), icon: ArrowLeftRight, run: () => nav.sheet("composer", { kind: "transfer" }) },
-  { id: "saving", label: tr("Отложить"), icon: PiggyBank, run: saveToGoal }
+const ACTIONS: Array<{ kind: "expense" | "income" | "transfer"; label: string; icon: LucideIcon; color: string }> = [
+  { kind: "expense", label: tr("Расход"), icon: ArrowUpRight, color: "var(--accent-ink)" },
+  { kind: "income", label: tr("Доход"), icon: ArrowDownLeft, color: "var(--positive)" },
+  { kind: "transfer", label: tr("Перевод"), icon: ArrowLeftRight, color: "var(--transfer)" }
 ];
 
-/** Four round actions under the cards, as in a banking app. */
 function QuickActions() {
   return (
-    <div className="mx-4 grid grid-cols-4 gap-2">
-      {ACTIONS.map((a, i) => (
+    <div className="mx-4 grid grid-cols-3 gap-2">
+      {ACTIONS.map(({ kind, label, icon: Icon, color }) => (
         <motion.button
-          key={a.id}
+          key={kind}
           type="button"
           onClick={() => {
             haptic();
-            a.run();
+            nav.sheet("composer", { kind });
           }}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 + i * 0.05, duration: 0.35 }}
-          whileTap={{ scale: 0.92 }}
-          className="flex flex-col items-center gap-1.5"
+          whileTap={{ scale: 0.96 }}
+          className="panel flex min-h-[60px] min-w-0 flex-col items-center justify-center gap-1 rounded-[16px] px-1 py-2 text-center"
         >
-          <span className="grid h-[54px] w-[54px] place-items-center rounded-[18px] text-white" style={{ background: KIND_FILL[a.id].bg, boxShadow: `0 10px 22px -10px ${KIND_FILL[a.id].glow}, inset 0 1px 0 rgba(255,255,255,0.28)` }}>
-            <a.icon size={22} />
-          </span>
-          <span className="text-caption font-medium text-ink-2">{a.label}</span>
+          <Icon size={20} strokeWidth={2.2} style={{ color }} />
+          <span className="text-footnote font-semibold leading-tight text-ink [overflow-wrap:anywhere]">{label}</span>
         </motion.button>
       ))}
     </div>

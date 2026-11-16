@@ -630,21 +630,9 @@
   }
 }
 
-/* Light over the home hero: two diagonal streaks and a glow, drifting slowly */
+/* A static, soft reflection above the balance. */
 .hero-light {
-  background:
-    radial-gradient(55% 45% at 82% 28%, rgba(255, 255, 255, 0.22), transparent 70%),
-    linear-gradient(112deg, transparent 38%, rgba(255, 255, 255, 0.13) 46%, transparent 53%),
-    linear-gradient(98deg, transparent 60%, rgba(255, 255, 255, 0.08) 65%, transparent 71%);
-  background-size: 140% 100%;
-  animation: hero-drift 9s ease-in-out infinite alternate;
-}
-@keyframes hero-drift {
-  from { background-position: 0% 0%; }
-  to { background-position: 100% 0%; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .hero-light { animation: none; }
+  background: radial-gradient(62% 48% at 87% 6%, rgba(255, 255, 255, 0.15), transparent 75%);
 }
 
 @keyframes caret {

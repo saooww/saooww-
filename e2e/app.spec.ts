@@ -98,7 +98,8 @@ test("чек делится на категории", async ({ page }) => {
   await createNew(page, "Расход");
   await page.keyboard.type("3450");
   await page.getByRole("dialog").locator('button[aria-pressed="false"]', { hasText: /^Продукты$/ }).click();
-  await page.getByRole("button", { name: "Разделить" }).click();
+  await page.getByRole("button", { name: /Подробности/ }).click();
+  await page.getByRole("button", { name: "Разделить чек" }).click();
   await page.getByRole("dialog").getByText("Категория", { exact: true }).click();
   await page.getByRole("dialog").last().getByText("Дом и ЖКХ", { exact: true }).click();
   await page.getByLabel("Сумма части 1").fill("450");
@@ -151,7 +152,7 @@ test("фото чека сохраняется вместе с операцие�
   await createNew(page, "Расход");
   await page.keyboard.type("777");
   await page.getByRole("dialog").locator('button[aria-pressed="false"]', { hasText: /^Продукты$/ }).click();
-  await page.getByRole("button", { name: "Фото чека" }).click();
+  await page.getByRole("button", { name: /Подробности/ }).click();
   // a tiny red PNG stands in for the camera
   const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAFklEQVR4nGP8z8DAwMDAxMDAwMDAAAANHQEDasKb6QAAAABJRU5ErkJggg==", "base64");
   await page.getByRole("dialog").locator('input[type="file"]').setInputFiles({ name: "receipt.png", mimeType: "image/png", buffer: png });

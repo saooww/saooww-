@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useAnimationControls } from "framer-motion";
-import { ArrowDownLeft, ArrowLeftRight, ArrowRight, ArrowUpRight, CalendarDays, Camera, ChevronDown, Hash, LayoutGrid, MessageSquareText, Plus, Repeat, Split, Star, X, type LucideIcon } from "../../ui/glyphs";
+import { ArrowDownLeft, ArrowLeftRight, ArrowRight, ArrowUpRight, CalendarDays, ChevronDown, ChevronRight, LayoutGrid, Plus, Split, Star, X, type LucideIcon } from "../../ui/glyphs";
 import { applyCalcKey, evaluate, formatExpression, hasOperator, type CalcKey } from "../../lib/calc";
 import { cn } from "../../lib/cn";
 import { dayOf, formatDate, formatDayHeading, nowISO, timeOf, todayKey, addDays } from "../../lib/dates";
@@ -308,8 +308,7 @@ export function ComposerSheet(props: ComposerProps) {
   const lastOp = (b: string) => (/[+\-×]$/.test(b) ? b[b.length - 1] : undefined);
   const dateLabel = (() => {
     const d = dayOf(date);
-    const rel = d === todayKey() || d === addDays(todayKey(), -1) ? formatDayHeading(d) : formatDate(d);
-    return { day: rel, time: timeOf(date) };
+    return d === todayKey() || d === addDays(todayKey(), -1) ? formatDayHeading(d) : formatDate(d);
   })();
 
   const titleFor: Record<View, string | undefined> = {
@@ -340,18 +339,18 @@ export function ComposerSheet(props: ComposerProps) {
             exit={{ opacity: 0, x: -24 }}
             transition={{ duration: 0.18, ease: ease.out }}
           >
-            <div className="flex shrink-0 items-center gap-2 px-3">
-              <IconButton icon={X} label={tr("Закрыть")} variant="plain" size={38} iconSize={20} onClick={close} />
+            <div className="flex shrink-0 items-center gap-1.5 px-3">
+              <IconButton icon={X} label={tr("Закрыть")} variant="plain" size={44} iconSize={20} onClick={close} />
               {lockedKind ? (
                 <div className="flex-1 text-center text-headline font-semibold">{tr("Изменить операцию")}</div>
               ) : (
                 <KindSwitch value={kind} onChange={setKind} />
               )}
-              <span className="w-[38px] shrink-0 max-[389px]:hidden" />
+              <span className="w-11 shrink-0 max-[389px]:hidden" />
             </div>
 
             {/* amount */}
-            <motion.div animate={amountCtl} className="flex min-h-[112px] flex-1 flex-col items-center justify-center px-4 py-2">
+            <motion.div animate={amountCtl} className="flex min-h-[104px] flex-1 flex-col items-center justify-center px-4 py-2">
               {cross ? (
                 <div className="flex w-full flex-col items-center gap-3">
                   <AmountDisplay compact buffer={shown(buf)} currency={from!.currency} active={field === "amount"} label={tr("Списать")} onClick={() => setField("amount")} />
@@ -467,32 +466,13 @@ export function ComposerSheet(props: ComposerProps) {
               </div>
             )}
 
-            {/* details, in one quiet line */}
-            <div className="mt-3 flex shrink-0 items-center gap-1.5 px-4 pb-2">
-              <button type="button" onClick={() => setView("details")} className="tile flex h-9 min-w-0 items-center gap-1.5 rounded-full px-3 text-subhead font-medium text-ink-2">
-                <CalendarDays size={15} strokeWidth={2} className="shrink-0" />
-                <span className="truncate">
-                  {dateLabel.day}
-                  <span className="max-[389px]:hidden">, {dateLabel.time}</span>
-                </span>
+            <div className="mt-2 shrink-0 px-4">
+              <button type="button" onClick={() => setView("details")} className="tile flex min-h-11 w-full items-center gap-2 rounded-[14px] px-3 text-left">
+                <CalendarDays size={16} strokeWidth={2} className="shrink-0 text-ink-3" />
+                <span className="min-w-0 text-subhead font-medium">{tr("Подробности")}</span>
+                <span className="ml-auto min-w-0 truncate text-footnote text-ink-2">{dateLabel}</span>
+                <ChevronRight size={15} className="shrink-0 text-ink-3" />
               </button>
-              <div className="ml-auto flex shrink-0 gap-1.5">
-                <ToolButton icon={MessageSquareText} label={note ? tr("Комментарий: {0}", note) : tr("Комментарий")} active={!!note} onClick={() => setView("details")} />
-                <ToolButton icon={Hash} label={tags.length ? tr("Теги: {0}", tags.join(", ")) : tr("Теги")} active={tags.length > 0} onClick={() => setView("details")} />
-                {!editingRecurring && !lockedKind && !parts.length && <ToolButton icon={Repeat} label={repeat === "none" ? tr("Повтор") : freqLabel(repeat)} active={repeat !== "none"} onClick={() => setView("details")} />}
-                {kind === "expense" && !editing && (
-                  <ToolButton
-                    icon={Split}
-                    label={tr("Разделить")}
-                    active={parts.some((p) => parseAmount(p.buf) > 0)}
-                    onClick={() => {
-                      if (!parts.length) setParts([{ key: uid(), buf: "" }]);
-                      setView("split");
-                    }}
-                  />
-                )}
-                {photosSupported() && <ToolButton icon={Camera} label={tr("Фото чека")} active={photos.length > 0} count={photos.length} onClick={() => setView("details")} />}
-              </div>
             </div>
 
             <div className="shrink-0 pt-1">
@@ -623,8 +603,21 @@ export function ComposerSheet(props: ComposerProps) {
                 <TagInput value={tags} onChange={setTags} suggestions={tagSuggestions} />
               </div>
             </Group>
+            {kind === "expense" && !editing && (
+              <Group>
+                <Row
+                  icon={Split}
+                  title={tr("Разделить чек")}
+                  onClick={() => {
+                    if (!parts.length) setParts([{ key: uid(), buf: "" }]);
+                    setView("split");
+                  }}
+                  chevron
+                />
+              </Group>
+            )}
             {photosSupported() && (
-              <Group header={tr("Фото чека")} footer={tr("Хранятся только на этом устройстве и не входят в резервную копию.")}>
+              <Group header={tr("Фото чека")}>
                 <PhotoStrip ids={photos} onChange={setPhotos} />
               </Group>
             )}
@@ -788,7 +781,7 @@ function KindSwitch({ value, onChange }: { value: FlowKind; onChange: (k: FlowKi
               haptic();
               onChange(k);
             }}
-            className="relative flex h-9 min-w-0 flex-1 items-center justify-center gap-1 rounded-full text-[min(calc(14px*var(--text-scale)),15px)] font-semibold"
+            className="relative flex min-h-11 min-w-0 flex-1 items-center justify-center gap-1 rounded-full text-[min(calc(14px*var(--text-scale)),15px)] font-semibold"
           >
             <m.icon size={15} strokeWidth={2.4} className={cn("relative shrink-0 transition-colors duration-200 max-[389px]:hidden", on ? m.on : m.tint)} />
             <span className={cn("relative truncate transition-colors duration-200", on ? m.on : "text-ink-2")}>{m.label}</span>
@@ -846,28 +839,10 @@ function QuickChip({ children, icon, selected, onClick }: { children: React.Reac
       transition={spring.press}
       aria-pressed={selected}
       onClick={onClick}
-      className={cn("inline-flex h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 text-subhead font-medium transition-colors duration-200", selected ? "bg-ink text-ink-inverse" : "tile text-ink")}
+      className={cn("inline-flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 text-subhead font-medium transition-colors duration-200", selected ? "bg-ink text-ink-inverse" : "tile text-ink")}
     >
       {icon}
       {children}
-    </motion.button>
-  );
-}
-
-function ToolButton({ icon: Icon, label, active, onClick, count }: { icon: LucideIcon; label: string; active?: boolean; onClick: () => void; count?: number }) {
-  return (
-    <motion.button
-      type="button"
-      whileTap={{ scale: 0.9 }}
-      transition={spring.press}
-      aria-label={label}
-      title={label}
-      onClick={onClick}
-      className={cn("relative grid h-9 w-9 place-items-center rounded-full transition-colors duration-200", active ? "bg-accent-soft text-accent-ink" : "tile text-ink-2")}
-    >
-      <Icon size={16} strokeWidth={2} />
-      {active && <span className="absolute right-[5px] top-[5px] h-[6px] w-[6px] rounded-full bg-accent" />}
-      {!!count && count > 1 && <span className="absolute -right-0.5 -top-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[10px] font-bold text-[var(--accent-on)]">{count}</span>}
     </motion.button>
   );
 }

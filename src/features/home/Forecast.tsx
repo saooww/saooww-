@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { ChevronRight, TriangleAlert } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
 import { capitalForecast } from "../../lib/analytics";
-import { addDays, diffDays, endOfMonth, formatDate, parseDay, pluralN, startOfMonth } from "../../lib/dates";
+import { addDays, diffDays, endOfMonth, formatDate, pluralN, startOfMonth } from "../../lib/dates";
 import { balanceSeries, totalWallets } from "../../lib/finance";
 import { formatMoney } from "../../lib/money";
 import { haptic } from "../../lib/haptics";
@@ -23,14 +23,9 @@ export function useCapitalForecast() {
   return useMemo(() => ({ f: capitalForecast(data, balances, entries, today), today, data, balances }), [data, balances, entries, today]);
 }
 
-/** In the red block: where the accounts will be on the last day of the month. */
+/** Compact link to the detailed month forecast. */
 export function ForecastStrip() {
-  const { f, today } = useCapitalForecast();
-  const base = useAppData().settings.baseCurrency;
-  const delta = f.end - f.now;
-  const last = parseDay(endOfMonth(today)).getDate();
-  const glass = { background: "rgba(0,0,0,0.28)", boxShadow: "inset 0 0 0 0.5px rgba(255,255,255,0.16)", backdropFilter: "blur(12px)" } as const;
-  if (f.daysLeft <= 0) return null;
+  const { f, data } = useCapitalForecast();
   return (
     <motion.button
       type="button"
@@ -39,35 +34,25 @@ export function ForecastStrip() {
         haptic();
         nav.sheet("forecast");
       }}
-      onPointerDownCapture={(e) => e.stopPropagation()}
       whileTap={{ scale: 0.98 }}
       transition={spring.press}
-      className="mt-4 block w-full rounded-[22px] px-4 py-3 text-left text-white"
-      style={glass}
+      className="panel mx-4 mt-3 block min-h-11 w-[calc(100%-32px)] rounded-[16px] px-3 py-2.5 text-left"
     >
-      <span className="flex items-center justify-between text-caption text-white/80">
-        <span>{tr("К {0} будет", `${last} ${formatMonthShort(today)}`)}</span>
-        <span className="flex items-center gap-0.5">{pluralN(f.daysLeft, ["день", "дня", "дней"])}<ChevronRight size={13} className="opacity-70" /></span>
-      </span>
-      <span className="mt-0.5 flex items-baseline gap-2">
-        <AnimatedMoney value={f.end} currency={base} variant="hero" privacy className="text-[26px] leading-tight" />
-        <span className={cn("num text-footnote font-semibold", delta >= 0 ? "text-[#9bf5cf]" : "text-[#ffd0d0]")}>
-          {delta >= 0 ? "+" : "−"}
-          {formatMoney(Math.abs(delta), { currency: base })}
+      <span className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1">
+        <span className="text-footnote font-medium text-ink-2">{tr("Прогноз на конец месяца")}</span>
+        <span className="ml-auto flex items-center gap-1 text-subhead">
+          <Money value={f.end} currency={data.settings.baseCurrency} privacy className="font-semibold" />
+          <ChevronRight size={15} className="shrink-0 text-ink-3" />
         </span>
       </span>
       {f.shortfall && (
-        <span className="mt-1.5 flex items-center gap-1.5 text-caption font-semibold text-[#ffe2a8]">
-          <TriangleAlert size={13} />
+        <span className="mt-1 flex items-center gap-1.5 text-caption font-medium text-warning">
+          <TriangleAlert size={13} className="shrink-0" />
           {tr("Через {0} может не хватить денег", pluralN(f.shortfall.inDays, ["день", "дня", "дней"]))}
         </span>
       )}
     </motion.button>
   );
-}
-
-function formatMonthShort(day: string): string {
-  return formatDate(endOfMonth(day), { long: true }).replace(/^\d+\s*/, "");
 }
 
 type Horizon = "month" | 7 | 30 | 90 | 365;

@@ -136,33 +136,44 @@ function PrimaryGoal() {
   return (
     <div className="mt-8">
       <SectionHeader title={tr("Цель")} action={{ label: tr("Все цели"), onClick: () => nav.push("goals") }} />
-      <button
-        type="button"
-        onClick={() => nav.push("goal", { id: goal.id })}
-        className="panel mx-4 block w-[calc(100%-32px)] rounded-lg px-4 py-4 text-left active:opacity-80"
-      >
-        <div className="flex items-center gap-3">
-          <IconChip name={goal.icon} tone="accent" size={40} />
-          <div className="min-w-0 flex-1">
-            <div className="truncate text-body font-medium">{goal.name}</div>
-            <div className="text-footnote text-ink-2">
-              {info.done ? tr("Цель достигнута") : goal.deadline ? tr("до {0}", formatDate(goal.deadline, { year: "auto" })) : tr("без срока")}
-              {info.monthly && !info.done ? tr(" · {0} в месяц", formatMoney(info.monthly, { currency: goal.currency })) : ""}
+      <div className="panel mx-4 rounded-lg">
+        <button
+          type="button"
+          onClick={() => nav.push("goal", { id: goal.id })}
+          className="block w-full px-4 py-4 text-left active:opacity-80"
+        >
+          <div className="flex items-center gap-3">
+            <IconChip name={goal.icon} tone="accent" size={40} />
+            <div className="min-w-0 flex-1">
+              <div className="truncate text-body font-medium">{goal.name}</div>
+              <div className="text-footnote text-ink-2">
+                {info.done ? tr("Цель достигнута") : goal.deadline ? tr("до {0}", formatDate(goal.deadline, { year: "auto" })) : tr("без срока")}
+                {info.monthly && !info.done ? tr(" · {0} в месяц", formatMoney(info.monthly, { currency: goal.currency })) : ""}
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="text-title-3 font-semibold tracking-[-0.03em] tnum">
+                {Math.floor(info.progress * 100)}
+                <span className="text-footnote font-medium text-ink-2">%</span>
+              </div>
             </div>
           </div>
-          <div className="text-right">
-            <div className="text-title-3 font-semibold tracking-[-0.03em] tnum">
-              {Math.floor(info.progress * 100)}
-              <span className="text-footnote font-medium text-ink-2">%</span>
-            </div>
+          <ProgressBar value={info.progress} className="mt-3.5" tone={info.done ? "positive" : "ink"} color={info.done ? undefined : goal.color} />
+          <div className="mt-2 flex justify-between text-footnote text-ink-2">
+            <Money value={info.saved} currency={goal.currency} privacy />
+            <Money value={goal.target} currency={goal.currency} />
           </div>
+        </button>
+        <div className="px-4 pb-3">
+          <button
+            type="button"
+            onClick={() => nav.sheet("goalMoney", { goalId: goal.id, direction: "deposit" })}
+            className="tile flex min-h-11 w-full items-center justify-center rounded-[14px] px-3 text-subhead font-semibold text-[var(--saving)]"
+          >
+            {tr("Отложить")}
+          </button>
         </div>
-        <ProgressBar value={info.progress} className="mt-3.5" tone={info.done ? "positive" : "ink"} color={info.done ? undefined : goal.color} />
-        <div className="mt-2 flex justify-between text-footnote text-ink-2">
-          <Money value={info.saved} currency={goal.currency} privacy />
-          <Money value={goal.target} currency={goal.currency} />
-        </div>
-      </button>
+      </div>
     </div>
   );
 }

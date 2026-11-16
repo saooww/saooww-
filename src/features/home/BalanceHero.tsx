@@ -3,9 +3,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { capitalChange } from "../../lib/analytics";
 import { formatMoney, formatPercent } from "../../lib/money";
 import { useAppData, useBalances, useToday } from "../../store/hooks";
-import { ChevronDown, ChevronRight } from "../../ui/glyphs";
+import { ChevronDown, ChevronRight, Eye, EyeOff } from "../../ui/glyphs";
 import type { ReactNode } from "react";
-import { ForecastStrip } from "./Forecast";
 import { cn } from "../../lib/cn";
 import { haptic } from "../../lib/haptics";
 import { materialOf } from "../../store/catalog";
@@ -54,7 +53,7 @@ export function BalanceHero({ children }: { children?: ReactNode }) {
 
   return (
     <div role="region" aria-roledescription={tr("карусель")} aria-label={tr("Кошельки")}>
-      <div className="relative overflow-hidden text-white" style={{ marginTop: "calc(-1 * (var(--safe-top) + 52px))", paddingTop: "calc(var(--safe-top) + 60px)", minHeight: "calc(var(--safe-top) + 52px + 330px)" }}>
+      <div className="relative overflow-hidden text-white" style={{ marginTop: "calc(-1 * (var(--safe-top) + 52px))", paddingTop: "calc(var(--safe-top) + 60px)" }}>
         {/* the colour, crossfading between accounts, with streaks of light over it */}
         <AnimatePresence initial={false}>
           <motion.div key={card?.key ?? "none"} aria-hidden="true" className="absolute inset-0" style={{ background: bg }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5 }} />
@@ -62,7 +61,7 @@ export function BalanceHero({ children }: { children?: ReactNode }) {
         <div aria-hidden="true" className="hero-light pointer-events-none absolute inset-0" />
 
         <motion.div
-          className="relative px-[22px] pb-[70px]"
+          className="relative px-[22px] pb-[66px]"
           drag={cards.length > 1 ? "x" : false}
           dragConstraints={{ left: 0, right: 0 }}
           dragElastic={0.25}
@@ -71,30 +70,45 @@ export function BalanceHero({ children }: { children?: ReactNode }) {
             else if (info.offset.x > 50 || info.velocity.x > 400) go(i - 1);
           }}
         >
-          <div className="mb-3 text-title-3 font-semibold">{greeting(new Date().getHours())}{name ? `, ${name}` : ""}</div>
-          <button
-            type="button"
-            onClick={() => {
-              haptic();
-              nav.sheet("picker", {
-                title: tr("Счёт"),
-                value: card?.key,
-                options: cards.map((c) => ({ value: c.key, label: c.title, sub: c.subtitle })),
-                onSelect: (v: string) => setIndex(Math.max(0, cards.findIndex((c) => c.key === v)))
-              });
-            }}
-            className="inline-flex h-9 items-center gap-1.5 rounded-[14px] px-3 text-subhead font-semibold"
-            style={{ background: "rgba(255,255,255,0.14)", boxShadow: "inset 0 0 0 0.5px rgba(255,255,255,0.28)", backdropFilter: "blur(10px)" }}
-          >
-            {card ? (card.walletId ? card.title : tr("Все счета · {0}", wallets.length)) : tr("Счета")}
-            <ChevronDown size={14} className="opacity-70" />
-          </button>
-          <div className="mt-4 text-subhead text-white/80">{!card || !card.walletId ? tr("Сейчас на счетах") : card.subtitle ?? tr("Баланс")}</div>
+          <div className="mb-1 text-subhead font-medium text-white/85">{greeting(new Date().getHours())}{name ? `, ${name}` : ""}</div>
+          <div className="flex items-center justify-between gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                haptic();
+                nav.sheet("picker", {
+                  title: tr("Счёт"),
+                  value: card?.key,
+                  options: cards.map((c) => ({ value: c.key, label: c.title, sub: c.subtitle })),
+                  onSelect: (v: string) => setIndex(Math.max(0, cards.findIndex((c) => c.key === v)))
+                });
+              }}
+              className="inline-flex min-h-11 min-w-0 items-center gap-1.5 rounded-[14px] px-2 text-subhead font-semibold"
+              style={{ background: "rgba(0,0,0,0.16)" }}
+            >
+              <span className="truncate">{card ? (card.walletId ? card.title : tr("Все счета · {0}", wallets.length)) : tr("Счета")}</span>
+              <ChevronDown size={14} className="shrink-0 opacity-70" />
+            </button>
+            {card && (
+              <button
+                type="button"
+                aria-label={hidden ? tr("Показать баланс") : tr("Скрыть баланс")}
+                className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-black/15 text-white"
+                onClick={() => {
+                  haptic();
+                  useData.getState().updateSettings({ hideAmounts: !useData.getState().settings.hideAmounts });
+                }}
+              >
+                {hidden ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            )}
+          </div>
+          <div className="mt-2 text-subhead text-white/80">{!card || !card.walletId ? tr("Сейчас на счетах") : card.subtitle ?? tr("Баланс")}</div>
           {card ? (
-            <button type="button" aria-label={tr("Подробнее")} onClick={() => open(card)} className="mt-1 flex items-center gap-1 text-left">
+            <button type="button" aria-label={tr("Подробнее")} onClick={() => open(card)} className="mt-1 flex min-h-11 w-full items-center gap-1 text-left">
               <AnimatePresence mode="popLayout" initial={false}>
-                <motion.span key={card.key} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.28 }}>
-                  <AnimatedMoney value={card.amount} currency={card.currency} variant="hero" privacy className="block text-[48px] leading-[1.05]" />
+                <motion.span className="min-w-0" key={card.key} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.28 }}>
+                  <AnimatedMoney value={card.amount} currency={card.currency} variant="hero" privacy className="block !whitespace-normal [overflow-wrap:anywhere] text-[clamp(33px,10.5vw,56px)] leading-[1.05]" />
                 </motion.span>
               </AnimatePresence>
               <ChevronRight size={22} className="mt-1 shrink-0 opacity-60" />
@@ -113,7 +127,6 @@ export function BalanceHero({ children }: { children?: ReactNode }) {
               <span className="font-normal text-white/70">{tr("за этот месяц")}</span>
             </div>
           )}
-          <ForecastStrip />
         </motion.div>
 
         {cards.length > 1 && (
