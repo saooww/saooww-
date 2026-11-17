@@ -45,6 +45,7 @@ const loaders = {
   day: () => import("../features/home/DaySheet"),
   incomes: () => import("../features/home/Incomes"),
   forecast: () => import("../features/home/Forecast"),
+  analyticsCategory: () => import("../features/analytics/CategoryDetailsSheet"),
   settings: () => import("../features/settings/Settings"),
   search: () => import("../features/search/SearchSheet"),
   assistant: () => import("../features/assistant/AssistantScreen")
@@ -81,6 +82,7 @@ const PlanActionsSheet = named(L.plans, "PlanActionsSheet");
 const IncomesSheet = named(L.incomes, "IncomesSheet");
 const ReceiveSheet = named(L.incomes, "ReceiveSheet");
 const ForecastSheet = named(L.forecast, "ForecastSheet");
+const CategoryDetailsSheet = named(L.analyticsCategory, "CategoryDetailsSheet");
 const SubscriptionsScreen = named(L.subscriptions, "SubscriptionsScreen");
 const RecurringSheet = named(L.subscriptions, "RecurringSheet");
 const SleepScreen = named(L.sleep, "SleepScreen");
@@ -177,5 +179,6 @@ registerSheets({
   incomes: IncomesSheet,
   receive: ReceiveSheet,
   forecast: ForecastSheet,
+  analyticsCategory: CategoryDetailsSheet,
   sleep: SleepSheet
 });

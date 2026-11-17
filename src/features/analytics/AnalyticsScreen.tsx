@@ -71,6 +71,7 @@ export function AnalyticsScreen() {
   const series = useMemo(() => bucketSeries(entries, buckets, metric), [entries, buckets, metric]);
   const rows = useMemo(() => categoryRows(stats.expenseByCategory, prev.expenseByCategory, cats), [stats, prev, cats]);
   const slices = useMemo(() => donutSlices(rows), [rows]);
+  const openCategory = (categoryId: string) => nav.sheet("analyticsCategory", { categoryId, from: range.from, to: range.to });
   const capital = useMemo(() => {
     const to = range.to < today ? range.to : today;
     return range.from > today ? [] : capitalSeries(data, balances, range.from, to, capMode);
@@ -193,13 +194,14 @@ export function AnalyticsScreen() {
                     <button
                       key={r.id}
                       type="button"
-                      onClick={() => setSlice(slice === r.id ? null : inRing ? r.id : "__rest")}
-                      className={cn("flex w-full items-center gap-3 px-4 py-3 text-left transition-opacity", slice && slice !== r.id && !(slice === "__rest" && !inRing) && "opacity-45")}
+                      onClick={() => openCategory(r.id)}
+                      className={cn("flex min-h-11 w-full items-center gap-2 px-4 py-3 text-left transition-opacity", slice && slice !== r.id && !(slice === "__rest" && !inRing) && "opacity-45")}
                     >
                       <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: inRing ? r.color : "var(--chart-muted)", boxShadow: inRing ? `0 0 10px ${r.color}` : undefined }} />
                       <span className="min-w-0 flex-1 truncate text-callout">{r.name}</span>
                       <span className="text-footnote text-ink-3 tnum">{formatPercent(share)}</span>
-                      <Money value={r.amount} currency={base} className="w-[92px] text-right text-callout font-semibold" />
+                      <Money value={r.amount} currency={base} className="text-right text-callout font-semibold" />
+                      <ChevronRight size={15} className="shrink-0 text-ink-3" />
                     </button>
                   );
                 })}
@@ -359,8 +361,8 @@ export function AnalyticsScreen() {
                       <button
                         key={r.id}
                         type="button"
-                        onClick={() => setSlice(slice === r.id ? null : slices.some((s) => s.id === r.id) ? r.id : "__rest")}
-                        className={cn("flex items-center gap-3 rounded-sm py-2 text-left transition-opacity", slice && slice !== r.id && !(slice === "__rest" && !slices.some((s) => s.id === r.id)) && "opacity-45")}
+                        onClick={() => openCategory(r.id)}
+                        className={cn("flex min-h-11 items-center gap-2 rounded-sm py-2 text-left transition-opacity", slice && slice !== r.id && !(slice === "__rest" && !slices.some((s) => s.id === r.id)) && "opacity-45")}
                       >
                         <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: slices.some((s) => s.id === r.id) ? r.color : "var(--chart-muted)" }} />
                         <NamedIcon name={r.icon} size={17} strokeWidth={1.9} className="shrink-0 text-ink-2" />
@@ -371,6 +373,7 @@ export function AnalyticsScreen() {
                           </span>
                         )}
                         <Money value={r.amount} currency={base} className="text-callout font-medium" />
+                        <ChevronRight size={15} className="shrink-0 text-ink-3" />
                       </button>
                     ))}
                   </div>

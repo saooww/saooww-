@@ -147,6 +147,19 @@ test("итоги месяца открываются из аналитики", a
   await expect(story).toHaveCount(0);
 });
 
+test("из суммы категории в аналитике можно открыть расход", async ({ page }) => {
+  await startDemo(page);
+  await openMoney(page, "Аналитика");
+  const section = page.locator("section").filter({ has: page.getByRole("heading", { name: "Куда ушло", exact: true }) });
+  await section.locator(".panel button").first().click();
+  const category = page.getByRole("dialog");
+  await expect(category).toBeVisible();
+  const transaction = category.locator(".panel button").first();
+  await expect(transaction).toBeVisible();
+  await transaction.click();
+  await expect(page.getByRole("dialog", { name: "Операция", exact: true })).toBeVisible();
+});
+
 test("фото чека сохраняется вместе с операцией", async ({ page }) => {
   await startDemo(page);
   await createNew(page, "Расход");

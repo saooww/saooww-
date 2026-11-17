@@ -363,6 +363,10 @@ export interface PeriodStats {
   elapsedDays: number;
 }
 
+export function categoryExpenseEntries(entries: LedgerEntry[], categoryId: string, from: DayKey, to: DayKey, today: DayKey): LedgerEntry[] {
+  return entries.filter(({ tx, day }) => tx.kind === "expense" && (tx.categoryId ?? "none") === categoryId && day >= from && day <= to && day <= today);
+}
+
 export function periodStats(entries: LedgerEntry[], range: Range, today: DayKey): PeriodStats {
   let income = 0;
   let expense = 0;
