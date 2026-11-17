@@ -78,10 +78,10 @@ function TotalBlock() {
   const delta = (shown?.value ?? nw.total) - startOfWindow;
 
   return (
-    <section className="px-5 pt-3">
+    <section className="panel mx-4 mt-2 rounded-[22px] px-4 pb-2 pt-4">
       <div className="text-subhead text-ink-2">{shown ? formatDate(shown.day, { year: "auto" }) : tr("Чистый капитал")}</div>
-      <div className="mt-0.5 text-[44px] leading-[1.05]">
-        {shown ? <Money value={shown.value} currency={base} variant="hero" privacy /> : <AnimatedMoney value={nw.total} currency={base} variant="hero" privacy />}
+      <div className="mt-0.5 text-[clamp(31px,10vw,44px)] leading-[1.05]">
+        {shown ? <Money value={shown.value} currency={base} variant="hero" privacy className="!whitespace-normal [overflow-wrap:anywhere]" /> : <AnimatedMoney value={nw.total} currency={base} variant="hero" privacy className="!whitespace-normal [overflow-wrap:anywhere]" />}
       </div>
       <div className={cn("mt-1 text-footnote font-medium tnum", delta >= 0 ? "text-positive" : "text-negative")}>
         {delta >= 0 ? "+" : "−"}
@@ -224,7 +224,7 @@ function Overview() {
         {live.map((w) => (
           <Row
             key={w.id}
-            leading={<span className="h-[26px] w-[40px] shrink-0 rounded-[6px]" style={{ background: materialFor(w).background, boxShadow: "0 4px 10px -4px rgba(0,0,0,0.5)" }} />}
+            leading={<span className="h-[26px] w-[40px] shrink-0 rounded-[6px]" style={{ background: materialFor(w).background }} />}
             title={w.name}
             subtitle={`${walletKindInfo(w.kind).label}${w.ident ? ` ·· ${w.ident}` : ""}`}
             value={<Money value={balances[w.id] ?? 0} currency={w.currency} privacy className="font-semibold text-ink" />}
