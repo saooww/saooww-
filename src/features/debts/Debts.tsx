@@ -88,14 +88,13 @@ export function DebtsScreen() {
       ) : (
         <>
           <section className="panel relative mx-4 overflow-hidden rounded-[22px]" aria-label={tr("Долги")}>
-            <span aria-hidden className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(70% 120% at 0% 0%, color-mix(in srgb, var(--positive) 13%, transparent), transparent 60%), radial-gradient(70% 120% at 100% 0%, color-mix(in srgb, var(--negative) 12%, transparent), transparent 60%)" }} />
             <div className="relative grid grid-cols-2">
               <div className="p-4">
                 <div className="flex items-center gap-1.5 text-footnote text-ink-2">
                   <span className="h-1.5 w-1.5 rounded-full bg-positive" />
                   {tr("Вам должны")}
                 </div>
-                <Money value={owedToMe} currency={base} privacy variant="hero" className="mt-1.5 block text-[26px] leading-none text-positive" />
+                <Money value={owedToMe} currency={base} privacy variant="hero" className="mt-1.5 block text-[clamp(20px,6vw,26px)] !whitespace-normal [overflow-wrap:anywhere] leading-tight" />
                 <div className="mt-1.5 text-caption text-ink-3">{pluralN(toMeCount, ["человек", "человека", "человек"])}</div>
               </div>
               <div className="hairline-l p-4">
@@ -103,7 +102,7 @@ export function DebtsScreen() {
                   <span className="h-1.5 w-1.5 rounded-full bg-negative" />
                   {tr("Вы должны")}
                 </div>
-                <Money value={iOwe} currency={base} privacy variant="hero" className="mt-1.5 block text-[26px] leading-none text-negative" />
+                <Money value={iOwe} currency={base} privacy variant="hero" className="mt-1.5 block text-[clamp(20px,6vw,26px)] !whitespace-normal [overflow-wrap:anywhere] leading-tight" />
                 <div className="mt-1.5 text-caption text-ink-3">{pluralN(fromMeCount, ["человеку", "людям", "людям"])}</div>
               </div>
             </div>
@@ -235,7 +234,7 @@ export function DebtDetail({ id }: { id: ID }) {
       </div>
       <div className="mt-4 px-5">
         <div className="h-[10px] overflow-hidden rounded-full bg-[var(--line)]">
-          <motion.div className="h-full rounded-full" style={{ background: c, boxShadow: `0 0 12px ${c}` }} initial={{ width: 0 }} animate={{ width: `${Math.max(p.progress > 0 ? 3 : 0, p.progress * 100)}%` }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} />
+          <motion.div className="h-full rounded-full" style={{ background: c }} initial={{ width: 0 }} animate={{ width: `${Math.max(p.progress > 0 ? 3 : 0, p.progress * 100)}%` }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} />
         </div>
       </div>
 
@@ -253,7 +252,7 @@ export function DebtDetail({ id }: { id: ID }) {
       <section className="mt-7">
         <h2 className="px-5 pb-2.5 text-title-3 font-semibold">{tr("История")}</h2>
         <div className="relative mx-4 pl-7">
-          <div className="absolute bottom-3 left-[7px] top-3 w-[2px] rounded-full" style={{ background: "linear-gradient(var(--positive), var(--line))" }} />
+          <div className="absolute bottom-3 left-[7px] top-3 w-px bg-[var(--line-strong)]" />
           {history.map((e) => {
             const back = e.kind === "payment";
             const loan = p.debts.find((x) => x.debt.id === e.debtId)?.debt;

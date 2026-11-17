@@ -40,19 +40,13 @@ export function GoalPaceChart({ goal, info }: { goal: Goal; info: GoalInfo }) {
   return (
     <div className="relative" role="img" aria-label={tr("Темп накоплений")}>
       <svg viewBox={`0 0 ${W} ${H}`} className="block h-[132px] w-full overflow-visible" preserveAspectRatio="none">
-        <defs>
-          <filter id="gp-glow" x="-10%" y="-60%" width="120%" height="220%">
-            <feGaussianBlur stdDeviation="3.5" />
-          </filter>
-        </defs>
         <line x1="0" x2={W - 14} y1={y(goal.target)} y2={y(goal.target)} stroke="currentColor" strokeOpacity="0.25" strokeDasharray="2 4" vectorEffect="non-scaling-stroke" />
         {!info.done && (
           <>
             <path d={`M${nowX} ${nowY} L${W - 14} ${y(goal.target)}`} fill="none" stroke="currentColor" strokeOpacity="0.55" strokeWidth="1.8" strokeDasharray="4 5" vectorEffect="non-scaling-stroke" />
-            <path d={`M${nowX} ${nowY} L${W - 14} ${y(paceEnd)}`} fill="none" stroke="#ffd27a" strokeWidth="1.8" strokeDasharray="4 5" vectorEffect="non-scaling-stroke" />
+            <path d={`M${nowX} ${nowY} L${W - 14} ${y(paceEnd)}`} fill="none" stroke="var(--warning)" strokeWidth="1.8" strokeDasharray="4 5" vectorEffect="non-scaling-stroke" />
           </>
         )}
-        <path d={actual} fill="none" stroke="currentColor" strokeWidth="5" opacity="0.5" filter="url(#gp-glow)" />
         <motion.path d={actual} fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" vectorEffect="non-scaling-stroke" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.9 }} />
         <circle cx={nowX} cy={nowY} r="4.5" fill="currentColor" />
         <circle cx={W - 14} cy={y(goal.target)} r="4.5" fill="currentColor" />
@@ -60,7 +54,7 @@ export function GoalPaceChart({ goal, info }: { goal: Goal; info: GoalInfo }) {
       {!info.done && (
         <div className="mt-1.5 flex flex-wrap justify-between gap-x-3 text-caption opacity-80">
           {needMonthly !== null && <span>{tr("нужно {0} в мес", formatCompact(needMonthly, goal.currency))}</span>}
-          <span style={{ color: behind ? "#ffd27a" : undefined }}>{pace > 0 ? tr("сейчас {0} в мес", formatCompact(Math.round(pace / 100) * 100, goal.currency)) : tr("пополнений нет")}</span>
+          <span style={{ color: behind ? "var(--warning)" : undefined }}>{pace > 0 ? tr("сейчас {0} в мес", formatCompact(Math.round(pace / 100) * 100, goal.currency)) : tr("пополнений нет")}</span>
         </div>
       )}
       <div className="mt-0.5 flex justify-between text-caption opacity-60">

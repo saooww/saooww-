@@ -46,7 +46,6 @@ export function GoalsScreen() {
   const [i, setI] = useState(0);
   const at = Math.min(i, Math.max(0, items.length - 1));
   const cur = items[at];
-  const color = cur ? (cur.info.done ? "#2e9d72" : cur.g.color ?? "#df0714") : "#df0714";
   const go = (n: number) => {
     const next = Math.max(0, Math.min(items.length - 1, n));
     if (next !== at) haptic();
@@ -63,17 +62,9 @@ export function GoalsScreen() {
           action={<Button size="md" icon={Plus} onClick={() => nav.sheet("goal")}>{tr("Новая цель")}</Button>}
         />
       ) : (
-        <div className="relative text-white">
-          {/* the page takes the colour of the goal on view */}
+        <div className="relative">
           <motion.div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0"
-            style={{ top: "calc(-1 * (var(--safe-top) + 52px))", height: "calc(var(--safe-top) + 52px + 780px)" }}
-            animate={{ background: `radial-gradient(90% 55% at 50% 32%, ${color}, color-mix(in srgb, ${color} 30%, #050505) 62%, var(--bg))` }}
-            transition={{ duration: 0.5 }}
-          />
-          <motion.div
-            className="relative"
+            className="relative touch-pan-y"
             drag={items.length > 1 ? "x" : false}
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={0.3}
@@ -90,10 +81,10 @@ export function GoalsScreen() {
           </motion.div>
 
           {items.length > 1 && (
-            <div className="relative mt-4 flex justify-center gap-[6px]" role="tablist" aria-label={tr("Цели")}>
+            <div className="scroll-x relative mt-2 flex gap-1 px-4 [justify-content:safe_center]" role="tablist" aria-label={tr("Цели")}>
               {items.map((x, k) => (
-                <button key={x.g.id} type="button" role="tab" aria-selected={k === at} aria-label={x.g.name} onClick={() => go(k)} className="grid h-5 place-items-center">
-                  <motion.span className={cn("block h-[6px] rounded-full", k === at ? "bg-white" : "bg-white/35")} animate={{ width: k === at ? 20 : 6 }} />
+                <button key={x.g.id} type="button" role="tab" aria-selected={k === at} aria-label={x.g.name} onClick={() => go(k)} className="grid min-h-11 w-11 shrink-0 place-items-center">
+                  <motion.span className={cn("block h-[6px] rounded-full", k === at ? "bg-ink" : "bg-line-strong")} animate={{ width: k === at ? 20 : 6 }} />
                 </button>
               ))}
             </div>
@@ -113,7 +104,7 @@ export function GoalsScreen() {
               <div className="panel mx-4 overflow-hidden rounded-[22px] text-ink [&>*+*]:hairline-t">
                 {items.map(({ g, info }, k) => (
                   <button key={g.id} type="button" onClick={() => go(k)} className={cn("flex w-full items-center gap-3 px-4 py-3 text-left", k === at && "bg-[color-mix(in_srgb,var(--ink)_5%,transparent)]")}>
-                    <MiniRing value={info.progress} color={info.done ? "#2e9d72" : g.color ?? "#df0714"} />
+                    <MiniRing value={info.progress} color={info.done ? "var(--positive)" : g.color ?? "var(--accent-ink)"} />
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-callout font-medium">{g.name}</span>
                       <span className="block truncate text-caption text-ink-2">{info.done ? tr("Цель достигнута") : info.monthly ? tr("{0} в месяц", formatMoney(info.monthly, { currency: g.currency })) : tr("Без срока")}</span>
@@ -134,43 +125,38 @@ export function GoalsScreen() {
   );
 }
 
-/** One goal: its name, a large lit ring with the share saved, and what is left. */
+/** One goal: its name, a progress ring with the share saved, and what is left. */
 function GoalPage({ g, info, status }: { g: Goal; info: GoalInfo; status: GoalStatus }) {
   const st = goalStatusText(status, g.currency);
   const R = 116;
   const C = 2 * Math.PI * R;
-  const p = Math.max(0.004, info.progress);
+  const p = info.progress;
+  const color = info.done ? "var(--positive)" : g.color ?? "var(--accent-ink)";
   return (
-    <div className="on-dark px-5 text-center">
+    <div className="panel mx-4 rounded-[22px] px-4 pb-4 pt-5 text-center">
       <div className="flex items-center justify-center gap-1.5 text-title-3 font-semibold">
         <span className="truncate">{g.name}</span>
         {g.primary && <Star size={15} className="shrink-0 fill-current" />}
       </div>
-      <div className="mt-0.5 text-footnote text-white/75">
+      <div className="mt-0.5 text-footnote text-ink-2">
         {g.deadline ? tr("до {0}", formatDate(g.deadline, { year: "auto" })) : tr("Без срока")} · {info.done ? tr("достигнута") : st.tone === "warning" ? tr("отстаёт") : st.tone === "positive" ? tr("по плану") : tr("в пути")}
       </div>
-      <button type="button" onClick={() => nav.push("goal", { id: g.id })} aria-label={tr("Открыть цель «{0}»", g.name)} className="relative mx-auto mt-5 block h-[264px] w-[264px] active:opacity-90">
-        <svg width="264" height="264" viewBox="0 0 264 264" className="absolute inset-0 -rotate-90" aria-hidden="true">
-          <defs>
-            <filter id="goal-glow" x="-30%" y="-30%" width="160%" height="160%">
-              <feGaussianBlur stdDeviation="9" />
-            </filter>
-          </defs>
-          <circle cx="132" cy="132" r={R} fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="20" />
-          <circle cx="132" cy="132" r={R} fill="none" stroke="#fff" strokeWidth="20" strokeLinecap="round" strokeDasharray={`${C * p} ${C}`} filter="url(#goal-glow)" opacity="0.7" />
-          <motion.circle cx="132" cy="132" r={R} fill="none" stroke="#fff" strokeWidth="20" strokeLinecap="round" strokeDasharray={C} initial={{ strokeDashoffset: C }} animate={{ strokeDashoffset: C * (1 - p) }} transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }} />
+      <button type="button" onClick={() => nav.push("goal", { id: g.id })} aria-label={tr("Открыть цель «{0}»", g.name)} className="relative mx-auto mt-4 block aspect-square w-full max-w-[210px] active:opacity-90">
+        <svg viewBox="0 0 264 264" className="absolute inset-0 h-full w-full -rotate-90" aria-hidden="true">
+          <circle cx="132" cy="132" r={R} fill="none" stroke="var(--line-strong)" strokeWidth="12" />
+          {p > 0 && <motion.circle cx="132" cy="132" r={R} fill="none" stroke={color} strokeWidth="12" strokeLinecap="round" strokeDasharray={C} initial={{ strokeDashoffset: C }} animate={{ strokeDashoffset: C * (1 - p) }} transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }} />}
         </svg>
         <span className="absolute inset-0 grid place-items-center">
           <span>
-            <span className="num-display block text-[64px] leading-none">{info.done ? "✓" : `${Math.floor(info.progress * 100)}%`}</span>
+            <span className="num-display block text-[48px] leading-none">{info.done ? "✓" : `${Math.floor(info.progress * 100)}%`}</span>
             <Money value={info.saved} currency={g.currency} privacy className="mt-2 block text-callout font-semibold" />
-            <span className="block text-caption text-white/70">
+            <span className="block text-caption text-ink-2">
               {tr("из")} <Money value={g.target} currency={g.currency} />
             </span>
           </span>
         </span>
       </button>
-      <div className="mx-auto mt-5 max-w-[340px] text-left text-white">
+      <div className="mx-auto mt-5 max-w-[340px] text-left text-ink">
         <GoalPaceChart goal={g} info={info} />
       </div>
     </div>
@@ -181,17 +167,16 @@ function GoalPage({ g, info, status }: { g: Goal; info: GoalInfo; status: GoalSt
 function GoalActions({ g, info }: { g: Goal; info: GoalInfo }) {
   const tasks = useData((s) => s.tasks);
   const open = g.projectId ? tasks.filter((t) => t.projectId === g.projectId && !t.done) : [];
-  const glass = { background: "rgba(0,0,0,0.3)", boxShadow: "inset 0 0 0 0.5px rgba(255,255,255,0.14)" } as const;
   return (
-    <div className="on-dark relative mx-4 mt-5">
+    <div className="relative mx-4 mt-4">
       <div className="grid grid-cols-2 gap-2.5">
-        <div className="rounded-[22px] px-4 py-3" style={glass}>
-          <div className="text-caption text-white/70">{tr("Осталось")}</div>
-          <Money value={info.remaining} currency={g.currency} privacy variant="hero" className="mt-0.5 block text-[20px] leading-tight" />
+        <div className="panel min-w-0 rounded-[16px] px-4 py-3">
+          <div className="text-caption text-ink-2">{tr("Осталось")}</div>
+          <Money value={info.remaining} currency={g.currency} privacy variant="hero" className="mt-0.5 block text-[20px] !whitespace-normal [overflow-wrap:anywhere] leading-tight" />
         </div>
-        <div className="rounded-[22px] px-4 py-3" style={glass}>
-          <div className="text-caption text-white/70">{tr("В месяц")}</div>
-          <div className="num-display mt-0.5 text-[20px] leading-tight">{info.monthly && !info.done ? formatMoney(info.monthly, { currency: g.currency }) : "—"}</div>
+        <div className="panel min-w-0 rounded-[16px] px-4 py-3">
+          <div className="text-caption text-ink-2">{tr("В месяц")}</div>
+          <div className="num-display mt-0.5 text-[20px] !whitespace-normal [overflow-wrap:anywhere] leading-tight">{info.monthly && !info.done ? formatMoney(info.monthly, { currency: g.currency }) : "—"}</div>
         </div>
       </div>
       {!info.done && (
@@ -202,20 +187,20 @@ function GoalActions({ g, info }: { g: Goal; info: GoalInfo }) {
             haptic();
             nav.sheet("goalMoney", { goalId: g.id, direction: "deposit" });
           }}
-          className="mt-2.5 flex h-[54px] w-full items-center justify-center gap-1.5 rounded-[22px] bg-white text-headline font-bold text-black"
+          className="mt-2.5 flex h-[54px] w-full items-center justify-center gap-1.5 rounded-[16px] fill-accent text-headline font-semibold text-[var(--accent-on)]"
         >
           <Plus size={18} strokeWidth={2.6} />
           {tr("Пополнить")}
         </motion.button>
       )}
       {open.length > 0 && (
-        <div className="mt-2.5 flex items-center gap-3 rounded-[22px] px-4 py-3" style={glass}>
+        <div className="panel mt-2.5 flex items-center gap-3 rounded-[16px] px-4 py-3">
           <TaskCheck task={open[0]} size={22} />
           <button type="button" onClick={() => nav.sheet("task", { editId: open[0].id })} className="min-w-0 flex-1 truncate text-left text-callout">
             {open[0].title}
           </button>
           {open.length > 1 && (
-            <button type="button" onClick={() => nav.push("project", { id: g.projectId! }, "planner")} className="shrink-0 text-footnote text-white/70">
+            <button type="button" onClick={() => nav.push("project", { id: g.projectId! }, "planner")} className="shrink-0 text-footnote text-ink-2">
               {tr("ещё {0}", open.length - 1)} ›
             </button>
           )}
@@ -231,7 +216,7 @@ function MiniRing({ value, color }: { value: number; color: string }) {
   return (
     <svg width="36" height="36" viewBox="0 0 36 36" className="shrink-0 -rotate-90" aria-hidden="true">
       <circle cx="18" cy="18" r={r} fill="none" stroke="var(--line)" strokeWidth="4" />
-      <circle cx="18" cy="18" r={r} fill="none" stroke={color} strokeWidth="4" strokeLinecap="round" strokeDasharray={`${c * Math.max(0.02, value)} ${c}`} />
+      {value > 0 && <circle cx="18" cy="18" r={r} fill="none" stroke={color} strokeWidth="4" strokeLinecap="round" strokeDasharray={`${c * value} ${c}`} />}
     </svg>
   );
 }
