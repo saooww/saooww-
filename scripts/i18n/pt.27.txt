@@ -1,0 +1,27 @@
+Ativa
+Contribuição das categorias no período
+Dia {0} de {1}
+Divisão por conta
+Os pagamentos registrados ficam no histórico de operações.
+Queda máx.
+Mínimo
+Desde o pico
+O primeiro pagamento será registrado no dia da cobrança
+Pico
+O pagamento é registrado sozinho no dia da cobrança quando você abre o app.
+Pagamento atrasado há {0}
+Assinatura
+Mostrar tudo: {0}
+Último pagamento {0}
+Total gasto
+Renova hoje
+Renova em {0}
+Queda desde o pico
+Atrasada
+Próximo pagamento: {0}
+Gasto
+Esta assinatura foi excluída.
+no máximo
+abaixo do máximo
+sem quedas
+desde {0} · {1}

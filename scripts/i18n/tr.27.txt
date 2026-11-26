@@ -1,0 +1,27 @@
+Aktif
+Dönemde kategorilerin payı
+{1} günün {0}. günü
+Hesaplara göre dağılım
+Kaydedilen ödemeler işlem geçmişinde kalır.
+Maks. düşüş
+En düşük
+Zirveden
+İlk ödeme çekim gününde kaydedilecek
+Zirve
+Ödeme çekim gününde, uygulamayı açtığınızda kendiliğinden kaydedilir.
+Ödeme {0} gecikti
+Abonelik
+Tümünü göster: {0}
+Son ödeme {0}
+Toplam harcanan
+Bugün yenilenir
+{0} içinde yenilenir
+Zirveden düşüş
+Gecikmiş
+Sonraki ödeme: {0}
+Harcanan
+Bu abonelik silindi.
+zirvede
+zirvenin altında
+düşüş yok
+{0} tarihinden beri · {1}

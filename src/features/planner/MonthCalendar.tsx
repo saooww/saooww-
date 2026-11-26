@@ -22,11 +22,12 @@ export function MonthCalendar() {
   const [picked, setPicked] = useState<DayKey | null>(null);
   const [open, setOpen] = useState(false);
 
-  const counts = useMemo(() => {
-    const m = new Map<DayKey, number>();
-    for (const t of tasks) if (t.due && !t.done) m.set(t.due, (m.get(t.due) ?? 0) + 1);
+  const byDay = useMemo(() => {
+    const m = new Map<DayKey, string[]>();
+    for (const t of tasks) if (t.due && !t.done) m.set(t.due, [...(m.get(t.due) ?? []), t.title]);
     return m;
   }, [tasks]);
+  const counts = useMemo(() => new Map([...byDay].map(([d, l]) => [d, l.length])), [byDay]);
   const days = useMemo(() => {
     if (!open) {
       const w = startOfWeek(today);
@@ -65,7 +66,7 @@ export function MonthCalendar() {
             </button>
           )}
         </div>
-        <div className="mt-1.5 grid grid-cols-7 text-center">
+        <div className={cn("mt-1.5 grid grid-cols-7 text-center", open && "lg:gap-1.5")}>
           {WEEKDAYS_SHORT.map((w) => (
             <span key={w} className="pb-1 text-[11px] font-medium capitalize text-ink-3">
               {w}
@@ -76,6 +77,7 @@ export function MonthCalendar() {
             const isToday = d === today;
             const isPicked = d === picked;
             const n = counts.get(d) ?? 0;
+            const names = byDay.get(d) ?? [];
             return (
               <button
                 key={d}
@@ -85,19 +87,30 @@ export function MonthCalendar() {
                   haptic();
                   setPicked((p) => (p === d ? null : d));
                 }}
-                className="relative grid h-10 place-items-center"
+                className={cn("relative grid place-items-center", open ? "h-10 lg:block lg:h-[92px] lg:rounded-[14px] lg:p-2 lg:text-left" : "h-10")}
+                style={open ? ({ ["--tp" as string]: isToday ? "var(--pastel-pink)" : n > 0 ? "var(--pastel-lilac)" : undefined } as React.CSSProperties) : undefined}
               >
+                {open && <span aria-hidden className={cn("absolute inset-0 hidden rounded-[14px] lg:block", isToday || n > 0 ? "tile-pastel" : "tile", isPicked && "ring-1 ring-[var(--plan)]", !inMonth && "opacity-40")} style={{ ["--tp" as string]: isToday ? "var(--pastel-pink)" : n > 0 ? "var(--pastel-lilac)" : undefined }} />}
                 <span
                   className={cn(
                     "grid h-9 w-9 place-items-center rounded-full text-callout tabular-nums transition-colors",
-                    isToday ? "bg-[var(--plan)] font-bold text-white shadow-[0_6px_16px_-6px_var(--plan)]" : isPicked ? "bg-[color-mix(in_srgb,var(--ink)_14%,transparent)] font-semibold" : "",
+                    open && "lg:relative lg:h-6 lg:w-auto lg:place-items-start lg:justify-start lg:text-[15px] lg:font-semibold",
+                    isToday ? "bg-[var(--plan)] font-bold text-white shadow-[0_6px_16px_-6px_var(--plan)] lg:bg-transparent lg:text-[var(--pastel-ink)] lg:shadow-none" : isPicked ? "bg-[color-mix(in_srgb,var(--ink)_14%,transparent)] font-semibold" : "",
                     !inMonth && "opacity-30",
                     d < today && !isToday && inMonth && "text-ink-2"
                   )}
                 >
                   {parseDay(d).getDate()}
                 </span>
-                {n > 0 && !isToday && <span className="absolute bottom-0.5 h-1 w-1 rounded-full bg-[var(--plan)]" />}
+                {open && names.length > 0 && (
+                  <span className="relative mt-1 hidden min-w-0 flex-col gap-0.5 lg:flex">
+                    {names.slice(0, 2).map((x, k) => (
+                      <span key={k} className="truncate rounded-[6px] bg-[color-mix(in_srgb,var(--pastel-ink)_10%,transparent)] px-1.5 py-[1px] text-[11px] leading-[15px]">{x}</span>
+                    ))}
+                    {names.length > 2 && <span className="px-1 text-[11px] text-[var(--pastel-ink-2)]">+{names.length - 2}</span>}
+                  </span>
+                )}
+                {n > 0 && !isToday && <span className={cn("absolute bottom-0.5 h-1 w-1 rounded-full bg-[var(--plan)]", open && "lg:hidden")} />}
               </button>
             );
           })}

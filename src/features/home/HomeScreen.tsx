@@ -56,17 +56,17 @@ function HomeBlocks() {
   const hidden = useData((s) => s.settings.homeHidden);
   const shown = (b: HomeBlock) => !hidden?.includes(b);
   return (
-    <>
+    <div className="home-bento-blocks">
       {shown("today") && <HomeToday />}
       {shown("feed") && <HomeFeed />}
       {shown("recent") && <RecentOperations />}
       {shown("goal") && <PrimaryGoal />}
       <IncomeCard />
-      <div className="mt-8 flex justify-center">
+      <div className="home-bento-foot mt-8 flex justify-center">
         <button type="button" onClick={() => nav.sheet("homeLayout")} className="flex h-10 items-center gap-2 rounded-full px-4 text-footnote font-medium text-ink-2 active:bg-surface-press">
           <SlidersHorizontal size={15} strokeWidth={2} />{tr("Настроить главную")}</button>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -138,7 +138,7 @@ function PrimaryGoal() {
   return (
     <div className="mt-8">
       <SectionHeader title={tr("Цель")} action={{ label: tr("Все цели"), onClick: () => nav.push("goals") }} />
-      <div className="panel mx-4 rounded-lg">
+      <div className="panel mx-4 rounded-lg lg:[background:var(--pastel-peach)]">
         <button
           type="button"
           onClick={() => nav.push("goal", { id: goal.id })}

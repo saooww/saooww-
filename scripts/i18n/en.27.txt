@@ -1,0 +1,27 @@
+Active
+Category contribution for the period
+Day {0} of {1}
+Share by account
+Recorded payments stay in the transaction history.
+Max drawdown
+Low
+From peak
+The first payment will be recorded on the billing day
+Peak
+The payment is recorded automatically on the billing day when you open the app.
+Payment overdue by {0}
+Subscription
+Show all: {0}
+Last payment {0}
+Total spent
+Renews today
+Renews in {0}
+Drawdown from peak
+Overdue
+Next payment: {0}
+Spent
+This subscription was deleted.
+at the high
+below the high
+no drops
+since {0} · {1}

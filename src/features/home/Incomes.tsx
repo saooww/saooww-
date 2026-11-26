@@ -102,7 +102,7 @@ export function IncomeCard() {
     );
   }
   return (
-    <section className="panel mx-4 mt-4 rounded-[22px] px-4 pb-3.5 pt-4" aria-label={tr("Доходы месяца")}>
+    <section className="panel mx-4 mt-4 rounded-[22px] px-4 pb-3.5 pt-4 lg:[background:var(--pastel-sky)]" aria-label={tr("Доходы месяца")}>
       <button type="button" onClick={() => nav.sheet("incomes")} className="block w-full text-left">
         <div className="flex items-baseline justify-between gap-3">
           <span className="truncate text-headline font-semibold">{title}</span>

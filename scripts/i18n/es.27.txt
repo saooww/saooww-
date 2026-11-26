@@ -1,0 +1,27 @@
+Activa
+Aporte de categorías en el período
+Día {0} de {1}
+Reparto por cuenta
+Los pagos registrados quedan en el historial de operaciones.
+Caída máx.
+Mínimo
+Desde el máximo
+El primer pago se registrará el día del cobro
+Máximo
+El pago se registra solo el día del cobro cuando abres la app.
+Pago vencido hace {0}
+Suscripción
+Mostrar todo: {0}
+Último pago {0}
+Total gastado
+Se renueva hoy
+Se renueva en {0}
+Caída desde el máximo
+Vencida
+Próximo pago: {0}
+Gastado
+Esta suscripción fue eliminada.
+en el máximo
+bajo el máximo
+sin caídas
+desde {0} · {1}

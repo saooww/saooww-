@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChartColumn, ChevronDown, ChevronLeft, ChevronRight, Sparkles } from "../../ui/glyphs";
 import { cn } from "../../lib/cn";
-import { bucketSeries, bucketsFor, capitalSeries, categoryRows, donutSlices, habits, monthForecast, monthlyTotals, type SeriesKind } from "../../lib/analytics";
+import { bucketSeries, bucketsFor, capitalCurve, capitalSeries, categoryRows, topShares, treemap, walletAllocation, donutSlices, habits, monthForecast, monthlyTotals, type SeriesKind } from "../../lib/analytics";
 import { addDays, capitalize, formatDate, pluralN, WEEKDAYS_ACC, WEEKDAYS_SHORT } from "../../lib/dates";
 import { pctChange, periodRange, periodStats, type Period } from "../../lib/finance";
 import { analyticsTips } from "../../lib/insights";
@@ -13,6 +13,7 @@ import { Screen } from "../../nav/Screen";
 import { BarChart } from "../../charts/BarChart";
 import { Donut } from "../../charts/Donut";
 import { LineChart } from "../../charts/LineChart";
+import { EquityChart } from "../../charts/EquityChart";
 import { NamedIcon } from "../../ui/icons";
 import { AnimatedMoney, Money } from "../../ui/Money";
 import { ease } from "../../ui/motion";
@@ -75,6 +76,11 @@ export function AnalyticsScreen() {
     const to = range.to < today ? range.to : today;
     return range.from > today ? [] : capitalSeries(data, balances, range.from, to, capMode);
   }, [data, balances, range, today, capMode]);
+  const curve = useMemo(() => capitalCurve(capital), [capital]);
+  const allocation = useMemo(() => topShares(walletAllocation(data, balances), (id) => data.wallets.find((w) => w.id === id)?.name ?? "", 6, tr("Прочее")), [data, balances]);
+  const cells = useMemo(() => treemap(allocation.map((a) => ({ id: a.id, value: a.value })), 100, 100), [allocation]);
+  const incomeShares = useMemo(() => topShares(stats.incomeByCategory, (id) => cats.get(id)?.name ?? tr("Без категории"), 4, tr("Прочее")), [stats, cats]);
+  const expenseShares = useMemo(() => topShares(stats.expenseByCategory, (id) => cats.get(id)?.name ?? tr("Без категории"), 5, tr("Прочее")), [stats, cats]);
   const hab = useMemo(() => habits(entries, range.from, range.to < today ? range.to : today), [entries, range, today]);
   const forecast = useMemo(() => (period === "month" && offset === 0 ? monthForecast(data, entries, today) : null), [data, entries, today, period, offset]);
   const tips = useMemo(() => analyticsTips(data, entries, balances, today), [data, entries, balances, today]);
@@ -428,9 +434,83 @@ export function AnalyticsScreen() {
                   )}
                 </div>
                 <div className="mt-3">
-                  <LineChart points={capital.map((p) => ({ value: p.value }))} height={130} onScrub={setCapScrub} formatValue={(v) => formatCompact(v)} animKey={`${animKey}-${capMode}`} color={capMode === "capital" ? "var(--ink)" : "var(--positive)"} ariaLabel={capMode === "capital" ? tr("Капитал") : tr("Накопления")} />
+                  {curve ? (
+                    <EquityChart series={capital} curve={curve} height={150} onScrub={setCapScrub} formatValue={(v) => formatCompact(v)} formatDay={(d) => formatDate(d, { year: "auto" })} color={capMode === "capital" ? "var(--ink)" : "var(--positive)"} ariaLabel={capMode === "capital" ? tr("Капитал") : tr("Накопления")} />
+                  ) : (
+                    <LineChart points={capital.map((p) => ({ value: p.value }))} height={130} onScrub={setCapScrub} formatValue={(v) => formatCompact(v)} animKey={`${animKey}-${capMode}`} color={capMode === "capital" ? "var(--ink)" : "var(--positive)"} ariaLabel={capMode === "capital" ? tr("Капитал") : tr("Накопления")} />
+                  )}
                 </div>
-                <div className="mt-1 text-caption text-ink-3">{capMode === "capital" ? tr("Счета, цели и долги в {0}", base) : tr("Накопительные и инвестиционные счета, деньги в целях — в {0}", base)}</div>
+                {curve && (
+                  <div className="mt-3 grid grid-cols-2 gap-2">
+                    {[
+                      { label: tr("Пик"), value: formatCompact(curve.peak.value), sub: formatDate(curve.peak.day, { year: "auto" }), tp: "var(--pastel-mint)" },
+                      { label: tr("Минимум"), value: formatCompact(curve.low.value), sub: formatDate(curve.low.day, { year: "auto" }), tp: "var(--pastel-peach)" },
+                      { label: tr("От пика"), value: `${curve.fromPeak < 0 ? "−" : ""}${formatCompact(Math.abs(curve.fromPeak))}`, sub: curve.fromPeak === 0 ? tr("на максимуме") : tr("ниже максимума"), tp: "var(--pastel-lilac)" },
+                      { label: tr("Макс. просадка"), value: curve.maxDrawdown ? formatPercent(Math.abs(curve.maxDrawdown.pct)) : "—", sub: curve.maxDrawdown ? `${formatDate(curve.maxDrawdown.peakDay, { year: "auto" })} → ${formatDate(curve.maxDrawdown.troughDay, { year: "auto" })}` : tr("падений не было"), tp: "var(--pastel-butter)" }
+                    ].map((t) => (
+                      <div key={t.label} className="tile-pastel min-w-0 rounded-[16px] px-3 py-2.5" style={{ ["--tp" as string]: t.tp }}>
+                        <div className="text-caption text-ink-2">{t.label}</div>
+                        <div className="num truncate text-[17px] font-semibold leading-[22px]">{t.value}</div>
+                        <div className="truncate text-caption text-ink-2">{t.sub}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <div className="mt-2 text-caption text-ink-3">{capMode === "capital" ? tr("Счета, цели и долги в {0}", base) : tr("Накопительные и инвестиционные счета, деньги в целях — в {0}", base)}</div>
+              </div>
+            </section>
+          )}
+
+          {capital.length > 1 && (expenseShares.length > 0 || incomeShares.length > 0) && (
+            <section className="mt-4 px-4">
+              <div className="panel rounded-xl p-4">
+                <div className="text-footnote font-medium text-ink-2">{tr("Вклад категорий за период")}</div>
+                {[{ title: tr("Пришло"), items: incomeShares, sign: "+", hues: ["#5fcfa0", "#6fb0ff", "#a58bfa", "#f0c85a", "#9aa0a6"] }, { title: tr("Ушло"), items: expenseShares, sign: "−", hues: ["#ff7a85", "#ff9a76", "#f0c85a", "#f08bd8", "#a58bfa", "#9aa0a6"] }].map((row) =>
+                  row.items.length ? (
+                    <div key={row.title} className="mt-3">
+                      <div className="flex items-baseline justify-between text-caption text-ink-2">
+                        <span>{row.title}</span>
+                        <span className="num">{row.sign}{formatCompact(row.items.reduce((a, x) => a + x.value, 0))}</span>
+                      </div>
+                      <div className="mt-1.5 flex h-[10px] gap-[2px] overflow-hidden rounded-full" role="img" aria-label={row.title}>
+                        {row.items.map((x, i) => (
+                          <span key={x.id} className="h-full first:rounded-l-full last:rounded-r-full" style={{ flex: x.value, background: row.hues[i % row.hues.length] }} />
+                        ))}
+                      </div>
+                      <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-caption">
+                        {row.items.map((x, i) => (
+                          <span key={x.id} className="flex items-center gap-1.5 text-ink-2">
+                            <span className="h-2 w-2 rounded-full" style={{ background: row.hues[i % row.hues.length] }} />
+                            {x.name} <span className="num text-ink-3">{formatPercent(x.share)}</span>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null
+                )}
+              </div>
+            </section>
+          )}
+
+          {allocation.length > 1 && (
+            <section className="mt-4 px-4">
+              <div className="panel rounded-xl p-4">
+                <div className="flex items-baseline justify-between text-footnote font-medium text-ink-2">
+                  <span>{tr("Доли по счетам")}</span>
+                  <span className="text-ink-3">{pluralN(allocation.length, ["счёт", "счёта", "счетов"])}</span>
+                </div>
+                <div className="relative mt-3 h-[168px] w-full overflow-hidden rounded-[14px]" role="img" aria-label={tr("Доли по счетам")}>
+                  {cells.map((c) => {
+                    const a = allocation.find((x) => x.id === c.id)!;
+                    const tone = ["var(--pastel-mint)", "var(--pastel-sky)", "var(--pastel-lilac)", "var(--pastel-butter)", "var(--pastel-pink)", "var(--pastel-peach)"][allocation.indexOf(a) % 6];
+                    return (
+                      <div key={c.id} className="tile-pastel absolute overflow-hidden p-2" style={{ left: `${c.x}%`, top: `${c.y}%`, width: `${c.w}%`, height: `${c.h}%`, ["--tp" as string]: tone, outline: "1.5px solid var(--surface)", outlineOffset: -1, borderRadius: 10 }}>
+                        <div className="truncate text-caption font-semibold">{a.name}</div>
+                        <div className="num truncate text-caption text-ink-2">{formatPercent(a.share)}</div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </section>
           )}
