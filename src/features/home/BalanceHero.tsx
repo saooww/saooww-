@@ -157,7 +157,7 @@ export function BalanceHero({ children }: { children?: ReactNode }) {
       </div>
 
       {/* the sheet that rises over the colour */}
-      <div className="relative -mt-8 rounded-t-[32px] bg-[var(--bg)] pt-4">{children}</div>
+      <div className="home-bento relative -mt-8 rounded-t-[32px] bg-[var(--bg)] pt-4">{children}</div>
     </div>
   );
 }

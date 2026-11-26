@@ -36,7 +36,7 @@ export function ForecastStrip() {
       }}
       whileTap={{ scale: 0.98 }}
       transition={spring.press}
-      className="panel mx-4 mt-3 block min-h-11 w-[calc(100%-32px)] rounded-[16px] px-3 py-2.5 text-left"
+      className="panel mx-4 mt-3 block min-h-11 w-[calc(100%-32px)] rounded-[16px] px-3 py-2.5 text-left lg:[background:var(--pastel-lilac)]"
     >
       <span className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1">
         <span className="text-footnote font-medium text-ink-2">{tr("Прогноз на конец месяца")}</span>

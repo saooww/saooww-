@@ -62,7 +62,7 @@ export function SubscriptionsScreen() {
             <span className="text-caption text-ink-3">{freqShort(r.freq, r.interval)}</span>
           </span>
         }
-        onClick={() => nav.sheet("recurring", { editId: r.id })}
+        onClick={() => nav.sheet("subscription", { id: r.id })}
       />
     );
   };

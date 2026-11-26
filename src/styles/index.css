@@ -159,6 +159,15 @@
   --transfer: #6f8cff;
   --saving: #e6b45a;
   /* the planner's own light: neon magenta */
+  /* soft colour for tiles: a hue washed into the surface, with ink that reads on it */
+  --pastel-pink: color-mix(in srgb, #f08bd8 20%, #131113);
+  --pastel-lilac: color-mix(in srgb, #a58bfa 22%, #121115);
+  --pastel-mint: color-mix(in srgb, #5fcfa0 18%, #101312);
+  --pastel-sky: color-mix(in srgb, #6fb0ff 20%, #101216);
+  --pastel-butter: color-mix(in srgb, #f0c85a 17%, #14130f);
+  --pastel-peach: color-mix(in srgb, #ff9a76 19%, #141110);
+  --pastel-ink: #f5f3f0;
+  --pastel-ink-2: rgba(245, 243, 240, 0.7);
   --sleep: #8f7cff;
   --plan: #e440d4;
   --plan-soft: rgba(228, 64, 212, 0.16);
@@ -227,6 +236,14 @@
   --accent-on: #ffffff;
   --transfer: #3f5bd6;
   --saving: #9a6a12;
+  --pastel-pink: #f6dcef;
+  --pastel-lilac: #e4dcf7;
+  --pastel-mint: #d6f0e3;
+  --pastel-sky: #d9e8fb;
+  --pastel-butter: #f6ecc3;
+  --pastel-peach: #fbdfd2;
+  --pastel-ink: #1b1a1c;
+  --pastel-ink-2: rgba(27, 26, 28, 0.66);
   --sleep: #5b45d6;
   --plan: #a5148f;
   --plan-soft: rgba(165, 20, 143, 0.11);
@@ -761,4 +778,25 @@
   .desk-col.desk-wide { max-width: 1080px; }
   .scroll-y > .desk-col { padding-bottom: 48px; min-height: 100%; background: var(--bg); box-shadow: inset 0.5px 0 0 var(--line), inset -0.5px 0 0 var(--line); }
   .app-main { background: color-mix(in srgb, var(--bg) 90%, var(--ink)); }
+}
+
+/* A pastel tile: colour from the token, quiet hairline, text in the tile's own ink. */
+.tile-pastel {
+  background: var(--tp, var(--pastel-lilac));
+  color: var(--pastel-ink);
+  box-shadow: inset 0 0 0 0.5px color-mix(in srgb, var(--pastel-ink) 10%, transparent);
+  --ink-2: var(--pastel-ink-2);
+  --ink-3: var(--pastel-ink-2);
+  --line: color-mix(in srgb, var(--pastel-ink) 12%, transparent);
+}
+
+/* Wide screens: the home screen as a bento grid of tiles, each in its own soft colour. */
+@media (min-width: 1024px) {
+  .home-bento { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding-inline: 16px; padding-bottom: 4px; }
+  .home-bento > * { margin: 0 !important; width: auto !important; max-width: none !important; }
+  .home-bento > :first-child { grid-column: 1 / -1; }
+  .home-bento-blocks { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 12px; padding: 24px 16px 0; align-items: start; }
+  .home-bento-blocks > * { margin: 0 !important; margin-top: 0 !important; min-width: 0; }
+  .home-bento-blocks > * > section, .home-bento-blocks .panel { margin-inline: 0 !important; width: auto !important; }
+  .home-bento-blocks > .home-bento-foot { grid-column: 1 / -1; margin-top: 8px !important; }
 }

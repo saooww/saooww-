@@ -33,6 +33,7 @@ const loaders = {
   plans: () => import("../features/plans/Plans"),
   subscriptions: () => import("../features/subscriptions/Subscriptions"),
   sleep: () => import("../features/sleep/Sleep"),
+  subscriptionDetail: () => import("../features/subscriptions/SubscriptionDetail"),
   debts: () => import("../features/debts/Debts"),
   notes: () => import("../features/notes/Notes"),
   planner: () => import("../features/planner/PlannerScreen"),
@@ -84,6 +85,7 @@ const ForecastSheet = named(L.forecast, "ForecastSheet");
 const SubscriptionsScreen = named(L.subscriptions, "SubscriptionsScreen");
 const RecurringSheet = named(L.subscriptions, "RecurringSheet");
 const SleepScreen = named(L.sleep, "SleepScreen");
+const SubscriptionDetailSheet = named(L.subscriptionDetail, "SubscriptionDetailSheet");
 const SleepSheet = named(L.sleep, "SleepSheet");
 const DebtsScreen = named(L.debts, "DebtsScreen");
 const DebtDetail = named(L.debts, "DebtDetail");
@@ -177,5 +179,6 @@ registerSheets({
   incomes: IncomesSheet,
   receive: ReceiveSheet,
   forecast: ForecastSheet,
-  sleep: SleepSheet
+  sleep: SleepSheet,
+  subscription: SubscriptionDetailSheet
 });

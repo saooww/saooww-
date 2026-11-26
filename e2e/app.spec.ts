@@ -305,6 +305,21 @@ test("сон: запись ночи считает длительность че
   await expect(page.getByText("23:30 → 06:45")).toBeVisible();
 });
 
+test("капитал: пик, минимум и просадка на вкладке «Тренды»; подписка открывается карточкой с историей", async ({ page }) => {
+  await startDemo(page);
+  await openMoney(page, "Аналитика");
+  await page.getByRole("tab", { name: "Тренды" }).first().click();
+  await expect(page.getByText("Макс. просадка")).toBeVisible();
+  await expect(page.getByText("Доли по счетам")).toBeVisible();
+  await page.getByRole("tab", { name: "Профиль" }).click();
+  await page.locator('.app-canvas > [aria-hidden="false"]').getByText("Подписки", { exact: true }).first().click();
+  await page.getByText("Облачное хранилище").first().click();
+  const card = page.getByRole("dialog", { name: "Подписка" });
+  await expect(card.getByText("Потрачено всего")).toBeVisible();
+  await expect(card.getByRole("progressbar")).toBeVisible();
+  await expect(card.getByText("История платежей")).toBeVisible();
+});
+
 test("калькулятор в сумме: 1200 + 350 записывается как 1 550", async ({ page }) => {
   await startDemo(page);
   await createNew(page, "Расход");

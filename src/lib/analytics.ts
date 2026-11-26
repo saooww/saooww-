@@ -518,3 +518,116 @@ export function capitalChange(data: AppData, balances: Record<ID, Minor>, today:
   const to = series[series.length - 1]?.value ?? from;
   return { from, to, delta: to - from, pct: from > 0 ? (to - from) / from : null };
 }
+
+/* ------------------------------------------------------------------ */
+/*  Capital curve: peak, low, drawdown                                  */
+/* ------------------------------------------------------------------ */
+
+export interface CapitalCurve {
+  peak: { index: number; day: DayKey; value: Minor };
+  low: { index: number; day: DayKey; value: Minor };
+  /** Per point: how far below the highest value so far (0 or negative) */
+  drawdown: Minor[];
+  /** The deepest fall from a high to the lowest point after it */
+  maxDrawdown: { depth: Minor; pct: number; peakDay: DayKey; troughDay: DayKey } | null;
+  /** Last value minus the first one */
+  change: Minor;
+  /** How far the last value is below the peak (0 or negative) */
+  fromPeak: Minor;
+}
+
+/** Peak, low and drawdown of a daily series. All integers; pct is a fraction of the high before the fall. */
+export function capitalCurve(series: Array<{ day: DayKey; value: Minor }>): CapitalCurve | null {
+  if (series.length < 2) return null;
+  let peak = 0;
+  let low = 0;
+  const drawdown: Minor[] = [];
+  let runMax = series[0].value;
+  let runMaxIdx = 0;
+  let worst: CapitalCurve["maxDrawdown"] = null;
+  series.forEach((p, i) => {
+    if (p.value > series[peak].value) peak = i;
+    if (p.value < series[low].value) low = i;
+    if (p.value > runMax) {
+      runMax = p.value;
+      runMaxIdx = i;
+    }
+    const dd = p.value - runMax;
+    drawdown.push(dd);
+    if (dd < 0 && (!worst || dd < worst.depth)) worst = { depth: dd, pct: runMax > 0 ? dd / runMax : 0, peakDay: series[runMaxIdx].day, troughDay: p.day };
+  });
+  const at = (i: number) => ({ index: i, day: series[i].day, value: series[i].value });
+  return { peak: at(peak), low: at(low), drawdown, maxDrawdown: worst, change: series[series.length - 1].value - series[0].value, fromPeak: series[series.length - 1].value - series[peak].value };
+}
+
+export interface Share {
+  id: string;
+  name: string;
+  value: Minor;
+  /** Fraction of the total, 0..1 */
+  share: number;
+}
+
+/** Top `limit` shares of a map, the rest folded into one «other» item. */
+export function topShares(values: Map<string, Minor>, names: (id: string) => string, limit: number, otherLabel: string): Share[] {
+  const all = [...values].filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]);
+  const total = all.reduce((s, [, v]) => s + v, 0);
+  if (!total) return [];
+  const head = all.slice(0, limit);
+  const rest = all.slice(limit).reduce((s, [, v]) => s + v, 0);
+  const out: Share[] = head.map(([id, value]) => ({ id, name: names(id), value, share: value / total }));
+  if (rest > 0) out.push({ id: "__rest", name: otherLabel, value: rest, share: rest / total });
+  return out;
+}
+
+/** Positive wallet balances in the base currency, by wallet. */
+export function walletAllocation(data: AppData, balances: Record<ID, Minor>): Map<string, Minor> {
+  const out = new Map<string, Minor>();
+  for (const w of totalWallets(data.wallets)) {
+    const v = toBase(balances[w.id] ?? 0, w.currency, data.settings);
+    if (v !== null && v > 0) out.set(w.id, v);
+  }
+  return out;
+}
+
+export interface TreemapCell {
+  id: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+/**
+ * Slice-and-dice layout: items sorted by size are split into two groups of near-equal weight,
+ * alternately across the longer side. Cell areas are proportional to values and tile the rectangle.
+ */
+export function treemap(items: Array<{ id: string; value: number }>, width: number, height: number): TreemapCell[] {
+  const sorted = items.filter((i) => i.value > 0).sort((a, b) => b.value - a.value);
+  const out: TreemapCell[] = [];
+  const place = (list: typeof sorted, x: number, y: number, w: number, h: number) => {
+    if (!list.length) return;
+    if (list.length === 1) {
+      out.push({ id: list[0].id, x, y, w, h });
+      return;
+    }
+    const total = list.reduce((s, i) => s + i.value, 0);
+    // the first group takes items until it holds about half the weight
+    let acc = 0;
+    let k = 0;
+    while (k < list.length - 1 && acc + list[k].value / 2 < total / 2) acc += list[k++].value;
+    k = Math.max(1, k);
+    const a = list.slice(0, k);
+    const b = list.slice(k);
+    const share = a.reduce((s, i) => s + i.value, 0) / total;
+    if (w >= h) {
+      place(a, x, y, w * share, h);
+      place(b, x + w * share, y, w * (1 - share), h);
+    } else {
+      place(a, x, y, w, h * share);
+      place(b, x, y + h * share, w, h * (1 - share));
+    }
+  };
+  place(sorted, 0, 0, width, height);
+  return out;
+}

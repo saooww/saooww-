@@ -1,0 +1,27 @@
+Active
+Contribution des catégories sur la période
+Jour {0} sur {1}
+Répartition par compte
+Les paiements enregistrés restent dans l’historique des opérations.
+Baisse max.
+Minimum
+Depuis le pic
+Le premier paiement sera enregistré le jour du prélèvement
+Pic
+Le paiement s’enregistre tout seul le jour du prélèvement quand vous ouvrez l’appli.
+Paiement en retard de {0}
+Abonnement
+Tout afficher : {0}
+Dernier paiement {0}
+Total dépensé
+Se renouvelle aujourd’hui
+Se renouvelle dans {0}
+Baisse depuis le pic
+En retard
+Prochain paiement : {0}
+Dépensé
+Cet abonnement a été supprimé.
+au plus haut
+sous le plus haut
+aucune baisse
+depuis le {0} · {1}

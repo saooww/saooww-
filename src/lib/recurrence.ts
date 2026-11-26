@@ -1,6 +1,6 @@
-import type { Frequency, Recurring } from "../store/types";
+import type { Frequency, Recurring, Transaction } from "../store/types";
 import type { Minor } from "./money";
-import { addDays, addMonths, parseDay, plural, type DayKey } from "./dates";
+import { addDays, addMonths, diffDays, parseDay, plural, type DayKey } from "./dates";
 import { tr } from "../i18n/i18n";
 
 export function nextAfter(date: DayKey, freq: Frequency, interval: number, anchorDay?: number): DayKey {
@@ -64,4 +64,42 @@ export function freqShort(freq: Frequency, interval = 1): string {
 
 export function anchorOf(day: DayKey): number {
   return parseDay(day).getDate();
+}
+
+export interface SubscriptionStats {
+  /** Date of the last recorded payment, if any */
+  lastPaid: DayKey | null;
+  /** Date of the next one */
+  next: DayKey;
+  /** Days until the next payment (0 = today, negative = overdue) */
+  daysLeft: number;
+  /** Days between the previous and the next payment */
+  cycleDays: number;
+  /** How far through the current cycle we are, 0..1 */
+  progress: number;
+  /** Everything paid so far, in minor units of the payment's own currency */
+  totalPaid: Minor;
+  payments: number;
+  /** Date of the first recorded payment */
+  since: DayKey | null;
+}
+
+/**
+ * What a subscription has cost so far and where the current cycle stands.
+ * The cycle runs from the previous due date (the last payment, or one period before the next) to the next.
+ */
+export function subscriptionStats(r: Pick<Recurring, "id" | "nextDate" | "freq" | "interval" | "anchorDay" | "amount">, txs: Array<Pick<Transaction, "recurringId" | "date" | "amount" | "kind">>, today: DayKey): SubscriptionStats {
+  const paid = txs.filter((t) => t.recurringId === r.id && (t.kind === "expense" || t.kind === "income" || t.kind === "transfer")).sort((a, b) => (a.date < b.date ? -1 : 1));
+  const lastPaid = paid.length ? paid[paid.length - 1].date.slice(0, 10) : null;
+  const next = r.nextDate;
+  // one period back from the next date, if no payment was ever recorded
+  const prevByRule = (() => {
+    const step = r.freq === "day" ? 1 : r.freq === "week" ? 7 : r.freq === "month" ? 30 : 365;
+    return addDays(next, -step * Math.max(1, r.interval));
+  })();
+  const start = lastPaid && lastPaid < next ? lastPaid : prevByRule;
+  const cycleDays = Math.max(1, diffDays(next, start));
+  const daysLeft = diffDays(next, today);
+  const progress = Math.max(0, Math.min(1, (cycleDays - daysLeft) / cycleDays));
+  return { lastPaid, next, daysLeft, cycleDays, progress, totalPaid: paid.reduce((s, t) => s + t.amount, 0), payments: paid.length, since: paid.length ? paid[0].date.slice(0, 10) : null };
 }

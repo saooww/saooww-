@@ -1,0 +1,27 @@
+Aktiv
+Beitrag der Kategorien im Zeitraum
+Tag {0} von {1}
+Anteil nach Konto
+Gebuchte Zahlungen bleiben im Verlauf der Vorgänge.
+Max. Rückgang
+Tief
+Seit dem Hoch
+Die erste Zahlung wird am Abbuchungstag erfasst
+Hoch
+Die Zahlung wird am Abbuchungstag automatisch erfasst, wenn du die App öffnest.
+Zahlung {0} überfällig
+Abo
+Alle zeigen: {0}
+Letzte Zahlung {0}
+Insgesamt ausgegeben
+Verlängert sich heute
+Verlängert sich in {0}
+Rückgang vom Hoch
+Überfällig
+Nächste Zahlung: {0}
+Ausgegeben
+Dieses Abo wurde gelöscht.
+auf dem Hoch
+unter dem Hoch
+keine Rückgänge
+seit {0} · {1}

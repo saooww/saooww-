@@ -14,7 +14,7 @@ import { pickData, useData } from "../src/store/store";
 import { createEmptyData } from "../src/store/seed";
 import type { AppData, Plan, Recurring, Wallet } from "../src/store/types";
 import { buildLedger, computeBalances, debtInfo, netWorth, periodRange, periodStats, sumWallets, toBase, totalWallets } from "../src/lib/finance";
-import { capitalChange, capitalForecast, freeCash, monthForecast, scheduledBetween } from "../src/lib/analytics";
+import { capitalChange, capitalCurve, capitalForecast, topShares, treemap, walletAllocation, freeCash, monthForecast, scheduledBetween } from "../src/lib/analytics";
 import { nextMonthPlan, nextSlot, planItems, planLeft, planReceived, planSchedule, planSurplus } from "../src/lib/plans";
 import { debtPeople, splitRepayment } from "../src/lib/debts";
 import { budgetStates } from "../src/lib/insights";
@@ -22,7 +22,7 @@ import { goalInfo, goalSaved, goalEnvelopes } from "../src/lib/finance";
 import { goalPace, goalWhatIf, whatIfSteps } from "../src/lib/goals";
 import { amountToInput, parseAmount } from "../src/lib/money";
 import { addDays, addMonths, diffDays, endOfMonth, startOfMonth } from "../src/lib/dates";
-import { nextAfter, occurrencesInRange } from "../src/lib/recurrence";
+import { nextAfter, occurrencesInRange, subscriptionStats } from "../src/lib/recurrence";
 
 let passed = 0;
 let knownIssues = 0;
@@ -143,6 +143,65 @@ test("бюджеты и аналитика считают траты месяц�
   assert.equal(food.spent, 300_00 + 950_00);
   assert.equal(food.remaining, 2_000_00 - food.spent);
   assert.equal(food.level, "ok");
+});
+
+test("кривая капитала: пик, минимум, просадка и изменение считаются по дням, дерево долей занимает всю площадь", () => {
+  const day = (n: number) => addDays("2027-01-01", n);
+  const series = [100, 120, 150, 90, 110, 160, 130].map((v, i) => ({ day: day(i), value: v * 100 }));
+  const c = capitalCurve(series)!;
+  assert.equal(c.peak.value, 160_00);
+  assert.equal(c.peak.day, day(5));
+  assert.equal(c.low.value, 90_00);
+  assert.equal(c.low.day, day(3));
+  assert.deepEqual(c.drawdown, [0, 0, 0, -60_00, -40_00, 0, -30_00]);
+  assert.equal(c.maxDrawdown!.depth, -60_00);
+  assert.equal(c.maxDrawdown!.peakDay, day(2));
+  assert.equal(c.maxDrawdown!.troughDay, day(3));
+  assert.ok(Math.abs(c.maxDrawdown!.pct - -0.4) < 1e-9);
+  assert.equal(c.change, 30_00);
+  assert.equal(c.fromPeak, -30_00);
+  assert.equal(capitalCurve([{ day: day(0), value: 1 }]), null);
+  // только рост — просадки нет
+  assert.equal(capitalCurve([1, 2, 3].map((v, i) => ({ day: day(i), value: v })))!.maxDrawdown, null);
+  // доли: сумма долей = 1, лишнее сворачивается в «прочее»
+  const shares = topShares(new Map([["a", 500], ["b", 300], ["c", 150], ["d", 50]]), (id) => id.toUpperCase(), 2, "Прочее");
+  assert.deepEqual(shares.map((x) => x.id), ["a", "b", "__rest"]);
+  assert.ok(Math.abs(shares.reduce((s, x) => s + x.share, 0) - 1) < 1e-9);
+  // дерево: площади пропорциональны, клетки не выходят за прямоугольник и покрывают его
+  const cells = treemap([{ id: "a", value: 500 }, { id: "b", value: 300 }, { id: "c", value: 150 }, { id: "d", value: 50 }], 400, 200);
+  const area = cells.reduce((s, k) => s + k.w * k.h, 0);
+  assert.ok(Math.abs(area - 400 * 200) < 1e-6);
+  for (const k of cells) {
+    assert.ok(k.x >= -1e-9 && k.y >= -1e-9 && k.x + k.w <= 400 + 1e-9 && k.y + k.h <= 200 + 1e-9);
+    const v = { a: 500, b: 300, c: 150, d: 50 }[k.id as "a"];
+    assert.ok(Math.abs((k.w * k.h) / (400 * 200) - v / 1000) < 1e-9);
+  }
+  // доли по счетам: только положительные остатки, в базовой валюте
+  const alloc = walletAllocation(data(), bal());
+  assert.equal(alloc.get("usd"), 100_000 * 95);
+  assert.equal(alloc.get("card"), 10_000_000);
+});
+
+test("подписка: сколько заплачено, когда следующий платёж и где мы в цикле", () => {
+  st().replaceAll({ ...data(), recurring: [{ id: "r-sub", kind: "expense", title: "Облако", amount: 219_00, walletId: "card", freq: "month", interval: 1, anchorDay: 20, nextDate: "2027-01-20", autoPost: true, isSubscription: true, active: true, createdAt: "2026-09-01T10:00" }] });
+  for (const d of ["2026-10-20", "2026-11-20", "2026-12-20"]) st().addTransaction({ kind: "expense", amount: 219_00, walletId: "card", date: `${d}T09:00`, recurringId: "r-sub" });
+  st().addTransaction({ kind: "expense", amount: 500_00, walletId: "card", date: "2026-12-21T09:00" }); // чужая операция
+  const r = st().recurring[0];
+  const s = subscriptionStats(r, st().transactions, T0);
+  assert.equal(s.payments, 3);
+  assert.equal(s.totalPaid, 3 * 219_00);
+  assert.equal(s.since, "2026-10-20");
+  assert.equal(s.lastPaid, "2026-12-20");
+  assert.equal(s.next, "2027-01-20");
+  assert.equal(s.daysLeft, 5); // с 15 по 20 января
+  assert.equal(s.cycleDays, 31); // с 20 декабря
+  assert.ok(Math.abs(s.progress - 26 / 31) < 1e-9);
+  // платежей не было: цикл — один период до следующей даты, итог ноль
+  const n = subscriptionStats({ ...r, id: "r-none" }, st().transactions, T0);
+  assert.equal(n.payments, 0);
+  assert.equal(n.totalPaid, 0);
+  assert.equal(n.lastPaid, null);
+  assert.equal(n.cycleDays, 30);
 });
 
 /* ---------------- balances ---------------- */
